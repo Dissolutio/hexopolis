@@ -46,7 +46,8 @@ const DemoGameClient = Client({
   ...bgioClientOptions,
   multiplayer: Local(),
   enhancer: reduxDevTools,
-  debug: { impl: Debug },
+  // debug: { impl: Debug },
+  debug: false,
 });
 
 const MultiplayerGameClient = Client({
