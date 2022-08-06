@@ -14,14 +14,23 @@ export const Controls = () => {
     endTurn?.();
   };
 
-  return isMyTurn ? (
-    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-      <button onClick={undo}>UNDO</button>
-      <button onClick={redo}>REDO</button>
-      <button onClick={handleClickIncreaseScore}>Move: Increase Score</button>
-      <button onClick={handleClickEndTurn}>Event: End Turn</button>
+  return (
+    <div>
+      {isMyTurn ? <div>IT'S YOUR TURN</div> : <div>NOT YOUR TURN</div>}
+      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+        <button disabled={!isMyTurn} onClick={undo}>
+          UNDO
+        </button>
+        <button disabled={!isMyTurn} onClick={redo}>
+          REDO
+        </button>
+        <button disabled={!isMyTurn} onClick={handleClickIncreaseScore}>
+          Move: Increase Score
+        </button>
+        <button disabled={!isMyTurn} onClick={handleClickEndTurn}>
+          Event: End Turn
+        </button>
+      </div>
     </div>
-  ) : (
-    <div>NOT YOUR TURN</div>
   );
 };
