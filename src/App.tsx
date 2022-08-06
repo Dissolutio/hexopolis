@@ -65,18 +65,33 @@ export const App = () => {
           <MultiplayerLobbyProvider>
             <BrowserRouter>
               <Routes>
-                <Route path="/">
-                  <MultiplayerNav />
-                  <MultiplayerLobby />
-                </Route>
-                <Route path="/demo">
-                  <MultiplayerNav />
-                  <DemoGameClient matchID="matchID" playerID="0" />
-                </Route>
-                <Route path="/play">
-                  <MultiplayerNav />
-                  <PlayPage />
-                </Route>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <MultiplayerNav />
+                      <MultiplayerLobby />
+                    </>
+                  }
+                />
+                <Route
+                  path="/demo"
+                  element={
+                    <>
+                      <MultiplayerNav />
+                      <DemoGameClient matchID="matchID" playerID="0" />
+                    </>
+                  }
+                />
+                <Route
+                  path="/play"
+                  element={
+                    <>
+                      <MultiplayerNav />
+                      <PlayPage />
+                    </>
+                  }
+                />
               </Routes>
             </BrowserRouter>
           </MultiplayerLobbyProvider>
@@ -90,9 +105,16 @@ const LocalApp = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/">
-          <DemoGameClient matchID="matchID" playerID="0" />
-        </Route>
+        <Route
+          path="/"
+          element={
+            <>
+              <DemoGameClient matchID="matchID" playerID="0" />
+              <hr />
+              <DemoGameClient matchID="matchID" playerID="1" />
+            </>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

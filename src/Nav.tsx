@@ -8,7 +8,7 @@ export const MultiplayerNav = () => {
     <nav>
       <ul>
         <li>
-          <NavLink exact to="/">
+          <NavLink to="/">
             Multiplayer Lobby
           </NavLink>
         </li>
