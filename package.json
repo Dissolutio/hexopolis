@@ -23,7 +23,15 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "devstart": "REACT_APP_WITH_SEPARATE_SERVER=1 npm start",
+    "devserver": "run-p nodemon-devserver compile-game-files:watch",
+    "build": "npm-run-all --continue-on-error compile-game-files cra-build",
+    "server": "node -r esm server.js",
+    "cra-build": "react-scripts build",
+    "compile-game-files": "tsc ./src/game/*.ts --outDir ./server --downlevelIteration true --skipLibCheck true",
+    "compile-game-files:watch": "watch 'npm run compile-game-files' ./src/game",
+    "nodemon-devserver": "nodemon --delay 1 --watch ./server -r esm devserver.js",
+    "format": "prettier --write 'src/**/*.js' '**/*.json' 'src/**/*.ts' 'src/**/*.tsx' 'server.js' 'devserver.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
