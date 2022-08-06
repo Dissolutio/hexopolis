@@ -1,7 +1,7 @@
 import { Game } from "boardgame.io";
 import { increaseScore } from "./moves";
 
-export type MyGameState = {
+export type ScoretopiaState = {
   score: {
     [playerID: string]: number;
   };
@@ -14,8 +14,8 @@ export const defaultSetupData = {
 
 export const MYGAME_NUMPLAYERS = 2;
 
-export const myGame: Game<MyGameState> = {
-  name: "myGame",
+export const scoretopiaGame: Game<ScoretopiaState> = {
+  name: "scoretopia",
   setup: (ctx, setupData) => {
     const myG = {
       ...defaultSetupData,
@@ -30,7 +30,7 @@ export const myGame: Game<MyGameState> = {
   maxPlayers: 2,
 };
 
-export const myOtherGame: Game<MyGameState> = {
+export const myOtherGame: Game<ScoretopiaState> = {
   name: "myOtherGame",
   setup: (ctx, setupData) => {
     const myG = {

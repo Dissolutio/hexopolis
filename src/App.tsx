@@ -6,8 +6,8 @@ import { Debug } from "boardgame.io/debug";
 import { BgioLobbyApiProvider } from "bgio-contexts";
 import { AuthProvider, useAuth } from "hooks/useAuth";
 import { MultiplayerLobby, MultiplayerLobbyProvider } from "lobby";
-import { myGame } from "./game/game";
-import { Board } from "./Board";
+import { scoretopiaGame } from "./game/game";
+import { ScoretopiaBoard } from "./scoretopia-ui/ScoretopiaBoard";
 import { MultiplayerNav } from "./Nav";
 
 // ! Three Options:
@@ -37,8 +37,8 @@ const reduxDevTools =
   (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
 const bgioClientOptions = {
-  game: myGame,
-  board: Board,
+  game: scoretopiaGame,
+  board: ScoretopiaBoard,
   numPlayers: 2,
 };
 

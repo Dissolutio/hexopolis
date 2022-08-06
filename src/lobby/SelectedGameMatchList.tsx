@@ -4,21 +4,29 @@ import { uniqBy } from "lodash";
 import { useAuth } from "hooks";
 import { useMultiplayerLobby } from "./useMultiplayerLobby";
 
+export const RefreshLobbyMatchesButton = () => { 
+  const { updateLobbyMatchesForSelectedGame } =
+    useMultiplayerLobby();
+    async function handleRefreshButton(e: React.MouseEvent) {
+      updateLobbyMatchesForSelectedGame();
+    }
+    return (
+      <button onClick={handleRefreshButton}>{`Refresh`}</button>
+    )
+ }
+
 export function SelectedGameMatchList() {
-  const { selectedGame, lobbyMatches, updateLobbyMatchesForSelectedGame } =
+  const { selectedGame, lobbyMatches } =
     useMultiplayerLobby();
   const selectedGameMatches = lobbyMatches?.[selectedGame] ?? [];
   // the BGIO server often returns duplicate matches, unsure why
   const matches = uniqBy(selectedGameMatches, "matchID");
-  async function handleRefreshButton(e: React.MouseEvent) {
-    updateLobbyMatchesForSelectedGame();
-  }
   return (
     <>
-      <button onClick={handleRefreshButton}>{`Refresh`}</button>
+      <RefreshLobbyMatchesButton />
       <MatchesError />
       <MatchesList matches={matches} />
-    </>
+      </>
   );
 }
 

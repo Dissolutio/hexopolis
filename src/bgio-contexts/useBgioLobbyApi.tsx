@@ -2,7 +2,7 @@ import React from "react";
 import { LobbyClient } from "boardgame.io/client";
 import { LobbyAPI } from "boardgame.io";
 
-import { MyGameState } from "game/game";
+import { ScoretopiaState } from "game/game";
 
 type LeaveMatchParams = {
   gameName: string;
@@ -24,7 +24,7 @@ type JoinMatchOptions = {
   data?: any;
 };
 type CreateMatchOptions = {
-  setupData: MyGameState;
+  setupData: ScoretopiaState;
   numPlayers: number;
   unlisted?: boolean;
 };

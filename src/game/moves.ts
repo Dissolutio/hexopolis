@@ -1,7 +1,7 @@
 import { Move } from "boardgame.io";
-import { MyGameState } from "./game";
+import { ScoretopiaState } from "./game";
 
-export const increaseScore: Move<MyGameState> = (G, ctx) => {
+export const increaseScore: Move<ScoretopiaState> = (G, ctx) => {
   const { currentPlayer } = ctx;
   const currentScore = G.score[currentPlayer];
   G.score[`${currentPlayer}`] = currentScore + 1;

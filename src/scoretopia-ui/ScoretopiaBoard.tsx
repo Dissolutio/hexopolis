@@ -7,12 +7,12 @@ import {
   BgioEventsProvider,
   BgioCtxProvider,
   BgioChatProvider,
-} from "./bgio-contexts";
-import { ExampleUI } from "ui/ExampleUI";
+} from "../bgio-contexts";
+import { ScoretopiaUI } from "scoretopia-ui/ScoretopiaUI";
 
 type MyBoardProps = BoardProps & { chatMessages?: ChatMessage[] };
 
-export function Board(props: MyBoardProps) {
+export function ScoretopiaBoard(props: MyBoardProps) {
   const {
     // G
     G,
@@ -57,7 +57,7 @@ export function Board(props: MyBoardProps) {
                 chatMessages={chatMessages}
                 sendChatMessage={sendChatMessage}
               >
-                <ExampleUI />
+                <ScoretopiaUI />
               </BgioChatProvider>
             </BgioEventsProvider>
           </BgioMovesProvider>
