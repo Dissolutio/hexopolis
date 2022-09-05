@@ -38,7 +38,6 @@ export function ScoretopiaBoard(props: MyBoardProps) {
     isConnected,
     credentials,
   } = props;
-  console.log("🚀 ~ file: ScoretopiaBoard.tsx ~ line 41 ~ ScoretopiaBoard ~ props", props)
   return (
     <BgioClientInfoProvider
       log={log}

@@ -26,7 +26,8 @@ const protocol = window?.location?.protocol ?? ''
 const port = window?.location?.port ?? ''
 const deploymentServerAddr = `${protocol}//${hostname}${port ? `:${port}` : ``}`
 const localServerAddr = `http://localhost:8000`
-const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr
+// const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr
+const SERVER = localServerAddr
 
 // Enable Redux DevTools in development
 const reduxDevTools =
