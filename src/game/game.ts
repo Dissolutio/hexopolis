@@ -1,47 +1,47 @@
-import { Game } from "boardgame.io";
-import { increaseScore } from "./moves";
+import { Game } from 'boardgame.io'
+import { increaseScore, increaseScoreByRandomAmount } from './moves'
 
 export type ScoretopiaState = {
   score: {
-    [playerID: string]: number;
-  };
-};
+    [playerID: string]: number
+  }
+}
 
 export const defaultSetupData = {
-  score: { "0": 0, "1": 0 },
-  lobbyDisplayName: "",
-};
+  score: { '0': 0, '1': 0 },
+  lobbyDisplayName: '',
+}
 
-export const MYGAME_NUMPLAYERS = 2;
+export const MYGAME_NUMPLAYERS = 2
 
 export const scoretopiaGame: Game<ScoretopiaState> = {
-  name: "scoretopia",
+  name: 'scoretopia',
   setup: (ctx, setupData) => {
     const myG = {
       ...defaultSetupData,
       ...setupData,
-    };
-    return myG;
+    }
+    return myG
   },
   moves: {
     increaseScore,
   },
   minPlayers: 2,
   maxPlayers: 2,
-};
+}
 
-export const myOtherGame: Game<ScoretopiaState> = {
-  name: "myOtherGame",
+export const scoretopiaBonanzaGame: Game<ScoretopiaState> = {
+  name: 'scoretopiaBonanza',
   setup: (ctx, setupData) => {
     const myG = {
       ...defaultSetupData,
       ...setupData,
-    };
-    return myG;
+    }
+    return myG
   },
   moves: {
-    increaseScore,
+    increaseScore: increaseScoreByRandomAmount,
   },
   minPlayers: 2,
   maxPlayers: 2,
-};
+}

@@ -1,9 +1,9 @@
 import { Server } from 'boardgame.io/server'
 import path from 'path'
 import serve from 'koa-static'
-import { scoretopiaGame } from './server/game'
+import { scoretopiaGame, scoretopiaBonanzaGame } from './server/game'
 
-const server = Server({ games: [scoretopiaGame] })
+const server = Server({ games: [scoretopiaGame, scoretopiaBonanzaGame] })
 const PORT = process.env.PORT || 8000
 
 // Build path relative to the server.js file

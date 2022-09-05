@@ -1,9 +1,10 @@
 const Server = require('boardgame.io/server').Server
 const Origins = require('boardgame.io/server').Origins
 const scoretopiaGame = require('./server/game').scoretopiaGame
+const scoretopiaBonanzaGame = require('./server/game').scoretopiaBonanzaGame
 
 const server = Server({ 
-    games: [scoretopiaGame],
+    games: [scoretopiaGame, scoretopiaBonanzaGame],
     origins: [
         // Allow your game site to connect.
         // 'https://www.mygame.domain',
