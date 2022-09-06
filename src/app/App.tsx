@@ -9,7 +9,8 @@ import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
 import { scoretopiaBonanzaGame } from '../game/game'
 import { ScoretopiaBoard } from '../scoretopia-ui/ScoretopiaBoard'
 import { MultiplayerNav } from './MultiplayerNav'
-import { PageRoutes } from 'pages/PageRoutes'
+import { HexedMeadow } from 'game/HM-game'
+import { FeedbackPage, HelpPage, RulesPage } from 'pages'
 
 // ! Three Options:
 // * A local game (for game development) `npm run start`
@@ -27,8 +28,9 @@ const protocol = window?.location?.protocol ?? ''
 const port = window?.location?.port ?? ''
 const deploymentServerAddr = `${protocol}//${hostname}${port ? `:${port}` : ``}`
 const localServerAddr = `http://localhost:8000`
-// const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr
-const SERVER = localServerAddr
+const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr
+// FOR DEBUGGING BUILD SERVER
+// const SERVER = localServerAddr
 
 // Enable Redux DevTools in development
 const reduxDevTools =
@@ -38,6 +40,11 @@ const reduxDevTools =
 
 const bgioClientOptions = {
   game: scoretopiaBonanzaGame,
+  board: ScoretopiaBoard,
+  numPlayers: 2,
+}
+const hexedMeadowClientOptions = {
+  game: HexedMeadow,
   board: ScoretopiaBoard,
   numPlayers: 2,
 }
@@ -93,7 +100,9 @@ export const App = () => {
                     </>
                   }
                 />
-                <PageRoutes />
+                <Route path="/help" element={<HelpPage />} />
+                <Route path="/feedback" element={<FeedbackPage />} />
+                <Route path="/rules" element={<RulesPage />} />
               </Routes>
             </BrowserRouter>
           </MultiplayerLobbyProvider>
@@ -116,7 +125,9 @@ const LocalApp = () => {
             </>
           }
         />
-        <PageRoutes />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/rules" element={<RulesPage />} />
       </Routes>
     </BrowserRouter>
   )
