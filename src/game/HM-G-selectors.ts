@@ -12,6 +12,7 @@ import {
   PlayerOrderMarkers,
 } from './HM-types'
 import { generateHexID, generateBlankMoveRange } from './HM-constants'
+import { uniq } from 'lodash'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return {
@@ -126,10 +127,10 @@ export function calcUnitMoveRange(
         const isUnpassable = isTooCostly || isEndHexEnemyOccupied
         const deduplicateMoveRange = (result: MoveRange): MoveRange => {
           return {
-            safe: [...new Set(result.safe)],
-            engage: [...new Set(result.engage)],
-            disengage: [...new Set(result.disengage)],
-            denied: [...new Set(result.denied)],
+            safe: uniq(result.safe),
+            engage: uniq(result.engage),
+            disengage: uniq(result.disengage),
+            denied: uniq(result.denied),
           }
         }
         if (isUnpassable || isEndHexFriendlyOccupied) {

@@ -6,9 +6,10 @@ import { Debug } from 'boardgame.io/debug'
 import { BgioLobbyApiProvider } from 'bgio-contexts'
 import { AuthProvider, useAuth } from 'hooks/useAuth'
 import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
-import { scoretopiaBonanzaGame } from './game/game'
-import { ScoretopiaBoard } from './scoretopia-ui/ScoretopiaBoard'
-import { MultiplayerNav } from './Nav'
+import { scoretopiaBonanzaGame } from '../game/game'
+import { ScoretopiaBoard } from '../scoretopia-ui/ScoretopiaBoard'
+import { MultiplayerNav } from './MultiplayerNav'
+import { PageRoutes } from 'pages/PageRoutes'
 
 // ! Three Options:
 // * A local game (for game development) `npm run start`
@@ -92,6 +93,7 @@ export const App = () => {
                     </>
                   }
                 />
+                <PageRoutes />
               </Routes>
             </BrowserRouter>
           </MultiplayerLobbyProvider>
@@ -109,15 +111,12 @@ const LocalApp = () => {
           path="/"
           element={
             <>
-              <h1>Player 0 VS Player 1</h1>
-              <div style={{ paddingRight: '20px', paddingLeft: '20px' }}>
-                <DemoGameClient matchID="matchID" playerID="0" />
-                <hr style={{ marginTop: '20px', marginBottom: '20px' }} />
-                <DemoGameClient matchID="matchID" playerID="1" />
-              </div>
+              <DemoGameClient matchID="matchID" playerID="0" />
+              <DemoGameClient matchID="matchID" playerID="1" />
             </>
           }
         />
+        <PageRoutes />
       </Routes>
     </BrowserRouter>
   )

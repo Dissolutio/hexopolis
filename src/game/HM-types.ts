@@ -81,6 +81,10 @@ export type GameUnits = {
   [unitID: string]: GameUnit
 }
 
+export type PlacementUnit = GameUnit & {
+  name: string
+}
+
 export type PlayerStateToggle = {
   [playerID: string]: boolean
 }
@@ -128,4 +132,8 @@ export type MapOptions = {
   withPrePlacedUnits?: boolean
   // flat-top, or pointy-top hexes
   flat?: boolean
+}
+
+export type StringKeyedObj = {
+  [key: string]: string
 }
