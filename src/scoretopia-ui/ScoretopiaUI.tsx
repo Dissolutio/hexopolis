@@ -2,9 +2,9 @@ import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { LeaveJoinedMatchButton } from 'lobby/LeaveJoinedMatchButton'
 import { ChatInput, ChatList } from './Chat'
 import { Controls } from './Controls'
-import { isLocalApp } from 'app/App'
 import { GridGenerator, Hexagon, HexGrid, Layout } from 'react-hexgrid'
 import styled from 'styled-components'
+import { isLocalApp } from 'app/constants'
 
 export const ScoretopiaUI = () => {
   const { playerID } = useBgioClientInfo()

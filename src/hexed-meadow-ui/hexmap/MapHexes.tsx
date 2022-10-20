@@ -169,7 +169,9 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       return (
         <Hexagon
           key={i}
-          {...hex}
+          q={hex.q}
+          r={hex.r}
+          s={hex.s}
           onClick={(e, source) => onClickBoardHex(e, source.props as BoardHex)}
           className={calcClassNames(hex)}
         >

@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import { usePlayerID } from '../contexts'
-import beesBigLogo from 'assets/beesBigLogo.png'
-import butterfliesLogo from 'assets/butterfliesLogo.png'
+import beesBigLogo from '../assets/beesBigLogo.png'
+import butterfliesLogo from '../assets/butterfliesLogo.png'
 
 export const HeaderNav = () => {
   const { playerID } = usePlayerID()

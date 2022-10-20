@@ -15,6 +15,7 @@ import { Layout, HeaderNav } from './layout'
 import { Controls } from './controls'
 import { MapDisplay } from './hexmap'
 import { theme } from './theme'
+import './theme.css'
 
 export const HexedMeadowBoard: React.FunctionComponent<BoardProps> = ({
   playerID,

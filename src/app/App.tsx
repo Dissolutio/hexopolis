@@ -11,26 +11,8 @@ import { ScoretopiaBoard } from '../scoretopia-ui/ScoretopiaBoard'
 import { MultiplayerNav } from './MultiplayerNav'
 import { HexedMeadow } from 'game/HM-game'
 import { FeedbackPage, HelpPage, RulesPage } from 'pages'
-
-// ! Three Options:
-// * A local game (for game development) `npm run start`
-// * Client that connects to a local server `npm run devstart`
-// * Client that connects to its origin server `npm run build`
-
-const isDeploymentEnv = process.env.NODE_ENV === 'production'
-const isDevEnv = process.env.NODE_ENV === 'development'
-const isSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER)
-export const isLocalApp = isDevEnv && !isSeparateServer
-
-// use appropriate address for server
-const hostname = window?.location?.hostname ?? ''
-const protocol = window?.location?.protocol ?? ''
-const port = window?.location?.port ?? ''
-const deploymentServerAddr = `${protocol}//${hostname}${port ? `:${port}` : ``}`
-const localServerAddr = `http://localhost:8000`
-const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr
-// FOR DEBUGGING BUILD SERVER
-// const SERVER = localServerAddr
+import { isLocalApp, SERVER } from './constants'
+import HexedMeadowBoard from 'hexed-meadow-ui/HexedMeadowBoard'
 
 // Enable Redux DevTools in development
 const reduxDevTools =
@@ -45,12 +27,12 @@ const bgioClientOptions = {
 }
 const hexedMeadowClientOptions = {
   game: HexedMeadow,
-  board: ScoretopiaBoard,
+  board: HexedMeadowBoard,
   numPlayers: 2,
 }
 
 const DemoGameClient = Client({
-  ...bgioClientOptions,
+  ...hexedMeadowClientOptions,
   multiplayer: Local(),
   enhancer: reduxDevTools,
   // debug: { impl: Debug },
