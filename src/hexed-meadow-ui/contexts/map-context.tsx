@@ -1,7 +1,5 @@
 import * as React from 'react'
-type MapContextProviderProps = {
-  children: React.ReactNode
-}
+
 const MapContext = React.createContext<
   | {
       selectedMapHex: string
@@ -9,6 +7,10 @@ const MapContext = React.createContext<
     }
   | undefined
 >(undefined)
+
+type MapContextProviderProps = {
+  children: React.ReactNode
+}
 
 export function MapContextProvider({ children }: MapContextProviderProps) {
   const [selectedMapHex, setSelectedMapHex] = React.useState('')
