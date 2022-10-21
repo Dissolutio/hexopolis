@@ -6,8 +6,6 @@ import { Debug } from 'boardgame.io/debug'
 import { BgioLobbyApiProvider } from 'bgio-contexts'
 import { AuthProvider, useAuth } from 'hooks/useAuth'
 import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
-import { scoretopiaBonanzaGame } from '../game/game'
-import { ScoretopiaBoard } from '../scoretopia-ui/ScoretopiaBoard'
 import { MultiplayerNav } from './MultiplayerNav'
 import { HexedMeadow } from 'game/HM-game'
 import { FeedbackPage, HelpPage, RulesPage } from 'pages'
@@ -20,11 +18,6 @@ const reduxDevTools =
   (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
   (window as any).__REDUX_DEVTOOLS_EXTENSION__()
 
-const bgioClientOptions = {
-  game: scoretopiaBonanzaGame,
-  board: ScoretopiaBoard,
-  numPlayers: 2,
-}
 const hexedMeadowClientOptions = {
   game: HexedMeadow,
   board: HexedMeadowBoard,
@@ -40,7 +33,7 @@ const DemoGameClient = Client({
 })
 
 const MultiplayerGameClient = Client({
-  ...bgioClientOptions,
+  ...hexedMeadowClientOptions,
   multiplayer: SocketIO({ server: SERVER }),
   debug: false,
 })
@@ -126,6 +119,7 @@ const PlayPage = () => {
       </p>
     )
   }
+  // TODO: This component, or its parent, needs to be responsible for decided which Game Client to render, depending on which game that the server offers that the player then chooses
   return (
     <MultiplayerGameClient
       matchID={matchID}
