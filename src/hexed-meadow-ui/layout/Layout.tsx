@@ -10,7 +10,7 @@ export const Layout = ({ children }: { children: ReactNode[] }) => {
   return (
     <>
       <LayoutContainer
-        id={`player${playerID}`} // for linking to this player view (useful in local dev)
+        id={`player${playerID}`} // for linking to this player view (useful in local dev, implemented in HeaderNav logo link)
         playerID={playerID}
       >
         <LayoutTop>{children[0]}</LayoutTop>

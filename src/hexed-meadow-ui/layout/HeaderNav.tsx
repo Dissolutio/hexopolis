@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { usePlayerID } from '../contexts'
 import beesBigLogo from '../assets/beesBigLogo.png'
 import butterfliesLogo from '../assets/butterfliesLogo.png'
+import { isLocalApp } from 'app/constants'
 
 export const HeaderNav = () => {
   const { playerID } = usePlayerID()
@@ -39,19 +40,32 @@ const StyledNavbar = styled.nav`
   }
 `
 
-const PlayerTeamLogo = ({ playerID, ...rest }: { playerID: string }) => {
+const PlayerTeamLogo = ({ playerID }: { playerID: string }) => {
+  // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
   if (playerID === '0') {
-    return (
-      <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" {...rest} />
-    )
+    if (isLocalApp) {
+      return (
+        <a href="#player1">
+          <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" />
+        </a>
+      )
+    }
+    return <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" />
   }
   if (playerID === '1') {
+    if (isLocalApp) {
+      // TODO: What if there is less/more players? Who will player 1 link to? Player 2, or 0?
+      return (
+        <a href="#player0">
+          <PlayerTeamLogoImg
+            src={butterfliesLogo}
+            alt="Butterflies team logo"
+          />
+        </a>
+      )
+    }
     return (
-      <PlayerTeamLogoImg
-        src={butterfliesLogo}
-        alt="Butterflies team logo"
-        {...rest}
-      />
+      <PlayerTeamLogoImg src={butterfliesLogo} alt="Butterflies team logo" />
     )
   }
   return null
