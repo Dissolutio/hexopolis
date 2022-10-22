@@ -1,5 +1,5 @@
 import { Game } from 'boardgame.io'
-import { increaseScore, increaseScoreByRandomAmount } from './moves'
+import { increaseScore } from './moves'
 
 export type ScoretopiaState = {
   score: {
@@ -25,22 +25,6 @@ export const scoretopiaGame: Game<ScoretopiaState> = {
   },
   moves: {
     increaseScore,
-  },
-  minPlayers: 2,
-  maxPlayers: 2,
-}
-
-export const scoretopiaBonanzaGame: Game<ScoretopiaState> = {
-  name: 'scoretopiaBonanza',
-  setup: (ctx, setupData) => {
-    const myG = {
-      ...defaultSetupData,
-      ...setupData,
-    }
-    return myG
-  },
-  moves: {
-    increaseScore: increaseScoreByRandomAmount,
   },
   minPlayers: 2,
   maxPlayers: 2,

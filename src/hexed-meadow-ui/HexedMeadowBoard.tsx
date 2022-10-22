@@ -2,10 +2,6 @@ import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { BoardProps } from 'boardgame.io/react'
 import {
-  PlayerIDProvider,
-  GProvider,
-  MovesProvider,
-  CtxProvider,
   MapContextProvider,
   UIContextProvider,
   PlacementContextProvider,
@@ -30,8 +26,6 @@ import { GameState } from 'game/HM-types'
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
 }
-
-type MyBoardProps = BoardProps & { chatMessages?: ChatMessage[] }
 
 export const HexedMeadowBoard = ({
   // G

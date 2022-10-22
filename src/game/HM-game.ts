@@ -18,16 +18,22 @@ import {
 import { GameState, OrderMarker, GameUnit } from './HM-types'
 import { moves } from './HM-moves'
 import { rollD20Initiative } from './rollInitiative'
-import { Ctx, Game } from 'boardgame.io'
+import { Game } from 'boardgame.io'
 import { hexagonMapScenario } from './HM-setup'
 
 export const HexedMeadow: Game<GameState> = {
   name: 'HexedMeadow',
-  setup: (ctx: Ctx) => {
-    // Setup returns G - the initial bgio game state
+  // Function that returns the initial value of G.
+  // setupData is an optional custom object that is
+  // passed through the Game Creation API.
+  setup: (ctx, setupData) => {
     return hexagonMapScenario
-    // return testScenario
   },
+  // Optional function to validate the setupData before
+  // matches are created. If this returns a value,
+  // an error will be reported to the user and match
+  // creation is aborted.
+  // validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
   moves,
   seed: 'random_string',
   playerView: PlayerView.STRIP_SECRETS,
@@ -57,8 +63,6 @@ export const HexedMeadow: Game<GameState> = {
             '1': false,
           }
         }
-        // set player stages
-        // ctx?.events?.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
       turn: {
         activePlayers: {
