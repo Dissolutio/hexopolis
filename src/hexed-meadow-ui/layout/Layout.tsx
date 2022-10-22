@@ -1,19 +1,28 @@
 import { useBgioClientInfo } from 'bgio-contexts'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { Burger, Menu } from './BurgerMenu'
 
 // This component is where a player's theme is set to their player color
 // ? perhaps this could be move into theme.js, but the playerID will still be dynamic....
 
 export const Layout = ({ children }: { children: ReactNode[] }) => {
   const { playerID } = useBgioClientInfo()
+  const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false)
+  const burgerButtonNode = useRef(null)
   return (
     <>
       <LayoutContainer
         id={`player${playerID}`} // for linking to this player view (useful in local dev, implemented in HeaderNav logo link)
         playerID={playerID}
       >
-        <LayoutTop>{children[0]}</LayoutTop>
+        <LayoutTop>
+          <span ref={burgerButtonNode}>
+            <Burger open={isBurgerMenuOpen} setOpen={setIsBurgerMenuOpen} />
+            <Menu open={isBurgerMenuOpen} />
+          </span>
+          {children[0]}
+        </LayoutTop>
         <LayoutMiddle>{children[1]}</LayoutMiddle>
         <LayoutBottom>{children[2]}</LayoutBottom>
       </LayoutContainer>
