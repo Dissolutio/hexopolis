@@ -58,7 +58,12 @@ export const HexedMeadow: Game<GameState> = {
           }
         }
         // set player stages
-        ctx?.events?.setActivePlayers({ all: stageNames.placeOrderMarkers })
+        // ctx?.events?.setActivePlayers({ all: stageNames.placeOrderMarkers })
+      },
+      turn: {
+        activePlayers: {
+          all: stageNames.placeOrderMarkers,
+        },
       },
       //endIf - -all players are ready
       endIf: (G: GameState) => {
