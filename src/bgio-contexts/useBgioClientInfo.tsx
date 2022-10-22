@@ -40,7 +40,7 @@ export function BgioClientInfoProvider(props: BgioClientInfoProviderProps) {
   return (
     <BgioClientInfoContext.Provider
       value={{
-        playerID: playerID || 'observer',
+        playerID,
         belongsToPlayer,
         log,
         matchID,

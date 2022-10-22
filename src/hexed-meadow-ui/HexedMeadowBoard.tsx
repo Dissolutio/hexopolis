@@ -49,7 +49,7 @@ export const HexedMeadowBoard = ({
   sendChatMessage,
   chatMessages = [],
   // ALSO ON BOARD PROPS
-  playerID,
+  playerID = 'observer',
   log,
   matchID,
   matchData,
