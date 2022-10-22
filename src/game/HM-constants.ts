@@ -31,10 +31,6 @@ export function generateBlankOrderMarkers(): OrderMarkers {
     */
     return [...prev, { gameCardID: '', order: '' }]
   }, [] as OrderMarker[])
-  console.log(
-    '🚀 ~ file: HM-constants.ts ~ line 34 ~ blankOrderMarkers ~ blankOrderMarkers',
-    blankOrderMarkers
-  )
   return {
     '0': blankOrderMarkers,
     '1': blankOrderMarkers,
