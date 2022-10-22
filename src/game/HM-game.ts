@@ -41,9 +41,10 @@ export const HexedMeadow: Game<GameState> = {
     //PHASE-PLACEMENT
     [phaseNames.placement]: {
       start: true,
-      //onBegin
-      onBegin: (G, ctx) => {
-        ctx?.events?.setActivePlayers({ all: stageNames.placingUnits })
+      turn: {
+        activePlayers: {
+          all: stageNames.placingUnits,
+        },
       },
       //endIf
       endIf: (G: GameState) => {

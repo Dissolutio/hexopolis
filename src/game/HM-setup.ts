@@ -58,13 +58,15 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
 }
 
 //!! HEXAGON MAP SCENARIO
-export const hexagonMapScenario = makeHexagonMapScenario({
-  placementReady: { '0': true, '1': true },
-  orderMarkersReady: { '0': true, '1': true },
-  roundOfPlayStartReady: { '0': true, '1': true },
-  withPrePlacedUnits: true,
-  players: playersStateWithPrePlacedOMs(),
-})
+export const hexagonMapScenario = makeHexagonMapScenario()
+// export const hexagonMapScenario = makeHexagonMapScenario({
+//   placementReady: { '0': true, '1': true },
+//   orderMarkersReady: { '0': true, '1': true },
+//   roundOfPlayStartReady: { '0': true, '1': true },
+//   withPrePlacedUnits: true,
+//   players: playersStateWithPrePlacedOMs(),
+// })
+
 function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   // GET CORE CARDS
   const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
@@ -76,7 +78,7 @@ function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   // MAKE MAP
   const hexagonMap = makeHexagonShapedMap({
     mapSize: 3,
-    withPrePlacedUnits: true,
+    withPrePlacedUnits: false,
     gameUnits,
   })
   return {
