@@ -10,7 +10,13 @@ import { HexUtils } from 'react-hexgrid'
 import { BoardHex, GameArmyCard, GameUnit } from 'game/HM-types'
 import { selectHexForUnit, selectRevealedGameCard } from 'game/HM-G-selectors'
 import { generateBlankMoveRange } from 'game/HM-constants'
-import { usePlayerID, useMoves, useG, useCtx, useUIContext } from '../contexts'
+import { useUIContext } from '../contexts'
+import {
+  useBgioClientInfo,
+  useBgioCtx,
+  useBgioG,
+  useBgioMoves,
+} from 'bgio-contexts'
 
 const PlayContext = createContext<PlayContextValue | undefined>(undefined)
 
@@ -31,7 +37,7 @@ type PlayContextValue = {
 }
 
 export const PlayContextProvider = ({ children }: PropsWithChildren) => {
-  const { playerID } = usePlayerID()
+  const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
     armyCards,
@@ -39,9 +45,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     orderMarkers,
     currentOrderMarker,
     players,
-  } = useG()
-  const { ctx } = useCtx()
-  const { moves } = useMoves()
+  } = useBgioG()
+  const { ctx } = useBgioCtx()
+  const { moves } = useBgioMoves()
   const {
     selectedUnitID,
     setSelectedUnitID,

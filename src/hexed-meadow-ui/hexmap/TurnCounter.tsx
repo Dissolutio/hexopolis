@@ -1,10 +1,10 @@
+import { useBgioCtx, useBgioG } from 'bgio-contexts'
 import React from 'react'
 import styled from 'styled-components'
-import { useG, useCtx } from '../contexts'
 
 export const TurnCounter = () => {
-  const { currentRound, currentOrderMarker } = useG()
-  const { ctx } = useCtx()
+  const { currentRound, currentOrderMarker } = useBgioG()
+  const { ctx } = useBgioCtx()
 
   const { isPlacementPhase, isOrderMarkerPhase, isRoundOfPlayPhase } = ctx
 

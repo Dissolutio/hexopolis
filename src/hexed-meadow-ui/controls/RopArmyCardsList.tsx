@@ -2,11 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { GameArmyCard } from 'game/HM-types'
-import { useG, useUIContext, usePlayContext } from '../contexts'
+import { useUIContext, usePlayContext } from '../contexts'
 import { UnitIcon } from '../unit-icons'
+import { useBgioG } from 'bgio-contexts'
 
 export const RopArmyCardsList = () => {
-  const { myCards } = useG()
+  const { myCards } = useBgioG()
   const { selectedGameCardID } = useUIContext()
 
   const { currentTurnGameCardID, onSelectCard__turn } = usePlayContext()

@@ -1,12 +1,12 @@
+import { useBgioClientInfo } from 'bgio-contexts'
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
-import { usePlayerID } from '../contexts'
 
 // This component is where a player's theme is set to their player color
 // ? perhaps this could be move into theme.js, but the playerID will still be dynamic....
 
 export const Layout = ({ children }: { children: ReactNode[] }) => {
-  const { playerID } = usePlayerID()
+  const { playerID } = useBgioClientInfo()
   return (
     <>
       <LayoutContainer

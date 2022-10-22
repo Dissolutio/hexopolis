@@ -2,9 +2,6 @@ import React, { SyntheticEvent } from 'react'
 import { Hex, Hexagon, HexUtils, Text } from 'react-hexgrid'
 
 import {
-  usePlayerID,
-  useG,
-  useCtx,
   useUIContext,
   useMapContext,
   usePlacementContext,
@@ -14,17 +11,18 @@ import { UnitIcon } from '../unit-icons/UnitIcon'
 import { generateBlankMoveRange } from 'game/HM-constants'
 import { selectHexForUnit, selectGameCardByID } from 'game/HM-G-selectors'
 import { BoardHex } from 'game/HM-types'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 
 type MapHexesProps = {
   hexSize: number
 }
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
-  const { playerID } = usePlayerID()
-  const { boardHexes, armyCards, startZones, gameUnits } = useG()
+  const { playerID } = useBgioClientInfo()
+  const { boardHexes, armyCards, startZones, gameUnits } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
-  const { ctx } = useCtx()
+  const { ctx } = useBgioCtx()
   const { onClickBoardHex_placement } = usePlacementContext()
   const {
     onClickBoardHex__turn,

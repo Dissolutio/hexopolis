@@ -25,6 +25,11 @@ import {
   BgioChatProvider,
 } from 'bgio-contexts'
 import { ChatMessage } from 'boardgame.io'
+import { GameState } from 'game/HM-types'
+
+interface MyGameProps extends BoardProps<GameState> {
+  chatMessages: ChatMessage[]
+}
 
 type MyBoardProps = BoardProps & { chatMessages?: ChatMessage[] }
 
@@ -52,7 +57,7 @@ export const HexedMeadowBoard = ({
   isMultiplayer,
   isConnected,
   credentials,
-}: MyBoardProps) => {
+}: MyGameProps) => {
   return (
     <ThemeProvider theme={theme(playerID ?? '')}>
       <BgioClientInfoProvider
@@ -73,29 +78,19 @@ export const HexedMeadowBoard = ({
                   chatMessages={chatMessages}
                   sendChatMessage={sendChatMessage}
                 >
-                  {/* START OLD ONES */}
-                  <PlayerIDProvider playerID={playerID ?? ''}>
-                    <GProvider G={G}>
-                      <CtxProvider ctx={ctx}>
-                        <MovesProvider moves={moves} undo={undo} redo={redo}>
-                          <MapContextProvider>
-                            <UIContextProvider>
-                              <PlacementContextProvider>
-                                <PlayContextProvider>
-                                  <Layout>
-                                    <HeaderNav />
-                                    <MapDisplay />
-                                    <Controls />
-                                  </Layout>
-                                </PlayContextProvider>
-                              </PlacementContextProvider>
-                            </UIContextProvider>
-                          </MapContextProvider>
-                        </MovesProvider>
-                      </CtxProvider>
-                    </GProvider>
-                  </PlayerIDProvider>
-                  {/* END OLD ONES */}
+                  <MapContextProvider>
+                    <UIContextProvider>
+                      <PlacementContextProvider>
+                        <PlayContextProvider>
+                          <Layout>
+                            <HeaderNav />
+                            <MapDisplay />
+                            <Controls />
+                          </Layout>
+                        </PlayContextProvider>
+                      </PlacementContextProvider>
+                    </UIContextProvider>
+                  </MapContextProvider>
                 </BgioChatProvider>
               </BgioEventsProvider>
             </BgioMovesProvider>

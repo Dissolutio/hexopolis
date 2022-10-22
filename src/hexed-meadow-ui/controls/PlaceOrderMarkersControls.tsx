@@ -1,11 +1,12 @@
+import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import React, { useState } from 'react'
-import { usePlayerID, useMoves, useG } from '../contexts'
 import { ArmyListStyle } from '../layout'
 
 export const PlaceOrderMarkersControls = () => {
-  const { playerID } = usePlayerID()
-  const { currentRound, orderMarkersReady, myCards, myOrderMarkers } = useG()
-  const { moves } = useMoves()
+  const { playerID } = useBgioClientInfo()
+  const { currentRound, orderMarkersReady, myCards, myOrderMarkers } =
+    useBgioG()
+  const { moves } = useBgioMoves()
 
   const { confirmOrderMarkersReady, placeOrderMarker } = moves
   const [activeMarker, setActiveMarker] = useState('')

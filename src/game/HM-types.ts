@@ -1,4 +1,4 @@
-export type GameState = {
+export interface GameState {
   armyCards: GameArmyCard[]
   gameUnits: GameUnits
   players: PlayersState

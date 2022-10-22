@@ -5,11 +5,12 @@ import {
   HiOutlineArrowCircleRight,
 } from 'react-icons/hi'
 
-import { useMoves, useG, usePlayContext } from '../contexts'
+import { usePlayContext } from '../contexts'
 import { RopArmyCardsList } from './RopArmyCardsList'
+import { useBgioG, useBgioMoves } from 'bgio-contexts'
 
 export const RopIdleControls = () => {
-  const { currentOrderMarker } = useG()
+  const { currentOrderMarker } = useBgioG()
   const { revealedGameCard } = usePlayContext()
   return (
     <>
@@ -23,8 +24,8 @@ export const RopIdleControls = () => {
 }
 
 export const RopMoveControls = () => {
-  const { unitsMoved, currentOrderMarker } = useG()
-  const { moves, undo, redo } = useMoves()
+  const { unitsMoved, currentOrderMarker } = useBgioG()
+  const { moves, undo, redo } = useBgioMoves()
   const { revealedGameCard } = usePlayContext()
 
   const { endCurrentMoveStage } = moves
@@ -61,8 +62,8 @@ export const RopMoveControls = () => {
 }
 
 export const RopAttackControls = () => {
-  const { unitsAttacked, currentOrderMarker } = useG()
-  const { moves } = useMoves()
+  const { unitsAttacked, currentOrderMarker } = useBgioG()
+  const { moves } = useBgioMoves()
   const { endCurrentPlayerTurn } = moves
 
   const { revealedGameCard } = usePlayContext()

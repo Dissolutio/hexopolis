@@ -4,8 +4,9 @@ import React, {
   useContext,
   useState,
 } from 'react'
-import { usePlayerID, useMoves, useG, useUIContext, useMapContext } from '.'
+import { useUIContext, useMapContext } from '.'
 import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/HM-types'
+import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -24,9 +25,9 @@ const PlacementContextProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const { playerID } = usePlayerID()
-  const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useG()
-  const { moves } = useMoves()
+  const { playerID } = useBgioClientInfo()
+  const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useBgioG()
+  const { moves } = useBgioMoves()
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const { placeUnitOnHex } = moves

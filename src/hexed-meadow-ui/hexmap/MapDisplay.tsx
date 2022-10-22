@@ -1,6 +1,6 @@
+import { useBgioG } from 'bgio-contexts'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useG } from '../contexts'
 import {
   ReactHexgrid,
   MapHexStyles,
@@ -10,7 +10,7 @@ import {
 } from './'
 
 export const MapDisplay = () => {
-  const { hexMap } = useG()
+  const { hexMap } = useBgioG()
   const mapSize = hexMap.mapSize
   const mapRef = useRef<HTMLDivElement>(null)
   const zoomInterval = 100

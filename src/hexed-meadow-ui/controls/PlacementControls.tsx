@@ -1,18 +1,13 @@
 import React from 'react'
-import {
-  usePlayerID,
-  useMoves,
-  useG,
-  useUIContext,
-  usePlacementContext,
-} from '../contexts'
+import { useUIContext, usePlacementContext } from '../contexts'
 import { CardUnitIcon } from '../unit-icons'
 import { ArmyListStyle } from '../layout'
+import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 
 export const PlacementControls = () => {
-  const { playerID } = usePlayerID()
-  const { placementReady } = useG()
-  const { moves } = useMoves()
+  const { playerID } = useBgioClientInfo()
+  const { placementReady } = useBgioG()
+  const { moves } = useBgioMoves()
   const { selectedUnitID } = useUIContext()
   const { placementUnits, onClickPlacementUnit } = usePlacementContext()
 

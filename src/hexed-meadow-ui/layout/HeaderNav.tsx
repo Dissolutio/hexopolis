@@ -2,13 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import { usePlayerID } from '../contexts'
 import beesBigLogo from '../assets/beesBigLogo.png'
 import butterfliesLogo from '../assets/butterfliesLogo.png'
 import { isLocalApp } from 'app/constants'
+import { useBgioClientInfo } from 'bgio-contexts'
 
 export const HeaderNav = () => {
-  const { playerID } = usePlayerID()
+  const { playerID } = useBgioClientInfo()
   return (
     <StyledNavbar>
       <PlayerTeamLogo playerID={playerID} />

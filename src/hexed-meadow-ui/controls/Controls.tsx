@@ -1,5 +1,5 @@
+import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
 import React from 'react'
-import { usePlayerID, useCtx } from '../contexts'
 import {
   RopIdleControls,
   RopMoveControls,
@@ -9,8 +9,8 @@ import {
 } from './'
 
 export const Controls = () => {
-  const { playerID } = usePlayerID()
-  const { ctx } = useCtx()
+  const { playerID } = useBgioClientInfo()
+  const { ctx } = useBgioCtx()
   const {
     gameover,
     isOrderMarkerPhase,
