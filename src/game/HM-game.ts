@@ -19,7 +19,7 @@ import { GameState, OrderMarker, GameUnit } from './HM-types'
 import { moves } from './HM-moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
-import { hexagonMapScenario } from './HM-setup'
+import { hexagonMapScenario, testScenario } from './HM-setup'
 
 export const HexedMeadow: Game<GameState> = {
   name: 'HexedMeadow',
@@ -27,7 +27,8 @@ export const HexedMeadow: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    return hexagonMapScenario
+    // return hexagonMapScenario
+    return testScenario
   },
   // Optional function to validate the setupData before
   // matches are created. If this returns a value,

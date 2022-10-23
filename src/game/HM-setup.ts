@@ -97,6 +97,10 @@ export const testScenario = makeTestScenario({
   withPrePlacedUnits: false,
 })
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
+  console.log(
+    '🚀 ~ file: HM-setup.ts ~ line 100 ~ makeTestScenario ~ devOptions',
+    devOptions
+  )
   const mapSize = devOptions?.mapSize ?? 0
   const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
   // GET CORE CARDS
