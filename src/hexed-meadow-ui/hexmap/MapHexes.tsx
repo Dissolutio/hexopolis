@@ -71,12 +71,12 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     const isOpponentsActiveUnitHex = (hex: BoardHex) => {
       return activeEnemyUnitIDs.includes(hex.occupyingUnitID)
     }
-    // assign
+    // TODO: extract functions for className pieces (i.e. makePlacementPhaseClassNames(startZones, isMyStartZoneHex, isSelectedHex)), instead of building classNames procedurally like this
     let classNames = ''
     //phase: Placement
     if (isPlacementPhase) {
       // paint all player startzones
-      // TODO make this work for however many players
+      // TODO: make this work for however many players
       if (startZones?.['0'].includes(hex.id)) {
         classNames = classNames.concat(` maphex__startzone--player0 `)
       }
