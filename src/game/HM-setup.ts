@@ -14,6 +14,7 @@ import {
   generateBlankOrderMarkers,
 } from './HM-constants'
 import { makeHexagonShapedMap } from './HM-mapGen'
+import { MS1Cards } from './coreHeroscapeCards'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -97,15 +98,16 @@ export const testScenario = makeTestScenario({
   withPrePlacedUnits: false,
 })
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
-  console.log(
-    '🚀 ~ file: HM-setup.ts ~ line 100 ~ makeTestScenario ~ devOptions',
-    devOptions
-  )
   const mapSize = devOptions?.mapSize ?? 0
   const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
   // GET CORE CARDS
   const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
   // MAKE CARDS TO GAMECARDS
+  const heroscapeCardsForTestScenario = MS1Cards.flatMap((c) => c.abilities)
+  console.log(
+    '🚀 ~ file: HM-setup.ts ~ line 107 ~ makeTestScenario ~ heroscapeCardsForTestScenario',
+    heroscapeCardsForTestScenario
+  )
   const armyCards: GameArmyCard[] = hexedMeadowCardsArr
     // filters for only hm101 and hm201 (3 figure common squads)
     .filter((c) => c.armyCardID.endsWith('01'))

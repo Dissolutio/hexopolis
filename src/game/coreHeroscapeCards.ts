@@ -6561,7 +6561,7 @@ export const kravMagaAgents = MS1Cards.find(
 )
 
 function filterMasterSetROTV(card: ICoreHeroscapeCard) {
-  return card.setWave !== 'Master Set: Rise of the Valkyrie'
+  return card.setWave === 'Master Set: Rise of the Valkyrie'
 }
 function filterHero(card: ICoreHeroscapeCard) {
   return card.type.includes('hero')
