@@ -52,6 +52,7 @@ const PlacementContextProvider = ({
     return units
   })
   const activeUnit: GameUnit = gameUnits[selectedUnitID]
+
   const removeUnitFromAvailable = (unit: GameUnit) => {
     const newState = placementUnits.filter((u) => {
       return !(u.unitID === unit.unitID)
@@ -68,6 +69,7 @@ const PlacementContextProvider = ({
       setSelectedMapHex('')
     }
   }
+
   function onClickBoardHex_placement(
     event: SyntheticEvent,
     sourceHex: BoardHex
@@ -76,20 +78,31 @@ const PlacementContextProvider = ({
     event.stopPropagation()
     const hexID = sourceHex.id
     const isInStartZone = myStartZone.includes(hexID)
+    //  No current unit, but there is a unit on the hex, select that unit
+    if (sourceHex.occupyingUnitID && !selectedUnitID) {
+      const unitOnHex = gameUnits[sourceHex.occupyingUnitID]
+      if (unitOnHex) {
+        onClickPlacementUnit(sourceHex.occupyingUnitID)
+      }
+    }
     //  No unit, select hex
     if (!selectedUnitID) {
       setSelectedMapHex(hexID)
       return
     }
-    // have unit, clicked in start zone, place unit
+    // if we have a unit and we clicked in start zone, then place that unit (and remove it from wherever it was!)
     if (selectedUnitID && isInStartZone) {
       placeUnitOnHex(hexID, activeUnit)
+      // if(we placed a unit from placement "tray", then remove it from there)
+      // if(we placed a unit from another hex, then remove it from there)
       removeUnitFromAvailable(activeUnit)
+      // finally, deselect the unit
       setSelectedUnitID('')
       return
     }
     // have unit, clicked hex outside start zone, error
     if (selectedUnitID && !isInStartZone) {
+      // TODO, add an error message timeout system?? Soon!
       console.error(
         'Invalid hex selected. You must place units inside your start zone.'
       )

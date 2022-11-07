@@ -65,6 +65,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__startzone--player0 > g polygon {
     stroke: var(--bee-yellow);
     stroke-width: 0.3;
+    // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.4;
     }
@@ -72,14 +73,41 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__startzone--player1 > g polygon {
     stroke: var(--butterfly-purple);
     stroke-width: 0.3;
+    // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.4;
     }
   }
-  // highlight placeable hexes for selected unit
+  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
   .maphex__start-zone--placement > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
+    fill: var(--player-color);
+    fill-opacity: 0.8;
+    // style stroke width a little thicker on mobile so you can see it
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.8;
+    }
+  }
+
+  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
+  .maphex__start-zone--placement--occupied > g polygon {
+    stroke: var(--player-color);
+    stroke-width: 0.6;
+    fill: var(--player-color);
+    fill-opacity: 0.6;
+    // style stroke width a little thicker on mobile so you can see it
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.8;
+    }
+  }
+  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
+  .maphex__start-zone--placement--selected-unit > g polygon {
+    stroke: green;
+    stroke-width: 0.6;
+    fill: green;
+    fill-opacity: 0.6;
+    // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.8;
     }

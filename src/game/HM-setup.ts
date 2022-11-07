@@ -94,7 +94,7 @@ function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
 
 //!! TEST SCENARIO
 export const testScenario = makeTestScenario({
-  mapSize: 1,
+  mapSize: 2,
   withPrePlacedUnits: false,
 })
 function makeTestScenario(devOptions?: DevGameOptions): GameState {

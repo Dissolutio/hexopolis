@@ -83,9 +83,31 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       if (startZones?.['1'].includes(hex.id)) {
         classNames = classNames.concat(` maphex__startzone--player1 `)
       }
-      // highlight placeable hexes
+      // highlight placeable hexes that DO NOT have units
       if (selectedUnitID && isMyStartZoneHex(hex) && !hex.occupyingUnitID) {
-        classNames = classNames.concat(' maphex__start-zone--placement ')
+        classNames = classNames.concat(` maphex__start-zone--placement `)
+      }
+      // highlight placeable hexes that DO have units, but the one with the currently selected unit will be styled separately, below
+      if (
+        selectedUnitID &&
+        isMyStartZoneHex(hex) &&
+        hex.occupyingUnitID &&
+        hex.occupyingUnitID !== selectedUnitID
+      ) {
+        classNames = classNames.concat(
+          ` maphex__start-zone--placement--occupied `
+        )
+      }
+      // highlight hex with currently selected unit
+      if (
+        selectedUnitID &&
+        isMyStartZoneHex(hex) &&
+        hex.occupyingUnitID &&
+        hex.occupyingUnitID === selectedUnitID
+      ) {
+        classNames = classNames.concat(
+          ` maphex__start-zone--placement--selected-unit `
+        )
       }
       // highlight active hex
       if (isSelectedHex(hex)) {
