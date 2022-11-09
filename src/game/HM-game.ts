@@ -30,35 +30,41 @@ export const HexedMeadow: Game<GameState> = {
     // return hexagonMapScenario
     return testScenario
   },
-  // Optional function to validate the setupData before
-  // matches are created. If this returns a value,
-  // an error will be reported to the user and match
-  // creation is aborted.
-  // validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
+  /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
+  validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
+  */
   moves,
   seed: 'random_string',
+  // The minimum and maximum number of players supported (this is only enforced when using the Lobby server component)
+  minPlayers: 2,
+  maxPlayers: 2,
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
-    //PHASE-PLACEMENT
+    //PHASE: PLACEMENT
     [phaseNames.placement]: {
       start: true,
+      // all players may make moves and place their units
       turn: {
         activePlayers: {
           all: stageNames.placingUnits,
         },
       },
-      //endIf
+      // once all players have placed their units and confirmed ready, the order marker stage will begin
       endIf: (G: GameState) => {
         return G.placementReady['0'] && G.placementReady['1']
       },
       next: phaseNames.placeOrderMarkers,
     },
-    //PHASE-ORDER MARKERS
+    //PHASE: ORDER-MARKERS
     [phaseNames.placeOrderMarkers]: {
-      //onBegin
+      // reset order-markers state
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
-        // reset state in future rounds
+        // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 0) {
+          // clear secret order marker state
+          G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
+          G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
+          // clear public order marker state
           G.orderMarkers = generateBlankOrderMarkers()
           G.orderMarkersReady = {
             '0': false,
@@ -66,22 +72,20 @@ export const HexedMeadow: Game<GameState> = {
           }
         }
       },
+      // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
       turn: {
         activePlayers: {
           all: stageNames.placeOrderMarkers,
         },
       },
-      //endIf - -all players are ready
+      // proceed to round-of-play once all players are ready
       endIf: (G: GameState) => {
+        // TODO: check to make sure all order markers are placed!
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
       },
-      next: phaseNames.roundOfPlay,
-    },
-    //PHASE-ROUND OF PLAY - after last turn, end RoundOfPlay phase, go to PlaceOrderMarkers phase ⤵
-    [phaseNames.roundOfPlay]: {
-      //onBegin
-      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
-        // Setup Unrevealed Order Markers
+      // setup unrevealed public order-markers
+      onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
+        // setup unrevealed public order-markers state by copying over the private order-markers state: remove the order number (which is not public yet), but leave the gameCardID (which is public)
         G.orderMarkers = Object.keys(G.players).reduce(
           (orderMarkers, playerID) => {
             return {
@@ -93,26 +97,29 @@ export const HexedMeadow: Game<GameState> = {
           },
           {}
         )
-        // Roll Initiative
+      },
+      next: phaseNames.roundOfPlay,
+    },
+    //PHASE-ROUND OF PLAY -
+    [phaseNames.roundOfPlay]: {
+      // roll initiative
+      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         const initiativeRoll = rollD20Initiative(['0', '1'])
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
       },
-      //onEnd
+      // reset state, update currentRound
       onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
-        // clear secret order marker state
-        G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
-        G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
-        // Setup for Next Round
         G.orderMarkersReady = { '0': false, '1': false }
         G.roundOfPlayStartReady = { '0': false, '1': false }
         G.currentOrderMarker = 0
         G.currentRound += 1
       },
-      //TURN-Round Of Play
+      // turn -- roll initiative, reveal order marker, assign movePoints/moveRanges, update currentOrderMarker, end round after last turn
       turn: {
+        // d20 roll-offs for initiative
         order: TurnOrder.CUSTOM_FROM('initiative'),
-        //onBegin
+        // reveal order marker, assign movePoints/moveRanges to eligible units
         onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
           // Reveal order marker
           const revealedGameCardID =
@@ -140,51 +147,51 @@ export const HexedMeadow: Game<GameState> = {
             G.gameUnits
           )
           const movePoints = unrevealedGameCard?.move ?? 0
-          let newGameUnits = { ...G.gameUnits }
 
           // loop thru this turns units
+          let mutatedGameUnits = { ...G.gameUnits }
           currentTurnUnits.length &&
             currentTurnUnits.forEach((unit: GameUnit) => {
               const { unitID } = unit
-              // move points
+              // movePoints
               const unitWithMovePoints = {
                 ...unit,
                 movePoints,
               }
-              newGameUnits[unitID] = unitWithMovePoints
-              // move range
+              mutatedGameUnits[unitID] = unitWithMovePoints
+              // moveRange
               const moveRange = calcUnitMoveRange(
                 unitWithMovePoints,
                 G.boardHexes,
-                newGameUnits
+                mutatedGameUnits
               )
               const unitWithMoveRange = {
                 ...unitWithMovePoints,
                 moveRange,
               }
-              newGameUnits[unitID] = unitWithMoveRange
+              mutatedGameUnits[unitID] = unitWithMoveRange
             })
           // end loop
 
-          // update G
-          G.gameUnits = newGameUnits
+          // finally, update state
+          G.gameUnits = mutatedGameUnits
           G.unitsMoved = []
           G.unitsAttacked = []
         },
-        //onEnd
+        // clear movePoints/moveRanges,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
-          // reset unit move points and ranges
+          // reset unit movePoints/moveRanges
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0
             G.gameUnits[uid].moveRange = { ...generateBlankMoveRange() }
           })
-          // handle turns & order markers
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
           const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
+          // update currentOrderMarker
           if (isLastTurn && !isLastOrderMarker) {
             G.currentOrderMarker++
           }
-          // END RoundOfPlay phase after last turn
+          // end the RoundOfPlay phase after last turn
           if (isLastTurn && isLastOrderMarker) {
             ctx?.events?.setPhase(phaseNames.placeOrderMarkers)
           }
@@ -195,10 +202,6 @@ export const HexedMeadow: Game<GameState> = {
   events: {
     endGame: false,
   },
-  // The minimum and maximum number of players supported
-  // (This is only enforced when using the Lobby server component.)
-  minPlayers: 2,
-  maxPlayers: 2,
   // Ends the game if this returns anything.
   // The return value is available in `ctx.gameover`.
   endIf: (G, ctx) => {
