@@ -78,11 +78,11 @@ export function calcUnitMoveRange(
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
-  initialMoveRange.denied.push(`${startHex.id}`)
   //*early out again?
   if (!startHex || !initialMovePoints) {
     return initialMoveRange
   }
+  initialMoveRange.denied.push(`${startHex.id}`)
   const moveRange = {
     ...moveRangeReduce(
       startHex as BoardHex,
