@@ -15,9 +15,7 @@ import { generateHexID, generateBlankMoveRange } from './HM-constants'
 import { uniq } from 'lodash'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
-  return {
-    ...Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID),
-  }
+  return Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID)
 }
 export function selectUnitForHex(
   hexID: string,
