@@ -23,7 +23,7 @@ export function selectUnitForHex(
   hexID: string,
   gameUnits: GameUnits,
   boardHexes: BoardHexes
-) {
+): GameUnit {
   const hex = boardHexes?.[hexID]
   const unitID = hex?.occupyingUnitID
   const unit = gameUnits?.[unitID]
@@ -32,7 +32,7 @@ export function selectUnitForHex(
 export function selectGameCardByID(
   armyCards: GameArmyCard[],
   gameCardID: string
-) {
+): GameArmyCard | undefined {
   return armyCards.find((card: GameArmyCard) => card.gameCardID === gameCardID)
 }
 export function selectUnitsForCard(
