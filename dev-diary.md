@@ -32,12 +32,12 @@ The client still doesn't have a way, on the Play Page or App.tsx.GameClient, to 
    - effect: +2 range
    - aura: 1
      - adjacent: true
-     - auraCondition (race === Soulbourg) && (classType:Guard)
+     - auraCondition (race === Soulbourg) && (cardClass:Guard)
         
 4. Counter Strike
     - onDefend: excess shields count as unblockable hits on adjacent attacker
       - normalAttacksOnly: true
-      - exception: (classType === Samurai)
+      - exception: (cardClass === Samurai)
       - range: 0 (melee)
 
 5. Thorian Speed
@@ -93,38 +93,68 @@ The client still doesn't have a way, on the Play Page or App.tsx.GameClient, to 
       - LOS to affected? false
         "desc": "Range 5. Lob 12. Attack 2. Use this power once per game. Start the game with a grenade marker on this card. Remove the marker to throw grenades. One at a time do the following with each Airborne Elite: Choose a figure to attack. No clear line of sight is needed. Any figures adjacent to the chosen figure are also affected by the Grenade Special Attack. Roll 2 attack dice once for all affected figures. Each figure rolls defense dice separately."
         
-        "name": "The Drop",
+15. The Drop
+    - placedNormally = false
+    - start of round, before place order markers, roll for 13+
+    - enter private placement stage, place units off-glyph and non-adjacent to other units
         "desc": "Airborne Elite do not start the game on the battlefield. At the start of each round, before you place Order Markers, roll the 20-sided die. If you roll a 13 or higher you may place all 4 Airborne Elite figures on any empty spaces. You cannot place them adjacent to eachother or other figures or on glyphs."
         
-        "name": "Attack Aura 1",
-        "desc": "All friendly figures adjacent to Finn with a range of 1 add 1 die to their normal attack."
+16. Attack Aura 1
+    - effect: +1 attack
+    - aura: 1
+      - adjacent: true
+      - auraCondition: friendly && range === 1
+
+17. Warrior's Attack Spirit 1
+    - permanent, +1 attack on unique card
+    "desc": "When Finn is destroyed, place this figure on any unique Army Card. Finn's Spirit adds 1 to the normal attack number on that card."
         
-        "name": "Warrior's Attack Spirit 1",
-        "desc": "When Finn is destroyed, place this figure on any unique Army Card. Finn's Spirit adds 1 to the normal attack number on that card."
-        
-        "name": "Warrior's Armor Spirit 1",
+18. Warrior's Armor Spirit 1
+    - permanent, +1 defense on unique card
         "desc": "When Thorgrim is destroyed, place this figure on any unique Army Card. Thorgrim's Spirit adds 1 to the defense number on that card."
         
-        "name": "Defensive Aura 1",
+19. Defensive Aura 1
+    - effect: +1 defense
+    - aura: 1
+      - adjacent: true
+      - auraCondition: friendly
         "desc": "All friendly figures adjacent to Thorgrim add 1 die their defense."
         
-        "name": "Defensive Aura",
+20. Defensive Aura
+    - effect: +2 defense
+    - aura: 4
+      - LOS: true
+      - auraCondition: controlled
         "desc": "All figures you control within 4 clear sight spaces of Raelin add 2 to their defensive dice. Raelin's Defensive Aura does not affect Raelin."
-        
-        "name": "Flying",
+21. Flying
+    - complicated?
         "desc": "When counting spaces for Raelin's movement, ignore elevations. Raelin may fly over water without stopping, pass over figures without becoming engaged, and fly over obstacles such as ruins. When Raelin starts to fly, if she is engaged she will take any leaving engagement attacks."
         
-        "name": "Fire Line Special Attack",
+22. Fire Line Special Attack
+    - range: 8
+    - attack: 4
+    - area: 8-hex-line
+      - affectsSelf: false
+      - oneAttackForAllAffected: true
+      - LOS to affected? true
         "desc": "Range: Special. Attack: 4. Choose 8 spaces in a straight line from Mimring. All figures on those spaces who are in line of sight are affected by Mimring's Fire Line Special Attack. Roll 4 attack dice once for all affected figures. Affected figures roll defense dice seperately."
         
-        "name": "Flying",
-        "desc": "When counting spaces for Mimring's movement, ignore elevations. Mimring may fly over water without stopping, pass over figures without becoming engaged, and fly over obstacles such as ruins. When Mimring starts to fly, if he is engaged he will take any leaving engagement attacks."
-        
-        "name": "Mind Shackle 20",
+23. Mind Shackle 20
+    - After moving and before attacking
+    - choose adjacent figure, roll for 20
+    - take over unit, clear its order markers
         "desc": "After moving and before attacking, you may choose any unique figure adjacent to Ne-gok-sa. Roll the 20-sided die. If you roll a 20, take control of the chosen figure and that figure's Army Card. You now control that Army Card and all figures on it. Remove any Order Markers on this card. If Ne-gok-sa is destroyed, you retain control of any previously Mind Shackled Army Cards."
         
-        "name": "Chomp",
+24. Chomp
+    - After moving and before attacking
+    - small/medium figure adjacent to Grimnak
+    - Squad? Destroy
+    - Hero? 16+ Destroy
         "desc": "Before attacking, choose one medium or small figure adjacent to Grimnak. If the chosen figure is a Squad figure, destroy it. If the chosen figure is a Hero figure, roll the 20-sided die. If you roll a 16 or higher, destroy the chosen Hero."
         
-        "name": "Orc Warrior Enhancement",
+25. Orc Warrior Enhancement
+    - effect: +1 attack/defense
+    - aura: 1
+      - adjacent: true
+      - auraCondition: adjacent, race===orc, cardClass===warriors
         "desc": "All friendly Orc Warriors adjacent to Grimnak roll an additional attack die and an additional defense die."
