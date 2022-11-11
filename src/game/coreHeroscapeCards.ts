@@ -5617,7 +5617,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     type: 'unique hero',
     cardClass: 'sorceror',
     personality: 'devout',
-    height: 'medium 5 ',
+    height: 'medium 5',
     life: '5',
     move: '5',
     range: '1',
