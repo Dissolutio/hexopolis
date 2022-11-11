@@ -15,7 +15,6 @@ import {
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
-console.log('🚀 ~ file: setup.ts ~ line 19 ~ MS1Cards', MS1Cards)
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -70,24 +69,27 @@ export const testScenario = makeTestScenario({
   //   players: playersStateWithPrePlacedOMs(),
 })
 function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
-  return params.map((hsCard) => ({
-    name: hsCard.name,
-    armyCardID: hsCard.armyCardID,
-    race: hsCard.race,
-    life: parseInt(hsCard.life),
-    move: parseInt(hsCard.move),
-    range: parseInt(hsCard.range),
-    attack: parseInt(hsCard.attack),
-    defense: parseInt(hsCard.defense),
-    points: parseInt(hsCard.points),
-    figures: parseInt(hsCard.figures),
-    hexes: parseInt(hsCard.hexes),
-    general: hsCard.general,
-    type: hsCard.type,
-    cardClass: hsCard.cardClass,
-    personality: hsCard.personality,
-    height: hsCard.height,
-  }))
+  return params.map((hsCard) => {
+    return {
+      name: hsCard.name,
+      armyCardID: hsCard.armyCardID,
+      race: hsCard.race,
+      life: parseInt(hsCard.life),
+      move: parseInt(hsCard.move),
+      range: parseInt(hsCard.range),
+      attack: parseInt(hsCard.attack),
+      defense: parseInt(hsCard.defense),
+      height: parseInt(hsCard.height),
+      heightClass: hsCard.heightClass,
+      points: parseInt(hsCard.points),
+      figures: parseInt(hsCard.figures),
+      hexes: parseInt(hsCard.hexes),
+      general: hsCard.general,
+      type: hsCard.type,
+      cardClass: hsCard.cardClass,
+      personality: hsCard.personality,
+    }
+  })
 }
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const mapSize = devOptions?.mapSize ?? 0

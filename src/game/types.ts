@@ -61,10 +61,11 @@ export type ArmyCard = {
   figures: number
   hexes: number
   general: string
-  type: string
-  cardClass: string
-  personality: string
-  height: string
+  type: string // unique common uncommon
+  cardClass: string // warlord, soldier, beast etc
+  personality: string // valiant, relentless etc
+  height: number // 3-14
+  heightClass: string // small medium large huge
   // CURRENTLY, THESE ARE OMITTED UNTIL WE USE THEM
   // setWave: string
   // abilities: CardAbility[]
