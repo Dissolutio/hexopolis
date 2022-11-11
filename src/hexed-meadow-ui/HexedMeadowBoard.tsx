@@ -22,6 +22,7 @@ import {
 } from 'bgio-contexts'
 import { ChatMessage } from 'boardgame.io'
 import { GameState } from 'game/HM-types'
+import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/App'
 
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
@@ -52,6 +53,8 @@ export const HexedMeadowBoard = ({
   isConnected,
   credentials,
 }: MyGameProps) => {
+  const isLocalOrDemoGame =
+    matchID === specialMatchIdToTellHeaderNavThisMatchIsLocal
   return (
     <ThemeProvider theme={theme(playerID ?? '')}>
       <BgioClientInfoProvider
@@ -77,7 +80,7 @@ export const HexedMeadowBoard = ({
                       <PlacementContextProvider>
                         <PlayContextProvider>
                           <Layout>
-                            <HeaderNav />
+                            <HeaderNav isLocalOrDemoGame={isLocalOrDemoGame} />
                             <MapDisplay />
                             <Controls />
                           </Layout>

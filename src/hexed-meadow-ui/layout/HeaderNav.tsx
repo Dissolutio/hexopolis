@@ -7,11 +7,18 @@ import butterfliesLogo from '../assets/butterfliesLogo.png'
 import { isLocalApp } from 'app/constants'
 import { useBgioClientInfo } from 'bgio-contexts'
 
-export const HeaderNav = () => {
+export const HeaderNav = ({
+  isLocalOrDemoGame,
+}: {
+  isLocalOrDemoGame: boolean
+}) => {
   const { playerID } = useBgioClientInfo()
   return (
     <StyledNavbar>
-      <PlayerTeamLogo playerID={playerID} />
+      <PlayerTeamLogo
+        playerID={playerID}
+        isLocalOrDemoGame={isLocalOrDemoGame}
+      />
       <Link to={'/help'}>Help</Link>
       <Link to={'/rules'}>Rules</Link>
       <Link to={'/feedback'}>Feedback</Link>
@@ -40,10 +47,17 @@ const StyledNavbar = styled.nav`
   }
 `
 
-const PlayerTeamLogo = ({ playerID }: { playerID: string }) => {
-  // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
+// for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
+
+const PlayerTeamLogo = ({
+  playerID,
+  isLocalOrDemoGame,
+}: {
+  playerID: string
+  isLocalOrDemoGame: boolean
+}) => {
   if (playerID === '0') {
-    if (isLocalApp) {
+    if (isLocalOrDemoGame) {
       return (
         <a href="#player1">
           <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" />
@@ -53,8 +67,7 @@ const PlayerTeamLogo = ({ playerID }: { playerID: string }) => {
     return <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" />
   }
   if (playerID === '1') {
-    if (isLocalApp) {
-      // TODO: What if there is less/more players? Who will player 1 link to? Player 2, or 0?
+    if (isLocalOrDemoGame) {
       return (
         <a href="#player0">
           <PlayerTeamLogoImg

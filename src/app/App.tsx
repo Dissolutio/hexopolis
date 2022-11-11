@@ -23,7 +23,7 @@ const hexedMeadowClientOptions = {
   board: HexedMeadowBoard,
   numPlayers: 2,
 }
-
+export const specialMatchIdToTellHeaderNavThisMatchIsLocal = 'localGameId'
 const DemoGameClient = Client({
   ...hexedMeadowClientOptions,
   multiplayer: Local(),
@@ -62,7 +62,14 @@ export const App = () => {
                   element={
                     <>
                       <MultiplayerNav />
-                      <DemoGameClient matchID="matchID" playerID="0" />
+                      <DemoGameClient
+                        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+                        playerID="0"
+                      />
+                      <DemoGameClient
+                        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+                        playerID="1"
+                      />
                     </>
                   }
                 />
@@ -95,8 +102,14 @@ const LocalApp = () => {
           path="/"
           element={
             <>
-              <DemoGameClient matchID="matchID" playerID="0" />
-              <DemoGameClient matchID="matchID" playerID="1" />
+              <DemoGameClient
+                matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+                playerID="0"
+              />
+              <DemoGameClient
+                matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+                playerID="1"
+              />
             </>
           }
         />
