@@ -53,12 +53,6 @@ const PlacementContextProvider = ({
   })
   const activeUnit: GameUnit = gameUnits[selectedUnitID]
 
-  const removeUnitFromAvailable = (unit: GameUnit) => {
-    const newState = placementUnits.filter((u) => {
-      return !(u.unitID === unit.unitID)
-    })
-    setPlacementUnits(newState)
-  }
   // HANDLERS
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
@@ -94,8 +88,12 @@ const PlacementContextProvider = ({
     if (selectedUnitID && isInStartZone) {
       placeUnitOnHex(hexID, activeUnit)
       // if(we placed a unit from placement "tray", then remove it from there)
+      setPlacementUnits(
+        placementUnits.filter((u) => {
+          return !(u.unitID === activeUnit.unitID)
+        })
+      )
       // if(we placed a unit from another hex, then remove it from there)
-      removeUnitFromAvailable(activeUnit)
       // finally, deselect the unit
       setSelectedUnitID('')
       return

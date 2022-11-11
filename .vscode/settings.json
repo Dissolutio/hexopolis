@@ -20,5 +20,9 @@
         "commandCenter.border": "#15202b99"
     },
     "peacock.color": "#72b73e",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "cSpell.words": [
+        "izumi",
+        "marro"
+    ]
 }

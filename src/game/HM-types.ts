@@ -60,6 +60,16 @@ export type ArmyCard = {
   points: number
   figures: number
   hexes: number
+  general: string
+  type: string
+  cardClass: string
+  personality: string
+  height: string
+  // CURRENTLY, THESE ARE OMITTED UNTIL WE USE THEM
+  // setWave: string
+  // abilities: CardAbility[]
+  // image: string
+  // portraitPattern: string
 }
 
 export type GameArmyCard = ArmyCard & {

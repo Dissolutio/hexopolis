@@ -1,12 +1,12 @@
 import { PlacementUnit } from 'game/HM-types'
 import React from 'react'
 import {
-  GiBee,
-  GiWaspSting,
-  GiCrown,
+  GiDiabloSkull,
+  GiNinjaArmor,
   GiButterfly,
   GiFairyWings,
   GiWingedEmblem,
+  GiMissileMech,
 } from 'react-icons/gi'
 
 const playerIconColors: { [key: string]: string } = {
@@ -45,18 +45,12 @@ export const UnitIcon: React.FC<UnitIconTypes> = ({
   }
 
   switch (armyCardID) {
-    case 'hm101':
-      return <GiBee {...gameIconProps} />
-    case 'hm102':
-      return <GiWaspSting {...gameIconProps} />
-    case 'hm103':
-      return <GiCrown {...gameIconProps} />
-    case 'hm201':
-      return <GiButterfly {...gameIconProps} />
-    case 'hm202':
-      return <GiFairyWings {...gameIconProps} />
-    case 'hm203':
-      return <GiWingedEmblem {...gameIconProps} />
+    case 'hs1000':
+      return <GiDiabloSkull {...gameIconProps} />
+    case 'hs1001':
+      return <GiMissileMech {...gameIconProps} />
+    case 'hs1002':
+      return <GiNinjaArmor {...gameIconProps} />
     default:
       return null
   }

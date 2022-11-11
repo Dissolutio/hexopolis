@@ -1,6 +1,7 @@
 export interface ICoreHeroscapeCard {
   name: string
   armyCardID: string
+  race: string
   life: string
   move: string
   range: string
@@ -19,7 +20,6 @@ export interface ICoreHeroscapeCard {
     | 'einar'
     | 'aquilla'
     | 'valkrill'
-  race: string
   type: string
   cardClass: string
   personality: string

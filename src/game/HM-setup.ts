@@ -14,7 +14,8 @@ import {
   generateBlankOrderMarkers,
 } from './HM-constants'
 import { makeHexagonShapedMap } from './HM-mapGen'
-import { MS1Cards } from './coreHeroscapeCards'
+import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
+console.log('🚀 ~ file: HM-setup.ts ~ line 19 ~ MS1Cards', MS1Cards)
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -58,59 +59,45 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
   }
 }
 
-//!! HEXAGON MAP SCENARIO
-export const hexagonMapScenario = makeHexagonMapScenario()
-// export const hexagonMapScenario = makeHexagonMapScenario({
-//   placementReady: { '0': true, '1': true },
-//   orderMarkersReady: { '0': true, '1': true },
-//   roundOfPlayStartReady: { '0': true, '1': true },
-//   withPrePlacedUnits: true,
-//   players: playersStateWithPrePlacedOMs(),
-// })
-
-function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
-  // GET CORE CARDS
-  const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
-  // MAKE CARDS TO GAMECARDS
-  const armyCards: GameArmyCard[] = hexedMeadowCardsArr.map(fillGameCardInfo)
-  // MAKE GAMECARDS TO GAMEUNITS
-  // todo this could use some params, so some units can be pre-dead
-  const gameUnits = armyCardsToGameUnits(armyCards)
-  // MAKE MAP
-  const hexagonMap = makeHexagonShapedMap({
-    mapSize: 3,
-    withPrePlacedUnits: false,
-    gameUnits,
-  })
-  return {
-    ...generateBaseGameState(devOptions),
-    armyCards,
-    gameUnits,
-    hexMap: hexagonMap.hexMap,
-    boardHexes: hexagonMap.boardHexes,
-    startZones: hexagonMap.startZones,
-  }
-}
-
 //!! TEST SCENARIO
 export const testScenario = makeTestScenario({
   mapSize: 2,
   withPrePlacedUnits: false,
+  //   placementReady: { '0': true, '1': true },
+  //   orderMarkersReady: { '0': true, '1': true },
+  //   roundOfPlayStartReady: { '0': true, '1': true },
+  //   withPrePlacedUnits: true,
+  //   players: playersStateWithPrePlacedOMs(),
 })
+function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
+  return params.map((hsCard) => ({
+    name: hsCard.name,
+    armyCardID: hsCard.armyCardID,
+    race: hsCard.race,
+    life: parseInt(hsCard.life),
+    move: parseInt(hsCard.move),
+    range: parseInt(hsCard.range),
+    attack: parseInt(hsCard.attack),
+    defense: parseInt(hsCard.defense),
+    points: parseInt(hsCard.points),
+    figures: parseInt(hsCard.figures),
+    hexes: parseInt(hsCard.hexes),
+    general: hsCard.general,
+    type: hsCard.type,
+    cardClass: hsCard.cardClass,
+    personality: hsCard.personality,
+    height: hsCard.height,
+  }))
+}
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const mapSize = devOptions?.mapSize ?? 0
   const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
   // GET CORE CARDS
-  const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
+  const heroscapeCardsArr: ArmyCard[] = hsCardsToArmyCards(MS1Cards)
   // MAKE CARDS TO GAMECARDS
-  const heroscapeCardsForTestScenario = MS1Cards.flatMap((c) => c.abilities)
-  console.log(
-    '🚀 ~ file: HM-setup.ts ~ line 107 ~ makeTestScenario ~ heroscapeCardsForTestScenario',
-    heroscapeCardsForTestScenario
-  )
-  const armyCards: GameArmyCard[] = hexedMeadowCardsArr
+  const armyCards: GameArmyCard[] = heroscapeCardsArr
     // filters for only hm101 and hm201 (3 figure common squads)
-    .filter((c) => c.armyCardID.endsWith('01'))
+    .filter((c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002') // hs1000 is marro warriors, hs1002 is izumi samurai
     .map(fillGameCardInfo)
 
   // MAKE GAMECARDS TO GAMEUNITS
@@ -144,29 +131,29 @@ function makeTestGameUnits() {
   return {
     p0u0: {
       ...testGameUnitTemplate,
-      armyCardID: 'hm101',
-      gameCardID: 'p0_hm101',
+      armyCardID: 'hs1000',
+      gameCardID: 'p0_hs1000',
       playerID: '0',
       unitID: 'p0u0',
     },
     p0u1: {
       ...testGameUnitTemplate,
-      armyCardID: 'hm101',
-      gameCardID: 'p0_hm101',
+      armyCardID: 'hs1000',
+      gameCardID: 'p0_hs1000',
       playerID: '0',
       unitID: 'p0u1',
     },
     p1u2: {
       ...testGameUnitTemplate,
-      armyCardID: 'hm201',
-      gameCardID: 'p1_hm201',
+      armyCardID: 'hs1002',
+      gameCardID: 'p1_hs1002',
       playerID: '1',
       unitID: 'p1u2',
     },
     p1u3: {
       ...testGameUnitTemplate,
-      armyCardID: 'hm201',
-      gameCardID: 'p1_hm201',
+      armyCardID: 'hs1002',
+      gameCardID: 'p1_hs1002',
       playerID: '1',
       unitID: 'p1u3',
     },
@@ -174,9 +161,9 @@ function makeTestGameUnits() {
 }
 //!! BOTH SCENARIOS: sorts cards bees'n'butterflies to players '0' and '1'
 function fillGameCardInfo(card: ArmyCard): GameArmyCard {
-  const isCardABee = card.race === 'bee'
-  const isCardAButterfly = card.race === 'butterfly'
-  const playerID = isCardABee ? '0' : isCardAButterfly ? '1' : ''
+  const isCardMarroWarriors = card.armyCardID === 'hs1000'
+  const isCardIzumiSamurai = card.armyCardID === 'hs1002'
+  const playerID = isCardMarroWarriors ? '0' : isCardIzumiSamurai ? '1' : ''
   // id factory ...
   function makeGameCardID() {
     return `p${playerID}_${card.armyCardID}`
