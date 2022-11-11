@@ -94,17 +94,18 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const mapSize = devOptions?.mapSize ?? 0
   const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
-  // GET CORE CARDS
-  const heroscapeCardsArr: ArmyCard[] = hsCardsToArmyCards(MS1Cards)
-  // MAKE CARDS TO GAMECARDS
-  const armyCards: GameArmyCard[] = heroscapeCardsArr
-    // filters for only hm101 and hm201 (3 figure common squads)
-    .filter((c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002') // hs1000 is marro warriors, hs1002 is izumi samurai
-    .map(armyCardsToGameArmyCards)
-
-  // MAKE GAMECARDS TO GAMEUNITS
+  // ArmyCards
+  const heroscapeCardsArr: ArmyCard[] = hsCardsToArmyCards(MS1Cards).filter(
+    // hs1000 is marro warriors, hs1002 is izumi samurai
+    (c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002'
+  )
+  // GameArmyCards
+  const armyCards: GameArmyCard[] = heroscapeCardsArr.map(
+    armyCardsToGameArmyCards
+  )
+  // GameUnits: Todo: This is where The Airborne Elite, Rechets of Bogdan, + any other summoned or non-deployed units, would be handled
   const gameUnits = makeTestGameUnits()
-  // MAKE MAP
+  // Map
   const hexagonMap = makeHexagonShapedMap({
     mapSize,
     withPrePlacedUnits,
