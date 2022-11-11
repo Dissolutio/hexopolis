@@ -98,7 +98,7 @@ function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const armyCards: GameArmyCard[] = heroscapeCardsArr
     // filters for only hm101 and hm201 (3 figure common squads)
     .filter((c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002') // hs1000 is marro warriors, hs1002 is izumi samurai
-    .map(fillGameCardInfo)
+    .map(armyCardsToGameArmyCards)
 
   // MAKE GAMECARDS TO GAMEUNITS
   const gameUnits = makeTestGameUnits()
@@ -159,8 +159,8 @@ function makeTestGameUnits() {
     },
   }
 }
-//!! BOTH SCENARIOS: sorts cards bees'n'butterflies to players '0' and '1'
-function fillGameCardInfo(card: ArmyCard): GameArmyCard {
+
+function armyCardsToGameArmyCards(card: ArmyCard): GameArmyCard {
   const isCardMarroWarriors = card.armyCardID === 'hs1000'
   const isCardIzumiSamurai = card.armyCardID === 'hs1002'
   const playerID = isCardMarroWarriors ? '0' : isCardIzumiSamurai ? '1' : ''
@@ -176,8 +176,7 @@ function fillGameCardInfo(card: ArmyCard): GameArmyCard {
   }
 }
 
-//!! cards to units, but needs flexibility
-export function armyCardsToGameUnits(cards: GameArmyCard[]): GameUnits {
+export function gameArmyCardsToGameUnits(cards: GameArmyCard[]): GameUnits {
   // id factory
   let unitID = 0
   function makeUnitID(playerID: string) {
