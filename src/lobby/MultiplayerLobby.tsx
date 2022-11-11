@@ -85,7 +85,14 @@ export const MultiplayerLobby = () => {
               <p>You are joined in a match:</p>
               <MatchListItem match={joinedMatch} />
               <p>
-                <LinkAsButton to="/play">GO TO YOUR MATCH</LinkAsButton>
+                <LinkAsButton
+                  style={{
+                    backgroundColor: '#62A87C', // shiny shamrock green as success color, https://coolors.co/0c151c-ffffff-fe938c-62a87c-3590f3
+                  }}
+                  to="/play"
+                >
+                  GO TO YOUR MATCH
+                </LinkAsButton>
               </p>
               <div>
                 <button onClick={handleLeaveJoinedMatch}>

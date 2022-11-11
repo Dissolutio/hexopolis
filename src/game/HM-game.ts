@@ -21,12 +21,20 @@ import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
 import { testScenario } from './HM-setup'
 
+export const defaultSetupData = {
+  score: { '0': 0, '1': 0 },
+  lobbyDisplayName: '',
+}
+
+export const MYGAME_NUMPLAYERS = 2
+
 export const HexedMeadow: Game<GameState> = {
   name: 'HexedMeadow',
   // Function that returns the initial value of G.
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
+    console.log('🚀 ~ file: HM-game.ts ~ line 30 ~ setupData', setupData)
     return testScenario
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
