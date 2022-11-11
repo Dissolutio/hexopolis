@@ -1,7 +1,7 @@
 const Server = require('boardgame.io/server').Server
 const Origins = require('boardgame.io/server').Origins
 const scoretopiaGame = require('./server/game').scoretopiaGame
-const hexedMeadowGame = require('./server/HM-game').HexedMeadow
+const hexedMeadowGame = require('./server/game').HexedMeadow
 
 const server = Server({
   games: [hexedMeadowGame, scoretopiaGame],

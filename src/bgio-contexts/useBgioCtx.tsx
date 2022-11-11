@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import { useBgioClientInfo } from './useBgioClientInfo'
-import { phaseNames, stageNames } from 'game/HM-constants'
+import { phaseNames, stageNames } from 'game/constants'
 
 type BgioCtxProviderProps = {
   children: React.ReactNode

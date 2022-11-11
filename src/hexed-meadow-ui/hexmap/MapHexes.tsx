@@ -8,9 +8,9 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { generateBlankMoveRange } from 'game/HM-constants'
-import { selectHexForUnit, selectGameCardByID } from 'game/HM-G-selectors'
-import { BoardHex } from 'game/HM-types'
+import { generateBlankMoveRange } from 'game/constants'
+import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
+import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 
 type MapHexesProps = {

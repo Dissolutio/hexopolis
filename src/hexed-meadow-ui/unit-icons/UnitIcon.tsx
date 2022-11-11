@@ -1,4 +1,4 @@
-import { PlacementUnit } from 'game/HM-types'
+import { PlacementUnit } from 'game/types'
 import React from 'react'
 import {
   GiDiabloSkull,

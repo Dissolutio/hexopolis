@@ -1,11 +1,5 @@
-import { generateHexagon } from './HM-hexGen'
-import {
-  BoardHexes,
-  GameMap,
-  GameUnits,
-  MapOptions,
-  StartZones,
-} from './HM-types'
+import { generateHexagon } from './hexGen'
+import { BoardHexes, GameMap, GameUnits, MapOptions, StartZones } from './types'
 
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   const mapSize = mapOptions?.mapSize ?? 3

@@ -10,8 +10,8 @@ import {
   OrderMarkers,
   OrderMarker,
   PlayerOrderMarkers,
-} from './HM-types'
-import { generateHexID, generateBlankMoveRange } from './HM-constants'
+} from './types'
+import { generateHexID, generateBlankMoveRange } from './constants'
 import { uniq } from 'lodash'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {

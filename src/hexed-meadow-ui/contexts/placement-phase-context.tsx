@@ -5,7 +5,7 @@ import React, {
   useState,
 } from 'react'
 import { useUIContext, useMapContext } from '.'
-import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/HM-types'
+import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/types'
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(

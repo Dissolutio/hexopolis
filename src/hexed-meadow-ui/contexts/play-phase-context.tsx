@@ -7,9 +7,9 @@ import React, {
 } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
-import { BoardHex, GameArmyCard, GameUnit } from 'game/HM-types'
-import { selectHexForUnit, selectRevealedGameCard } from 'game/HM-G-selectors'
-import { generateBlankMoveRange } from 'game/HM-constants'
+import { BoardHex, GameArmyCard, GameUnit } from 'game/types'
+import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
+import { generateBlankMoveRange } from 'game/constants'
 import { useUIContext } from '../contexts'
 import {
   useBgioClientInfo,

@@ -2,7 +2,7 @@ import { Origins, Server } from 'boardgame.io/server'
 import path from 'path'
 import serve from 'koa-static'
 import { scoretopiaGame } from './server/game'
-import { HexedMeadow } from './server/HM-game'
+import { HexedMeadow } from './server/game'
 
 const server = Server({
   games: [HexedMeadow, scoretopiaGame],

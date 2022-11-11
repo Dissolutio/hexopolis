@@ -3,7 +3,7 @@ import {
   GameState,
   GameUnit,
   PlayerOrderMarkers,
-} from 'game/HM-types'
+} from 'game/types'
 import * as React from 'react'
 import { useBgioClientInfo } from './useBgioClientInfo'
 

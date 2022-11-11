@@ -1,4 +1,4 @@
-// import { hexedMeadowCards } from './HM-cards'
+// import { hexedMeadowCards } from './cards'
 import {
   ArmyCard,
   BaseGameOptions,
@@ -8,14 +8,14 @@ import {
   GameUnit,
   GameUnits,
   PlayersState,
-} from './HM-types'
+} from './types'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
-} from './HM-constants'
-import { makeHexagonShapedMap } from './HM-mapGen'
+} from './constants'
+import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
-console.log('🚀 ~ file: HM-setup.ts ~ line 19 ~ MS1Cards', MS1Cards)
+console.log('🚀 ~ file: setup.ts ~ line 19 ~ MS1Cards', MS1Cards)
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {

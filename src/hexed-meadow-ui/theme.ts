@@ -1,4 +1,4 @@
-import { StringKeyedObj } from 'game/HM-types'
+import { StringKeyedObj } from 'game/types'
 import { contourLinesBG } from './assets/contourLinesBG'
 import { makeHexagonsHeroPatternDataUrl } from './assets/hexagonsHeroPatternDataUrl'
 

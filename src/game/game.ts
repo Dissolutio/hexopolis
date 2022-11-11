@@ -5,7 +5,7 @@ import {
   calcUnitMoveRange,
   selectUnitsForCard,
   selectUnrevealedGameCard,
-} from './HM-G-selectors'
+} from './selectors'
 import {
   phaseNames,
   stageNames,
@@ -13,13 +13,13 @@ import {
   generateBlankOrderMarkers,
   generateBlankMoveRange,
   generateBlankPlayersOrderMarkers,
-} from './HM-constants'
+} from './constants'
 
-import { GameState, OrderMarker, GameUnit } from './HM-types'
-import { moves } from './HM-moves'
+import { GameState, OrderMarker, GameUnit } from './types'
+import { moves } from './moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
-import { testScenario } from './HM-setup'
+import { testScenario } from './setup'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },
@@ -34,7 +34,7 @@ export const HexedMeadow: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    console.log('🚀 ~ file: HM-game.ts ~ line 30 ~ setupData', setupData)
+    console.log('🚀 ~ file: game.ts ~ line 30 ~ setupData', setupData)
     return testScenario
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:

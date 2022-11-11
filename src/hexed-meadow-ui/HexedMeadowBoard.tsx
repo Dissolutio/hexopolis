@@ -21,7 +21,7 @@ import {
   BgioChatProvider,
 } from 'bgio-contexts'
 import { ChatMessage } from 'boardgame.io'
-import { GameState } from 'game/HM-types'
+import { GameState } from 'game/types'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/App'
 
 interface MyGameProps extends BoardProps<GameState> {

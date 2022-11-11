@@ -5,7 +5,7 @@ import {
   OrderMarkers,
   PlayerOrderMarkers,
   PlayersState,
-} from './HM-types'
+} from './types'
 
 export const phaseNames = {
   placement: 'placement',
