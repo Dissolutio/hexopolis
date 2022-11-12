@@ -64,6 +64,7 @@ const ConfirmReady = ({
   isNoMoreEmptyStartZoneHexes: boolean
   isAllPlacementUnitsPlaced: boolean
 }) => {
+  const { onResetPlacementState } = usePlacementContext()
   return (
     <>
       {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
@@ -76,13 +77,23 @@ const ConfirmReady = ({
       )}
       <button
         onClick={makeReady}
-        style={
-          !isAllPlacementUnitsPlaced
-            ? { color: 'var(--error-red)' }
-            : { color: 'var(--success-green)' }
-        }
+        style={{
+          color: 'var(--success-green)',
+          marginTop: '20px',
+          border: '1px solid var(--success-green)',
+        }}
       >
         CONFIRM PLACEMENT
+      </button>
+      <button
+        onClick={onResetPlacementState}
+        style={{
+          color: 'var(--error-red)',
+          marginTop: '20px',
+          border: '1px solid var(--error-red)',
+        }}
+      >
+        No, start over...
       </button>
     </>
   )
@@ -91,12 +102,15 @@ const ConfirmReady = ({
 const PlacementUnitTiles = () => {
   const { inflatedPlacementUnits } = usePlacementContext()
   return (
-    <ul>
-      {inflatedPlacementUnits &&
-        inflatedPlacementUnits.map((unit) => (
-          <PlacementUnitTile key={unit.unitID} unit={unit} />
-        ))}
-    </ul>
+    <>
+      <h3>Unplaced Units:</h3>
+      <ul>
+        {inflatedPlacementUnits &&
+          inflatedPlacementUnits.map((unit) => (
+            <PlacementUnitTile key={unit.unitID} unit={unit} />
+          ))}
+      </ul>
+    </>
   )
 }
 
