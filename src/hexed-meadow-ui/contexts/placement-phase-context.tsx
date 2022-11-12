@@ -31,29 +31,27 @@ const PlacementContextProvider = ({
 }) => {
   const { playerID } = useBgioClientInfo()
   const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useBgioG()
-  const { moves } = useBgioMoves()
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
-  const { placeUnitOnHex } = moves
   // STATE
   const [editingBoardHexes, setEditingBoardHexes] =
     useState<DeploymentProposition>({})
   const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
     setEditingBoardHexes(updated)
   }
-  const [placementUnits, setPlacementUnits] = useState((): string[] => {
-    const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
-      .map((bH: BoardHex) => bH.occupyingUnitID)
-      .filter((id) => {
-        return id && gameUnits[id].playerID === playerID
-      })
-    const units = myUnits
-      .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
-      .map((unit) => {
-        return unit.unitID
-      })
-    return units
-  })
+  const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
+    .map((bH: BoardHex) => bH.occupyingUnitID)
+    .filter((id) => {
+      return id && gameUnits[id].playerID === playerID
+    })
+  const initialPlacementUnits = myUnits
+    .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
+    .map((unit) => {
+      return unit.unitID
+    })
+  const [placementUnits, setPlacementUnits] = useState(
+    (): string[] => initialPlacementUnits
+  )
   const inflatedPlacementUnits: PlacementUnit[] = placementUnits.reduce(
     (result, unitId) => {
       const gameUnit = myUnits.find((unit) => unit.unitID === unitId)
@@ -74,9 +72,11 @@ const PlacementContextProvider = ({
     [] as PlacementUnit[]
   )
 
-  const activeUnit: GameUnit = gameUnits[selectedUnitID]
-
   // HANDLERS
+  function onResetPlacementState() {
+    setPlacementUnits(initialPlacementUnits)
+    setEditingBoardHexes({})
+  }
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
     if (unitID === selectedUnitID) {
