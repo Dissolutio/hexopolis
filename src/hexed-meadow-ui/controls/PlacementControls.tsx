@@ -39,11 +39,11 @@ export const PlacementControls = () => {
   )
 }
 const PlacementUnitTiles = () => {
-  const { placementUnits } = usePlacementContext()
+  const { inflatedPlacementUnits } = usePlacementContext()
   return (
     <ul>
-      {placementUnits &&
-        placementUnits.map((unit) => (
+      {inflatedPlacementUnits &&
+        inflatedPlacementUnits.map((unit) => (
           <PlacementUnitTile key={unit.unitID} unit={unit} />
         ))}
     </ul>

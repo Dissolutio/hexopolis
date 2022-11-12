@@ -13,7 +13,8 @@ const PlacementContext = createContext<PlacementContextValue | undefined>(
 )
 
 type PlacementContextValue = {
-  placementUnits: PlacementUnit[]
+  placementUnits: string[]
+  inflatedPlacementUnits: PlacementUnit[]
   onClickPlacementUnit: (unitID: string) => void
   onClickBoardHex_placement: (
     event: React.SyntheticEvent,
@@ -40,7 +41,7 @@ const PlacementContextProvider = ({
   const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
     setEditingBoardHexes(updated)
   }
-  const [placementUnits, setPlacementUnits] = useState((): PlacementUnit[] => {
+  const [placementUnits, setPlacementUnits] = useState((): string[] => {
     const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
       .filter((id) => {
@@ -49,16 +50,30 @@ const PlacementContextProvider = ({
     const units = myUnits
       .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
       .map((unit) => {
-        const armyCard = myCards.find(
-          (card: ArmyCard) => card.armyCardID === unit.armyCardID
-        )
-        return {
-          ...unit,
-          name: armyCard?.name ?? '',
-        }
+        return unit.unitID
       })
     return units
   })
+  const inflatedPlacementUnits: PlacementUnit[] = placementUnits.reduce(
+    (result, unitId) => {
+      const gameUnit = myUnits.find((unit) => unit.unitID === unitId)
+      const armyCard = myCards.find(
+        (card: ArmyCard) => card.armyCardID === gameUnit?.armyCardID
+      )
+      if (!gameUnit || !armyCard) {
+        return result
+      }
+      return [
+        ...result,
+        {
+          ...gameUnit,
+          name: armyCard?.name ?? '',
+        },
+      ]
+    },
+    [] as PlacementUnit[]
+  )
+
   const activeUnit: GameUnit = gameUnits[selectedUnitID]
 
   // HANDLERS
@@ -78,33 +93,34 @@ const PlacementContextProvider = ({
   ) {
     // Do not propagate to background onClick
     event.stopPropagation()
-    const hexID = sourceHex.id
-    const isInStartZone = myStartZone.includes(hexID)
+    const clickedHexId = sourceHex.id
+    const isInStartZone = myStartZone.includes(clickedHexId)
+    const unitIdOnHex = editingBoardHexes?.[clickedHexId]
+
     //  1.a No current unit, but there is a unit on the hex, select that unit
-    if (!selectedUnitID && sourceHex.occupyingUnitID) {
-      const unitOnHex = gameUnits[sourceHex.occupyingUnitID]
-      if (unitOnHex) {
-        onClickPlacementUnit(sourceHex.occupyingUnitID)
-      }
-    }
     //  1.b No current unit, so since we're not placing on the hex, select the hex
     if (!selectedUnitID) {
-      setSelectedMapHex(hexID)
+      if (unitIdOnHex) {
+        onClickPlacementUnit(unitIdOnHex)
+      }
+      setSelectedMapHex(clickedHexId)
       return
     }
 
-    // WIP 2
-
-    // 2. if we have a unit and we clicked in start zone, then place that unit (and remove it from wherever it was!)
+    // 2. if we have a unit and we clicked in start zone, then place that unit
+    // - What unit is on hex already?
     if (selectedUnitID && isInStartZone) {
-      placeUnitOnHex(hexID, activeUnit)
-      // if(we placed a unit from placement "tray", then remove it from there)
+      placeUnitOnHex(clickedHexId, activeUnit)
+      // if (we placed a unit from placement "tray", then remove it from there)
       setPlacementUnits(
-        placementUnits.filter((u) => {
-          return !(u.unitID === activeUnit.unitID)
-        })
+        // add in the one we're removing (if any), filter out the unit we're placing on hex
+        [
+          ...placementUnits.filter((u) => {
+            return !(u === selectedUnitID)
+          }),
+        ]
       )
-      // if(we placed a unit from another hex, then remove it from there)
+      // if (we placed a unit from another hex, then remove it from there)
       // finally, deselect the unit
       setSelectedUnitID('')
       return
@@ -123,6 +139,7 @@ const PlacementContextProvider = ({
     <PlacementContext.Provider
       value={{
         placementUnits,
+        inflatedPlacementUnits,
         onClickPlacementUnit,
         onClickBoardHex_placement,
         editingBoardHexes,
