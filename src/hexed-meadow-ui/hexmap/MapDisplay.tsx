@@ -8,6 +8,7 @@ import {
   TurnCounter,
   ZoomControls,
 } from './'
+import { ActiveHexReadout } from './ActiveHexReadout'
 
 export const MapDisplay = () => {
   const { hexMap } = useBgioG()
@@ -50,6 +51,7 @@ export const MapDisplay = () => {
         handleClickZoomOut={handleClickZoomOut}
       />
       <TurnCounter />
+      <ActiveHexReadout />
       <MapHexStyles hexSize={mapState.hexSize} ref={mapRef}>
         <ReactHexgrid
           mapSize={mapSize}
