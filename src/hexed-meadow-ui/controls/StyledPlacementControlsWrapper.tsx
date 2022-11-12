@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const PlacementStylesWrapper = styled.div`
+export const StyledPlacementControlsWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   color: var(--player-color);

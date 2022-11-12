@@ -5,12 +5,13 @@ import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { useUIContext, usePlacementContext } from '../contexts'
 import { CardUnitIcon } from '../unit-icons'
 import { PlacementUnit } from 'game/types'
-import { PlacementStylesWrapper } from './PlacementStylesWrapper'
+import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
   const { placementReady, myStartZone } = useBgioG()
   const { moves } = useBgioMoves()
+  const { deployUnits } = moves
   const { placementUnits, editingBoardHexes } = usePlacementContext()
 
   const { confirmPlacementReady } = moves
@@ -30,12 +31,14 @@ export const PlacementControls = () => {
   }
   // return UI
   return (
-    <PlacementStylesWrapper>
+    <StyledPlacementControlsWrapper>
       <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-      <p>
-        Select your units and place them within your start zone. Once all
-        players are ready, the game will begin!
-      </p>
+      {!isShowingConfirm && (
+        <p>
+          Select your units and place them within your start zone. Once all
+          players are ready, the game will begin!
+        </p>
+      )}
       {isShowingConfirm && (
         <ConfirmReady
           makeReady={makeReady}
@@ -44,7 +47,7 @@ export const PlacementControls = () => {
         />
       )}
       <PlacementUnitTiles />
-    </PlacementStylesWrapper>
+    </StyledPlacementControlsWrapper>
   )
 }
 const StyledControlsHeaderH2 = styled.h2`
@@ -66,10 +69,21 @@ const ConfirmReady = ({
       {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
       {isAllPlacementUnitsPlaced && <p>All of your units are placed.</p>}
       <p>Please confirm, this placement is OK?</p>
-      <button onClick={makeReady}>CONFIRM PLACEMENT</button>
       {!isAllPlacementUnitsPlaced && (
-        <p style={{ color: 'red' }}>Some of your units will not be placed!</p>
+        <p style={{ color: 'var(--error-red)' }}>
+          Some of your units will not be placed! (See those units below)
+        </p>
       )}
+      <button
+        onClick={makeReady}
+        style={
+          !isAllPlacementUnitsPlaced
+            ? { color: 'var(--error-red)' }
+            : { color: 'var(--success-green)' }
+        }
+      >
+        CONFIRM PLACEMENT
+      </button>
     </>
   )
 }
@@ -115,8 +129,8 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
 
 const WaitingForOpponent = () => {
   return (
-    <PlacementStylesWrapper>
+    <StyledPlacementControlsWrapper>
       <p>Waiting for opponents to finish placing armies...</p>
-    </PlacementStylesWrapper>
+    </StyledPlacementControlsWrapper>
   )
 }
