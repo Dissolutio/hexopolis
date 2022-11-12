@@ -4,6 +4,7 @@ import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { useUIContext, usePlacementContext } from '../contexts'
 import { ArmyListStyle } from '../layout'
 import { CardUnitIcon } from '../unit-icons'
+import { PlacementUnit } from 'game/types'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -37,10 +38,23 @@ export const PlacementControls = () => {
     </ArmyListStyle>
   )
 }
-
 const PlacementUnitTiles = () => {
+  const { placementUnits } = usePlacementContext()
+  return (
+    <ul>
+      {placementUnits &&
+        placementUnits.map((unit) => (
+          <PlacementUnitTile key={unit.unitID} unit={unit} />
+        ))}
+    </ul>
+  )
+}
+const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   const { selectedUnitID } = useUIContext()
-  const { placementUnits, onClickPlacementUnit } = usePlacementContext()
+  const { onClickPlacementUnit } = usePlacementContext()
+  const onClick = () => {
+    onClickPlacementUnit?.(unit.unitID)
+  }
   const selectedStyle = (unitID: string) => {
     if (selectedUnitID === unitID) {
       return {
@@ -53,20 +67,12 @@ const PlacementUnitTiles = () => {
     }
   }
   return (
-    <ul>
-      {placementUnits &&
-        placementUnits.map((unit) => (
-          <li key={unit.unitID}>
-            <button
-              style={selectedStyle(unit.unitID)}
-              onClick={() => onClickPlacementUnit?.(unit.unitID)}
-            >
-              <CardUnitIcon unit={unit} />
-              <span>{unit.name}</span>
-            </button>
-          </li>
-        ))}
-    </ul>
+    <li key={unit.unitID}>
+      <button style={selectedStyle(unit.unitID)} onClick={onClick}>
+        <CardUnitIcon unit={unit} />
+        <span>{unit.name}</span>
+      </button>
+    </li>
   )
 }
 const ConfirmReady = ({ makeReady }: { makeReady: () => void }) => {
