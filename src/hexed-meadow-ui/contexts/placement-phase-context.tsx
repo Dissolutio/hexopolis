@@ -22,8 +22,11 @@ type PlacementContextValue = {
   ) => void
   editingBoardHexes: DeploymentProposition
   updatePlacementEditingBoardHexes: (updated: DeploymentProposition) => void
+  onResetPlacementState: () => void
 }
+
 type DeploymentProposition = { [boardHexId: string]: string }
+
 const PlacementContextProvider = ({
   children,
 }: {
@@ -159,6 +162,7 @@ const PlacementContextProvider = ({
         onClickBoardHex_placement,
         editingBoardHexes,
         updatePlacementEditingBoardHexes,
+        onResetPlacementState,
       }}
     >
       {children}

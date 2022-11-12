@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const ArmyListStyle = styled.div`
+export const StyledOrderMarkersControlsWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   color: var(--player-color);

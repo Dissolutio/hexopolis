@@ -1,6 +1,6 @@
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import React, { useState } from 'react'
-import { ArmyListStyle } from '../layout'
+import { StyledOrderMarkersControlsWrapper } from './StyledOrderMarkersControlsWrapper'
 
 export const PlaceOrderMarkersControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -72,7 +72,7 @@ export const PlaceOrderMarkersControls = () => {
   }
   return (
     <>
-      <ArmyListStyle>
+      <StyledOrderMarkersControlsWrapper>
         <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
         <button type="button" onClick={onClickAutoLayOrderMarkers}>
           Put the rest of them on {myFirstCard.name}
@@ -100,7 +100,7 @@ export const PlaceOrderMarkersControls = () => {
             </li>
           ))}
         </ul>
-      </ArmyListStyle>
+      </StyledOrderMarkersControlsWrapper>
     </>
   )
 }

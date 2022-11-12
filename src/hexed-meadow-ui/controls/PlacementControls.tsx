@@ -1,10 +1,11 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { useUIContext, usePlacementContext } from '../contexts'
-import { ArmyListStyle } from '../layout'
 import { CardUnitIcon } from '../unit-icons'
 import { PlacementUnit } from 'game/types'
+import { PlacementStylesWrapper } from './PlacementStylesWrapper'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -29,8 +30,8 @@ export const PlacementControls = () => {
   }
   // return UI
   return (
-    <ArmyListStyle>
-      <h2>Phase: Placement</h2>
+    <PlacementStylesWrapper>
+      <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
       <p>
         Select your units and place them within your start zone. Once all
         players are ready, the game will begin!
@@ -43,10 +44,14 @@ export const PlacementControls = () => {
         />
       )}
       <PlacementUnitTiles />
-    </ArmyListStyle>
+    </PlacementStylesWrapper>
   )
 }
-
+const StyledControlsHeaderH2 = styled.h2`
+  font-size: 1.3rem;
+  margin: 0;
+  text-align: center;
+`
 const ConfirmReady = ({
   makeReady,
   isNoMoreEmptyStartZoneHexes,
@@ -110,8 +115,8 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
 
 const WaitingForOpponent = () => {
   return (
-    <ArmyListStyle>
+    <PlacementStylesWrapper>
       <p>Waiting for opponents to finish placing armies...</p>
-    </ArmyListStyle>
+    </PlacementStylesWrapper>
   )
 }
