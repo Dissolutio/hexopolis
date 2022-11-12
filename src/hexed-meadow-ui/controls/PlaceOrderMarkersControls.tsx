@@ -7,7 +7,15 @@ export const PlaceOrderMarkersControls = () => {
   const { currentRound, orderMarkersReady, myCards, myOrderMarkers } =
     useBgioG()
   const { moves } = useBgioMoves()
-
+  const unplacedOrdersArr = Object.keys(myOrderMarkers)
+  const myFirstCard = myCards?.[0]
+  const toBePlacedOrderMarkers = Object.keys(myOrderMarkers).filter(
+    (om) => myOrderMarkers[om] === ''
+  )
+  console.log(
+    '🚀 ~ file: PlaceOrderMarkersControls.tsx ~ line 14 ~ PlaceOrderMarkersControls ~ toBePlacedOrderMarkers',
+    toBePlacedOrderMarkers
+  )
   const { confirmOrderMarkersReady, placeOrderMarker } = moves
   const [activeMarker, setActiveMarker] = useState('')
   const selectOrderMarker = (orderMarker: string) => {
@@ -36,37 +44,49 @@ export const PlaceOrderMarkersControls = () => {
   const areAllOMsAssigned = !Object.values(myOrderMarkers).some(
     (om) => om === ''
   )
-  const Content = () => {
-    if (orderMarkersReady[playerID] === true) {
-      return (
-        <>
-          <p>Waiting for opponents to finish placing order markers...</p>
-        </>
-      )
-    }
-    if (areAllOMsAssigned) {
-      return (
-        <>
-          <p>Done placing your order markers?</p>
-          <button onClick={makeReady}>CONFIRM DONE</button>
-        </>
-      )
-    }
+  const onClickAutoLayOrderMarkers = () => {
+    unplacedOrdersArr.forEach((order) => {
+      placeOrderMarker({
+        playerID,
+        orderMarker: order,
+        gameCardID: myFirstCard.gameCardID,
+      })
+    })
+    confirmOrderMarkersReady({ playerID })
+  }
+
+  if (orderMarkersReady[playerID] === true) {
     return (
       <>
+        <p>Waiting for opponents to finish placing order markers...</p>
+      </>
+    )
+  }
+  if (areAllOMsAssigned) {
+    return (
+      <>
+        <p>Done placing your order markers?</p>
+        <button onClick={makeReady}>CONFIRM DONE</button>
+      </>
+    )
+  }
+  return (
+    <>
+      <ArmyListStyle>
         <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
+        <button type="button" onClick={onClickAutoLayOrderMarkers}>
+          Put the rest of them on {myFirstCard.name}
+        </button>
         <ul className="order-marker">
-          {Object.keys(myOrderMarkers)
-            .filter((om) => myOrderMarkers[om] === '')
-            .map((om) => (
-              <li
-                key={om}
-                onClick={() => selectOrderMarker(om)}
-                style={selectedStyle(om)}
-              >
-                {om === 'X' ? om : (parseInt(om) + 1).toString()}
-              </li>
-            ))}
+          {toBePlacedOrderMarkers.map((om) => (
+            <li
+              key={om}
+              onClick={() => selectOrderMarker(om)}
+              style={selectedStyle(om)}
+            >
+              {om === 'X' ? om : (parseInt(om) + 1).toString()}
+            </li>
+          ))}
         </ul>
         <ul className="om-army-cards">
           {myCards.map((card) => (
@@ -80,12 +100,7 @@ export const PlaceOrderMarkersControls = () => {
             </li>
           ))}
         </ul>
-      </>
-    )
-  }
-  return (
-    <ArmyListStyle>
-      <Content />
-    </ArmyListStyle>
+      </ArmyListStyle>
+    </>
   )
 }
