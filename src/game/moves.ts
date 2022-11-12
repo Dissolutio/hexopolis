@@ -183,20 +183,17 @@ function placeUnitOnHex(
 function deployUnits(
   G: GameState,
   ctx: BoardProps['ctx'],
-  argumentObject: {
-    deploymentProposition: {
-      [boardHexId: string]: string // occupyingUnitId
-    }
+  deploymentProposition: {
+    [boardHexId: string]: string // occupyingUnitId
   }
 ) {
-  const { deploymentProposition } = argumentObject
   /*
   1. Get list of units that player is deploying
   2. Validate units belong to player (note all WRONGLY placed units, for dev-obs?)
   3. Validate assigned hexes are in player's startZone (note all WRONGLY placed hexes, for dev-obs?)
   4. Assign valid game units to valid hexes
-  5. All other units marked as destroyed? Or forfeited, somehow? 
-  
+  5. All other units marked as destroyed? Or forfeited, somehow?
+
   */
   //  1. get units
   const propositions = Object.entries(deploymentProposition)
