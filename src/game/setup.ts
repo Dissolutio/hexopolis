@@ -63,8 +63,7 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
 //!! TEST SCENARIO
 export const testScenario = makeTestScenario({
   mapSize: 2,
-  withPrePlacedUnits: true,
-  // withPrePlacedUnits: false,
+  withPrePlacedUnits: false,
   //   placementReady: { '0': true, '1': true },
   //   orderMarkersReady: { '0': true, '1': true },
   //   roundOfPlayStartReady: { '0': true, '1': true },
