@@ -23,7 +23,7 @@ export const ArmyListStyle = styled.div`
       padding: 0.3rem;
     }
   }
-  .order-marker {
+  .order-marker__unplaced {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;

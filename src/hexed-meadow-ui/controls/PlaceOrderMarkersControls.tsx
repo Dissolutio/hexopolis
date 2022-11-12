@@ -77,7 +77,7 @@ export const PlaceOrderMarkersControls = () => {
         <button type="button" onClick={onClickAutoLayOrderMarkers}>
           Put the rest of them on {myFirstCard.name}
         </button>
-        <ul className="order-marker">
+        <ul className="order-marker__unplaced">
           {toBePlacedOrderMarkers.map((om) => (
             <li
               key={om}
