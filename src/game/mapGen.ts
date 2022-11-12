@@ -66,16 +66,24 @@ function startZonesWithUnits(
 ): BoardHexes {
   const gameUnitsArr = Object.values(gameUnits)
   gameUnitsArr.forEach((unit) => {
-    const { playerID } = unit
-    let randomHexID: string = ''
-    if (playerID === '0') {
-      randomHexID = zones?.[unit.playerID]?.pop() ?? ''
+    try {
+      const { playerID } = unit
+      let randomHexID: string = ''
+      if (playerID === '0') {
+        randomHexID = zones?.[unit.playerID]?.pop() ?? ''
+      }
+      if (playerID === '1') {
+        randomHexID = zones?.[unit.playerID]?.pop() ?? ''
+      }
+      // update boardHex
+      hexes[randomHexID].occupyingUnitID = unit.unitID
+    } catch (error) {
+      console.error(
+        '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
+        `🚔 The problem is the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
+        error
+      )
     }
-    if (playerID === '1') {
-      randomHexID = zones?.[unit.playerID]?.pop() ?? ''
-    }
-    // update boardHex
-    hexes[randomHexID].occupyingUnitID = unit.unitID
   })
   return hexes
 }

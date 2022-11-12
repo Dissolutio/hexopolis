@@ -62,7 +62,7 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
 
 //!! TEST SCENARIO
 export const testScenario = makeTestScenario({
-  mapSize: 2,
+  mapSize: 1,
   withPrePlacedUnits: false,
   //   placementReady: { '0': true, '1': true },
   //   orderMarkersReady: { '0': true, '1': true },
@@ -94,8 +94,8 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   })
 }
 
-function makeTestScenario(devOptions?: DevGameOptions): GameState {
-  const mapSize = devOptions?.mapSize ?? 0
+function makeTestScenario(devOptions: DevGameOptions): GameState {
+  const mapSize = devOptions.mapSize
   const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
