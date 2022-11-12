@@ -54,11 +54,6 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
   //
-  // Selected Map Hex
-  .maphex__selected--active > g polygon {
-    stroke: var(--white);
-    stroke-width: 0.6;
-  }
 
   // PHASE: PLACEMENT
   // highlight all player startzones
@@ -112,6 +107,13 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       stroke-width: 0.8;
     }
   }
+
+  // Selected Map Hex
+  .maphex__selected--active > g polygon {
+    stroke: var(--white);
+    stroke-width: 0.6;
+  }
+
   // PHASE: ROP-all stages
   // highlight selectable units for selected card
   .maphex__selected-card-unit--selectable > g polygon {
