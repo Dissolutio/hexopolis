@@ -24,7 +24,7 @@ export const moves = {
   endCurrentPlayerTurn,
   moveAction,
   attackAction,
-  placeUnitOnHex,
+  deployUnits,
   confirmPlacementReady,
   placeOrderMarker,
   confirmOrderMarkersReady,
@@ -172,21 +172,18 @@ function attackAction(
   G.unitsAttacked = unitsAttacked
 }
 //phase:___Placement
-function placeUnitOnHex(
-  G: GameState,
-  ctx: BoardProps['ctx'],
-  hexId: string,
-  unit: GameUnit
-) {
-  G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
-}
 function deployUnits(
   G: GameState,
   ctx: BoardProps['ctx'],
   deploymentProposition: {
     [boardHexId: string]: string // occupyingUnitId
-  }
+  },
+  playerID: string
 ) {
+  console.log(
+    '🚀 ~ file: moves.ts ~ line 183 ~ deploymentProposition',
+    deploymentProposition
+  )
   /*
   1. Get list of units that player is deploying
   2. Validate units belong to player (note all WRONGLY placed units, for dev-obs?)
@@ -197,13 +194,22 @@ function deployUnits(
   */
   //  1. get units
   const propositions = Object.entries(deploymentProposition)
-  const hexes = propositions.map((i) => i[0])
-  console.log('🚀 ~ file: moves.ts ~ line 201 ~ hexes', hexes)
-  const units = propositions.map((i) => i[1])
-  console.log('🚀 ~ file: moves.ts ~ line 203 ~ units', units)
+  const playerStartZone = G.startZones[playerID]
+  const validHexIds = propositions
+    .map((i) => i[0])
+    .filter((i) => playerStartZone.includes(i))
+  const validGameUnitIds = propositions.map((i) => i[1])
+  let newG = {
+    ...G,
+    boardHexes: {
+      ...G.boardHexes,
+    },
+  }
+
   propositions.forEach((proposition) => {
-    G.boardHexes[proposition[0]].occupyingUnitID = proposition[1]
+    newG.boardHexes[proposition[0]].occupyingUnitID = proposition[1]
   })
+  G.boardHexes = newG.boardHexes
   //  2. get start zone
   //  3. assign units
 }
