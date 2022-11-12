@@ -194,7 +194,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       const unitIdToShowOnHex = isPlacementPhase
         ? editingBoardHexes?.[hex.id] ?? ''
         : hex.occupyingUnitID
-      const gameUnit = gameUnits?.[hex.occupyingUnitID]
+      const gameUnit = gameUnits?.[unitIdToShowOnHex]
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)

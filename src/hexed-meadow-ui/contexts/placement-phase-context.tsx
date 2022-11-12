@@ -95,32 +95,47 @@ const PlacementContextProvider = ({
     event.stopPropagation()
     const clickedHexId = sourceHex.id
     const isInStartZone = myStartZone.includes(clickedHexId)
-    const unitIdOnHex = editingBoardHexes?.[clickedHexId]
+    const unitIdAlreadyOnHex = editingBoardHexes?.[clickedHexId]
 
-    //  1.a No current unit, but there is a unit on the hex, select that unit
-    //  1.b No current unit, so since we're not placing on the hex, select the hex
+    //  -- 1A. No current unit, but there is a unit on the hex, select that unit -- 1B. No current unit, so since we're not placing on the hex, select the hex
     if (!selectedUnitID) {
-      if (unitIdOnHex) {
-        onClickPlacementUnit(unitIdOnHex)
+      if (unitIdAlreadyOnHex) {
+        onClickPlacementUnit(unitIdAlreadyOnHex)
       }
       setSelectedMapHex(clickedHexId)
       return
     }
 
+    const oldHexIdOfSelectedUnit = editingBoardHexes
+      ? Object.entries(editingBoardHexes).find(
+          (entry) => entry[1] === selectedUnitID
+        )?.[0]
+      : ''
+
     // 2. if we have a unit and we clicked in start zone, then place that unit
-    // - What unit is on hex already?
     if (selectedUnitID && isInStartZone) {
-      placeUnitOnHex(clickedHexId, activeUnit)
-      // if (we placed a unit from placement "tray", then remove it from there)
-      setPlacementUnits(
-        // add in the one we're removing (if any), filter out the unit we're placing on hex
-        [
-          ...placementUnits.filter((u) => {
-            return !(u === selectedUnitID)
-          }),
-        ]
-      )
-      // if (we placed a unit from another hex, then remove it from there)
+      setEditingBoardHexes((oldState) => {
+        const newState = {
+          ...oldState,
+          // place selected unit on clicked hex
+          [clickedHexId]: selectedUnitID,
+        }
+        // remove unit from old hex, if applicable
+        delete newState[oldHexIdOfSelectedUnit ?? '']
+        return newState
+      })
+      // update placement tray...
+      setPlacementUnits([
+        // ...displaced pieces go to front of placement tray, so user can see it appear...
+        ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
+        // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
+        // TODO: is this kind of efficiency silly? (below, early out for the filter)
+        ...(oldHexIdOfSelectedUnit
+          ? placementUnits
+          : placementUnits.filter((u) => {
+              return !(u === selectedUnitID)
+            })),
+      ])
       // finally, deselect the unit
       setSelectedUnitID('')
       return
