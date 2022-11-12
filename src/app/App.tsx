@@ -10,7 +10,7 @@ import { MultiplayerNav } from './MultiplayerNav'
 import { HexedMeadow } from 'game/game'
 import { FeedbackPage, HelpPage, RulesPage } from 'pages'
 import { isLocalApp, SERVER } from './constants'
-import HexedMeadowBoard from 'hexed-meadow-ui/HexedMeadowBoard'
+import { Board } from 'hexed-meadow-ui/Board'
 
 // Enable Redux DevTools in development
 const reduxDevTools =
@@ -20,7 +20,7 @@ const reduxDevTools =
 
 const hexedMeadowClientOptions = {
   game: HexedMeadow,
-  board: HexedMeadowBoard,
+  board: Board,
   numPlayers: 2,
 }
 export const specialMatchIdToTellHeaderNavThisMatchIsLocal = 'localGameId'

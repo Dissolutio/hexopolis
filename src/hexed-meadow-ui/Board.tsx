@@ -28,7 +28,7 @@ interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
 }
 
-export const HexedMeadowBoard = ({
+export const Board = ({
   // G
   G,
   // CTX
@@ -97,5 +97,3 @@ export const HexedMeadowBoard = ({
     </ThemeProvider>
   )
 }
-
-export default HexedMeadowBoard
