@@ -19,7 +19,10 @@ type PlacementContextValue = {
     event: React.SyntheticEvent,
     sourceHex: BoardHex
   ) => void
+  editingBoardHexes: DeploymentProposition
+  updatePlacementEditingBoardHexes: (updated: DeploymentProposition) => void
 }
+type DeploymentProposition = { [boardHexId: string]: string } | undefined
 const PlacementContextProvider = ({
   children,
 }: {
@@ -32,6 +35,11 @@ const PlacementContextProvider = ({
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const { placeUnitOnHex } = moves
   // STATE
+  const [editingBoardHexes, setEditingBoardHexes] =
+    useState<DeploymentProposition>(undefined)
+  const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
+    setEditingBoardHexes(updated)
+  }
   const [placementUnits, setPlacementUnits] = useState((): PlacementUnit[] => {
     const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
@@ -72,19 +80,22 @@ const PlacementContextProvider = ({
     event.stopPropagation()
     const hexID = sourceHex.id
     const isInStartZone = myStartZone.includes(hexID)
-    //  No current unit, but there is a unit on the hex, select that unit
-    if (sourceHex.occupyingUnitID && !selectedUnitID) {
+    //  1.a No current unit, but there is a unit on the hex, select that unit
+    if (!selectedUnitID && sourceHex.occupyingUnitID) {
       const unitOnHex = gameUnits[sourceHex.occupyingUnitID]
       if (unitOnHex) {
         onClickPlacementUnit(sourceHex.occupyingUnitID)
       }
     }
-    //  No unit, select hex
+    //  1.b No current unit, so since we're not placing on the hex, select the hex
     if (!selectedUnitID) {
       setSelectedMapHex(hexID)
       return
     }
-    // if we have a unit and we clicked in start zone, then place that unit (and remove it from wherever it was!)
+
+    // WIP 2
+
+    // 2. if we have a unit and we clicked in start zone, then place that unit (and remove it from wherever it was!)
     if (selectedUnitID && isInStartZone) {
       placeUnitOnHex(hexID, activeUnit)
       // if(we placed a unit from placement "tray", then remove it from there)
@@ -98,9 +109,9 @@ const PlacementContextProvider = ({
       setSelectedUnitID('')
       return
     }
+    // TODO: Error toasts?
     // have unit, clicked hex outside start zone, error
     if (selectedUnitID && !isInStartZone) {
-      // TODO, add an error message timeout system?? Soon!
       console.error(
         'Invalid hex selected. You must place units inside your start zone.'
       )
@@ -114,6 +125,8 @@ const PlacementContextProvider = ({
         placementUnits,
         onClickPlacementUnit,
         onClickBoardHex_placement,
+        editingBoardHexes,
+        updatePlacementEditingBoardHexes,
       }}
     >
       {children}

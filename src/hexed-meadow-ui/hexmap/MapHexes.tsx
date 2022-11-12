@@ -23,7 +23,11 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
   const { ctx } = useBgioCtx()
-  const { onClickBoardHex_placement } = usePlacementContext()
+  const {
+    onClickBoardHex_placement,
+    updatePlacementEditingBoardHexes,
+    editingBoardHexes,
+  } = usePlacementContext()
   const {
     onClickBoardHex__turn,
     selectedGameCard,
@@ -180,11 +184,16 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   }
 
   const onClickHex = (e: React.SyntheticEvent, source: any) => {
-    onClickBoardHex(e, source.data as BoardHex)
+    const boardHex = source.data as BoardHex
+    onClickBoardHex(e, boardHex)
   }
 
   const hexJSX = () => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
+      // During placement phase, player is overwriting units on hexes, in local state, but we wish to show that state for units
+      const unitIdToShowOnHex = isPlacementPhase
+        ? editingBoardHexes?.[hex.id] ?? ''
+        : hex.occupyingUnitID
       const gameUnit = gameUnits?.[hex.occupyingUnitID]
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
