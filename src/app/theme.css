@@ -1,5 +1,4 @@
 /* many custom colors are not yet used */
-
 html {
   /* THEME */
   --black: #222222;
@@ -25,6 +24,11 @@ html {
   --neon-green: hsla(74, 64%, 59%, 0.5);
   --neon-orange: rgba(224, 150, 40, 0.5);
   --neon-red: rgba(226, 83, 40, 0.5);
+  /* #62A87C shiny shamrock green as success color, https://coolors.co/0c151c-ffffff-fe938c-62a87c-3590f3 */
+  --success-green: #62a87c;
+  /* #FF5E5B orange-red-crayola as error color, #246EB9 is spanish-blue, https://coolors.co/0c151c-ffffff-ff5e5b-62a87c-246eb9 */
+  --error-red: #ff5e5b;
+  --info-blue: #246eb9;
 }
 body {
   box-sizing: border-box;
@@ -38,4 +42,38 @@ body {
   background-color: var(--black);
   color: var(--white);
   font-weight: 600;
+}
+
+/* style multiplayer lobby / nav */
+nav ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+nav ul li a {
+  padding: 14px 16px;
+  text-decoration: none;
+}
+a.active {
+  text-decoration: underline;
+}
+
+/* This gets the debug panel looking normal again, the water.css styles were messing with the button sizes, some colors */
+/* 40px overrides the 20px that the panel currently has */
+.debug-panel strong {
+  color: black !important;
+}
+.debug-panel button {
+  color: black !important;
+}
+.debug-panel button.current {
+  color: white !important;
+}
+.debug-panel nav {
+  height: 40px !important;
+}
+.debug-panel button {
+  height: 40px !important;
 }

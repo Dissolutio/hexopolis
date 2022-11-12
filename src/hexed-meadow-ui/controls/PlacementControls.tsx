@@ -1,54 +1,126 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { useUIContext, usePlacementContext } from '../contexts'
-import { ArmyListStyle } from '../layout'
 import { CardUnitIcon } from '../unit-icons'
 import { PlacementUnit } from 'game/types'
+import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
-  const { placementReady } = useBgioG()
+  const { placementReady, myStartZone } = useBgioG()
   const { moves } = useBgioMoves()
-  const { placementUnits } = usePlacementContext()
+  const { deployUnits } = moves
+  const { placementUnits, editingBoardHexes } = usePlacementContext()
 
   const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
+    deployUnits(editingBoardHexes, playerID)
     confirmPlacementReady({ playerID })
   }
-  // RETURN CONFIRM DONE
-  if (placementUnits?.length === 0 && !isReady) {
-    return <ConfirmReady makeReady={makeReady} />
-  }
-  // RETURN WAITING
+  const filledHexesCount = Object.keys(editingBoardHexes).length
+  const startZoneHexesCount = myStartZone.length
+  const isNoMoreEmptyStartZoneHexes = filledHexesCount === startZoneHexesCount
+  const isAllPlacementUnitsPlaced = placementUnits?.length === 0
+  const isShowingConfirm =
+    (isAllPlacementUnitsPlaced || isNoMoreEmptyStartZoneHexes) && !isReady
+  // once player has placed and confirmed, show waiting
   if (isReady) {
     return <WaitingForOpponent />
   }
-  // RETURN PLACEMENT UI
+  // return UI
   return (
-    <ArmyListStyle>
-      <h2>Phase: Placement</h2>
-      <p>
-        Place all of your units into your start zone. You can move and swap your
-        units within your start zone.
-      </p>
-      <p>Once all players are ready, the game will begin!</p>
+    <StyledPlacementControlsWrapper>
+      <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
+      {!isShowingConfirm && (
+        <p>
+          Select your units and place them within your start zone. Once all
+          players are ready, the game will begin!
+        </p>
+      )}
+      {isShowingConfirm && (
+        <ConfirmReady
+          makeReady={makeReady}
+          isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
+          isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
+        />
+      )}
       <PlacementUnitTiles />
-    </ArmyListStyle>
+    </StyledPlacementControlsWrapper>
   )
 }
-const PlacementUnitTiles = () => {
-  const { placementUnits } = usePlacementContext()
+const StyledControlsHeaderH2 = styled.h2`
+  font-size: 1.3rem;
+  margin: 0;
+  text-align: center;
+`
+const ConfirmReady = ({
+  makeReady,
+  isNoMoreEmptyStartZoneHexes,
+  isAllPlacementUnitsPlaced,
+}: {
+  makeReady: () => void
+  isNoMoreEmptyStartZoneHexes: boolean
+  isAllPlacementUnitsPlaced: boolean
+}) => {
+  const { onResetPlacementState } = usePlacementContext()
+  const { moves } = useBgioMoves()
+  const { deployUnits } = moves
+  console.log(
+    '🚀 ~ file: PlacementControls.tsx ~ line 70 ~ deployUnits',
+    deployUnits
+  )
   return (
-    <ul>
-      {placementUnits &&
-        placementUnits.map((unit) => (
-          <PlacementUnitTile key={unit.unitID} unit={unit} />
-        ))}
-    </ul>
+    <>
+      {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
+      {isAllPlacementUnitsPlaced && <p>All of your units are placed.</p>}
+      <p>Please confirm, this placement is OK?</p>
+      {!isAllPlacementUnitsPlaced && (
+        <p style={{ color: 'var(--error-red)' }}>
+          Some of your units will not be placed! (See those units below)
+        </p>
+      )}
+      <button
+        onClick={makeReady}
+        style={{
+          color: 'var(--success-green)',
+          marginTop: '20px',
+          border: '1px solid var(--success-green)',
+        }}
+      >
+        CONFIRM PLACEMENT
+      </button>
+      <button
+        onClick={onResetPlacementState}
+        style={{
+          color: 'var(--error-red)',
+          marginTop: '20px',
+          border: '1px solid var(--error-red)',
+        }}
+      >
+        No, start over...
+      </button>
+    </>
   )
 }
+
+const PlacementUnitTiles = () => {
+  const { inflatedPlacementUnits } = usePlacementContext()
+  return (
+    <>
+      <h3>Unplaced Units:</h3>
+      <ul>
+        {inflatedPlacementUnits &&
+          inflatedPlacementUnits.map((unit) => (
+            <PlacementUnitTile key={unit.unitID} unit={unit} />
+          ))}
+      </ul>
+    </>
+  )
+}
+
 const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   const { selectedUnitID } = useUIContext()
   const { onClickPlacementUnit } = usePlacementContext()
@@ -75,18 +147,11 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
     </li>
   )
 }
-const ConfirmReady = ({ makeReady }: { makeReady: () => void }) => {
-  return (
-    <ArmyListStyle>
-      <p>Done placing your units?</p>
-      <button onClick={makeReady}>CONFIRM PLACEMENT</button>
-    </ArmyListStyle>
-  )
-}
+
 const WaitingForOpponent = () => {
   return (
-    <ArmyListStyle>
+    <StyledPlacementControlsWrapper>
       <p>Waiting for opponents to finish placing armies...</p>
-    </ArmyListStyle>
+    </StyledPlacementControlsWrapper>
   )
 }

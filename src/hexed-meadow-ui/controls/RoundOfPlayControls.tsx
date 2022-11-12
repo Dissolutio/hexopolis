@@ -1,13 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  HiOutlineArrowCircleLeft,
-  HiOutlineArrowCircleRight,
-} from 'react-icons/hi'
 
 import { usePlayContext } from '../contexts'
 import { RopArmyCardsList } from './RopArmyCardsList'
 import { useBgioG, useBgioMoves } from 'bgio-contexts'
+import { UndoRedoButtons } from './UndoRedoButtons'
 
 export const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
@@ -45,16 +42,7 @@ export const RopMoveControls = () => {
       </p>
       <ButtonWrapper>
         <button onClick={handleEndMovementClick}>END MOVE</button>
-        <span>
-          <button onClick={undo}>
-            <HiOutlineArrowCircleLeft />
-            <span>UNDO</span>
-          </button>
-          <button onClick={redo}>
-            <HiOutlineArrowCircleRight />
-            REDO
-          </button>
-        </span>
+        <UndoRedoButtons />
       </ButtonWrapper>
       <RopArmyCardsList />
     </>

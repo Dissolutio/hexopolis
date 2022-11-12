@@ -140,8 +140,8 @@ export type BaseGameOptions =
   | undefined
 
 export type MapOptions = {
+  mapSize: number
   gameUnits?: GameUnits | undefined
-  mapSize?: number
   withPrePlacedUnits?: boolean
   // flat-top, or pointy-top hexes
   flat?: boolean

@@ -79,6 +79,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     let classNames = ''
     //phase: Placement
     if (isPlacementPhase) {
+      const occupyingPlacementUnitId = editingBoardHexes[hex.id]
       // paint all player startzones
       // TODO: make this work for however many players
       if (startZones?.['0'].includes(hex.id)) {
@@ -88,15 +89,19 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         classNames = classNames.concat(` maphex__startzone--player1 `)
       }
       // highlight placeable hexes that DO NOT have units
-      if (selectedUnitID && isMyStartZoneHex(hex) && !hex.occupyingUnitID) {
+      if (
+        selectedUnitID &&
+        isMyStartZoneHex(hex) &&
+        !occupyingPlacementUnitId
+      ) {
         classNames = classNames.concat(` maphex__start-zone--placement `)
       }
       // highlight placeable hexes that DO have units, but the one with the currently selected unit will be styled separately, below
       if (
         selectedUnitID &&
         isMyStartZoneHex(hex) &&
-        hex.occupyingUnitID &&
-        hex.occupyingUnitID !== selectedUnitID
+        occupyingPlacementUnitId &&
+        occupyingPlacementUnitId !== selectedUnitID
       ) {
         classNames = classNames.concat(
           ` maphex__start-zone--placement--occupied `
@@ -106,8 +111,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       if (
         selectedUnitID &&
         isMyStartZoneHex(hex) &&
-        hex.occupyingUnitID &&
-        hex.occupyingUnitID === selectedUnitID
+        occupyingPlacementUnitId &&
+        occupyingPlacementUnitId === selectedUnitID
       ) {
         classNames = classNames.concat(
           ` maphex__start-zone--placement--selected-unit `
@@ -194,7 +199,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       const unitIdToShowOnHex = isPlacementPhase
         ? editingBoardHexes?.[hex.id] ?? ''
         : hex.occupyingUnitID
-      const gameUnit = gameUnits?.[hex.occupyingUnitID]
+      const gameUnit = gameUnits?.[unitIdToShowOnHex]
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)

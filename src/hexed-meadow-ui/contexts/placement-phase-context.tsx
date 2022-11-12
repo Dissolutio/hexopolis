@@ -13,7 +13,8 @@ const PlacementContext = createContext<PlacementContextValue | undefined>(
 )
 
 type PlacementContextValue = {
-  placementUnits: PlacementUnit[]
+  placementUnits: string[]
+  inflatedPlacementUnits: PlacementUnit[]
   onClickPlacementUnit: (unitID: string) => void
   onClickBoardHex_placement: (
     event: React.SyntheticEvent,
@@ -21,8 +22,11 @@ type PlacementContextValue = {
   ) => void
   editingBoardHexes: DeploymentProposition
   updatePlacementEditingBoardHexes: (updated: DeploymentProposition) => void
+  onResetPlacementState: () => void
 }
-type DeploymentProposition = { [boardHexId: string]: string } | undefined
+
+type DeploymentProposition = { [boardHexId: string]: string }
+
 const PlacementContextProvider = ({
   children,
 }: {
@@ -30,38 +34,52 @@ const PlacementContextProvider = ({
 }) => {
   const { playerID } = useBgioClientInfo()
   const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useBgioG()
-  const { moves } = useBgioMoves()
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
-  const { placeUnitOnHex } = moves
   // STATE
   const [editingBoardHexes, setEditingBoardHexes] =
-    useState<DeploymentProposition>(undefined)
+    useState<DeploymentProposition>({})
   const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
     setEditingBoardHexes(updated)
   }
-  const [placementUnits, setPlacementUnits] = useState((): PlacementUnit[] => {
-    const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
-      .map((bH: BoardHex) => bH.occupyingUnitID)
-      .filter((id) => {
-        return id && gameUnits[id].playerID === playerID
-      })
-    const units = myUnits
-      .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
-      .map((unit) => {
-        const armyCard = myCards.find(
-          (card: ArmyCard) => card.armyCardID === unit.armyCardID
-        )
-        return {
-          ...unit,
+  const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
+    .map((bH: BoardHex) => bH.occupyingUnitID)
+    .filter((id) => {
+      return id && gameUnits[id].playerID === playerID
+    })
+  const initialPlacementUnits = myUnits
+    .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
+    .map((unit) => {
+      return unit.unitID
+    })
+  const [placementUnits, setPlacementUnits] = useState(
+    (): string[] => initialPlacementUnits
+  )
+  const inflatedPlacementUnits: PlacementUnit[] = placementUnits.reduce(
+    (result, unitId) => {
+      const gameUnit = myUnits.find((unit) => unit.unitID === unitId)
+      const armyCard = myCards.find(
+        (card: ArmyCard) => card.armyCardID === gameUnit?.armyCardID
+      )
+      if (!gameUnit || !armyCard) {
+        return result
+      }
+      return [
+        ...result,
+        {
+          ...gameUnit,
           name: armyCard?.name ?? '',
-        }
-      })
-    return units
-  })
-  const activeUnit: GameUnit = gameUnits[selectedUnitID]
+        },
+      ]
+    },
+    [] as PlacementUnit[]
+  )
 
   // HANDLERS
+  function onResetPlacementState() {
+    setPlacementUnits(initialPlacementUnits)
+    setEditingBoardHexes({})
+  }
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
     if (unitID === selectedUnitID) {
@@ -78,36 +96,59 @@ const PlacementContextProvider = ({
   ) {
     // Do not propagate to background onClick
     event.stopPropagation()
-    const hexID = sourceHex.id
-    const isInStartZone = myStartZone.includes(hexID)
-    //  1.a No current unit, but there is a unit on the hex, select that unit
-    if (!selectedUnitID && sourceHex.occupyingUnitID) {
-      const unitOnHex = gameUnits[sourceHex.occupyingUnitID]
-      if (unitOnHex) {
-        onClickPlacementUnit(sourceHex.occupyingUnitID)
-      }
-    }
-    //  1.b No current unit, so since we're not placing on the hex, select the hex
+    const clickedHexId = sourceHex.id
+    const isInStartZone = myStartZone.includes(clickedHexId)
+    const unitIdAlreadyOnHex = editingBoardHexes?.[clickedHexId]
+
+    //  -- 1A. No current unit, but there is a unit on the hex, select that unit -- 1B. No current unit, so since we're not placing on the hex, select the hex
     if (!selectedUnitID) {
-      setSelectedMapHex(hexID)
+      if (unitIdAlreadyOnHex) {
+        onClickPlacementUnit(unitIdAlreadyOnHex)
+      }
+      setSelectedMapHex(clickedHexId)
       return
     }
 
-    // WIP 2
-
-    // 2. if we have a unit and we clicked in start zone, then place that unit (and remove it from wherever it was!)
+    const oldHexIdOfSelectedUnit = editingBoardHexes
+      ? Object.entries(editingBoardHexes).find(
+          (entry) => entry[1] === selectedUnitID
+        )?.[0]
+      : ''
+    const isSelectedUnitHexThatWasClicked =
+      unitIdAlreadyOnHex === selectedUnitID
+    // 3. if we have a unit and we clicked in start zone, then we either clicked our selected unit so deselect it, or place our selected unit on clicked hex
     if (selectedUnitID && isInStartZone) {
-      placeUnitOnHex(hexID, activeUnit)
-      // if(we placed a unit from placement "tray", then remove it from there)
-      setPlacementUnits(
-        placementUnits.filter((u) => {
-          return !(u.unitID === activeUnit.unitID)
+      // 2A. if we have a unit and we clicked in start zone, but it's the selectedUnit, then deselect that unit
+      if (isSelectedUnitHexThatWasClicked) {
+        setSelectedUnitID('')
+        return
+      } else {
+        setEditingBoardHexes((oldState) => {
+          const newState = {
+            ...oldState,
+            // place selected unit on clicked hex
+            [clickedHexId]: selectedUnitID,
+          }
+          // remove unit from old hex, if applicable
+          delete newState[oldHexIdOfSelectedUnit ?? '']
+          return newState
         })
-      )
-      // if(we placed a unit from another hex, then remove it from there)
+        // update placement tray...
+        setPlacementUnits([
+          // ...displaced pieces go to front of placement tray, so user can see it appear...
+          ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
+          // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
+          // TODO: is this kind of efficiency silly? (below, early out for the filter)
+          ...(oldHexIdOfSelectedUnit
+            ? placementUnits
+            : placementUnits.filter((u) => {
+                return !(u === selectedUnitID)
+              })),
+        ])
+        setSelectedUnitID('')
+        return
+      }
       // finally, deselect the unit
-      setSelectedUnitID('')
-      return
     }
     // TODO: Error toasts?
     // have unit, clicked hex outside start zone, error
@@ -123,10 +164,12 @@ const PlacementContextProvider = ({
     <PlacementContext.Provider
       value={{
         placementUnits,
+        inflatedPlacementUnits,
         onClickPlacementUnit,
         onClickBoardHex_placement,
         editingBoardHexes,
         updatePlacementEditingBoardHexes,
+        onResetPlacementState,
       }}
     >
       {children}

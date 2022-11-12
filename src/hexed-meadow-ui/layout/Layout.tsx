@@ -56,7 +56,8 @@ const LayoutBottom = styled.div`
   flex-flow: column nowrap;
   width: 100%;
   min-height: calc(100vh - 50vh - var(--navbar-height));
-  padding: 5px;
+  padding: 4px 16px;
   margin: 0;
+  box-sizing: border-box;
   background: var(--black);
 `

@@ -87,7 +87,7 @@ export const MultiplayerLobby = () => {
               <p>
                 <LinkAsButton
                   style={{
-                    backgroundColor: '#62A87C', // shiny shamrock green as success color, https://coolors.co/0c151c-ffffff-fe938c-62a87c-3590f3
+                    backgroundColor: 'var(--success-green)',
                   }}
                   to="/play"
                 >

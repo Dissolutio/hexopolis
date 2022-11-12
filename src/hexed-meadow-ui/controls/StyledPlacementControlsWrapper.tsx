@@ -1,14 +1,9 @@
 import styled from 'styled-components'
 
-export const ArmyListStyle = styled.div`
+export const StyledPlacementControlsWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   color: var(--player-color);
-  h2 {
-    font-size: 1.3rem;
-    margin: 0;
-    text-align: center;
-  }
   button {
     color: var(--player-color);
   }
@@ -21,30 +16,6 @@ export const ArmyListStyle = styled.div`
     padding: 0;
     li {
       padding: 0.3rem;
-    }
-  }
-  .order-marker {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    flex-grow: 1;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    li {
-      font-size: 2rem;
-      padding: 0 1rem;
-    }
-  }
-  .om-army-cards {
-    display: flex;
-    flex-flow: row wrap;
-    flex-grow: 1;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    li {
-      font-size: 2rem;
     }
   }
   button {
