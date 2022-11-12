@@ -46,7 +46,7 @@ export type BoardHexes = {
   [key: string]: BoardHex
 }
 export type StartZones = {
-  [key: string]: string[]
+  [playerID: string]: string[] // boardHex IDs
 }
 export type ArmyCard = {
   name: string

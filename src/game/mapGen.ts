@@ -26,19 +26,19 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     generateHexagon(mapSize),
     mapSize
   )
-  const devStartZones: StartZones = startZonesNoUnits(
+  const startZonesWithPrePlacedUnits: StartZones = startZonesNoUnits(
     generateHexagon(mapSize),
     mapSize
   )
   const boardHexes: BoardHexes = generateHexagon(mapSize)
-  let devBoardHexes: BoardHexes = startZonesWithUnits(
+  let boardHexesWithPrePlacedUnits: BoardHexes = startZonesWithUnits(
     generateHexagon(mapSize),
-    devStartZones,
+    startZonesWithPrePlacedUnits,
     gameUnits
   )
   return {
-    boardHexes: withPrePlacedUnits ? devBoardHexes : boardHexes,
-    startZones: withPrePlacedUnits ? devStartZones : startZones,
+    boardHexes: withPrePlacedUnits ? boardHexesWithPrePlacedUnits : boardHexes,
+    startZones: withPrePlacedUnits ? startZonesWithPrePlacedUnits : startZones,
     hexMap,
   }
 }
