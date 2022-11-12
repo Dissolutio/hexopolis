@@ -72,7 +72,9 @@ export type ArmyCard = {
   // image: string
   // portraitPattern: string
 }
-
+export type GameArmyCardsState = {
+  [gameArmyCardId: string]: GameArmyCard
+}
 export type GameArmyCard = ArmyCard & {
   playerID: string
   gameCardID: string

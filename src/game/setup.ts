@@ -4,6 +4,7 @@ import {
   BaseGameOptions,
   DevGameOptions,
   GameArmyCard,
+  GameArmyCardsState,
   GameState,
   GameUnit,
   GameUnits,
@@ -15,6 +16,7 @@ import {
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
+import { keyBy } from 'lodash'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -91,25 +93,21 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
     }
   })
 }
+
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const mapSize = devOptions?.mapSize ?? 0
   const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
-  // ArmyCards
-  const heroscapeCardsArr: ArmyCard[] = hsCardsToArmyCards(MS1Cards).filter(
-    // hs1000 is marro warriors, hs1002 is izumi samurai
-    (c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002'
-  )
-  // GameArmyCards
-  const armyCards: GameArmyCard[] = heroscapeCardsArr.map(
-    armyCardsToGameArmyCards
-  )
-  // GameUnits: Todo: This is where The Airborne Elite, Rechets of Bogdan, + any other summoned or non-deployed units, would be handled
-  const gameUnits = makeTestGameUnits()
+  // ArmyCards to GameArmyCards
+  // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
+  const armyCards: GameArmyCard[] = makeArmyCards()
+  //
+  // GameUnits:
+  const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
     mapSize,
     withPrePlacedUnits,
-    gameUnits: makeTestGameUnits(),
+    gameUnits: gameArmyCardsToGameUnits(armyCards),
   })
   return {
     ...generateBaseGameState(),
@@ -120,8 +118,33 @@ function makeTestScenario(devOptions?: DevGameOptions): GameState {
     startZones: hexagonMap.startZones,
   }
 }
+//! TEST SCENARIO GAMEARMYCARDS
+function makeArmyCards() {
+  return hsCardsToArmyCards(MS1Cards)
+    .filter(
+      // hs1000 is marro warriors, hs1002 is izumi samurai
+      (c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002'
+    )
+    .map((card) => {
+      // we give player 1 the marro, and player 2 the samurai
+      const isCardMarroWarriors = card.armyCardID === 'hs1000'
+      const isCardIzumiSamurai = card.armyCardID === 'hs1002'
+      const playerID = isCardMarroWarriors ? '0' : isCardIzumiSamurai ? '1' : ''
+      // id factory ...
+      function makeGameCardID() {
+        return `p${playerID}_${card.armyCardID}`
+      }
+      return {
+        ...card,
+        playerID,
+        cardQuantity: 1,
+        gameCardID: makeGameCardID(),
+      }
+    })
+}
+
 //! TEST SCENARIO GAMEUNITS
-function makeTestGameUnits() {
+function makeTestGameUnits(armyCards: GameArmyCard[]): GameUnits {
   const testGameUnitTemplate = {
     movePoints: 0,
     moveRange: {
@@ -163,30 +186,14 @@ function makeTestGameUnits() {
   }
 }
 
-function armyCardsToGameArmyCards(card: ArmyCard): GameArmyCard {
-  const isCardMarroWarriors = card.armyCardID === 'hs1000'
-  const isCardIzumiSamurai = card.armyCardID === 'hs1002'
-  const playerID = isCardMarroWarriors ? '0' : isCardIzumiSamurai ? '1' : ''
-  // id factory ...
-  function makeGameCardID() {
-    return `p${playerID}_${card.armyCardID}`
-  }
-  return {
-    ...card,
-    playerID,
-    cardQuantity: 1,
-    gameCardID: makeGameCardID(),
-  }
-}
-
-export function gameArmyCardsToGameUnits(cards: GameArmyCard[]): GameUnits {
+function gameArmyCardsToGameUnits(armyCards: GameArmyCard[]): GameUnits {
   // id factory
   let unitID = 0
   function makeUnitID(playerID: string) {
     return `p${playerID}u${unitID++}`
   }
-  return cards.reduce((result, card) => {
-    // CARD => FIGURES
+  return armyCards.reduce((result, card) => {
+    // CARD => FIGURES (this is where commons and uncommons get crazy?)
     const numFigures = card.figures * card.cardQuantity
     const figuresArr = Array.apply({}, Array(numFigures))
     // FIGURES => UNITS
