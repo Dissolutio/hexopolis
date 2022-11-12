@@ -24,12 +24,7 @@ const orders = ['0', '1', '2', 'X']
 
 export function generateBlankOrderMarkers(): OrderMarkers {
   const blankOrderMarkers = orders.reduce((prev, curr) => {
-    // why is curr not used here? : is order written later? (that should be documented)
-    /*
-     presumed right, haven't tried: 
-     return [...prev, { gameCardID: '', order: curr }]
-    */
-    return [...prev, { gameCardID: '', order: '' }]
+    return [...prev, { gameCardID: '', order: curr }]
   }, [] as OrderMarker[])
   return {
     '0': blankOrderMarkers,

@@ -76,6 +76,7 @@ export const Board = ({
                   sendChatMessage={sendChatMessage}
                 >
                   <MapContextProvider>
+                    {/* UI Context is consumed by PlacementContext and PlayContext */}
                     <UIContextProvider>
                       <PlacementContextProvider>
                         <PlayContextProvider>
