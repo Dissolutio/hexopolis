@@ -114,34 +114,41 @@ const PlacementContextProvider = ({
           (entry) => entry[1] === selectedUnitID
         )?.[0]
       : ''
-
-    // 2. if we have a unit and we clicked in start zone, then place that unit
+    const isSelectedUnitHexThatWasClicked =
+      unitIdAlreadyOnHex === selectedUnitID
+    // 3. if we have a unit and we clicked in start zone, then we either clicked our selected unit so deselect it, or place our selected unit on clicked hex
     if (selectedUnitID && isInStartZone) {
-      setEditingBoardHexes((oldState) => {
-        const newState = {
-          ...oldState,
-          // place selected unit on clicked hex
-          [clickedHexId]: selectedUnitID,
-        }
-        // remove unit from old hex, if applicable
-        delete newState[oldHexIdOfSelectedUnit ?? '']
-        return newState
-      })
-      // update placement tray...
-      setPlacementUnits([
-        // ...displaced pieces go to front of placement tray, so user can see it appear...
-        ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
-        // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
-        // TODO: is this kind of efficiency silly? (below, early out for the filter)
-        ...(oldHexIdOfSelectedUnit
-          ? placementUnits
-          : placementUnits.filter((u) => {
-              return !(u === selectedUnitID)
-            })),
-      ])
+      // 2A. if we have a unit and we clicked in start zone, but it's the selectedUnit, then deselect that unit
+      if (isSelectedUnitHexThatWasClicked) {
+        setSelectedUnitID('')
+        return
+      } else {
+        setEditingBoardHexes((oldState) => {
+          const newState = {
+            ...oldState,
+            // place selected unit on clicked hex
+            [clickedHexId]: selectedUnitID,
+          }
+          // remove unit from old hex, if applicable
+          delete newState[oldHexIdOfSelectedUnit ?? '']
+          return newState
+        })
+        // update placement tray...
+        setPlacementUnits([
+          // ...displaced pieces go to front of placement tray, so user can see it appear...
+          ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
+          // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
+          // TODO: is this kind of efficiency silly? (below, early out for the filter)
+          ...(oldHexIdOfSelectedUnit
+            ? placementUnits
+            : placementUnits.filter((u) => {
+                return !(u === selectedUnitID)
+              })),
+        ])
+        setSelectedUnitID('')
+        return
+      }
       // finally, deselect the unit
-      setSelectedUnitID('')
-      return
     }
     // TODO: Error toasts?
     // have unit, clicked hex outside start zone, error
