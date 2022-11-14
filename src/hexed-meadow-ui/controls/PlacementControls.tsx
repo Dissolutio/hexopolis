@@ -108,6 +108,11 @@ const ConfirmReady = ({
 
 const PlacementUnitTiles = () => {
   const { inflatedPlacementUnits } = usePlacementContext()
+  const isLength = inflatedPlacementUnits.length > 0
+  // render null if list is empty
+  if (!isLength) {
+    return null
+  }
   return (
     <>
       <h3>Unplaced Units:</h3>
