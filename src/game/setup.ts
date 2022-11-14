@@ -144,48 +144,6 @@ function makeArmyCards() {
 }
 
 //! TEST SCENARIO GAMEUNITS
-function makeTestGameUnits(armyCards: GameArmyCard[]): GameUnits {
-  const testGameUnitTemplate = {
-    movePoints: 0,
-    moveRange: {
-      safe: [],
-      engage: [],
-      disengage: [],
-      denied: [],
-    },
-  }
-  return {
-    p0u0: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1000',
-      gameCardID: 'p0_hs1000',
-      playerID: '0',
-      unitID: 'p0u0',
-    },
-    p0u1: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1000',
-      gameCardID: 'p0_hs1000',
-      playerID: '0',
-      unitID: 'p0u1',
-    },
-    p1u2: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1002',
-      gameCardID: 'p1_hs1002',
-      playerID: '1',
-      unitID: 'p1u2',
-    },
-    p1u3: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1002',
-      gameCardID: 'p1_hs1002',
-      playerID: '1',
-      unitID: 'p1u3',
-    },
-  }
-}
-
 function gameArmyCardsToGameUnits(armyCards: GameArmyCard[]): GameUnits {
   // id factory
   let unitID = 0
