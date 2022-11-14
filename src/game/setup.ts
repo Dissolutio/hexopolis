@@ -4,7 +4,6 @@ import {
   BaseGameOptions,
   DevGameOptions,
   GameArmyCard,
-  GameArmyCardsState,
   GameState,
   GameUnit,
   GameUnits,
@@ -16,7 +15,6 @@ import {
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
-import { keyBy } from 'lodash'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -100,7 +98,6 @@ function makeTestScenario(devOptions: DevGameOptions): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
   const armyCards: GameArmyCard[] = makeArmyCards()
-  //
   // GameUnits:
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map

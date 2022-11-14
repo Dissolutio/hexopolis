@@ -23,11 +23,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
   const { ctx } = useBgioCtx()
-  const {
-    onClickBoardHex_placement,
-    updatePlacementEditingBoardHexes,
-    editingBoardHexes,
-  } = usePlacementContext()
+  const { onClickBoardHex_placement, editingBoardHexes } = usePlacementContext()
   const {
     onClickBoardHex__turn,
     selectedGameCard,
