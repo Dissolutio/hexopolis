@@ -36,11 +36,15 @@ function playersStateWithPrePlacedOMs(): PlayersState {
     },
   }
 }
+export const devToggle_withPrePlacedUnits = true
 
 function generateBaseGameState(devOptions?: BaseGameOptions) {
   const defaultDevOptions = {
-    withPrePlacedUnits: false,
-    placementReady: { '0': false, '1': false },
+    withPrePlacedUnits: devToggle_withPrePlacedUnits,
+    placementReady: {
+      '0': false,
+      '1': false,
+    },
     orderMarkersReady: { '0': false, '1': false },
     roundOfPlayStartReady: { '0': false, '1': false },
     currentRound: 0,
@@ -61,7 +65,7 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
 //!! TEST SCENARIO
 export const testScenario = makeTestScenario({
   mapSize: 2,
-  withPrePlacedUnits: false,
+  withPrePlacedUnits: devToggle_withPrePlacedUnits,
   //   placementReady: { '0': true, '1': true },
   //   orderMarkersReady: { '0': true, '1': true },
   //   roundOfPlayStartReady: { '0': true, '1': true },
