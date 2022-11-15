@@ -19,13 +19,6 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     hexWidth: Math.sqrt(3),
   }
   const mapDimensions = flat ? flatDimensions : pointyDimensions
-  const hexMap = {
-    ...mapDimensions,
-    flat,
-    withPrePlacedUnits,
-    mapShape: 'hexagon',
-    mapSize,
-  }
   const startZones: StartZones = startZonesNoUnits(
     generateHexagon(mapSize),
     mapSize
@@ -43,7 +36,13 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   return {
     boardHexes: withPrePlacedUnits ? boardHexesWithPrePlacedUnits : boardHexes,
     startZones: withPrePlacedUnits ? startZonesWithPrePlacedUnits : startZones,
-    hexMap,
+    hexMap: {
+      ...mapDimensions,
+      mapShape: 'hexagon',
+      flat,
+      withPrePlacedUnits,
+      mapSize,
+    },
   }
 }
 function startZonesNoUnits(
