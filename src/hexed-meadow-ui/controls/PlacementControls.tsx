@@ -9,11 +9,7 @@ import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
-  const {
-    placementReady,
-    myStartZone,
-    hexMap: { withPrePlacedUnits },
-  } = useBgioG()
+  const { placementReady, myStartZone } = useBgioG()
   const { moves } = useBgioMoves()
   const { deployUnits } = moves
   const { placementUnits, editingBoardHexes } = usePlacementContext()
@@ -55,7 +51,7 @@ export const PlacementControls = () => {
     </StyledPlacementControlsWrapper>
   )
 }
-const StyledControlsHeaderH2 = styled.h2`
+export const StyledControlsHeaderH2 = styled.h2`
   font-size: 1.3rem;
   margin: 0;
   text-align: center;
@@ -70,8 +66,6 @@ const ConfirmReady = ({
   isAllPlacementUnitsPlaced: boolean
 }) => {
   const { onResetPlacementState } = usePlacementContext()
-  const { moves } = useBgioMoves()
-  const { deployUnits } = moves
   return (
     <>
       {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
@@ -137,7 +131,7 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
       return {
         boxShadow: `0 0 2px var(--white)`,
         border: `1px solid var(--white)`,
-        backgroundColor: `green`,
+        backgroundColor: `var(--selected-green)`,
       }
     } else {
       return {}

@@ -1,5 +1,7 @@
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
+import { StyledControlsHeaderH2 } from 'hexed-meadow-ui/layout/Typography'
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import { StyledOrderMarkersControlsWrapper } from './StyledOrderMarkersControlsWrapper'
 
 export const PlaceOrderMarkersControls = () => {
@@ -38,7 +40,7 @@ export const PlaceOrderMarkersControls = () => {
       return {}
     }
   }
-  const makeReady = () => {
+  const onClickConfirm = () => {
     confirmOrderMarkersReady({ playerID })
   }
   const areAllOMsAssigned = !Object.values(myOrderMarkers).some(
@@ -55,52 +57,76 @@ export const PlaceOrderMarkersControls = () => {
     confirmOrderMarkersReady({ playerID })
   }
 
-  if (orderMarkersReady[playerID] === true) {
-    return (
-      <>
-        <p>Waiting for opponents to finish placing order markers...</p>
-      </>
-    )
-  }
-  if (areAllOMsAssigned) {
-    return (
-      <>
-        <p>Done placing your order markers?</p>
-        <button onClick={makeReady}>CONFIRM DONE</button>
-      </>
-    )
-  }
   return (
     <>
       <StyledOrderMarkersControlsWrapper>
-        <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
-        <button type="button" onClick={onClickAutoLayOrderMarkers}>
-          Put the rest of them on {myFirstCard.name}
-        </button>
-        <ul className="order-marker__unplaced">
+        {orderMarkersReady[playerID] === true && (
+          <p>Waiting for opponents to finish placing order markers...</p>
+        )}
+
+        {areAllOMsAssigned && !orderMarkersReady[playerID] && (
+          <button onClick={onClickConfirm}>CONFIRM DONE</button>
+        )}
+
+        <StyledControlsHeaderH2>{`Place your order markers for Round ${
+          currentRound + 1
+        }:`}</StyledControlsHeaderH2>
+        <StyledUnplacedOrderMarkersUl>
           {toBePlacedOrderMarkers.map((om) => (
             <li
               key={om}
               onClick={() => selectOrderMarker(om)}
               style={selectedStyle(om)}
+              className="marker"
             >
               {om === 'X' ? om : (parseInt(om) + 1).toString()}
             </li>
           ))}
-        </ul>
-        <ul className="om-army-cards">
+        </StyledUnplacedOrderMarkersUl>
+        <StyledOderMarkerArmyCardsUl>
           {myCards.map((card) => (
             <li key={card.gameCardID}>
-              <button
-                // style={selectedStyle(card.gameCardID)}
-                onClick={() => selectCard(card.gameCardID)}
-              >
+              <button onClick={() => selectCard(card.gameCardID)}>
                 <span>{card.name}</span>
               </button>
             </li>
           ))}
-        </ul>
+        </StyledOderMarkerArmyCardsUl>
+        <StyledErrorRedButton
+          type="button"
+          onClick={onClickAutoLayOrderMarkers}
+        >
+          Put all order markers on {myFirstCard.name}
+        </StyledErrorRedButton>
       </StyledOrderMarkersControlsWrapper>
     </>
   )
 }
+const StyledErrorRedButton = styled.button`
+  color: var(--error-red);
+  border: 1px solid var(--error-red);
+`
+const StyledUnplacedOrderMarkersUl = styled.ul`
+  display: flex;
+  flex-flow: row wrap;
+  /* justify-content: center; */
+  flex-grow: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  .marker {
+    font-size: 2rem;
+    padding: 0 1rem;
+  }
+`
+const StyledOderMarkerArmyCardsUl = styled.ul`
+  display: flex;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  li {
+    font-size: 1.2rem;
+  }
+`
