@@ -131,13 +131,14 @@ const PlacementContextProvider = ({
       : ''
     const isSelectedUnitHexThatWasClicked =
       unitIdAlreadyOnHex === selectedUnitID
-    // 3. if we have a unit and we clicked in start zone, then we either clicked our selected unit so deselect it, or place our selected unit on clicked hex
+    // 2. if we have a unit and we clicked in start zone...
     if (selectedUnitID && isInStartZone) {
-      // 2A. if we have a unit and we clicked in start zone, but it's the selectedUnit, then deselect that unit
       if (isSelectedUnitHexThatWasClicked) {
+        // ... 2A. then we either clicked our selected unit so deselect it...
         setSelectedUnitID('')
         return
       } else {
+        // ...2B. or place our selected unit on clicked hex
         setEditingBoardHexes((oldState) => {
           const newState = {
             ...oldState,
@@ -161,6 +162,7 @@ const PlacementContextProvider = ({
               })),
         ])
         setSelectedUnitID('')
+        setSelectedMapHex(clickedHexId)
         return
       }
       // finally, deselect the unit
