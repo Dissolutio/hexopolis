@@ -37,21 +37,36 @@ const PlacementContextProvider = ({
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE
-  const [editingBoardHexes, setEditingBoardHexes] =
-    useState<DeploymentProposition>({})
-  const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
-    setEditingBoardHexes(updated)
-  }
+  const myUnitIds = myUnits.map((u) => u.unitID)
+  // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty -- all for sake of pre-placed units
+  const initialEditingBoardHexes = Object.values(boardHexes)
+    .filter((i) => !!i.occupyingUnitID && myUnitIds.includes(i.occupyingUnitID))
+    .reduce((result, bh) => {
+      return {
+        ...result,
+        [bh.id]: bh.occupyingUnitID,
+      }
+    }, {})
+  const intialEditingBoardHexesIfTotallyReset = {}
+  // we honor this now for the sake of pre-placement
   const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
     .map((bH: BoardHex) => bH.occupyingUnitID)
     .filter((id) => {
       return id && gameUnits[id].playerID === playerID
     })
+  const initialPlacementUnitsIfTotallyReset = myUnits.map((unit) => {
+    return unit.unitID
+  })
   const initialPlacementUnits = myUnits
     .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
     .map((unit) => {
       return unit.unitID
     })
+  const [editingBoardHexes, setEditingBoardHexes] =
+    useState<DeploymentProposition>(initialEditingBoardHexes)
+  const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
+    setEditingBoardHexes(updated)
+  }
   const [placementUnits, setPlacementUnits] = useState(
     (): string[] => initialPlacementUnits
   )
@@ -77,8 +92,8 @@ const PlacementContextProvider = ({
 
   // HANDLERS
   function onResetPlacementState() {
-    setPlacementUnits(initialPlacementUnits)
-    setEditingBoardHexes({})
+    setPlacementUnits(initialPlacementUnitsIfTotallyReset)
+    setEditingBoardHexes(intialEditingBoardHexesIfTotallyReset)
   }
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex

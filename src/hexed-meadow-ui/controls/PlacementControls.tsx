@@ -9,7 +9,11 @@ import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
-  const { placementReady, myStartZone } = useBgioG()
+  const {
+    placementReady,
+    myStartZone,
+    hexMap: { withPrePlacedUnits },
+  } = useBgioG()
   const { moves } = useBgioMoves()
   const { deployUnits } = moves
   const { placementUnits, editingBoardHexes } = usePlacementContext()
