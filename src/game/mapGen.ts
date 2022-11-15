@@ -2,10 +2,12 @@ import { generateHexagon } from './hexGen'
 import { BoardHexes, GameMap, GameUnits, MapOptions, StartZones } from './types'
 
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
+  // destructure mapOptions: mapSize, withPrePlacedUnits, gameUnits, flat
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false
   const gameUnits = mapOptions?.gameUnits ?? {}
   const flat = mapOptions?.flat ?? false
+
   const flatDimensions = {
     hexGridLayout: 'flat',
     hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
@@ -17,11 +19,6 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     hexWidth: Math.sqrt(3),
   }
   const mapDimensions = flat ? flatDimensions : pointyDimensions
-  const hexMap = {
-    ...mapDimensions,
-    mapShape: 'hexagon',
-    mapSize,
-  }
   const startZones: StartZones = startZonesNoUnits(
     generateHexagon(mapSize),
     mapSize
@@ -39,13 +36,20 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   return {
     boardHexes: withPrePlacedUnits ? boardHexesWithPrePlacedUnits : boardHexes,
     startZones: withPrePlacedUnits ? startZonesWithPrePlacedUnits : startZones,
-    hexMap,
+    hexMap: {
+      ...mapDimensions,
+      mapShape: 'hexagon',
+      flat,
+      withPrePlacedUnits,
+      mapSize,
+    },
   }
 }
 function startZonesNoUnits(
   boardHexes: BoardHexes,
   mapSize: number
 ): StartZones {
+  // this divides the map in half along the S-axis
   const boardHexesArr = Object.values(boardHexes)
   const P0StartZone = boardHexesArr
     .filter((hex) => hex.s >= Math.max(mapSize - 1, 1))
@@ -58,32 +62,34 @@ function startZonesNoUnits(
     '1': P1StartZone,
   }
 }
-// ! this function mutates input 'zones'
 function startZonesWithUnits(
-  hexes: BoardHexes,
+  boardHexes: BoardHexes,
   zones: StartZones,
   gameUnits: GameUnits
 ): BoardHexes {
   const gameUnitsArr = Object.values(gameUnits)
+  // k, j are just increment values for uniqueness of hex
+  let k = 0
+  let j = 0
   gameUnitsArr.forEach((unit) => {
     try {
       const { playerID } = unit
       let randomHexID: string = ''
       if (playerID === '0') {
-        randomHexID = zones?.[unit.playerID]?.pop() ?? ''
+        randomHexID = zones?.[unit.playerID][k++] ?? ''
       }
       if (playerID === '1') {
-        randomHexID = zones?.[unit.playerID]?.pop() ?? ''
+        randomHexID = zones?.[unit.playerID][j++] ?? ''
       }
       // update boardHex
-      hexes[randomHexID].occupyingUnitID = unit.unitID
+      boardHexes[randomHexID].occupyingUnitID = unit.unitID
     } catch (error) {
       console.error(
         '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
-        `🚔 The problem is the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
+        `🚔 The problem is likely the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
         error
       )
     }
   })
-  return hexes
+  return boardHexes
 }

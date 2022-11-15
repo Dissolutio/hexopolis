@@ -4,7 +4,6 @@ import {
   BaseGameOptions,
   DevGameOptions,
   GameArmyCard,
-  GameArmyCardsState,
   GameState,
   GameUnit,
   GameUnits,
@@ -16,7 +15,6 @@ import {
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
-import { keyBy } from 'lodash'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -38,11 +36,28 @@ function playersStateWithPrePlacedOMs(): PlayersState {
     },
   }
 }
+export const withPrePlacedUnits = true
 
-function generateBaseGameState(devOptions?: BaseGameOptions) {
-  const defaultDevOptions = {
-    withPrePlacedUnits: false,
-    placementReady: { '0': false, '1': false },
+//!! TEST SCENARIO
+export const testScenario = makeTestScenario()
+function makeTestScenario(): GameState {
+  // ArmyCards to GameArmyCards
+  // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
+  const armyCards: GameArmyCard[] = makeArmyCards()
+  // GameUnits:
+  const gameUnits = gameArmyCardsToGameUnits(armyCards)
+  // Map
+  const hexagonMap = makeHexagonShapedMap({
+    mapSize: 2,
+    withPrePlacedUnits,
+    gameUnits: gameArmyCardsToGameUnits(armyCards),
+    flat: false,
+  })
+  return {
+    placementReady: {
+      '0': false,
+      '1': false,
+    },
     orderMarkersReady: { '0': false, '1': false },
     roundOfPlayStartReady: { '0': false, '1': false },
     currentRound: 0,
@@ -52,24 +67,13 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
     unitsMoved: [],
     unitsAttacked: [],
     players: generateBlankPlayersState(),
-  }
-
-  return {
-    ...defaultDevOptions,
-    ...devOptions,
+    armyCards,
+    gameUnits,
+    hexMap: hexagonMap.hexMap,
+    boardHexes: hexagonMap.boardHexes,
+    startZones: hexagonMap.startZones,
   }
 }
-
-//!! TEST SCENARIO
-export const testScenario = makeTestScenario({
-  mapSize: 2,
-  withPrePlacedUnits: false,
-  //   placementReady: { '0': true, '1': true },
-  //   orderMarkersReady: { '0': true, '1': true },
-  //   roundOfPlayStartReady: { '0': true, '1': true },
-  //   withPrePlacedUnits: true,
-  //   players: playersStateWithPrePlacedOMs(),
-})
 function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   return params.map((hsCard) => {
     return {
@@ -94,30 +98,6 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   })
 }
 
-function makeTestScenario(devOptions: DevGameOptions): GameState {
-  const mapSize = devOptions.mapSize
-  const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
-  // ArmyCards to GameArmyCards
-  // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = makeArmyCards()
-  //
-  // GameUnits:
-  const gameUnits = gameArmyCardsToGameUnits(armyCards)
-  // Map
-  const hexagonMap = makeHexagonShapedMap({
-    mapSize,
-    withPrePlacedUnits,
-    gameUnits: gameArmyCardsToGameUnits(armyCards),
-  })
-  return {
-    ...generateBaseGameState(),
-    armyCards,
-    gameUnits,
-    hexMap: hexagonMap.hexMap,
-    boardHexes: hexagonMap.boardHexes,
-    startZones: hexagonMap.startZones,
-  }
-}
 //! TEST SCENARIO GAMEARMYCARDS
 function makeArmyCards() {
   return hsCardsToArmyCards(MS1Cards)
@@ -144,48 +124,6 @@ function makeArmyCards() {
 }
 
 //! TEST SCENARIO GAMEUNITS
-function makeTestGameUnits(armyCards: GameArmyCard[]): GameUnits {
-  const testGameUnitTemplate = {
-    movePoints: 0,
-    moveRange: {
-      safe: [],
-      engage: [],
-      disengage: [],
-      denied: [],
-    },
-  }
-  return {
-    p0u0: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1000',
-      gameCardID: 'p0_hs1000',
-      playerID: '0',
-      unitID: 'p0u0',
-    },
-    p0u1: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1000',
-      gameCardID: 'p0_hs1000',
-      playerID: '0',
-      unitID: 'p0u1',
-    },
-    p1u2: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1002',
-      gameCardID: 'p1_hs1002',
-      playerID: '1',
-      unitID: 'p1u2',
-    },
-    p1u3: {
-      ...testGameUnitTemplate,
-      armyCardID: 'hs1002',
-      gameCardID: 'p1_hs1002',
-      playerID: '1',
-      unitID: 'p1u3',
-    },
-  }
-}
-
 function gameArmyCardsToGameUnits(armyCards: GameArmyCard[]): GameUnits {
   // id factory
   let unitID = 0

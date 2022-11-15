@@ -9,7 +9,11 @@ import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
-  const { placementReady, myStartZone } = useBgioG()
+  const {
+    placementReady,
+    myStartZone,
+    hexMap: { withPrePlacedUnits },
+  } = useBgioG()
   const { moves } = useBgioMoves()
   const { deployUnits } = moves
   const { placementUnits, editingBoardHexes } = usePlacementContext()
@@ -17,7 +21,7 @@ export const PlacementControls = () => {
   const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
-    deployUnits(editingBoardHexes, playerID)
+    deployUnits(editingBoardHexes)
     confirmPlacementReady({ playerID })
   }
   const filledHexesCount = Object.keys(editingBoardHexes).length
@@ -68,10 +72,6 @@ const ConfirmReady = ({
   const { onResetPlacementState } = usePlacementContext()
   const { moves } = useBgioMoves()
   const { deployUnits } = moves
-  console.log(
-    '🚀 ~ file: PlacementControls.tsx ~ line 70 ~ deployUnits',
-    deployUnits
-  )
   return (
     <>
       {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
@@ -108,6 +108,11 @@ const ConfirmReady = ({
 
 const PlacementUnitTiles = () => {
   const { inflatedPlacementUnits } = usePlacementContext()
+  const isLength = inflatedPlacementUnits.length > 0
+  // render null if list is empty
+  if (!isLength) {
+    return null
+  }
   return (
     <>
       <h3>Unplaced Units:</h3>

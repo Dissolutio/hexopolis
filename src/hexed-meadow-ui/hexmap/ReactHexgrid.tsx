@@ -1,3 +1,4 @@
+import { useBgioG } from 'bgio-contexts'
 import React from 'react'
 import { HexGrid, Layout } from 'react-hexgrid'
 
@@ -20,6 +21,9 @@ export const ReactHexgrid = ({
 }: ReactHexgridProps) => {
   const halfViewBox = mapSize * -50
   const fullViewBox = mapSize * 100
+  const {
+    hexMap: { flat },
+  } = useBgioG()
   return (
     <HexGrid
       width={width}
@@ -31,7 +35,7 @@ export const ReactHexgrid = ({
           x: hexSize,
           y: hexSize,
         }}
-        flat={false}
+        flat={flat}
         origin={{ x: 0, y: 0 }}
         spacing={spacing}
       >

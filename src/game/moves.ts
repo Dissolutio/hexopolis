@@ -1,4 +1,4 @@
-import { BoardProps } from 'boardgame.io/react'
+import type { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
 
 import {
@@ -8,41 +8,21 @@ import {
   selectUnitsForCard,
   selectUnrevealedGameCard,
 } from './selectors'
-import {
-  GameState,
-  BoardHexes,
-  BoardHex,
-  GameUnits,
-  GameUnit,
-  OrderMarker,
-} from './types'
+import { GameState, BoardHexes, BoardHex, GameUnits, GameUnit } from './types'
 import { stageNames } from './constants'
-import { Ctx } from 'boardgame.io'
-
-export const moves = {
-  endCurrentMoveStage,
-  endCurrentPlayerTurn,
-  moveAction,
-  attackAction,
-  deployUnits,
-  confirmPlacementReady,
-  placeOrderMarker,
-  confirmOrderMarkersReady,
-}
 
 //phase:___RoundOfPlay
-function endCurrentMoveStage(G: GameState, ctx: Ctx) {
-  ctx?.events?.setStage(stageNames.attacking)
+const endCurrentMoveStage: Move<GameState> = ({ events }) => {
+  events.setStage(stageNames.attacking)
 }
-function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
-  ctx?.events?.endTurn()
+const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
+  events.endTurn()
 }
-function moveAction(
-  G: GameState,
-  ctx: BoardProps['ctx'],
+const moveAction: Move<GameState> = (
+  { G, ctx },
   unit: GameUnit,
   endHex: BoardHex
-) {
+) => {
   const { unitID, movePoints } = unit
   const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
   const endHexID = endHex.id
@@ -86,13 +66,13 @@ function moveAction(
     G.boardHexes = { ...newBoardHexes }
     G.gameUnits = { ...newGameUnits }
   }
+  return G
 }
-function attackAction(
-  G: GameState,
-  ctx: BoardProps['ctx'],
+const attackAction: Move<GameState> = (
+  { G, ctx, random },
   unit: GameUnit,
   defenderHex: BoardHex
-) {
+) => {
   const { unitID } = unit
   const unitGameCard = selectGameCardByID(G.armyCards, unit.gameCardID)
   const unitRange = unitGameCard?.range ?? 0
@@ -146,9 +126,9 @@ function attackAction(
   )
   const defense = defenderGameCard?.defense ?? 0
   const defenderLife = defenderGameCard?.life ?? 0
-  const attackRoll = ctx?.random?.Die(6, attack) ?? []
+  const attackRoll = random?.Die(6, attack) ?? []
   const skulls = attackRoll.filter((n) => n <= 3).length
-  const defenseRoll = ctx?.random?.Die(6, defense) ?? []
+  const defenseRoll = random?.Die(6, defense) ?? []
   const shields = defenseRoll.filter((n) => n === 4 || n === 5).length
   const wounds = Math.max(skulls - shields, 0)
   const isHit = wounds > 0
@@ -171,34 +151,31 @@ function attackAction(
   unitsAttacked.push(unitID)
   G.unitsAttacked = unitsAttacked
 }
+
 //phase:___Placement
-function deployUnits(
-  G: GameState,
-  ctx: BoardProps['ctx'],
+const deployUnits: Move<GameState> = (
+  { G },
   deploymentProposition: {
     [boardHexId: string]: string // occupyingUnitId
-  },
-  playerID: string
-) {
-  console.log(
-    '🚀 ~ file: moves.ts ~ line 183 ~ deploymentProposition',
-    deploymentProposition
-  )
+  }
+) => {
   /*
+   ALL this below was WIP, and abandoned for SIMPLICITY, AKA just place the units and worry about cheaters later
+   Goals:
   1. Get list of units that player is deploying
   2. Validate units belong to player (note all WRONGLY placed units, for dev-obs?)
   3. Validate assigned hexes are in player's startZone (note all WRONGLY placed hexes, for dev-obs?)
   4. Assign valid game units to valid hexes
   5. All other units marked as destroyed? Or forfeited, somehow?
-
-  */
+  Work:
   //  1. get units
+  // const playerStartZone = G.startZones[playerID]
+  // const validHexIds = propositions
+  //   .map((i) => i[0])
+  //   .filter((i) => playerStartZone.includes(i))
+  // const validGameUnitIds = propositions.map((i) => i[1])
+  */
   const propositions = Object.entries(deploymentProposition)
-  const playerStartZone = G.startZones[playerID]
-  const validHexIds = propositions
-    .map((i) => i[0])
-    .filter((i) => playerStartZone.includes(i))
-  const validGameUnitIds = propositions.map((i) => i[1])
   let newG = {
     ...G,
     boardHexes: {
@@ -207,36 +184,60 @@ function deployUnits(
   }
 
   propositions.forEach((proposition) => {
-    newG.boardHexes[proposition[0]].occupyingUnitID = proposition[1]
+    const boardHexId = proposition[0]
+    const placedGameUnitId = proposition[1]
+    const oldHexId = Object.values(G.boardHexes).find(
+      (bh) => bh.occupyingUnitID === placedGameUnitId
+    )?.id
+    const latestUnitIdOnOldHexId =
+      newG.boardHexes[oldHexId ?? '']?.occupyingUnitID
+    const shouldOverwriteOldHex =
+      !!oldHexId &&
+      !!latestUnitIdOnOldHexId &&
+      latestUnitIdOnOldHexId === placedGameUnitId
+    // don't overwrite it if another unit has already been placed on that hex; in that case, the erasure "happened" for us early, so yay
+    if (shouldOverwriteOldHex) {
+      newG.boardHexes[oldHexId].occupyingUnitID = ''
+    }
+    newG.boardHexes[boardHexId].occupyingUnitID = placedGameUnitId
   })
   G.boardHexes = newG.boardHexes
   //  2. get start zone
   //  3. assign units
 }
-function confirmPlacementReady(
-  G: GameState,
-  ctx: BoardProps['ctx'],
+const confirmPlacementReady: Move<GameState> = (
+  { G, ctx },
   { playerID }: { playerID: string }
-) {
+) => {
   G.placementReady[playerID] = true
 }
+
 //phase:___PlaceOrderMarkers
-function placeOrderMarker(
-  G: GameState,
-  ctx: BoardProps['ctx'],
+const placeOrderMarker: Move<GameState> = (
+  { G, ctx },
   {
     playerID,
     // TODO: orderMarker should be called "order", really
-    orderMarker,
+    order,
     gameCardID,
-  }: { playerID: string; orderMarker: string; gameCardID: string }
-) {
-  G.players[playerID].orderMarkers[orderMarker] = gameCardID
+  }: { playerID: string; order: string; gameCardID: string }
+) => {
+  G.players[playerID].orderMarkers[order] = gameCardID
 }
-function confirmOrderMarkersReady(
-  G: GameState,
-  ctx: BoardProps['ctx'],
+const confirmOrderMarkersReady: Move<GameState> = (
+  { G, ctx },
   { playerID }: { playerID: string }
-) {
+) => {
   G.orderMarkersReady[playerID] = true
+}
+
+export const moves = {
+  endCurrentMoveStage,
+  endCurrentPlayerTurn,
+  moveAction,
+  attackAction,
+  deployUnits,
+  confirmPlacementReady,
+  placeOrderMarker,
+  confirmOrderMarkersReady,
 }
