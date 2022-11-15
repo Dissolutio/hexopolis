@@ -184,7 +184,22 @@ const deployUnits: Move<GameState> = (
   }
 
   propositions.forEach((proposition) => {
-    newG.boardHexes[proposition[0]].occupyingUnitID = proposition[1]
+    const boardHexId = proposition[0]
+    const placedGameUnitId = proposition[1]
+    const oldHexId = Object.values(G.boardHexes).find(
+      (bh) => bh.occupyingUnitID === placedGameUnitId
+    )?.id
+    const latestUnitIdOnOldHexId =
+      newG.boardHexes[oldHexId ?? '']?.occupyingUnitID
+    const shouldOverwriteOldHex =
+      !!oldHexId &&
+      !!latestUnitIdOnOldHexId &&
+      latestUnitIdOnOldHexId === placedGameUnitId
+    // don't overwrite it if another unit has already been placed on that hex; in that case, the erasure "happened" for us early, so yay
+    if (shouldOverwriteOldHex) {
+      newG.boardHexes[oldHexId].occupyingUnitID = ''
+    }
+    newG.boardHexes[boardHexId].occupyingUnitID = placedGameUnitId
   })
   G.boardHexes = newG.boardHexes
   //  2. get start zone
