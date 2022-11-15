@@ -36,11 +36,24 @@ function playersStateWithPrePlacedOMs(): PlayersState {
     },
   }
 }
-export const devToggle_withPrePlacedUnits = true
+export const withPrePlacedUnits = true
 
-function generateBaseGameState(devOptions?: BaseGameOptions) {
-  const defaultDevOptions = {
-    withPrePlacedUnits: devToggle_withPrePlacedUnits,
+//!! TEST SCENARIO
+export const testScenario = makeTestScenario()
+function makeTestScenario(): GameState {
+  // ArmyCards to GameArmyCards
+  // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
+  const armyCards: GameArmyCard[] = makeArmyCards()
+  // GameUnits:
+  const gameUnits = gameArmyCardsToGameUnits(armyCards)
+  // Map
+  const hexagonMap = makeHexagonShapedMap({
+    mapSize: 2,
+    withPrePlacedUnits,
+    gameUnits: gameArmyCardsToGameUnits(armyCards),
+    flat: false,
+  })
+  return {
     placementReady: {
       '0': false,
       '1': false,
@@ -54,24 +67,13 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
     unitsMoved: [],
     unitsAttacked: [],
     players: generateBlankPlayersState(),
-  }
-
-  return {
-    ...defaultDevOptions,
-    ...devOptions,
+    armyCards,
+    gameUnits,
+    hexMap: hexagonMap.hexMap,
+    boardHexes: hexagonMap.boardHexes,
+    startZones: hexagonMap.startZones,
   }
 }
-
-//!! TEST SCENARIO
-export const testScenario = makeTestScenario({
-  mapSize: 2,
-  withPrePlacedUnits: devToggle_withPrePlacedUnits,
-  //   placementReady: { '0': true, '1': true },
-  //   orderMarkersReady: { '0': true, '1': true },
-  //   roundOfPlayStartReady: { '0': true, '1': true },
-  //   withPrePlacedUnits: true,
-  //   players: playersStateWithPrePlacedOMs(),
-})
 function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   return params.map((hsCard) => {
     return {
@@ -96,29 +98,6 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   })
 }
 
-function makeTestScenario(devOptions: DevGameOptions): GameState {
-  const mapSize = devOptions.mapSize
-  const withPrePlacedUnits = devOptions?.withPrePlacedUnits ?? false
-  // ArmyCards to GameArmyCards
-  // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = makeArmyCards()
-  // GameUnits:
-  const gameUnits = gameArmyCardsToGameUnits(armyCards)
-  // Map
-  const hexagonMap = makeHexagonShapedMap({
-    mapSize,
-    withPrePlacedUnits,
-    gameUnits: gameArmyCardsToGameUnits(armyCards),
-  })
-  return {
-    ...generateBaseGameState(),
-    armyCards,
-    gameUnits,
-    hexMap: hexagonMap.hexMap,
-    boardHexes: hexagonMap.boardHexes,
-    startZones: hexagonMap.startZones,
-  }
-}
 //! TEST SCENARIO GAMEARMYCARDS
 function makeArmyCards() {
   return hsCardsToArmyCards(MS1Cards)

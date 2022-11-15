@@ -34,6 +34,7 @@ export type HexMap = {
   hexHeight: number
   hexWidth: number
   flat: boolean
+  withPrePlacedUnits: boolean
 }
 export type BoardHex = {
   id: string

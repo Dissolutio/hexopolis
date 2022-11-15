@@ -12,17 +12,17 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     hexGridLayout: 'flat',
     hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
     hexWidth: 2,
-    flat,
   }
   const pointyDimensions = {
     hexGridLayout: 'pointy',
     hexHeight: 2,
     hexWidth: Math.sqrt(3),
-    flat,
   }
   const mapDimensions = flat ? flatDimensions : pointyDimensions
   const hexMap = {
     ...mapDimensions,
+    flat,
+    withPrePlacedUnits,
     mapShape: 'hexagon',
     mapSize,
   }
