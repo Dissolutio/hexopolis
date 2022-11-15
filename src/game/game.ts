@@ -56,7 +56,7 @@ export const HexedMeadow: Game<GameState> = {
         },
       },
       // once all players have placed their units and confirmed ready, the order marker stage will begin
-      endIf: (G: GameState) => {
+      endIf: ({ G }) => {
         return G.placementReady['0'] && G.placementReady['1']
       },
       next: phaseNames.placeOrderMarkers,
@@ -64,7 +64,7 @@ export const HexedMeadow: Game<GameState> = {
     //PHASE: ORDER-MARKERS
     [phaseNames.placeOrderMarkers]: {
       // reset order-markers state
-      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+      onBegin: ({ G }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 0) {
           // clear secret order marker state
@@ -85,12 +85,12 @@ export const HexedMeadow: Game<GameState> = {
         },
       },
       // proceed to round-of-play once all players are ready
-      endIf: (G: GameState) => {
+      endIf: ({ G }) => {
         // TODO: check to make sure all order markers are placed!
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
       },
       // setup unrevealed public order-markers
-      onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
+      onEnd: ({ G }) => {
         // setup unrevealed public order-markers state by copying over the private order-markers state: remove the order number (which is not public yet), but leave the gameCardID (which is public)
         G.orderMarkers = Object.keys(G.players).reduce(
           (orderMarkers, playerID) => {
@@ -109,13 +109,13 @@ export const HexedMeadow: Game<GameState> = {
     //PHASE-ROUND OF PLAY -
     [phaseNames.roundOfPlay]: {
       // roll initiative
-      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+      onBegin: ({ G }) => {
         const initiativeRoll = rollD20Initiative(['0', '1'])
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
       },
       // reset state, update currentRound
-      onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
+      onEnd: ({ G }) => {
         G.orderMarkersReady = { '0': false, '1': false }
         G.roundOfPlayStartReady = { '0': false, '1': false }
         G.currentOrderMarker = 0
@@ -126,7 +126,7 @@ export const HexedMeadow: Game<GameState> = {
         // d20 roll-offs for initiative
         order: TurnOrder.CUSTOM_FROM('initiative'),
         // reveal order marker, assign movePoints/moveRanges to eligible units
-        onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+        onBegin: ({ G, ctx }) => {
           // Reveal order marker
           const revealedGameCardID =
             G.players[ctx.currentPlayer].orderMarkers[
@@ -185,7 +185,7 @@ export const HexedMeadow: Game<GameState> = {
           G.unitsAttacked = []
         },
         // clear movePoints/moveRanges,  update currentOrderMarker, end round after last turn (go to place order-markers)
-        onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
+        onEnd: ({ G, ctx, events }) => {
           // reset unit movePoints/moveRanges
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0
@@ -199,7 +199,7 @@ export const HexedMeadow: Game<GameState> = {
           }
           // end the RoundOfPlay phase after last turn
           if (isLastTurn && isLastOrderMarker) {
-            ctx?.events?.setPhase(phaseNames.placeOrderMarkers)
+            events.setPhase(phaseNames.placeOrderMarkers)
           }
         },
       },
@@ -210,7 +210,7 @@ export const HexedMeadow: Game<GameState> = {
   },
   // Ends the game if this returns anything.
   // The return value is available in `ctx.gameover`.
-  endIf: (G, ctx) => {
+  endIf: ({ G, ctx }) => {
     const gameUnitsArr = Object.values(G.gameUnits)
     const isP0Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '0')
     const isP1Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '1')
@@ -224,7 +224,7 @@ export const HexedMeadow: Game<GameState> = {
   },
   // Called at the end of the game.
   // `ctx.gameover` is available at this point.
-  onEnd: (G, ctx) => {
+  onEnd: ({ G, ctx }) => {
     const winner = ctx.gameover.winner === '0' ? 'BEES' : 'BUTTERFLIES'
     console.log(`THE ${winner} WON!`)
   },

@@ -17,7 +17,7 @@ export const PlacementControls = () => {
   const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
-    deployUnits(editingBoardHexes, playerID)
+    deployUnits(editingBoardHexes)
     confirmPlacementReady({ playerID })
   }
   const filledHexesCount = Object.keys(editingBoardHexes).length
@@ -68,10 +68,6 @@ const ConfirmReady = ({
   const { onResetPlacementState } = usePlacementContext()
   const { moves } = useBgioMoves()
   const { deployUnits } = moves
-  console.log(
-    '🚀 ~ file: PlacementControls.tsx ~ line 70 ~ deployUnits',
-    deployUnits
-  )
   return (
     <>
       {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
