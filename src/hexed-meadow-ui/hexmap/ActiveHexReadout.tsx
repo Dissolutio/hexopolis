@@ -1,13 +1,19 @@
-import { useBgioG } from 'bgio-contexts'
-import { useMapContext } from 'hexed-meadow-ui/contexts'
+import { useBgioCtx, useBgioG } from 'bgio-contexts'
+import { useMapContext, usePlacementContext } from 'hexed-meadow-ui/contexts'
 import React from 'react'
 import styled from 'styled-components'
 
 export const ActiveHexReadout = () => {
   const { boardHexes, gameUnits, armyCards } = useBgioG()
+  const {
+    ctx: { isPlacementPhase },
+  } = useBgioCtx()
+  const { editingBoardHexes } = usePlacementContext()
   const { selectedMapHex } = useMapContext()
   const activeHex = boardHexes?.[selectedMapHex]
-  const unitOnHex = gameUnits?.[activeHex?.occupyingUnitID]
+  const unitOnHex = isPlacementPhase
+    ? gameUnits?.[editingBoardHexes[selectedMapHex]]
+    : gameUnits?.[activeHex?.occupyingUnitID]
   const cardForUnit = armyCards.find(
     (c) => c.gameCardID === unitOnHex?.gameCardID
   )
