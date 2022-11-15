@@ -203,11 +203,11 @@ const placeOrderMarker: Move<GameState> = (
   {
     playerID,
     // TODO: orderMarker should be called "order", really
-    orderMarker,
+    order,
     gameCardID,
-  }: { playerID: string; orderMarker: string; gameCardID: string }
+  }: { playerID: string; order: string; gameCardID: string }
 ) => {
-  G.players[playerID].orderMarkers[orderMarker] = gameCardID
+  G.players[playerID].orderMarkers[order] = gameCardID
 }
 const confirmOrderMarkersReady: Move<GameState> = (
   { G, ctx },

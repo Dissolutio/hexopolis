@@ -24,7 +24,7 @@ export const PlaceOrderMarkersControls = () => {
   const selectCard = (gameCardID: string) => {
     if (!activeMarker) return
     if (activeMarker) {
-      placeOrderMarker({ playerID, orderMarker: activeMarker, gameCardID })
+      placeOrderMarker({ playerID, order: activeMarker, gameCardID })
     }
   }
   // TODO use this instead for active style toggling within the styled component
@@ -48,7 +48,7 @@ export const PlaceOrderMarkersControls = () => {
     unplacedOrdersArr.forEach((order) => {
       placeOrderMarker({
         playerID,
-        orderMarker: order,
+        order,
         gameCardID: myFirstCard.gameCardID,
       })
     })
