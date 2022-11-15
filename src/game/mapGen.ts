@@ -2,19 +2,23 @@ import { generateHexagon } from './hexGen'
 import { BoardHexes, GameMap, GameUnits, MapOptions, StartZones } from './types'
 
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
+  // destructure mapOptions: mapSize, withPrePlacedUnits, gameUnits, flat
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false
   const gameUnits = mapOptions?.gameUnits ?? {}
   const flat = mapOptions?.flat ?? false
+
   const flatDimensions = {
     hexGridLayout: 'flat',
     hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
     hexWidth: 2,
+    flat,
   }
   const pointyDimensions = {
     hexGridLayout: 'pointy',
     hexHeight: 2,
     hexWidth: Math.sqrt(3),
+    flat,
   }
   const mapDimensions = flat ? flatDimensions : pointyDimensions
   const hexMap = {
