@@ -186,11 +186,8 @@ const deployUnits: Move<GameState> = (
   propositions.forEach((proposition) => {
     const boardHexId = proposition[0]
     const placedGameUnitId = proposition[1]
-    const oldHexId = Object.values(G.boardHexes).find(
-      (bh) => bh.occupyingUnitID === placedGameUnitId
-    )?.id
-    const latestUnitIdOnOldHexId =
-      newG.boardHexes[oldHexId ?? '']?.occupyingUnitID
+    const oldHexId = selectHexForUnit(placedGameUnitId, G.boardHexes)?.id ?? ''
+    const latestUnitIdOnOldHexId = newG.boardHexes[oldHexId]?.occupyingUnitID
     const shouldOverwriteOldHex =
       !!oldHexId &&
       !!latestUnitIdOnOldHexId &&

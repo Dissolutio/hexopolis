@@ -98,9 +98,11 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
   // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
   .maphex__start-zone--placement--selected-unit > g polygon {
-    stroke: green;
+    stroke: var(--selected-green);
+    /* stroke: var(--neon-green); */
     stroke-width: 0.6;
-    fill: green;
+    fill: var(--selected-green);
+    /* fill: var(--neon-green); */
     fill-opacity: 0.6;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
