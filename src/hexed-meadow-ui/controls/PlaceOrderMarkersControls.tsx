@@ -2,6 +2,7 @@ import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { StyledControlsHeaderH2 } from 'hexed-meadow-ui/layout/Typography'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { ArmyCardForPlaceOrderMarkers } from './ArmyCardForPlaceOrderMarkers'
 import { StyledOrderMarkersControlsWrapper } from './StyledOrderMarkersControlsWrapper'
 
 export const PlaceOrderMarkersControls = () => {
@@ -81,11 +82,7 @@ export const PlaceOrderMarkersControls = () => {
         </StyledUnplacedOrderMarkersUl>
         <StyledOderMarkerArmyCardsUl>
           {myCards.map((card) => (
-            <li key={card.gameCardID}>
-              <button onClick={() => selectCard(card.gameCardID)}>
-                <span>{card.name}</span>
-              </button>
-            </li>
+            <ArmyCardForPlaceOrderMarkers card={card} />
           ))}
         </StyledOderMarkerArmyCardsUl>
         <StyledErrorRedButton
