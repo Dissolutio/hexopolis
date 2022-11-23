@@ -13,12 +13,13 @@ export const moveAction: Move<GameState> = (
   unit: GameUnit,
   endHex: BoardHex
 ) => {
+  const timeA = performance.now()
   const { unitID, movePoints } = unit
   const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
   const endHexID = endHex.id
   const startHex = selectHexForUnit(unitID, G.boardHexes)
   const startHexID = startHex?.id ?? ''
-  const currentMoveRange = calcUnitMoveRange(unit, G.boardHexes, G.gameUnits)
+  const currentMoveRange = unit.moveRange
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
   const moveCost = HexUtils.distance(startHex as Hex, endHex)
   // clone G
@@ -56,5 +57,7 @@ export const moveAction: Move<GameState> = (
     G.boardHexes = { ...newBoardHexes }
     G.gameUnits = { ...newGameUnits }
   }
+  const timeB = performance.now()
+  console.log(`TOOK: ${timeA - timeB} ms`)
   return G
 }

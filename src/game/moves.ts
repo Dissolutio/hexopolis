@@ -1,14 +1,8 @@
 import type { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
 
-import {
-  selectHexForUnit,
-  selectGameCardByID,
-  calcUnitMoveRange,
-  selectUnitsForCard,
-  selectUnrevealedGameCard,
-} from './selectors'
-import { GameState, BoardHexes, BoardHex, GameUnits, GameUnit } from './types'
+import { selectHexForUnit, selectGameCardByID } from './selectors'
+import { GameState, BoardHex, GameUnit } from './types'
 import { stageNames } from './constants'
 import { moveAction } from './move-action'
 
