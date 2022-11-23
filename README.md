@@ -3,6 +3,7 @@
   - [Project Structure](#project-structure)
     - [BGIO BoardProps into React Contexts](#bgio-boardprops-into-react-contexts)
       - [List of BGIO Contexts](#list-of-bgio-contexts)
+    - [Where to find stuff](#where-to-find-stuff)
     - [The useAuth hook](#the-useauth-hook)
     - [React-Router-Dom is included](#react-router-dom-is-included)
     - [`server/` is a compiled directory - don't use it](#server-is-a-compiled-directory---dont-use-it)
@@ -87,6 +88,9 @@ shape of the BGIO API and less likely to need changing.
 
 Checkout some of the components in `src/lobby/` or `src/ui/` for some examples
 on how to use the hooks.
+
+### Where to find stuff
+See [FINDME.md](./FINDME.md)
 
 ### The useAuth hook
 
