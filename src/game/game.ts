@@ -1,5 +1,4 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
-import { BoardProps } from 'boardgame.io/react'
 
 import {
   calcUnitMoveRange,

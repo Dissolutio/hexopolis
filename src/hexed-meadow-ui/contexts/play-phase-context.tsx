@@ -128,10 +128,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       const { safe, engage, disengage } = moveRange
       const allMoves = [safe, disengage, engage].flat()
       const isInMoveRange = allMoves.includes(sourceHex.id)
-      // move selected unit
-      if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
-        moveAction(selectedUnit, boardHexes[sourceHex.id])
-      }
       // select unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
@@ -139,6 +135,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       // deselect unit
       if (isUnitSelected) {
         setSelectedUnitID('')
+      }
+      // move selected unit
+      if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
+        moveAction(selectedUnit, boardHexes[sourceHex.id])
       }
     }
     // ATTACK STAGE
