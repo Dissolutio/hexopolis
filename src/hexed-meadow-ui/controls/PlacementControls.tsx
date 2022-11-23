@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { useUIContext, usePlacementContext } from '../contexts'
-import { CardUnitIcon } from '../unit-icons'
+import { PlacementCardUnitIcon } from '../unit-icons'
 import { PlacementUnit } from 'game/types'
 import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper'
 
@@ -119,7 +119,11 @@ const PlacementUnitTiles = () => {
     </>
   )
 }
-
+export const selectedTileStyle = {
+  boxShadow: `0 0 2px var(--white)`,
+  border: `1px solid var(--white)`,
+  backgroundColor: `var(--selected-green)`,
+}
 const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   const { selectedUnitID } = useUIContext()
   const { onClickPlacementUnit } = usePlacementContext()
@@ -128,11 +132,7 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   }
   const selectedStyle = (unitID: string) => {
     if (selectedUnitID === unitID) {
-      return {
-        boxShadow: `0 0 2px var(--white)`,
-        border: `1px solid var(--white)`,
-        backgroundColor: `var(--selected-green)`,
-      }
+      return selectedTileStyle
     } else {
       return {}
     }
@@ -140,7 +140,10 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   return (
     <li key={unit.unitID}>
       <button style={selectedStyle(unit.unitID)} onClick={onClick}>
-        <CardUnitIcon unit={unit} />
+        <PlacementCardUnitIcon
+          armyCardID={unit.armyCardID}
+          playerID={unit.playerID}
+        />
         <span>{unit.name}</span>
       </button>
     </li>

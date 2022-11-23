@@ -5,6 +5,10 @@ function isValidInput(string_: string): boolean {
   return Math.random() > 0.5
 }
 
+/* 
+  This component has been included as an example, and is not yet implemented in the app
+ */
+
 export const TimeoutErrorMessageExample = () => {
   const [inputValue, setInputValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')

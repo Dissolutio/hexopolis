@@ -1,19 +1,12 @@
 import { PlacementUnit } from 'game/types'
 import React from 'react'
-import {
-  GiDiabloSkull,
-  GiNinjaArmor,
-  GiButterfly,
-  GiFairyWings,
-  GiWingedEmblem,
-  GiMissileMech,
-} from 'react-icons/gi'
+import { GiDiabloSkull, GiNinjaArmor, GiMissileMech } from 'react-icons/gi'
 
 const playerIconColors: { [key: string]: string } = {
   '0': 'var(--bee-yellow)',
   '1': 'var(--butterfly-purple)',
 }
-type UnitIconTypes = {
+type Props = {
   armyCardID: string
   iconPlayerID?: String
   hexSize?: number
@@ -22,12 +15,12 @@ type UnitIconTypes = {
     y: string
   }
 }
-export const UnitIcon: React.FC<UnitIconTypes> = ({
+export const UnitIcon = ({
   armyCardID,
+  iconPlayerID,
   hexSize,
   iconProps,
-  iconPlayerID,
-}) => {
+}: Props) => {
   if (!armyCardID) {
     return null
   }
@@ -56,14 +49,38 @@ export const UnitIcon: React.FC<UnitIconTypes> = ({
   }
 }
 
-export const CardUnitIcon = ({ unit }: { unit: PlacementUnit }) => {
+export const PlacementCardUnitIcon = ({
+  armyCardID,
+  playerID,
+}: {
+  armyCardID: string
+  playerID: string
+}) => {
   return (
     <UnitIcon
-      armyCardID={unit.armyCardID}
-      iconPlayerID={unit.playerID}
+      armyCardID={armyCardID}
+      iconPlayerID={playerID}
       iconProps={{
         x: '50',
         y: '50',
+      }}
+    />
+  )
+}
+export const PlaceOrderMarkersArmyCardUnitIcon = ({
+  armyCardID,
+  playerID,
+}: {
+  armyCardID: string
+  playerID: string
+}) => {
+  return (
+    <UnitIcon
+      armyCardID={armyCardID}
+      iconPlayerID={playerID}
+      iconProps={{
+        x: '25',
+        y: '25',
       }}
     />
   )
