@@ -127,10 +127,10 @@ export const HexedMeadow: Game<GameState> = {
         // reveal order marker, assign move-points/move-ranges to eligible units
         onBegin: ({ G, ctx }) => {
           // Reveal order marker
+          const currentPlayersOrderMarkers =
+            G.players[ctx.currentPlayer].orderMarkers
           const revealedGameCardID =
-            G.players[ctx.currentPlayer].orderMarkers[
-              G.currentOrderMarker.toString()
-            ]
+            currentPlayersOrderMarkers[G.currentOrderMarker.toString()]
           const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
             (om: OrderMarker) =>
               om.gameCardID === revealedGameCardID && om.order === ''
@@ -140,8 +140,6 @@ export const HexedMeadow: Game<GameState> = {
               G.currentOrderMarker.toString()
           }
           // Assign move points/ranges
-          const currentPlayersOrderMarkers =
-            G.players[ctx.currentPlayer].orderMarkers
           const unrevealedGameCard = selectUnrevealedGameCard(
             currentPlayersOrderMarkers,
             G.armyCards,
