@@ -121,11 +121,11 @@ export const HexedMeadow: Game<GameState> = {
         G.currentOrderMarker = 0
         G.currentRound += 1
       },
-      // turn -- roll initiative, reveal order marker, assign movePoints/moveRanges, update currentOrderMarker, end round after last turn
+      // turn -- roll initiative, reveal order marker, assign move-points/move-ranges, update currentOrderMarker, end round after last turn
       turn: {
         // d20 roll-offs for initiative
         order: TurnOrder.CUSTOM_FROM('initiative'),
-        // reveal order marker, assign movePoints/moveRanges to eligible units
+        // reveal order marker, assign move-points/move-ranges to eligible units
         onBegin: ({ G, ctx }) => {
           // Reveal order marker
           const revealedGameCardID =
@@ -159,13 +159,13 @@ export const HexedMeadow: Game<GameState> = {
           currentTurnUnits.length &&
             currentTurnUnits.forEach((unit: GameUnit) => {
               const { unitID } = unit
-              // movePoints
+              // move-points
               const unitWithMovePoints = {
                 ...unit,
                 movePoints,
               }
               mutatedGameUnits[unitID] = unitWithMovePoints
-              // moveRange
+              // move-range
               const moveRange = calcUnitMoveRange(
                 unitWithMovePoints,
                 G.boardHexes,
@@ -184,9 +184,9 @@ export const HexedMeadow: Game<GameState> = {
           G.unitsMoved = []
           G.unitsAttacked = []
         },
-        // clear movePoints/moveRanges,  update currentOrderMarker, end round after last turn (go to place order-markers)
+        // clear move-points/move-ranges,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {
-          // reset unit movePoints/moveRanges
+          // reset unit move-points/move-ranges
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0
             G.gameUnits[uid].moveRange = { ...generateBlankMoveRange() }
