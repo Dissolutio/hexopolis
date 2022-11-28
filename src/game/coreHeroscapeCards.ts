@@ -123,7 +123,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     ],
   },
   {
-    name: 'Sgt. Drake Alexander (1)',
+    name: 'Sgt. Drake Alexander',
     armyCardID: 'hs1003',
     image: 'sgtdrakealexander1.jpg',
     portraitPattern: 'sgtdrakealexander1-portrait',
@@ -2427,7 +2427,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     ],
   },
   {
-    name: 'Sgt. Drake Alexander (2)',
+    name: 'Sgt. Drake Alexander',
     armyCardID: 'hs1077',
     image: 'sgtdrakealexander2.jpg',
     portraitPattern: 'sgtdrakealexander2-portrait',
