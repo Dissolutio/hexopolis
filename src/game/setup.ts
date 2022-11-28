@@ -43,7 +43,7 @@ export const testScenario = makeTestScenario()
 function makeTestScenario(): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = makeArmyCards()
+  const armyCards: GameArmyCard[] = makeArmyCardsForTestScenario()
   // GameUnits:
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
@@ -99,17 +99,25 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 }
 
 //! TEST SCENARIO GAMEARMYCARDS
-function makeArmyCards() {
+function makeArmyCardsForTestScenario() {
   return hsCardsToArmyCards(MS1Cards)
     .filter(
-      // hs1000 is marro warriors, hs1002 is izumi samurai
-      (c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002'
+      // filter down to the actual cards we want to use
+      (c) =>
+        c.armyCardID === 'hs1000' ||
+        c.armyCardID === 'hs1002' ||
+        c.armyCardID === 'hs1003' ||
+        c.armyCardID === 'hs1014'
     )
     .map((card) => {
-      // we give player 1 the marro, and player 2 the samurai
+      // we give player 1 the marro + negoksa, and player 2 the samurai + sgt drake
       const isCardMarroWarriors = card.armyCardID === 'hs1000'
+      const isCardNeGokSa = card.armyCardID === 'hs1014'
+      const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
       const isCardIzumiSamurai = card.armyCardID === 'hs1002'
-      const playerID = isCardMarroWarriors ? '0' : isCardIzumiSamurai ? '1' : ''
+      const isCardSgtDrake = card.armyCardID === 'hs1003'
+      const isCardForPlayer2 = isCardIzumiSamurai || isCardSgtDrake
+      const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
       // id factory ...
       function makeGameCardID() {
         return `p${playerID}_${card.armyCardID}`
