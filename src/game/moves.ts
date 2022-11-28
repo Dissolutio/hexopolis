@@ -10,6 +10,7 @@ import {
 } from './selectors'
 import { GameState, BoardHexes, BoardHex, GameUnits, GameUnit } from './types'
 import { stageNames } from './constants'
+import { moveAction } from './move-action'
 
 //phase:___RoundOfPlay
 const endCurrentMoveStage: Move<GameState> = ({ events }) => {
@@ -17,56 +18,6 @@ const endCurrentMoveStage: Move<GameState> = ({ events }) => {
 }
 const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
   events.endTurn()
-}
-const moveAction: Move<GameState> = (
-  { G, ctx },
-  unit: GameUnit,
-  endHex: BoardHex
-) => {
-  const { unitID, movePoints } = unit
-  const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
-  const endHexID = endHex.id
-  const startHex = selectHexForUnit(unitID, G.boardHexes)
-  const startHexID = startHex?.id ?? ''
-  const currentMoveRange = calcUnitMoveRange(unit, G.boardHexes, G.gameUnits)
-  const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
-  const moveCost = HexUtils.distance(startHex as Hex, endHex)
-  // clone G
-  const newBoardHexes: BoardHexes = { ...G.boardHexes }
-  const newGameUnits: GameUnits = { ...G.gameUnits }
-  // update moved units counter
-  const unitsMoved = [...G.unitsMoved]
-  if (!unitsMoved.includes(unitID)) {
-    unitsMoved.push(unitID)
-    G.unitsMoved = unitsMoved
-  }
-  // update unit position
-  newBoardHexes[startHexID].occupyingUnitID = ''
-  newBoardHexes[endHexID].occupyingUnitID = unitID
-  // update unit move points
-  const newMovePoints = movePoints - moveCost
-  newGameUnits[unitID].movePoints = newMovePoints
-  // update move ranges for this turn's units
-  const unrevealedGameCard = selectUnrevealedGameCard(
-    playersOrderMarkers,
-    G.armyCards,
-    G.currentOrderMarker
-  )
-  const currentTurnUnits = selectUnitsForCard(
-    unrevealedGameCard?.gameCardID ?? '',
-    G.gameUnits
-  )
-  currentTurnUnits.forEach((unit: GameUnit) => {
-    const { unitID } = unit
-    const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)
-    newGameUnits[unitID].moveRange = moveRange
-  })
-  // Make the move
-  if (isInSafeMoveRange) {
-    G.boardHexes = { ...newBoardHexes }
-    G.gameUnits = { ...newGameUnits }
-  }
-  return G
 }
 const attackAction: Move<GameState> = (
   { G, ctx, random },

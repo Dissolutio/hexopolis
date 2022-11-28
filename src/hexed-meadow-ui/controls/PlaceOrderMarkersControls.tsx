@@ -14,10 +14,6 @@ export const PlaceOrderMarkersControls = () => {
   const toBePlacedOrderMarkers = Object.keys(myOrderMarkers).filter(
     (om) => myOrderMarkers[om] === ''
   )
-  console.log(
-    '🚀 ~ file: PlaceOrderMarkersControls.tsx ~ line 14 ~ PlaceOrderMarkersControls ~ toBePlacedOrderMarkers',
-    toBePlacedOrderMarkers
-  )
   const { confirmOrderMarkersReady, placeOrderMarker } = moves
   const [activeMarker, setActiveMarker] = useState('')
   const selectOrderMarker = (orderMarker: string) => {
