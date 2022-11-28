@@ -2,10 +2,22 @@ import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { StyledControlsHeaderH2 } from 'hexed-meadow-ui/layout/Typography'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ArmyCardsList_OM } from './order-markers-controls/ArmyCardsList_OM'
+import { OrderMarkerArmyCards } from './order-markers-controls/OrderMarkerArmyCards'
 import { selectedTileStyle } from './PlacementControls'
 import { StyledOrderMarkersControlsWrapper } from './order-markers-controls/StyledOrderMarkersControlsWrapper'
+import { omToString } from 'app/utilities'
+import { StyledOMButton } from './order-markers-controls/OrderMarkerArmyCard'
 
+export const selectedOrderMarkerStyle = (
+  activeMarker: string,
+  orderMarker: string
+) => {
+  if (activeMarker === orderMarker) {
+    return selectedTileStyle
+  } else {
+    return {}
+  }
+}
 export const PlaceOrderMarkersControls = () => {
   const { playerID } = useBgioClientInfo()
   const { currentRound, orderMarkersReady, myCards, myOrderMarkers } =
@@ -20,20 +32,6 @@ export const PlaceOrderMarkersControls = () => {
   const [activeMarker, setActiveMarker] = useState('')
   const selectOrderMarker = (orderMarker: string) => {
     setActiveMarker(orderMarker)
-  }
-  const selectCard = (gameCardID: string) => {
-    if (!activeMarker) return
-    if (activeMarker) {
-      placeOrderMarker({ playerID, order: activeMarker, gameCardID })
-    }
-  }
-  // TODO use this instead for active style toggling within the styled component
-  const selectedStyle = (orderMarker: string) => {
-    if (activeMarker === orderMarker) {
-      return selectedTileStyle
-    } else {
-      return {}
-    }
   }
   const onClickConfirm = () => {
     confirmOrderMarkersReady({ playerID })
@@ -68,16 +66,26 @@ export const PlaceOrderMarkersControls = () => {
         }:`}</StyledControlsHeaderH2>
         <StyledUnplacedOrderMarkersUl>
           {toBePlacedOrderMarkers.map((om) => (
-            <StyledUnplacedOrderMarkerLi
-              key={om}
-              onClick={() => selectOrderMarker(om)}
-              style={selectedStyle(om)}
-            >
-              {om === 'X' ? om : (parseInt(om) + 1).toString()}
+            <StyledUnplacedOrderMarkerLi>
+              <button
+                key={om}
+                onClick={() => selectOrderMarker(om)}
+                style={{
+                  ...selectedOrderMarkerStyle(activeMarker, om),
+                  fontSize: '1.5rem',
+                  padding: '0 1rem',
+                  margin: '0 0.5rem',
+                }}
+              >
+                {omToString(om)}
+              </button>
             </StyledUnplacedOrderMarkerLi>
           ))}
         </StyledUnplacedOrderMarkersUl>
-        <ArmyCardsList_OM />
+        <OrderMarkerArmyCards
+          activeMarker={activeMarker}
+          setActiveMarker={setActiveMarker}
+        />
         <div>
           <StyledErrorRedButton
             type="button"
@@ -96,7 +104,6 @@ const StyledErrorRedButton = styled.button`
 `
 const StyledUnplacedOrderMarkerLi = styled.li`
   font-size: 2rem;
-  padding: 0 1rem;
 `
 const StyledUnplacedOrderMarkersUl = styled.ul`
   display: flex;
