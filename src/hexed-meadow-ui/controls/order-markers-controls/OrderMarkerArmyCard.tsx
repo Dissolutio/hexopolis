@@ -5,6 +5,10 @@ import React from 'react'
 import { GameArmyCard } from 'game/types'
 import { omToString } from 'app/utilities'
 import { selectedOrderMarkerStyle } from '../PlaceOrderMarkersControls'
+import WorkerBuilder from 'worker/worker-builder'
+import FiboWorker from 'worker/fibo-worker'
+
+var workerInstance = new WorkerBuilder(FiboWorker)
 
 export const OrderMarkerArmyCard = ({
   card,
@@ -15,6 +19,11 @@ export const OrderMarkerArmyCard = ({
   activeMarker: string
   setActiveMarker: React.Dispatch<React.SetStateAction<string>>
 }) => {
+  workerInstance.onmessage = (message) => {
+    if (message) {
+      console.log('Message from worker', message.data)
+    }
+  }
   const { playerID } = useBgioClientInfo()
   const { moves } = useBgioMoves()
   const { placeOrderMarker } = moves
@@ -39,26 +48,36 @@ export const OrderMarkerArmyCard = ({
   }
 
   return (
-    <StyledOrderMarkerArmyCardsLi>
-      <StyledOMButton onClick={() => selectCard(card.gameCardID)}>
-        <span>
-          <PlaceOrderMarkersArmyCardUnitIcon
-            armyCardID={card.armyCardID}
-            playerID={card.playerID}
-          />
-        </span>
-        <span>{card.name}</span>
-        <div>
-          {orderMarkersOnThisCard.map((om) => (
-            <CardOrderMarker
-              om={om}
-              activeMarker={activeMarker}
-              setActiveMarker={setActiveMarker}
+    <>
+      <button
+        onClick={() => {
+          workerInstance.postMessage(900009 * Math.random())
+        }}
+      >
+        Send Message
+      </button>
+      <StyledOrderMarkerArmyCardsLi>
+        <StyledOMButton onClick={() => selectCard(card.gameCardID)}>
+          <span>
+            <PlaceOrderMarkersArmyCardUnitIcon
+              armyCardID={card.armyCardID}
+              playerID={card.playerID}
             />
-          ))}
-        </div>
-      </StyledOMButton>
-    </StyledOrderMarkerArmyCardsLi>
+          </span>
+          <span>{card.name}</span>
+          <div>
+            {orderMarkersOnThisCard.map((om) => (
+              <CardOrderMarker
+                key={om}
+                om={om}
+                activeMarker={activeMarker}
+                setActiveMarker={setActiveMarker}
+              />
+            ))}
+          </div>
+        </StyledOMButton>
+      </StyledOrderMarkerArmyCardsLi>
+    </>
   )
 }
 
