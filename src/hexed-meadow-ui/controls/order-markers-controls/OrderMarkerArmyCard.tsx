@@ -1,8 +1,7 @@
-import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import styled from 'styled-components'
 import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexed-meadow-ui/unit-icons'
 import React from 'react'
-import { GameArmyCard } from 'game/types'
+import { GameArmyCard, PlayerOrderMarkers } from 'game/types'
 import { omToString } from 'app/utilities'
 import { selectedOrderMarkerStyle } from '../PlaceOrderMarkersControls'
 
@@ -10,33 +9,18 @@ export const OrderMarkerArmyCard = ({
   card,
   activeMarker,
   setActiveMarker,
+  selectCard,
+  editingOrderMarkers,
 }: {
   card: GameArmyCard
   activeMarker: string
   setActiveMarker: React.Dispatch<React.SetStateAction<string>>
+  selectCard: (gameCardID: string) => void
+  editingOrderMarkers: PlayerOrderMarkers
 }) => {
-  const { playerID } = useBgioClientInfo()
-  const { moves } = useBgioMoves()
-  const { placeOrderMarker } = moves
-  const { myOrderMarkers } = useBgioG()
-  const orderMarkersOnThisCard = Object.entries(myOrderMarkers)
+  const orderMarkersOnThisCard = Object.entries(editingOrderMarkers)
     .filter((omEntry) => omEntry[1] === card.gameCardID)
     .map((omEntry) => omEntry[0])
-
-  const selectCard = (gameCardID: string) => {
-    if (!activeMarker) return
-    if (activeMarker) {
-      placeOrderMarker({ playerID, order: activeMarker, gameCardID })
-      setActiveMarker('')
-    }
-  }
-
-  const selectOrderMarker = (
-    event: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-    orderMarker: string
-  ) => {
-    setActiveMarker(orderMarker)
-  }
 
   return (
     <StyledOrderMarkerArmyCardsLi>
@@ -71,17 +55,10 @@ const CardOrderMarker = ({
   activeMarker: string
   setActiveMarker: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  const selectOrderMarker = (
-    event: React.MouseEvent<HTMLSpanElement, MouseEvent>
-  ) => {
-    event.stopPropagation()
-    event.preventDefault()
-    setActiveMarker(om)
-  }
   return (
     <StyledOMButton
       key={om}
-      onClick={selectOrderMarker}
+      onClick={() => setActiveMarker(om)}
       style={selectedOrderMarkerStyle(activeMarker, om)}
     >
       {omToString(om)}

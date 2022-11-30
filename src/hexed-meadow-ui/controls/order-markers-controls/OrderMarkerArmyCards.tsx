@@ -2,15 +2,20 @@ import { useBgioG } from 'bgio-contexts'
 import styled from 'styled-components'
 import React from 'react'
 import { OrderMarkerArmyCard } from './OrderMarkerArmyCard'
+import { PlayerOrderMarkers } from 'game/types'
 
 type Props = {
   activeMarker: string
   setActiveMarker: React.Dispatch<React.SetStateAction<string>>
+  selectCard: (gameCardID: string) => void
+  editingOrderMarkers: PlayerOrderMarkers
 }
 
 export const OrderMarkerArmyCards = ({
   activeMarker,
   setActiveMarker,
+  selectCard,
+  editingOrderMarkers,
 }: Props) => {
   const { myCards } = useBgioG()
   return (
@@ -21,6 +26,8 @@ export const OrderMarkerArmyCards = ({
           card={card}
           activeMarker={activeMarker}
           setActiveMarker={setActiveMarker}
+          selectCard={selectCard}
+          editingOrderMarkers={editingOrderMarkers}
         />
       ))}
     </StyledOrderMarkerArmyCardsUl>

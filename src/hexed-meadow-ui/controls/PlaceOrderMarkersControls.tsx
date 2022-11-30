@@ -6,7 +6,6 @@ import { OrderMarkerArmyCards } from './order-markers-controls/OrderMarkerArmyCa
 import { selectedTileStyle } from './PlacementControls'
 import { StyledOrderMarkersControlsWrapper } from './order-markers-controls/StyledOrderMarkersControlsWrapper'
 import { omToString } from 'app/utilities'
-import { StyledOMButton } from './order-markers-controls/OrderMarkerArmyCard'
 
 export const selectedOrderMarkerStyle = (
   activeMarker: string,
@@ -22,32 +21,40 @@ export const PlaceOrderMarkersControls = () => {
   const { playerID } = useBgioClientInfo()
   const { currentRound, orderMarkersReady, myCards, myOrderMarkers } =
     useBgioG()
-  const { moves } = useBgioMoves()
-  const unplacedOrdersArr = Object.keys(myOrderMarkers)
-  const myFirstCard = myCards?.[0]
-  const toBePlacedOrderMarkers = Object.keys(myOrderMarkers).filter(
-    (om) => myOrderMarkers[om] === ''
+  const [editingOrderMarkers, setEditingOrderMarkers] = useState(
+    () => myOrderMarkers
   )
-  const { confirmOrderMarkersReady, placeOrderMarker } = moves
+  const { moves } = useBgioMoves()
+  const placeEditingOrderMarker = (order: string, gameCardID: string) => {
+    setEditingOrderMarkers((prev) => ({ ...prev, [order]: gameCardID }))
+  }
+  const myFirstCard = myCards?.[0]
+  const toBePlacedOrderMarkers = Object.keys(editingOrderMarkers).filter(
+    (om) => editingOrderMarkers[om] === ''
+  )
+  const { confirmOrderMarkersReady, placeOrderMarkers } = moves
   const [activeMarker, setActiveMarker] = useState('')
   const selectOrderMarker = (orderMarker: string) => {
     setActiveMarker(orderMarker)
   }
   const onClickConfirm = () => {
+    placeOrderMarkers({ orders: editingOrderMarkers, playerID })
     confirmOrderMarkersReady({ playerID })
   }
-  const areAllOMsAssigned = !Object.values(myOrderMarkers).some(
+  const areAllOMsAssigned = !Object.values(editingOrderMarkers).some(
     (om) => om === ''
   )
   const onClickAutoLayOrderMarkers = () => {
-    unplacedOrdersArr.forEach((order) => {
-      placeOrderMarker({
-        playerID,
-        order,
-        gameCardID: myFirstCard.gameCardID,
-      })
+    toBePlacedOrderMarkers.forEach((order) => {
+      placeEditingOrderMarker(order, myFirstCard.gameCardID)
     })
-    confirmOrderMarkersReady({ playerID })
+  }
+  const selectCard = (gameCardID: string) => {
+    if (!activeMarker) return
+    if (activeMarker) {
+      placeEditingOrderMarker(activeMarker, gameCardID)
+      setActiveMarker('')
+    }
   }
 
   return (
@@ -85,6 +92,8 @@ export const PlaceOrderMarkersControls = () => {
         <OrderMarkerArmyCards
           activeMarker={activeMarker}
           setActiveMarker={setActiveMarker}
+          selectCard={selectCard}
+          editingOrderMarkers={editingOrderMarkers}
         />
         <div>
           <StyledErrorRedButton
