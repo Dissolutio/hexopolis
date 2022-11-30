@@ -70,6 +70,7 @@ export function calcUnitMoveRange(
   boardHexes: BoardHexes,
   gameUnits: GameUnits
 ): MoveRange {
+  // 1. return blank move-range if no necessary ingredients
   const initialMoveRange = generateBlankMoveRange()
   //*early out
   if (!unit) {
@@ -82,7 +83,11 @@ export function calcUnitMoveRange(
   if (!startHex || !initialMovePoints) {
     return initialMoveRange
   }
+
+  // 2. deny they start hex as an end hex
   initialMoveRange.denied.push(`${startHex.id}`)
+
+  // 3. recursively add hexes to move-range
   const moveRange = {
     ...moveRangeReduce(
       startHex as BoardHex,
@@ -174,25 +179,26 @@ export function selectHexNeighbors(
 }
 export function calcMoveCostBetweenNeighbors(
   startHex: BoardHex,
-  end: BoardHex
+  endHex: BoardHex
 ): number {
-  const altitudeDelta = end.altitude - startHex.altitude
+  const altitudeDelta = endHex.altitude - startHex.altitude
   const heightCost = Math.max(altitudeDelta, 0)
   const distanceCost = 1
   const totalCost = heightCost + distanceCost
   return totalCost
 }
-export function selectEngagementsForHex(
-  hexID: string,
-  playerID: string,
-  boardHexes: BoardHexes,
-  gameUnits: GameUnits
-) {
-  const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
-    .filter((h) => h.occupyingUnitID)
-    .map((h) => h.occupyingUnitID)
-  const engagedUnitIDs = adjacentUnitIDs.filter(
-    (id) => gameUnits[id].playerID !== playerID
-  )
-  return engagedUnitIDs
-}
+
+// export function selectEngagementsForHex(
+//   hexID: string,
+//   playerID: string,
+//   boardHexes: BoardHexes,
+//   gameUnits: GameUnits
+// ) {
+//   const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
+//     .filter((h) => h.occupyingUnitID)
+//     .map((h) => h.occupyingUnitID)
+//   const engagedUnitIDs = adjacentUnitIDs.filter(
+//     (id) => gameUnits[id].playerID !== playerID
+//   )
+//   return engagedUnitIDs
+// }
