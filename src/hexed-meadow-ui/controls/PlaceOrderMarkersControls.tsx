@@ -73,7 +73,7 @@ export const PlaceOrderMarkersControls = () => {
         }:`}</StyledControlsHeaderH2>
         <StyledUnplacedOrderMarkersUl>
           {toBePlacedOrderMarkers.map((om) => (
-            <StyledUnplacedOrderMarkerLi>
+            <li>
               <button
                 key={om}
                 onClick={() => selectOrderMarker(om)}
@@ -86,7 +86,7 @@ export const PlaceOrderMarkersControls = () => {
               >
                 {omToString(om)}
               </button>
-            </StyledUnplacedOrderMarkerLi>
+            </li>
           ))}
         </StyledUnplacedOrderMarkersUl>
         <OrderMarkerArmyCards
@@ -110,9 +110,6 @@ export const PlaceOrderMarkersControls = () => {
 const StyledErrorRedButton = styled.button`
   color: var(--error-red);
   border: 1px solid var(--error-red);
-`
-const StyledUnplacedOrderMarkerLi = styled.li`
-  font-size: 2rem;
 `
 const StyledUnplacedOrderMarkersUl = styled.ul`
   display: flex;

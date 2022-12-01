@@ -54,26 +54,24 @@ export const OrderMarkerArmyCard = ({
     .map((omEntry) => omEntry[0])
 
   return (
-    <StyledOrderMarkerArmyCardsLi>
-      <StyledOMButton onClick={() => selectCard(card.gameCardID)}>
-        <span>
-          <PlaceOrderMarkersArmyCardUnitIcon
-            armyCardID={card.armyCardID}
-            playerID={card.playerID}
+    <StyledOrderMarkerArmyCardsLi onClick={() => selectCard(card.gameCardID)}>
+      <span>
+        <PlaceOrderMarkersArmyCardUnitIcon
+          armyCardID={card.armyCardID}
+          playerID={card.playerID}
+        />
+      </span>
+      <span>{card.name}</span>
+      <div>
+        {orderMarkersOnThisCard.map((om) => (
+          <CardOrderMarker
+            key={om}
+            om={om}
+            activeMarker={activeMarker}
+            setActiveMarker={setActiveMarker}
           />
-        </span>
-        <span>{card.name}</span>
-        <div>
-          {orderMarkersOnThisCard.map((om) => (
-            <CardOrderMarker
-              key={om}
-              om={om}
-              activeMarker={activeMarker}
-              setActiveMarker={setActiveMarker}
-            />
-          ))}
-        </div>
-      </StyledOMButton>
+        ))}
+      </div>
     </StyledOrderMarkerArmyCardsLi>
   )
 }

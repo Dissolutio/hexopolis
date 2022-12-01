@@ -6,6 +6,10 @@ import { useUIContext, usePlacementContext } from '../contexts'
 import { PlacementCardUnitIcon } from '../unit-icons'
 import { PlacementUnit } from 'game/types'
 import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper'
+import {
+  StyledControlsHeaderH2,
+  StyledControlsP,
+} from 'hexed-meadow-ui/layout/Typography'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -28,17 +32,23 @@ export const PlacementControls = () => {
     (isAllPlacementUnitsPlaced || isNoMoreEmptyStartZoneHexes) && !isReady
   // once player has placed and confirmed, show waiting
   if (isReady) {
-    return <WaitingForOpponent />
+    return (
+      <StyledPlacementControlsWrapper>
+        <StyledControlsHeaderH2>
+          Waiting for opponents to finish placing armies...
+        </StyledControlsHeaderH2>
+      </StyledPlacementControlsWrapper>
+    )
   }
   // return UI
   return (
     <StyledPlacementControlsWrapper>
       <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
       {!isShowingConfirm && (
-        <p>
+        <StyledControlsP>
           Select your units and place them within your start zone. Once all
           players are ready, the game will begin!
-        </p>
+        </StyledControlsP>
       )}
       {isShowingConfirm && (
         <ConfirmReady
@@ -51,11 +61,6 @@ export const PlacementControls = () => {
     </StyledPlacementControlsWrapper>
   )
 }
-export const StyledControlsHeaderH2 = styled.h2`
-  font-size: 1.3rem;
-  margin: 0;
-  text-align: center;
-`
 const ConfirmReady = ({
   makeReady,
   isNoMoreEmptyStartZoneHexes,
@@ -68,29 +73,38 @@ const ConfirmReady = ({
   const { onResetPlacementState } = usePlacementContext()
   return (
     <>
-      {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
-      {isAllPlacementUnitsPlaced && <p>All of your units are placed.</p>}
-      <p>Please confirm, this placement is OK?</p>
-      {!isAllPlacementUnitsPlaced && (
-        <p style={{ color: 'var(--error-red)' }}>
-          Some of your units will not be placed! (See those units below)
-        </p>
+      {isNoMoreEmptyStartZoneHexes && (
+        <StyledControlsP>Your start zone is full.</StyledControlsP>
       )}
+      {isAllPlacementUnitsPlaced && (
+        <StyledControlsP>All of your units are placed.</StyledControlsP>
+      )}
+      <StyledControlsP>Please confirm, this placement is OK?</StyledControlsP>
+      {!isAllPlacementUnitsPlaced && (
+        <StyledControlsP style={{ color: 'var(--error-red)' }}>
+          Some of your units will not be placed! (See those units below)
+        </StyledControlsP>
+      )}
+      <div />
       <button
         onClick={makeReady}
         style={{
-          color: 'var(--success-green)',
+          display: 'inline-block',
           marginTop: '20px',
+          fontSize: '0.8rem',
+          color: 'var(--success-green)',
           border: '1px solid var(--success-green)',
         }}
       >
-        CONFIRM PLACEMENT
+        Confirm Placement
       </button>
       <button
         onClick={onResetPlacementState}
         style={{
-          color: 'var(--error-red)',
+          display: 'inline-block',
           marginTop: '20px',
+          fontSize: '0.8rem',
+          color: 'var(--error-red)',
           border: '1px solid var(--error-red)',
         }}
       >
@@ -109,7 +123,7 @@ const PlacementUnitTiles = () => {
   }
   return (
     <>
-      <h3>Unplaced Units:</h3>
+      <StyledControlsH3>Unplaced Units:</StyledControlsH3>
       <ul>
         {inflatedPlacementUnits &&
           inflatedPlacementUnits.map((unit) => (
@@ -150,10 +164,9 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   )
 }
 
-const WaitingForOpponent = () => {
-  return (
-    <StyledPlacementControlsWrapper>
-      <p>Waiting for opponents to finish placing armies...</p>
-    </StyledPlacementControlsWrapper>
-  )
-}
+const StyledControlsH3 = styled.h3`
+  font-size: 1.1rem;
+  @media screen and (max-width: 1100px) {
+    font-size: 0.9rem;
+  }
+`
