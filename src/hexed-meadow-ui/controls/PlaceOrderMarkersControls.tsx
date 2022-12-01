@@ -3,9 +3,9 @@ import { StyledControlsHeaderH2 } from 'hexed-meadow-ui/layout/Typography'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { OrderMarkerArmyCards } from './order-markers-controls/OrderMarkerArmyCards'
-import { selectedTileStyle } from './PlacementControls'
 import { StyledOrderMarkersControlsWrapper } from './order-markers-controls/StyledOrderMarkersControlsWrapper'
 import { omToString } from 'app/utilities'
+import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
 
 export const selectedOrderMarkerStyle = (
   activeMarker: string,
