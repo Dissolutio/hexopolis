@@ -78,6 +78,7 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   return params.map((hsCard) => {
     return {
       name: hsCard.name,
+      singleName: hsCard.singleName,
       armyCardID: hsCard.armyCardID,
       race: hsCard.race,
       life: parseInt(hsCard.life),
