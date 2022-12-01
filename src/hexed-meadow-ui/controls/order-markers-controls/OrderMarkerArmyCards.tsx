@@ -35,6 +35,15 @@ export const OrderMarkerArmyCards = ({
     </StyledOrderMarkerArmyCardsUl>
   )
 }
+const StyledOrderMarkerArmyCardsUl = styled.ul`
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  flex-grow: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+`
 
 export const OrderMarkerArmyCard = ({
   card,
@@ -75,6 +84,9 @@ export const OrderMarkerArmyCard = ({
     </StyledOrderMarkerArmyCardsLi>
   )
 }
+const StyledOrderMarkerArmyCardsLi = styled.li`
+  font-size: 1.2rem;
+`
 
 const CardOrderMarker = ({
   om,
@@ -95,17 +107,6 @@ const CardOrderMarker = ({
     </StyledOMButton>
   )
 }
-
-const StyledOrderMarkerArmyCardsUl = styled.ul`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  flex-grow: 1;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-`
-
 const StyledOMButton = styled.div`
   display: inline-block;
   vertical-align: middle;
@@ -117,7 +118,4 @@ const StyledOMButton = styled.div`
   border: 1px solid #ccc;
   box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-`
-const StyledOrderMarkerArmyCardsLi = styled.li`
-  font-size: 1.2rem;
 `
