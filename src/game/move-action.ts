@@ -18,7 +18,7 @@ export const moveAction: Move<GameState> = (
   const endHexID = endHex.id
   const startHex = selectHexForUnit(unitID, G.boardHexes)
   const startHexID = startHex?.id ?? ''
-  const currentMoveRange = calcUnitMoveRange(unit, G.boardHexes, G.gameUnits)
+  const currentMoveRange = G.gameUnits[unitID].moveRange
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
   const moveCost = HexUtils.distance(startHex as Hex, endHex)
   // clone G
