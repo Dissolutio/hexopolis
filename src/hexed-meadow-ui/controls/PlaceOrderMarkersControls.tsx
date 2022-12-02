@@ -25,6 +25,7 @@ export const PlaceOrderMarkersControls = () => {
     () => myOrderMarkers
   )
   const { moves } = useBgioMoves()
+  const { confirmOrderMarkersReady, placeOrderMarkers } = moves
   const placeEditingOrderMarker = (order: string, gameCardID: string) => {
     setEditingOrderMarkers((prev) => ({ ...prev, [order]: gameCardID }))
   }
@@ -32,7 +33,6 @@ export const PlaceOrderMarkersControls = () => {
   const toBePlacedOrderMarkers = Object.keys(editingOrderMarkers).filter(
     (om) => editingOrderMarkers[om] === ''
   )
-  const { confirmOrderMarkersReady, placeOrderMarkers } = moves
   const [activeMarker, setActiveMarker] = useState('')
   const selectOrderMarker = (orderMarker: string) => {
     setActiveMarker(orderMarker)
