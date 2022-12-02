@@ -23,6 +23,7 @@ const attackAction: Move<GameState> = (
   const unitRange = unitGameCard?.range ?? 0
   const unitsMoved = [...G.unitsMoved]
   const unitsAttacked = [...G.unitsAttacked]
+  // attacksAllowed is where we might account for Double Attack, etc.
   const attacksAllowed = unitGameCard?.figures ?? 0
   const attacksLeft = attacksAllowed - unitsAttacked.length
   const attackerHex = selectHexForUnit(unitID, G.boardHexes)
@@ -47,9 +48,9 @@ const attackAction: Move<GameState> = (
   }
   // DISALLOW - attack must be used by a moved unit
   const isMovedUnit = unitsMoved.includes(unitID)
-  const isOpenAttack =
+  const isAttackAvailableForUnmovedUnitToUse =
     attacksLeft > unitsMoved.filter((id) => !unitsAttacked.includes(id)).length
-  const isUsableAttack = isMovedUnit || isOpenAttack
+  const isUsableAttack = isMovedUnit || isAttackAvailableForUnmovedUnitToUse
   if (!isUsableAttack) {
     console.log(`attack must be used by a moved unit`)
     return

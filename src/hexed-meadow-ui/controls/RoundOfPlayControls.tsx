@@ -2,9 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { usePlayContext } from '../contexts'
-import { RopArmyCardsList } from './RopArmyCardsList'
+import { RopArmyCardsList } from './rop/RopArmyCardsList'
 import { useBgioG, useBgioMoves } from 'bgio-contexts'
-import { UndoRedoButtons } from './UndoRedoButtons'
+import { UndoRedoButtons } from './rop/UndoRedoButtons'
+import {
+  StyledControlsHeaderH2,
+  StyledControlsP,
+} from 'hexed-meadow-ui/layout/Typography'
 
 export const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
@@ -22,7 +26,7 @@ export const RopIdleControls = () => {
 
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
-  const { moves, undo, redo } = useBgioMoves()
+  const { moves } = useBgioMoves()
   const { revealedGameCard } = usePlayContext()
 
   const { endCurrentMoveStage } = moves
@@ -33,13 +37,17 @@ export const RopMoveControls = () => {
   }
   return (
     <>
-      <h2>{`Your #${currentOrderMarker + 1}: ${
-        revealedGameCard?.name ?? ''
-      }`}</h2>
-      <p>
+      <StyledControlsHeaderH2>{`Your ${
+        {
+          0: '1st',
+          1: '2nd',
+          2: '3rd',
+        }[currentOrderMarker + 1]
+      } order: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
+      <StyledControlsP>
         You have moved {unitsMoved.length} / {revealedGameCard?.figures ?? 0}{' '}
         units{' '}
-      </p>
+      </StyledControlsP>
       <ButtonWrapper>
         <button onClick={handleEndMovementClick}>END MOVE</button>
         <UndoRedoButtons />

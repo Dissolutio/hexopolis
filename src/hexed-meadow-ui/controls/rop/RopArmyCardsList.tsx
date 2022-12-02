@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { GameArmyCard } from 'game/types'
-import { useUIContext, usePlayContext } from '../contexts'
-import { UnitIcon } from '../unit-icons'
+import { useUIContext, usePlayContext } from '../../contexts'
+import { UnitIcon } from '../../unit-icons'
 import { useBgioG } from 'bgio-contexts'
 
 export const RopArmyCardsList = () => {

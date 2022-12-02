@@ -12,6 +12,7 @@ export interface GameState {
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
+  // rop game state below
   unitsMoved: string[]
   unitsAttacked: string[]
 }
