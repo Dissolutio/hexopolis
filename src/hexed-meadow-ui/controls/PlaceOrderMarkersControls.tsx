@@ -73,9 +73,8 @@ export const PlaceOrderMarkersControls = () => {
         }:`}</StyledControlsHeaderH2>
         <StyledUnplacedOrderMarkersUl>
           {toBePlacedOrderMarkers.map((om) => (
-            <li>
+            <li key={om}>
               <button
-                key={om}
                 onClick={() => selectOrderMarker(om)}
                 style={{
                   ...selectedOrderMarkerStyle(activeMarker, om),
