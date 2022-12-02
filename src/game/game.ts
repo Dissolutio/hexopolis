@@ -160,10 +160,6 @@ export const HexedMeadow: Game<GameState> = {
               }
               mutatedGameUnits[unitID] = unitWithMovePoints
               // move-range
-              console.log(
-                '🚀 ~ file: game.ts:167 ~ calcUnitMoveRange, unit: ',
-                unitWithMovePoints
-              )
               const moveRange = calcUnitMoveRange(
                 unitWithMovePoints,
                 G.boardHexes,
@@ -173,10 +169,6 @@ export const HexedMeadow: Game<GameState> = {
                 ...unitWithMovePoints,
                 moveRange,
               }
-              console.log(
-                '🚀 ~ file: game.ts:176 ~ currentTurnUnits.forEach ~ unitWithMoveRange',
-                unitWithMoveRange
-              )
               mutatedGameUnits[unitID] = unitWithMoveRange
             })
           // end loop

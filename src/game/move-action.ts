@@ -46,15 +46,12 @@ export const moveAction: Move<GameState> = (
     unrevealedGameCard?.gameCardID ?? '',
     G.gameUnits
   )
-  const timeA = performance.now()
 
   currentTurnUnits.forEach((unit: GameUnit) => {
     const { unitID } = unit
     const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)
     newGameUnits[unitID].moveRange = moveRange
   })
-  const timeB = performance.now()
-  console.log(`currentTurnUnits.forEach TOOK: ${timeA - timeB} ms`)
   // Make the move
   if (isInSafeMoveRange) {
     G.boardHexes = { ...newBoardHexes }

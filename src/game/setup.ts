@@ -56,20 +56,20 @@ function makeTestScenario(): GameState {
   })
   return {
     placementReady: {
-      '0': true,
-      '1': true,
+      '0': false,
+      '1': false,
     },
-    orderMarkersReady: { '0': true, '1': true },
+    orderMarkersReady: { '0': false, '1': false },
     roundOfPlayStartReady: { '0': false, '1': false },
     currentRound: 0,
     currentOrderMarker: 0,
-    // orderMarkers: generateBlankOrderMarkers(),
-    orderMarkers: generatePreplacedOrderMarkers(),
+    orderMarkers: generateBlankOrderMarkers(),
+    // orderMarkers: generatePreplacedOrderMarkers(),
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
-    // players: generateBlankPlayersState(),
-    players: playersStateWithPrePlacedOMs(),
+    players: generateBlankPlayersState(),
+    // players: playersStateWithPrePlacedOMs(),
     armyCards,
     gameUnits,
     hexMap: hexagonMap.hexMap,
@@ -110,7 +110,7 @@ function makeArmyCardsForTestScenario() {
       (c) =>
         // c.armyCardID === 'hs1008'
         c.armyCardID === 'hs1000' ||
-        c.armyCardID === 'hs1008' ||
+        // c.armyCardID === 'hs1008' ||
         c.armyCardID === 'hs1002' ||
         c.armyCardID === 'hs1003' ||
         c.armyCardID === 'hs1014'
