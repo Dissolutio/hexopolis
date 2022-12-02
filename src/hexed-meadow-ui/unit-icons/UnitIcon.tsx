@@ -7,6 +7,7 @@ import {
   GiAlienStare,
   GiAlliedStar,
   GiWalkingTurret,
+  GiSadCrab,
 } from 'react-icons/gi'
 
 const playerIconColors: { [key: string]: string } = {
@@ -63,6 +64,9 @@ export const UnitIcon = ({
     case 'hs1014':
       // negoksa
       return <GiAlienStare {...gameIconProps} />
+    case 'hs1185':
+      // mezzodemon
+      return <GiSadCrab {...gameIconProps} />
     default:
       return null
   }

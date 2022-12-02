@@ -15,7 +15,11 @@ import {
   generatePreplacedOrderMarkers,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
-import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
+import {
+  coreHeroscapeCards,
+  ICoreHeroscapeCard,
+  MS1Cards,
+} from './coreHeroscapeCards'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -44,7 +48,7 @@ export const testScenario = makeTestScenario()
 function makeTestScenario(): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = makeArmyCardsForTestScenario()
+  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest()
   // GameUnits:
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
@@ -103,43 +107,39 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 }
 
 //! TEST SCENARIO GAMEARMYCARDS
-function makeArmyCardsForTestScenario() {
-  return hsCardsToArmyCards(MS1Cards)
+function armyCardsToGameArmyCardsForTest() {
+  return hsCardsToArmyCards(coreHeroscapeCards)
     .filter(
-      // filter down to the actual cards we want to use
       (c) =>
-        // c.armyCardID === 'hs1008'
-        c.armyCardID === 'hs1000' ||
-        // c.armyCardID === 'hs1008' ||
+        // c.armyCardID === 'hs1000' ||
         c.armyCardID === 'hs1002' ||
         c.armyCardID === 'hs1003' ||
+        // c.armyCardID === 'hs1008' ||
+        c.armyCardID === 'hs1185' ||
         c.armyCardID === 'hs1014'
     )
-    .map((card, index) => {
-      // const isCardMarroWarriors = card.armyCardID === 'hs1000'
-      // we give player 1 the marro + negoksa, and player 2 the samurai + sgt drake
+    .map((card) => {
       const isCardMarroWarriors = card.armyCardID === 'hs1000'
       const isCardNeGokSa = card.armyCardID === 'hs1014'
-
-      // normal setup:
-      const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
-
-      // setup 1 card move-range test:
-      // const isCardForPlayer1 = index === 0
+      const isCardMezzodemonWarmongers = card.armyCardID === 'hs1185'
+      const isCardForPlayer1 =
+        isCardMarroWarriors || isCardNeGokSa || isCardMezzodemonWarmongers
 
       const isCardIzumiSamurai = card.armyCardID === 'hs1002'
       const isCardSgtDrake = card.armyCardID === 'hs1003'
+      const isCardZettianGuard = card.armyCardID === 'hs1008'
       const isCardForPlayer2 = isCardIzumiSamurai || isCardSgtDrake
       const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
-      // const playerID = isCardForPlayer1 ? '0' : '1'
+
       // id factory ...
       function makeGameCardID() {
         return `p${playerID}_${card.armyCardID}`
       }
+
       return {
         ...card,
         playerID,
-        cardQuantity: 1,
+        cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
         gameCardID: makeGameCardID(),
       }
     })
