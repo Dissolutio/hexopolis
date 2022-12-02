@@ -12,6 +12,7 @@ import {
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
+  generatePreplacedOrderMarkers,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
@@ -20,18 +21,18 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hm101',
-        '1': 'p0_hm101',
-        '2': 'p0_hm101',
-        X: 'p0_hm101',
+        '0': 'p0_hs1008',
+        '1': 'p0_hs1008',
+        '2': 'p0_hs1008',
+        X: 'p0_hs1008',
       },
     },
     '1': {
       orderMarkers: {
-        '0': 'p1_hm201',
-        '1': 'p1_hm201',
-        '2': 'p1_hm201',
-        X: 'p1_hm201',
+        '0': 'p1_hs1008',
+        '1': 'p1_hs1008',
+        '2': 'p1_hs1008',
+        X: 'p1_hs1008',
       },
     },
   }
@@ -55,18 +56,20 @@ function makeTestScenario(): GameState {
   })
   return {
     placementReady: {
-      '0': false,
-      '1': false,
+      '0': true,
+      '1': true,
     },
-    orderMarkersReady: { '0': false, '1': false },
+    orderMarkersReady: { '0': true, '1': true },
     roundOfPlayStartReady: { '0': false, '1': false },
     currentRound: 0,
     currentOrderMarker: 0,
-    orderMarkers: generateBlankOrderMarkers(),
+    // orderMarkers: generateBlankOrderMarkers(),
+    orderMarkers: generatePreplacedOrderMarkers(),
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
-    players: generateBlankPlayersState(),
+    // players: generateBlankPlayersState(),
+    players: playersStateWithPrePlacedOMs(),
     armyCards,
     gameUnits,
     hexMap: hexagonMap.hexMap,

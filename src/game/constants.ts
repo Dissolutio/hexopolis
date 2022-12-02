@@ -20,10 +20,27 @@ export const stageNames = {
 }
 
 export const OM_COUNT = 3
-const orders = ['0', '1', '2', 'X']
+const ORDERS = ['0', '1', '2', 'X']
 
+export function generatePreplacedOrderMarkers(): OrderMarkers {
+  const orderMarkers: OrderMarkers = {
+    '0': [],
+    '1': [],
+  }
+  for (let i = 0; i < OM_COUNT; i++) {
+    orderMarkers['0'].push({
+      order: i.toString(),
+      gameCardID: 'p0_hs1008',
+    })
+    orderMarkers['1'].push({
+      order: i.toString(),
+      gameCardID: 'p1_hs1008',
+    })
+  }
+  return orderMarkers
+}
 export function generateBlankOrderMarkers(): OrderMarkers {
-  const blankOrderMarkers = orders.reduce((prev, curr) => {
+  const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
     return [...prev, { gameCardID: '', order: curr }]
   }, [] as OrderMarker[])
   return {
