@@ -30,10 +30,7 @@ type PlayContextValue = {
   selectedGameCardUnits: GameUnit[]
   // handlers
   onSelectCard__turn: (gameCardID: string) => void
-  onClickBoardHex__turn: (
-    event: React.SyntheticEvent,
-    sourceHex: BoardHex
-  ) => void
+  onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
 }
 
 export const PlayContextProvider = ({ children }: PropsWithChildren) => {
@@ -110,7 +107,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     setSelectedGameCardID(gameCardID)
     return
   }
-  function onClickBoardHex__turn(event: SyntheticEvent, sourceHex: BoardHex) {
+  function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     event.stopPropagation()
     const boardHex = boardHexes[sourceHex.id]
     const occupyingUnitID = boardHex.occupyingUnitID
@@ -182,7 +179,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCard,
         revealedGameCardUnits,
         // HANDLERS
-        onClickBoardHex__turn,
+        onClickTurnHex,
         onSelectCard__turn,
       }}
     >
