@@ -21,18 +21,18 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hs1008',
-        '1': 'p0_hs1008',
-        '2': 'p0_hs1008',
-        X: 'p0_hs1008',
+        '0': 'p0_hs1000',
+        '1': 'p0_hs1000',
+        '2': 'p0_hs1000',
+        X: 'p0_hs1000',
       },
     },
     '1': {
       orderMarkers: {
-        '0': 'p1_hs1008',
-        '1': 'p1_hs1008',
-        '2': 'p1_hs1008',
-        X: 'p1_hs1008',
+        '0': 'p1_hs1002',
+        '1': 'p1_hs1002',
+        '2': 'p1_hs1002',
+        X: 'p1_hs1002',
       },
     },
   }
@@ -49,7 +49,7 @@ function makeTestScenario(): GameState {
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 1,
+    mapSize: 3,
     withPrePlacedUnits,
     gameUnits: gameArmyCardsToGameUnits(armyCards),
     flat: false,
@@ -104,15 +104,16 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 
 //! TEST SCENARIO GAMEARMYCARDS
 function makeArmyCardsForTestScenario() {
-  return hsCardsToArmyCards([...MS1Cards, ...MS1Cards])
+  return hsCardsToArmyCards(MS1Cards)
     .filter(
       // filter down to the actual cards we want to use
-      (c) => c.armyCardID === 'hs1008'
-      // c.armyCardID === 'hs1000' ||
-      // c.armyCardID === 'hs1008' ||
-      // c.armyCardID === 'hs1002' ||
-      // c.armyCardID === 'hs1003' ||
-      // c.armyCardID === 'hs1014'
+      (c) =>
+        // c.armyCardID === 'hs1008'
+        c.armyCardID === 'hs1000' ||
+        c.armyCardID === 'hs1008' ||
+        c.armyCardID === 'hs1002' ||
+        c.armyCardID === 'hs1003' ||
+        c.armyCardID === 'hs1014'
     )
     .map((card, index) => {
       // const isCardMarroWarriors = card.armyCardID === 'hs1000'
@@ -121,16 +122,16 @@ function makeArmyCardsForTestScenario() {
       const isCardNeGokSa = card.armyCardID === 'hs1014'
 
       // normal setup:
-      // const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
+      const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
 
       // setup 1 card move-range test:
-      const isCardForPlayer1 = index === 0
+      // const isCardForPlayer1 = index === 0
 
       const isCardIzumiSamurai = card.armyCardID === 'hs1002'
       const isCardSgtDrake = card.armyCardID === 'hs1003'
       const isCardForPlayer2 = isCardIzumiSamurai || isCardSgtDrake
-      // const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
-      const playerID = isCardForPlayer1 ? '0' : '1'
+      const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
+      // const playerID = isCardForPlayer1 ? '0' : '1'
       // id factory ...
       function makeGameCardID() {
         return `p${playerID}_${card.armyCardID}`

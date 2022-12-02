@@ -30,11 +30,11 @@ export function generatePreplacedOrderMarkers(): OrderMarkers {
   for (let i = 0; i < OM_COUNT; i++) {
     orderMarkers['0'].push({
       order: i.toString(),
-      gameCardID: 'p0_hs1008',
+      gameCardID: 'p0_hs1000',
     })
     orderMarkers['1'].push({
       order: i.toString(),
-      gameCardID: 'p1_hs1008',
+      gameCardID: 'p1_hs1002',
     })
   }
   return orderMarkers
