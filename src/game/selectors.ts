@@ -65,6 +65,14 @@ export function selectUnrevealedGameCard(
   return selectGameCardByID(armyCards, id)
 }
 // Related ⤵
+const deduplicateMoveRange = (result: MoveRange): MoveRange => {
+  return {
+    safe: uniq(result.safe),
+    engage: uniq(result.engage),
+    disengage: uniq(result.disengage),
+    denied: uniq(result.denied),
+  }
+}
 export function calcUnitMoveRange(
   unit: GameUnit,
   boardHexes: BoardHexes,
@@ -88,82 +96,80 @@ export function calcUnitMoveRange(
   initialMoveRange.denied.push(`${startHex.id}`)
 
   // 3. recursively add hexes to move-range
-  const moveRange = {
-    ...moveRangeReduce(
+  const moveRange = deduplicateMoveRange(
+    moveRangeReduce(
       startHex as BoardHex,
       initialMovePoints,
       boardHexes,
       initialMoveRange,
-      gameUnits
-    ),
-  }
+      gameUnits,
+      playerID
+    )
+  )
+
   return moveRange
 
   //* recursive reduce
-  function moveRangeReduce(
-    startHex: BoardHex,
-    movePoints: number,
-    boardHexes: BoardHexes,
-    initialMoveRange: MoveRange,
-    gameUnits: GameUnits
-  ): MoveRange {
-    const neighbors = selectHexNeighbors(startHex.id, boardHexes)
-    //*early out
-    if (movePoints <= 0) {
-      return initialMoveRange
-    }
-    let nextResults = neighbors.reduce(
-      (result: MoveRange, end: BoardHex): MoveRange => {
-        const endHexID = end.id
-        const endHexUnitID = end.occupyingUnitID
-        const endHexUnit = { ...gameUnits[endHexUnitID] }
-        const endHexUnitPlayerID = endHexUnit.playerID
-        const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
-        const movePointsLeftAfterMove = movePoints - moveCost
-        const isEndHexOccupied = Boolean(endHexUnitID)
-        const isTooCostly = movePointsLeftAfterMove < 0
-        const isEndHexEnemyOccupied =
-          isEndHexOccupied && endHexUnitPlayerID !== playerID
-        const isEndHexFriendlyOccupied = Boolean(
-          endHexUnitID && endHexUnitPlayerID === playerID
-        )
-        const isUnpassable = isTooCostly || isEndHexEnemyOccupied
-        const deduplicateMoveRange = (result: MoveRange): MoveRange => {
-          return {
-            safe: uniq(result.safe),
-            engage: uniq(result.engage),
-            disengage: uniq(result.disengage),
-            denied: uniq(result.denied),
-          }
-        }
-        if (isUnpassable || isEndHexFriendlyOccupied) {
-          result.denied.push(endHexID)
-        } else {
-          // Not unpassable or occupied, then can be moved to
-          result.safe.push(endHexID)
-        }
-
-        if (!isUnpassable) {
-          const recursiveMoveRange = moveRangeReduce(
-            end,
-            movePointsLeftAfterMove,
-            boardHexes,
-            deduplicateMoveRange(result),
-            gameUnits
-          )
-          return {
-            ...deduplicateMoveRange(result),
-            ...recursiveMoveRange,
-          }
-        }
-        return result
-      },
-      // accumulator for reduce fn
-      initialMoveRange
-    )
-    return nextResults
-  }
 }
+function moveRangeReduce(
+  startHex: BoardHex,
+  movePoints: number,
+  boardHexes: BoardHexes,
+  initialMoveRange: MoveRange,
+  gameUnits: GameUnits,
+  playerID: string
+): MoveRange {
+  console.count()
+  const neighbors = selectHexNeighbors(startHex.id, boardHexes)
+  //*early out
+  if (movePoints <= 0) {
+    return initialMoveRange
+  }
+  let nextResults = neighbors.reduce(
+    (result: MoveRange, end: BoardHex): MoveRange => {
+      const endHexID = end.id
+      const endHexUnitID = end.occupyingUnitID
+      const endHexUnit = { ...gameUnits[endHexUnitID] }
+      const endHexUnitPlayerID = endHexUnit.playerID
+      const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
+      const movePointsLeftAfterMove = movePoints - moveCost
+      const isEndHexOccupied = Boolean(endHexUnitID)
+      const isTooCostly = movePointsLeftAfterMove < 0
+      const isEndHexEnemyOccupied =
+        isEndHexOccupied && endHexUnitPlayerID !== playerID
+      const isEndHexFriendlyOccupied = Boolean(
+        endHexUnitID && endHexUnitPlayerID === playerID
+      )
+      const isUnpassable = isTooCostly || isEndHexEnemyOccupied
+      if (isUnpassable || isEndHexFriendlyOccupied) {
+        result.denied.push(endHexID)
+      } else {
+        // Not unpassable or occupied, then can be moved to
+        result.safe.push(endHexID)
+      }
+
+      if (!isUnpassable) {
+        const recursiveMoveRange = moveRangeReduce(
+          end,
+          movePointsLeftAfterMove,
+          boardHexes,
+          result,
+          gameUnits,
+          playerID
+        )
+        return {
+          ...result,
+          ...recursiveMoveRange,
+        }
+      }
+      return result
+    },
+    // accumulator for reduce fn
+    initialMoveRange
+  )
+  return nextResults
+}
+
 export function selectHexNeighbors(
   startHexID: string,
   boardHexes: BoardHexes
@@ -177,6 +183,7 @@ export function selectHexNeighbors(
     })
     .filter((item) => Boolean(item)) as BoardHex[]
 }
+
 export function calcMoveCostBetweenNeighbors(
   startHex: BoardHex,
   endHex: BoardHex
