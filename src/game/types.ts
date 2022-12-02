@@ -52,6 +52,7 @@ export type StartZones = {
 }
 export type ArmyCard = {
   name: string
+  singleName: string
   armyCardID: string
   race: string
   life: number

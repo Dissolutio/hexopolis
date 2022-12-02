@@ -1,14 +1,8 @@
 import type { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
 
-import {
-  selectHexForUnit,
-  selectGameCardByID,
-  calcUnitMoveRange,
-  selectUnitsForCard,
-  selectUnrevealedGameCard,
-} from './selectors'
-import { GameState, BoardHexes, BoardHex, GameUnits, GameUnit } from './types'
+import { selectHexForUnit, selectGameCardByID } from './selectors'
+import { GameState, BoardHex, GameUnit, PlayerOrderMarkers } from './types'
 import { stageNames } from './constants'
 import { moveAction } from './move-action'
 
@@ -161,16 +155,14 @@ const confirmPlacementReady: Move<GameState> = (
 }
 
 //phase:___PlaceOrderMarkers
-const placeOrderMarker: Move<GameState> = (
-  { G, ctx },
+const placeOrderMarkers: Move<GameState> = (
+  { G },
   {
     playerID,
-    // TODO: orderMarker should be called "order", really
-    order,
-    gameCardID,
-  }: { playerID: string; order: string; gameCardID: string }
+    orders,
+  }: { playerID: string; orders: PlayerOrderMarkers; gameCardID: string }
 ) => {
-  G.players[playerID].orderMarkers[order] = gameCardID
+  G.players[playerID].orderMarkers = orders
 }
 const confirmOrderMarkersReady: Move<GameState> = (
   { G, ctx },
@@ -186,6 +178,6 @@ export const moves = {
   attackAction,
   deployUnits,
   confirmPlacementReady,
-  placeOrderMarker,
+  placeOrderMarkers,
   confirmOrderMarkersReady,
 }

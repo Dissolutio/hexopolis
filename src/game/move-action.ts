@@ -1,7 +1,7 @@
 import { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
+import { calcUnitMoveRange } from './calcUnitMoveRange'
 import {
-  calcUnitMoveRange,
   selectHexForUnit,
   selectUnitsForCard,
   selectUnrevealedGameCard,
@@ -18,7 +18,7 @@ export const moveAction: Move<GameState> = (
   const endHexID = endHex.id
   const startHex = selectHexForUnit(unitID, G.boardHexes)
   const startHexID = startHex?.id ?? ''
-  const currentMoveRange = calcUnitMoveRange(unit, G.boardHexes, G.gameUnits)
+  const currentMoveRange = G.gameUnits[unitID].moveRange
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
   const moveCost = HexUtils.distance(startHex as Hex, endHex)
   // clone G
@@ -46,6 +46,7 @@ export const moveAction: Move<GameState> = (
     unrevealedGameCard?.gameCardID ?? '',
     G.gameUnits
   )
+
   currentTurnUnits.forEach((unit: GameUnit) => {
     const { unitID } = unit
     const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)

@@ -12,6 +12,7 @@ import {
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
+  generatePreplacedOrderMarkers,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
@@ -20,18 +21,18 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hm101',
-        '1': 'p0_hm101',
-        '2': 'p0_hm101',
-        X: 'p0_hm101',
+        '0': 'p0_hs1000',
+        '1': 'p0_hs1000',
+        '2': 'p0_hs1000',
+        X: 'p0_hs1000',
       },
     },
     '1': {
       orderMarkers: {
-        '0': 'p1_hm201',
-        '1': 'p1_hm201',
-        '2': 'p1_hm201',
-        X: 'p1_hm201',
+        '0': 'p1_hs1002',
+        '1': 'p1_hs1002',
+        '2': 'p1_hs1002',
+        X: 'p1_hs1002',
       },
     },
   }
@@ -43,12 +44,12 @@ export const testScenario = makeTestScenario()
 function makeTestScenario(): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = makeArmyCards()
+  const armyCards: GameArmyCard[] = makeArmyCardsForTestScenario()
   // GameUnits:
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 2,
+    mapSize: 3,
     withPrePlacedUnits,
     gameUnits: gameArmyCardsToGameUnits(armyCards),
     flat: false,
@@ -63,10 +64,12 @@ function makeTestScenario(): GameState {
     currentRound: 0,
     currentOrderMarker: 0,
     orderMarkers: generateBlankOrderMarkers(),
+    // orderMarkers: generatePreplacedOrderMarkers(),
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
     players: generateBlankPlayersState(),
+    // players: playersStateWithPrePlacedOMs(),
     armyCards,
     gameUnits,
     hexMap: hexagonMap.hexMap,
@@ -78,6 +81,7 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   return params.map((hsCard) => {
     return {
       name: hsCard.name,
+      singleName: hsCard.singleName,
       armyCardID: hsCard.armyCardID,
       race: hsCard.race,
       life: parseInt(hsCard.life),
@@ -99,17 +103,35 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 }
 
 //! TEST SCENARIO GAMEARMYCARDS
-function makeArmyCards() {
+function makeArmyCardsForTestScenario() {
   return hsCardsToArmyCards(MS1Cards)
     .filter(
-      // hs1000 is marro warriors, hs1002 is izumi samurai
-      (c) => c.armyCardID === 'hs1000' || c.armyCardID === 'hs1002'
+      // filter down to the actual cards we want to use
+      (c) =>
+        // c.armyCardID === 'hs1008'
+        c.armyCardID === 'hs1000' ||
+        // c.armyCardID === 'hs1008' ||
+        c.armyCardID === 'hs1002' ||
+        c.armyCardID === 'hs1003' ||
+        c.armyCardID === 'hs1014'
     )
-    .map((card) => {
-      // we give player 1 the marro, and player 2 the samurai
+    .map((card, index) => {
+      // const isCardMarroWarriors = card.armyCardID === 'hs1000'
+      // we give player 1 the marro + negoksa, and player 2 the samurai + sgt drake
       const isCardMarroWarriors = card.armyCardID === 'hs1000'
+      const isCardNeGokSa = card.armyCardID === 'hs1014'
+
+      // normal setup:
+      const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
+
+      // setup 1 card move-range test:
+      // const isCardForPlayer1 = index === 0
+
       const isCardIzumiSamurai = card.armyCardID === 'hs1002'
-      const playerID = isCardMarroWarriors ? '0' : isCardIzumiSamurai ? '1' : ''
+      const isCardSgtDrake = card.armyCardID === 'hs1003'
+      const isCardForPlayer2 = isCardIzumiSamurai || isCardSgtDrake
+      const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
+      // const playerID = isCardForPlayer1 ? '0' : '1'
       // id factory ...
       function makeGameCardID() {
         return `p${playerID}_${card.armyCardID}`

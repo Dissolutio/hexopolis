@@ -16,7 +16,7 @@ type PlacementContextValue = {
   placementUnits: string[]
   inflatedPlacementUnits: PlacementUnit[]
   onClickPlacementUnit: (unitID: string) => void
-  onClickBoardHex_placement: (
+  onClickPlacementHex: (
     event: React.SyntheticEvent,
     sourceHex: BoardHex
   ) => void
@@ -105,10 +105,7 @@ const PlacementContextProvider = ({
     }
   }
 
-  function onClickBoardHex_placement(
-    event: SyntheticEvent,
-    sourceHex: BoardHex
-  ) {
+  function onClickPlacementHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to background onClick
     event.stopPropagation()
     const clickedHexId = sourceHex.id
@@ -183,7 +180,7 @@ const PlacementContextProvider = ({
         placementUnits,
         inflatedPlacementUnits,
         onClickPlacementUnit,
-        onClickBoardHex_placement,
+        onClickPlacementHex,
         editingBoardHexes,
         updatePlacementEditingBoardHexes,
         onResetPlacementState,

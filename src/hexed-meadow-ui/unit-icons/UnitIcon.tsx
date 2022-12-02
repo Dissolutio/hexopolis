@@ -3,17 +3,17 @@ import React from 'react'
 import {
   GiDiabloSkull,
   GiNinjaArmor,
-  GiButterfly,
-  GiFairyWings,
-  GiWingedEmblem,
   GiMissileMech,
+  GiAlienStare,
+  GiAlliedStar,
+  GiWalkingTurret,
 } from 'react-icons/gi'
 
 const playerIconColors: { [key: string]: string } = {
   '0': 'var(--bee-yellow)',
   '1': 'var(--butterfly-purple)',
 }
-type UnitIconTypes = {
+type Props = {
   armyCardID: string
   iconPlayerID?: String
   hexSize?: number
@@ -22,12 +22,12 @@ type UnitIconTypes = {
     y: string
   }
 }
-export const UnitIcon: React.FC<UnitIconTypes> = ({
+export const UnitIcon = ({
   armyCardID,
+  iconPlayerID,
   hexSize,
   iconProps,
-  iconPlayerID,
-}) => {
+}: Props) => {
   if (!armyCardID) {
     return null
   }
@@ -46,24 +46,60 @@ export const UnitIcon: React.FC<UnitIconTypes> = ({
 
   switch (armyCardID) {
     case 'hs1000':
+      // marro warriors
       return <GiDiabloSkull {...gameIconProps} />
     case 'hs1001':
+      // deathwalker 9000
       return <GiMissileMech {...gameIconProps} />
     case 'hs1002':
+      // izumi samurai
       return <GiNinjaArmor {...gameIconProps} />
+    case 'hs1003':
+      // sgt drake
+      return <GiAlliedStar {...gameIconProps} />
+    case 'hs1008':
+      // zettian guard
+      return <GiWalkingTurret {...gameIconProps} />
+    case 'hs1014':
+      // negoksa
+      return <GiAlienStare {...gameIconProps} />
     default:
       return null
   }
 }
 
-export const CardUnitIcon = ({ unit }: { unit: PlacementUnit }) => {
+export const PlacementCardUnitIcon = ({
+  armyCardID,
+  playerID,
+}: {
+  armyCardID: string
+  playerID: string
+}) => {
   return (
     <UnitIcon
-      armyCardID={unit.armyCardID}
-      iconPlayerID={unit.playerID}
+      armyCardID={armyCardID}
+      iconPlayerID={playerID}
       iconProps={{
         x: '50',
         y: '50',
+      }}
+    />
+  )
+}
+export const PlaceOrderMarkersArmyCardUnitIcon = ({
+  armyCardID,
+  playerID,
+}: {
+  armyCardID: string
+  playerID: string
+}) => {
+  return (
+    <UnitIcon
+      armyCardID={armyCardID}
+      iconPlayerID={playerID}
+      iconProps={{
+        x: '25',
+        y: '25',
       }}
     />
   )

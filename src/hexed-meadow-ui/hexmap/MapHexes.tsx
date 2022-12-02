@@ -23,9 +23,9 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
   const { ctx } = useBgioCtx()
-  const { onClickBoardHex_placement, editingBoardHexes } = usePlacementContext()
+  const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
-    onClickBoardHex__turn,
+    onClickTurnHex,
     selectedGameCard,
     selectedGameCardUnits,
     selectedUnit,
@@ -42,10 +42,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
-      onClickBoardHex_placement?.(event, sourceHex)
+      onClickPlacementHex?.(event, sourceHex)
     }
     if (isRoundOfPlayPhase) {
-      onClickBoardHex__turn?.(event, sourceHex)
+      onClickTurnHex?.(event, sourceHex)
     }
   }
 

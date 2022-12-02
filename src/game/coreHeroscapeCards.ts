@@ -1,5 +1,6 @@
 export interface ICoreHeroscapeCard {
   name: string
+  singleName: string
   armyCardID: string
   race: string
   life: string
@@ -36,6 +37,7 @@ export type CardAbility = {
 export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   {
     name: 'Marro Warriors',
+    singleName: 'Marro Warrior',
     armyCardID: 'hs1000',
     image: 'marrowarriors.jpg',
     portraitPattern: 'marrowarriors-portrait',
@@ -64,6 +66,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Deathwalker 9000',
+    singleName: 'Deathwalker 9000',
     armyCardID: 'hs1001',
     image: 'deathwalker9000.jpg',
     portraitPattern: 'deathwalker9000-portrait',
@@ -96,6 +99,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Izumi Samurai',
+    singleName: 'Izumi Samurai',
     armyCardID: 'hs1002',
     image: 'izumisamurai.jpg',
     portraitPattern: 'izumisamurai-portrait',
@@ -123,7 +127,8 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     ],
   },
   {
-    name: 'Sgt. Drake Alexander (1)',
+    name: 'Sgt. Drake Alexander',
+    singleName: 'Sgt. Drake Alexander',
     armyCardID: 'hs1003',
     image: 'sgtdrakealexander1.jpg',
     portraitPattern: 'sgtdrakealexander1-portrait',
@@ -156,6 +161,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Syvarris',
+    singleName: 'Syvarris',
     armyCardID: 'hs1004',
     image: 'syvarris.jpg',
     portraitPattern: 'syvarris-portrait',
@@ -184,6 +190,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Krav Maga Agents',
+    singleName: 'Krav Maga Agent',
     armyCardID: 'hs1005',
     image: 'kravmagaagents.jpg',
     portraitPattern: 'kravmagaagents-portrait',
@@ -212,6 +219,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tarn Viking Warriors',
+    singleName: 'Tarn Viking Warrior',
     armyCardID: 'hs1006',
     image: 'tarnvikingwarriors.jpg',
     portraitPattern: 'tarnvikingwarriors-portrait',
@@ -240,6 +248,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Agent Carr',
+    singleName: 'Agent Carr',
     armyCardID: 'hs1007',
     image: 'agentcarr.jpg',
     portraitPattern: 'agentcarr-portrait',
@@ -276,6 +285,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Zettian Guards',
+    singleName: 'Zettian Guard',
     armyCardID: 'hs1008',
     image: 'zettianguards.jpg',
     portraitPattern: 'zettianguards-portrait',
@@ -304,6 +314,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Airborne Elite',
+    singleName: 'Airborne Elite',
     armyCardID: 'hs1009',
     image: 'airborneelite.jpg',
     portraitPattern: 'airborneelite-portrait',
@@ -336,6 +347,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Finn the Viking Champion',
+    singleName: 'Finn the Viking Champion',
     armyCardID: 'hs1010',
     image: 'finnthevikingchampion.jpg',
     portraitPattern: 'finnthevikingchampion-portrait',
@@ -368,6 +380,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Thorgrim the Viking Champion',
+    singleName: 'Thorgrim the Viking Champion',
     armyCardID: 'hs1011',
     image: 'thorgrimthevikingchampion.jpg',
     portraitPattern: 'thorgrimthevikingchampion-portrait',
@@ -399,7 +412,8 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     ],
   },
   {
-    name: 'Raelin the Kyrie Warrior (1)',
+    name: 'Raelin the Kyrie Warrior',
+    singleName: 'Raelin the Kyrie Warrior',
     armyCardID: 'hs1012',
     image: 'raelinthekyriewarrior1.jpg',
     portraitPattern: 'raelinthekyriewarrior1-portrait',
@@ -432,6 +446,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Mimring',
+    singleName: 'Mimring',
     armyCardID: 'hs1013',
     image: 'mimring.jpg',
     portraitPattern: 'mimring-portrait',
@@ -464,6 +479,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ne-gok-sa',
+    singleName: 'Ne-gok-sa',
     armyCardID: 'hs1014',
     image: 'negoksa.jpg',
     portraitPattern: 'negoksa-portrait',
@@ -492,6 +508,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Grimnak',
+    singleName: 'Grimnak',
     armyCardID: 'hs1015',
     image: 'grimnak.jpg',
     portraitPattern: 'grimnak-portrait',
@@ -524,6 +541,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Omnicron Snipers',
+    singleName: 'Omnicron Sniper',
     armyCardID: 'hs1016',
     image: 'omnicronsnipers.jpg',
     portraitPattern: 'omnicronsnipers-portrait',
@@ -552,6 +570,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Taelord the Kyrie Warrior',
+    singleName: 'Taelord the Kyrie Warrior',
     armyCardID: 'hs1017',
     image: 'taelordthekyriewarrior.jpg',
     portraitPattern: 'taelordthekyriewarrior-portrait',
@@ -584,6 +603,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kelda the Kyrie Warrior',
+    singleName: 'Kelda the Kyrie Warrior',
     armyCardID: 'hs1018',
     image: 'keldathekyriewarrior.jpg',
     portraitPattern: 'keldathekyriewarrior-portrait',
@@ -616,6 +636,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marcus Decimus Gallus',
+    singleName: 'Marcus Decimus Gallus',
     armyCardID: 'hs1019',
     image: 'marcusdecimusgallus.jpg',
     portraitPattern: 'marcusdecimusgallus-portrait',
@@ -648,6 +669,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Venoc Warlord',
+    singleName: 'Venoc Warlord',
     armyCardID: 'hs1020',
     image: 'venocwarlord.jpg',
     portraitPattern: 'venocwarlord-portrait',
@@ -684,6 +706,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tornak',
+    singleName: 'Tornak',
     armyCardID: 'hs1021',
     image: 'tornak.jpg',
     portraitPattern: 'tornak-portrait',
@@ -716,6 +739,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Venoc Vipers',
+    singleName: 'Venoc Vipers',
     armyCardID: 'hs1022',
     image: 'venocvipers.jpg',
     portraitPattern: 'venocvipers-portrait',
@@ -748,6 +772,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Roman Legionnaires',
+    singleName: 'Roman Legionnaires',
     armyCardID: 'hs1023',
     image: 'romanlegionnaires.jpg',
     portraitPattern: 'romanlegionnaires-portrait',
@@ -780,6 +805,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Roman Archers',
+    singleName: 'Roman Archers',
     armyCardID: 'hs1024',
     image: 'romanarchers.jpg',
     portraitPattern: 'romanarchers-portrait',
@@ -808,6 +834,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Arrow Gruts',
+    singleName: 'Arrow Gruts',
     armyCardID: 'hs1025',
     image: 'arrowgruts.jpg',
     portraitPattern: 'arrowgruts-portrait',
@@ -840,6 +867,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Blade Gruts',
+    singleName: 'Blade Gruts',
     armyCardID: 'hs1026',
     image: 'bladegruts.jpg',
     portraitPattern: 'bladegruts-portrait',
@@ -872,6 +900,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Khosumet the Darklord',
+    singleName: 'Khosumet the Darklord',
     armyCardID: 'hs1027',
     image: 'khosumetthedarklord.jpg',
     portraitPattern: 'khosumetthedarklord-portrait',
@@ -904,6 +933,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sir Denrick',
+    singleName: 'Sir Denrick',
     armyCardID: 'hs1028',
     image: 'sirdenrick.jpg',
     portraitPattern: 'sirdenrick-portrait',
@@ -936,6 +966,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Me-Burq-Sa',
+    singleName: 'Me-Burq-Sa',
     armyCardID: 'hs1029',
     image: 'meburqsa.jpg',
     portraitPattern: 'meburqsa-portrait',
@@ -964,6 +995,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Krug',
+    singleName: 'Krug',
     armyCardID: 'hs1030',
     image: 'krug.jpg',
     portraitPattern: 'krug-portrait',
@@ -996,6 +1028,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Minions of Utgar',
+    singleName: 'Minions of Utgar',
     armyCardID: 'hs1031',
     image: 'minionsofutgar.jpg',
     portraitPattern: 'minionsofutgar-portrait',
@@ -1032,6 +1065,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marro Drones',
+    singleName: 'Marro Drones',
     armyCardID: 'hs1032',
     image: 'marrodrones.jpg',
     portraitPattern: 'marrodrones-portrait',
@@ -1060,6 +1094,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Knights of Weston',
+    singleName: 'Knights of Weston',
     armyCardID: 'hs1033',
     image: 'knightsofweston.jpg',
     portraitPattern: 'knightsofweston-portrait',
@@ -1092,6 +1127,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Swog Rider',
+    singleName: 'Swog Rider',
     armyCardID: 'hs1034',
     image: 'swogrider.jpg',
     portraitPattern: 'swogrider-portrait',
@@ -1124,6 +1160,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: '4th Massachusetts Line',
+    singleName: '4th Massachusetts Line',
     armyCardID: 'hs1035',
     image: '4thmassachusettsline.jpg',
     portraitPattern: '4thmassachusettsline-portrait',
@@ -1156,6 +1193,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Anubian Wolves',
+    singleName: 'Anubian Wolves',
     armyCardID: 'hs1036',
     image: 'anubianwolves.jpg',
     portraitPattern: 'anubianwolves-portrait',
@@ -1184,6 +1222,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Saylind the Kyrie Warrior',
+    singleName: 'Saylind the Kyrie Warrior',
     armyCardID: 'hs1037',
     image: 'saylindthekyriewarrior.jpg',
     portraitPattern: 'saylindthekyriewarrior-portrait',
@@ -1216,6 +1255,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: "Johnny 'Shotgun' Sullivan",
+    singleName: "Johnny 'Shotgun' Sullivan",
     armyCardID: 'hs1038',
     image: 'johnnyshotgunsullivan.jpg',
     portraitPattern: 'johnnyshotgunsullivan-portrait',
@@ -1244,6 +1284,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Deathwalker 7000',
+    singleName: 'Deathwalker 7000',
     armyCardID: 'hs1039',
     image: 'deathwalker7000.jpg',
     portraitPattern: 'deathwalker7000-portrait',
@@ -1276,6 +1317,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Concan the Kyrie Warrior',
+    singleName: 'Concan the Kyrie Warrior',
     armyCardID: 'hs1040',
     image: 'concanthekyriewarrior.jpg',
     portraitPattern: 'concanthekyriewarrior-portrait',
@@ -1308,6 +1350,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Alastair MacDirk',
+    singleName: 'Alastair MacDirk',
     armyCardID: 'hs1041',
     image: 'alastairmacdirk.jpg',
     portraitPattern: 'alastairmacdirk-portrait',
@@ -1336,6 +1379,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sentinels of Jandar',
+    singleName: 'Sentinels of Jandar',
     armyCardID: 'hs1042',
     image: 'sentinelsofjandar.jpg',
     portraitPattern: 'sentinelsofjandar-portrait',
@@ -1368,6 +1412,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marrden Hounds',
+    singleName: 'Marrden Hounds',
     armyCardID: 'hs1043',
     image: 'marrdenhounds.jpg',
     portraitPattern: 'marrdenhounds-portrait',
@@ -1400,6 +1445,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Gorillinators',
+    singleName: 'Gorillinators',
     armyCardID: 'hs1044',
     image: 'gorillinators.jpg',
     portraitPattern: 'gorillinators-portrait',
@@ -1428,6 +1474,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Microcorp Agents',
+    singleName: 'Microcorp Agents',
     armyCardID: 'hs1045',
     image: 'microcorpagents.jpg',
     portraitPattern: 'microcorpagents-portrait',
@@ -1464,6 +1511,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'MacDirk Warriors',
+    singleName: 'MacDirk Warriors',
     armyCardID: 'hs1046',
     image: 'macdirkwarriors.jpg',
     portraitPattern: 'macdirkwarriors-portrait',
@@ -1496,6 +1544,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Shaolin Monks',
+    singleName: 'Shaolin Monks',
     armyCardID: 'hs1047',
     image: 'shaolinmonks.jpg',
     portraitPattern: 'shaolinmonks-portrait',
@@ -1528,6 +1577,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Major X17',
+    singleName: 'Major X17',
     armyCardID: 'hs1048',
     image: 'majorx17.jpg',
     portraitPattern: 'majorx17-portrait',
@@ -1560,6 +1610,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Valguard',
+    singleName: 'Valguard',
     armyCardID: 'hs1049',
     image: 'valguard.jpg',
     portraitPattern: 'valguard-portrait',
@@ -1592,6 +1643,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Parmenio',
+    singleName: 'Parmenio',
     armyCardID: 'hs1050',
     image: 'parmenio.jpg',
     portraitPattern: 'parmenio-portrait',
@@ -1624,6 +1676,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Morsbane',
+    singleName: 'Morsbane',
     armyCardID: 'hs1051',
     image: 'morsbane.jpg',
     portraitPattern: 'morsbane-portrait',
@@ -1652,6 +1705,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sudema',
+    singleName: 'Sudema',
     armyCardID: 'hs1052',
     image: 'sudema.jpg',
     portraitPattern: 'sudema-portrait',
@@ -1680,6 +1734,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'James Murphy',
+    singleName: 'James Murphy',
     armyCardID: 'hs1053',
     image: 'jamesmurphy.jpg',
     portraitPattern: 'jamesmurphy-portrait',
@@ -1708,6 +1763,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Guilty McCreech',
+    singleName: 'Guilty McCreech',
     armyCardID: 'hs1054',
     image: 'guiltymccreech.jpg',
     portraitPattern: 'guiltymccreech-portrait',
@@ -1736,6 +1792,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Deadeye Dan',
+    singleName: 'Deadeye Dan',
     armyCardID: 'hs1055',
     image: 'deadeyedan.jpg',
     portraitPattern: 'deadeyedan-portrait',
@@ -1768,6 +1825,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tagawa Samurai',
+    singleName: 'Tagawa Samurai',
     armyCardID: 'hs1056',
     image: 'tagawasamurai.jpg',
     portraitPattern: 'tagawasamurai-portrait',
@@ -1800,6 +1858,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Aubrien Archers',
+    singleName: 'Aubrien Archers',
     armyCardID: 'hs1057',
     image: 'aubrienarchers.jpg',
     portraitPattern: 'aubrienarchers-portrait',
@@ -1828,6 +1887,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Gladiatrons',
+    singleName: 'Gladiatrons',
     armyCardID: 'hs1058',
     image: 'gladiatrons.jpg',
     portraitPattern: 'gladiatrons-portrait',
@@ -1860,6 +1920,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sacred Band',
+    singleName: 'Sacred Band',
     armyCardID: 'hs1059',
     image: 'sacredband.jpg',
     portraitPattern: 'sacredband-portrait',
@@ -1892,6 +1953,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Armoc Vipers',
+    singleName: 'Armoc Vipers',
     armyCardID: 'hs1060',
     image: 'armocvipers.jpg',
     portraitPattern: 'armocvipers-portrait',
@@ -1924,6 +1986,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Brunak',
+    singleName: 'Brunak',
     armyCardID: 'hs1061',
     image: 'brunak.jpg',
     portraitPattern: 'brunak-portrait',
@@ -1960,6 +2023,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Charos',
+    singleName: 'Charos',
     armyCardID: 'hs1062',
     image: 'charos.jpg',
     portraitPattern: 'charos-portrait',
@@ -1992,6 +2056,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Deathwalker 8000',
+    singleName: 'Deathwalker 8000',
     armyCardID: 'hs1063',
     image: 'deathwalker8000.jpg',
     portraitPattern: 'deathwalker8000-portrait',
@@ -2020,6 +2085,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Dund',
+    singleName: 'Dund',
     armyCardID: 'hs1064',
     image: 'dund.jpg',
     portraitPattern: 'dund-portrait',
@@ -2048,6 +2114,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Su-Bak-Na',
+    singleName: 'Su-Bak-Na',
     armyCardID: 'hs1065',
     image: 'subakna.jpg',
     portraitPattern: 'subakna-portrait',
@@ -2080,6 +2147,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Braxas',
+    singleName: 'Braxas',
     armyCardID: 'hs1066',
     image: 'braxas.jpg',
     portraitPattern: 'braxas-portrait',
@@ -2112,6 +2180,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Jotun',
+    singleName: 'Jotun',
     armyCardID: 'hs1067',
     image: 'jotun.jpg',
     portraitPattern: 'jotun-portrait',
@@ -2144,6 +2213,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Major Q9',
+    singleName: 'Major Q9',
     armyCardID: 'hs1068',
     image: 'majorq9.jpg',
     portraitPattern: 'majorq9-portrait',
@@ -2172,6 +2242,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Nilfheim',
+    singleName: 'Nilfheim',
     armyCardID: 'hs1069',
     image: 'nilfheim.jpg',
     portraitPattern: 'nilfheim-portrait',
@@ -2204,6 +2275,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Theracus',
+    singleName: 'Theracus',
     armyCardID: 'hs1070',
     image: 'theracus.jpg',
     portraitPattern: 'theracus-portrait',
@@ -2236,6 +2308,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Gurei-Oni',
+    singleName: 'Gurei-Oni',
     armyCardID: 'hs1071',
     image: 'gureioni.jpg',
     portraitPattern: 'gureioni-portrait',
@@ -2268,6 +2341,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sujoah',
+    singleName: 'Sujoah',
     armyCardID: 'hs1072',
     image: 'sujoah.jpg',
     portraitPattern: 'sujoah-portrait',
@@ -2300,6 +2374,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Wo-Sa-Ga',
+    singleName: 'Wo-Sa-Ga',
     armyCardID: 'hs1073',
     image: 'wosaga.jpg',
     portraitPattern: 'wosaga-portrait',
@@ -2332,6 +2407,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Zelrig',
+    singleName: 'Zelrig',
     armyCardID: 'hs1074',
     image: 'zelrig.jpg',
     portraitPattern: 'zelrig-portrait',
@@ -2364,6 +2440,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Zetacron',
+    singleName: 'Zetacron',
     armyCardID: 'hs1075',
     image: 'zetacron.jpg',
     portraitPattern: 'zetacron-portrait',
@@ -2392,6 +2469,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Raelin the Kyrie Warrior (2)',
+    singleName: 'Raelin the Kyrie Warrior (2)',
     armyCardID: 'hs1076',
     image: 'raelinthekyriewarrior2.jpg',
     portraitPattern: 'raelinthekyriewarrior2-portrait',
@@ -2427,7 +2505,8 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     ],
   },
   {
-    name: 'Sgt. Drake Alexander (2)',
+    name: 'Sgt. Drake Alexander',
+    singleName: 'Sgt. Drake Alexander',
     armyCardID: 'hs1077',
     image: 'sgtdrakealexander2.jpg',
     portraitPattern: 'sgtdrakealexander2-portrait',
@@ -2464,6 +2543,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sonlen',
+    singleName: 'Sonlen',
     armyCardID: 'hs1078',
     image: 'sonlen.jpg',
     portraitPattern: 'sonlen-portrait',
@@ -2496,6 +2576,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Major Q10',
+    singleName: 'Major Q10',
     armyCardID: 'hs1079',
     image: 'majorq10.jpg',
     portraitPattern: 'majorq10-portrait',
@@ -2528,6 +2609,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Shiori',
+    singleName: 'Shiori',
     armyCardID: 'hs1080',
     image: 'shiori.jpg',
     portraitPattern: 'shiori-portrait',
@@ -2564,6 +2646,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marro Drudge',
+    singleName: 'Marro Drudge',
     armyCardID: 'hs1081',
     image: 'marrodrudge.jpg',
     portraitPattern: 'marrodrudge-portrait',
@@ -2596,6 +2679,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marro Hive',
+    singleName: 'Marro Hive',
     armyCardID: 'hs1082',
     image: 'marrohive.jpg',
     portraitPattern: 'marrohive-portrait',
@@ -2628,6 +2712,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marrden Nagrubs',
+    singleName: 'Marrden Nagrubs',
     armyCardID: 'hs1083',
     image: 'marrdennagrubs.jpg',
     portraitPattern: 'marrdennagrubs-portrait',
@@ -2660,6 +2745,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marro Stingers',
+    singleName: 'Marro Stingers',
     armyCardID: 'hs1084',
     image: 'marrostingers.jpg',
     portraitPattern: 'marrostingers-portrait',
@@ -2688,6 +2774,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tor-Kul-Na',
+    singleName: 'Tor-Kul-Na',
     armyCardID: 'hs1085',
     image: 'torkulna.jpg',
     portraitPattern: 'torkulna-portrait',
@@ -2716,6 +2803,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ana Karithon',
+    singleName: 'Ana Karithon',
     armyCardID: 'hs1086',
     image: 'anakarithon.jpg',
     portraitPattern: 'anakarithon-portrait',
@@ -2752,6 +2840,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tandros Kreel',
+    singleName: 'Tandros Kreel',
     armyCardID: 'hs1087',
     image: 'tandroskreel.jpg',
     portraitPattern: 'tandroskreel-portrait',
@@ -2788,6 +2877,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Erevan Sunshadow',
+    singleName: 'Erevan Sunshadow',
     armyCardID: 'hs1088',
     image: 'erevansunshadow.jpg',
     portraitPattern: 'erevansunshadow-portrait',
@@ -2820,6 +2910,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Darrak Ambershard',
+    singleName: 'Darrak Ambershard',
     armyCardID: 'hs1089',
     image: 'darrakambershard.jpg',
     portraitPattern: 'darrakambershard-portrait',
@@ -2856,6 +2947,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Pelloth',
+    singleName: 'Pelloth',
     armyCardID: 'hs1090',
     image: 'pelloth.jpg',
     portraitPattern: 'pelloth-portrait',
@@ -2888,6 +2980,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Feral Troll',
+    singleName: 'Feral Troll',
     armyCardID: 'hs1091',
     image: 'feraltroll.jpg',
     portraitPattern: 'feraltroll-portrait',
@@ -2920,6 +3013,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Deepwyrm Drow',
+    singleName: 'Deepwyrm Drow',
     armyCardID: 'hs1092',
     image: 'deepwyrmdrow.jpg',
     portraitPattern: 'deepwyrmdrow-portrait',
@@ -2952,6 +3046,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Nakita Agents',
+    singleName: 'Nakita Agents',
     armyCardID: 'hs1093',
     image: 'nakitaagents.jpg',
     portraitPattern: 'nakitaagents-portrait',
@@ -2988,6 +3083,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Spartacus',
+    singleName: 'Spartacus',
     armyCardID: 'hs1094',
     image: 'spartacus.jpg',
     portraitPattern: 'spartacus-portrait',
@@ -3016,6 +3112,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Crixus',
+    singleName: 'Crixus',
     armyCardID: 'hs1095',
     image: 'crixus.jpg',
     portraitPattern: 'crixus-portrait',
@@ -3044,6 +3141,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Retiarius',
+    singleName: 'Retiarius',
     armyCardID: 'hs1096',
     image: 'retiarius.jpg',
     portraitPattern: 'retiarius-portrait',
@@ -3072,6 +3170,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ninjas of the Northern Wind',
+    singleName: 'Ninjas of the Northern Wind',
     armyCardID: 'hs1097',
     image: 'ninjasofthenorthernwind.jpg',
     portraitPattern: 'ninjasofthenorthernwind-portrait',
@@ -3108,6 +3207,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kozuke Samurai',
+    singleName: 'Kozuke Samurai',
     armyCardID: 'hs1098',
     image: 'kozukesamurai.jpg',
     portraitPattern: 'kozukesamurai-portrait',
@@ -3140,6 +3240,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Blastatrons',
+    singleName: 'Blastatrons',
     armyCardID: 'hs1099',
     image: 'blastatrons.jpg',
     portraitPattern: 'blastatrons-portrait',
@@ -3172,6 +3273,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Death Stalkers',
+    singleName: 'Death Stalkers',
     armyCardID: 'hs1100',
     image: 'deathstalkers.jpg',
     portraitPattern: 'deathstalkers-portrait',
@@ -3200,6 +3302,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Warriors of Ashra',
+    singleName: 'Warriors of Ashra',
     armyCardID: 'hs1101',
     image: 'warriorsofashra.jpg',
     portraitPattern: 'warriorsofashra-portrait',
@@ -3228,6 +3331,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Deathreavers',
+    singleName: 'Deathreavers',
     armyCardID: 'hs1102',
     image: 'deathreavers.jpg',
     portraitPattern: 'deathreavers-portrait',
@@ -3264,6 +3368,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kaemon Awa',
+    singleName: 'Kaemon Awa',
     armyCardID: 'hs1103',
     image: 'kaemonawa.jpg',
     portraitPattern: 'kaemonawa-portrait',
@@ -3296,6 +3401,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Eldgrim the Viking Champion',
+    singleName: 'Eldgrim the Viking Champion',
     armyCardID: 'hs1104',
     image: 'eldgrimthevikingchampion.jpg',
     portraitPattern: 'eldgrimthevikingchampion-portrait',
@@ -3328,6 +3434,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Empress Kiova',
+    singleName: 'Empress Kiova',
     armyCardID: 'hs1105',
     image: 'empresskiova.jpg',
     portraitPattern: 'empresskiova-portrait',
@@ -3360,6 +3467,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kee-Mo-Shi',
+    singleName: 'Kee-Mo-Shi',
     armyCardID: 'hs1106',
     image: 'keemoshi.jpg',
     portraitPattern: 'keemoshi-portrait',
@@ -3392,6 +3500,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Runa',
+    singleName: 'Runa',
     armyCardID: 'hs1107',
     image: 'runa.jpg',
     portraitPattern: 'runa-portrait',
@@ -3424,6 +3533,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Einar Imperium',
+    singleName: 'Einar Imperium',
     armyCardID: 'hs1108',
     image: 'einarimperium.jpg',
     portraitPattern: 'einarimperium-portrait',
@@ -3456,6 +3566,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tagawa Samurai Archers',
+    singleName: 'Tagawa Samurai Archers',
     armyCardID: 'hs1109',
     image: 'tagawasamuraiarchers.jpg',
     portraitPattern: 'tagawasamuraiarchers-portrait',
@@ -3484,6 +3595,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Heavy Gruts',
+    singleName: 'Heavy Gruts',
     armyCardID: 'hs1110',
     image: 'heavygruts.jpg',
     portraitPattern: 'heavygruts-portrait',
@@ -3516,6 +3628,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Shades of Bleakwoode',
+    singleName: 'Shades of Bleakwoode',
     armyCardID: 'hs1111',
     image: 'shadesofbleakwoode.jpg',
     portraitPattern: 'shadesofbleakwoode-portrait',
@@ -3548,6 +3661,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Zombies of Morindan',
+    singleName: 'Zombies of Morindan',
     armyCardID: 'hs1112',
     image: 'zombiesofmorindan.jpg',
     portraitPattern: 'zombiesofmorindan-portrait',
@@ -3584,6 +3698,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Cyprien Esenwein',
+    singleName: 'Cyprien Esenwein',
     armyCardID: 'hs1113',
     image: 'cyprienesenwein.jpg',
     portraitPattern: 'cyprienesenwein-portrait',
@@ -3620,6 +3735,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sonya Esenwein',
+    singleName: 'Sonya Esenwein',
     armyCardID: 'hs1114',
     image: 'sonyaesenwein.jpg',
     portraitPattern: 'sonyaesenwein-portrait',
@@ -3660,6 +3776,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Warden 816',
+    singleName: 'Warden 816',
     armyCardID: 'hs1115',
     image: 'warden816.jpg',
     portraitPattern: 'warden816-portrait',
@@ -3692,6 +3809,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Isamu',
+    singleName: 'Isamu',
     armyCardID: 'hs1116',
     image: 'isamu.jpg',
     portraitPattern: 'isamu-portrait',
@@ -3728,6 +3846,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kyntela Gwyn',
+    singleName: 'Kyntela Gwyn',
     armyCardID: 'hs1117',
     image: 'kyntelagwyn.jpg',
     portraitPattern: 'kyntelagwyn-portrait',
@@ -3756,6 +3875,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Iskra Esenwein',
+    singleName: 'Iskra Esenwein',
     armyCardID: 'hs1118',
     image: 'iskraesenwein.jpg',
     portraitPattern: 'iskraesenwein-portrait',
@@ -3792,6 +3912,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Rechets of Bogdan',
+    singleName: 'Rechets of Bogdan',
     armyCardID: 'hs1119',
     image: 'rechetsofbogdan.jpg',
     portraitPattern: 'rechetsofbogdan-portrait',
@@ -3828,6 +3949,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marcu Esenwein',
+    singleName: 'Marcu Esenwein',
     armyCardID: 'hs1120',
     image: 'marcuesenwein.jpg',
     portraitPattern: 'marcuesenwein-portrait',
@@ -3864,6 +3986,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ashigaru Harquebus',
+    singleName: 'Ashigaru Harquebus',
     armyCardID: 'hs1121',
     image: 'ashigaruharquebus.jpg',
     portraitPattern: 'ashigaruharquebus-portrait',
@@ -3892,6 +4015,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ashigaru Yari',
+    singleName: 'Ashigaru Yari',
     armyCardID: 'hs1122',
     image: 'ashigaruyari.jpg',
     portraitPattern: 'ashigaruyari-portrait',
@@ -3920,6 +4044,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Templar Cavalry',
+    singleName: 'Templar Cavalry',
     armyCardID: 'hs1123',
     image: 'templarcavalry.jpg',
     portraitPattern: 'templarcavalry-portrait',
@@ -3956,6 +4081,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sir Dupuis',
+    singleName: 'Sir Dupuis',
     armyCardID: 'hs1124',
     image: 'sirdupuis.jpg',
     portraitPattern: 'sirdupuis-portrait',
@@ -3992,6 +4118,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Moriko',
+    singleName: 'Moriko',
     armyCardID: 'hs1125',
     image: 'moriko.jpg',
     portraitPattern: 'moriko-portrait',
@@ -4024,6 +4151,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kato Katsuro',
+    singleName: 'Kato Katsuro',
     armyCardID: 'hs1126',
     image: 'katokatsuro.jpg',
     portraitPattern: 'katokatsuro-portrait',
@@ -4052,6 +4180,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Otonashi',
+    singleName: 'Otonashi',
     armyCardID: 'hs1127',
     image: 'otonashi.jpg',
     portraitPattern: 'otonashi-portrait',
@@ -4088,6 +4217,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Chardris',
+    singleName: 'Chardris',
     armyCardID: 'hs1128',
     image: 'chardris.jpg',
     portraitPattern: 'chardris-portrait',
@@ -4116,6 +4246,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ulginesh',
+    singleName: 'Ulginesh',
     armyCardID: 'hs1129',
     image: 'ulginesh.jpg',
     portraitPattern: 'ulginesh-portrait',
@@ -4148,6 +4279,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Jorhdawn',
+    singleName: 'Jorhdawn',
     armyCardID: 'hs1130',
     image: 'jorhdawn.jpg',
     portraitPattern: 'jorhdawn-portrait',
@@ -4176,6 +4308,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Emirroon',
+    singleName: 'Emirroon',
     armyCardID: 'hs1131',
     image: 'emirroon.jpg',
     portraitPattern: 'emirroon-portrait',
@@ -4204,6 +4337,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Arkmer',
+    singleName: 'Arkmer',
     armyCardID: 'hs1132',
     image: 'arkmer.jpg',
     portraitPattern: 'arkmer-portrait',
@@ -4236,6 +4370,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: '10th Regiment of Foot',
+    singleName: '10th Regiment of Foot',
     armyCardID: 'hs1133',
     image: '10thregimentoffoot.jpg',
     portraitPattern: '10thregimentoffoot-portrait',
@@ -4272,6 +4407,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Wolves of Badru',
+    singleName: 'Wolves of Badru',
     armyCardID: 'hs1134',
     image: 'wolvesofbadru.jpg',
     portraitPattern: 'wolvesofbadru-portrait',
@@ -4308,6 +4444,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Grok Riders',
+    singleName: 'Grok Riders',
     armyCardID: 'hs1135',
     image: 'grokriders.jpg',
     portraitPattern: 'grokriders-portrait',
@@ -4344,6 +4481,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Atlaga the Kyrie Warrior',
+    singleName: 'Atlaga the Kyrie Warrior',
     armyCardID: 'hs1136',
     image: 'atlagathekyriewarrior.jpg',
     portraitPattern: 'atlagathekyriewarrior-portrait',
@@ -4380,6 +4518,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Migol Ironwill',
+    singleName: 'Migol Ironwill',
     armyCardID: 'hs1137',
     image: 'migolironwill.jpg',
     portraitPattern: 'migolironwill-portrait',
@@ -4416,6 +4555,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Tul-Bak-Ra',
+    singleName: 'Tul-Bak-Ra',
     armyCardID: 'hs1138',
     image: 'tulbakra.jpg',
     portraitPattern: 'tulbakra-portrait',
@@ -4452,6 +4592,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Brave Arrow',
+    singleName: 'Brave Arrow',
     armyCardID: 'hs1139',
     image: 'bravearrow.jpg',
     portraitPattern: 'bravearrow-portrait',
@@ -4488,6 +4629,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kumiko',
+    singleName: 'Kumiko',
     armyCardID: 'hs1140',
     image: 'kumiko.jpg',
     portraitPattern: 'kumiko-portrait',
@@ -4520,6 +4662,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Marro Dividers',
+    singleName: 'Marro Dividers',
     armyCardID: 'hs1141',
     image: 'marrodividers.jpg',
     portraitPattern: 'marrodividers-portrait',
@@ -4552,6 +4695,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Protectors of Ullar',
+    singleName: 'Protectors of Ullar',
     armyCardID: 'hs1142',
     image: 'protectorsofullar.jpg',
     portraitPattern: 'protectorsofullar-portrait',
@@ -4584,6 +4728,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'The Axe Grinders of Burning Forge',
+    singleName: 'The Axe Grinders of Burning Forge',
     armyCardID: 'hs1143',
     image: 'axegrindersofburningforge.jpg',
     portraitPattern: 'axegrindersofburningforge-portrait',
@@ -4620,6 +4765,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Omnicron Repulsors',
+    singleName: 'Omnicron Repulsors',
     armyCardID: 'hs1144',
     image: 'omnicronrepulsors.jpg',
     portraitPattern: 'omnicronrepulsors-portrait',
@@ -4656,6 +4802,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Mohican River Tribe',
+    singleName: 'Mohican River Tribe',
     armyCardID: 'hs1145',
     image: 'mohicanrivertribe.jpg',
     portraitPattern: 'mohicanrivertribe-portrait',
@@ -4692,6 +4839,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Capuan Gladiators',
+    singleName: 'Capuan Gladiators',
     armyCardID: 'hs1146',
     image: 'capuangladiators.jpg',
     portraitPattern: 'capuangladiators-portrait',
@@ -4724,6 +4872,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sir Hawthorne',
+    singleName: 'Sir Hawthorne',
     armyCardID: 'hs1147',
     image: 'sirhawthorne.jpg',
     portraitPattern: 'sirhawthorne-portrait',
@@ -4756,6 +4905,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Nerak the Glacian Swog Rider',
+    singleName: 'Nerak the Glacian Swog Rider',
     armyCardID: 'hs1148',
     image: 'neraktheglacianswogrider.jpg',
     portraitPattern: 'neraktheglacianswogrider-portrait',
@@ -4792,6 +4942,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Elite Onyx Vipers',
+    singleName: 'Elite Onyx Vipers',
     armyCardID: 'hs1149',
     image: 'eliteonyxvipers.jpg',
     portraitPattern: 'eliteonyxvipers-portrait',
@@ -4828,6 +4979,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Granite Guardians',
+    singleName: 'Granite Guardians',
     armyCardID: 'hs1150',
     image: 'graniteguardians.jpg',
     portraitPattern: 'graniteguardians-portrait',
@@ -4864,6 +5016,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Quasatch Hunters',
+    singleName: 'Quasatch Hunters',
     armyCardID: 'hs1151',
     image: 'quasatchhunters.jpg',
     portraitPattern: 'quasatchhunters-portrait',
@@ -4900,6 +5053,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Earth Elemental',
+    singleName: 'Earth Elemental',
     armyCardID: 'hs1152',
     image: 'earthelemental.jpg',
     portraitPattern: 'earthelemental-portrait',
@@ -4932,6 +5086,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Fire Elemental',
+    singleName: 'Fire Elemental',
     armyCardID: 'hs1153',
     image: 'fireelemental.jpg',
     portraitPattern: 'fireelemental-portrait',
@@ -4968,6 +5123,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Water Elemental',
+    singleName: 'Water Elemental',
     armyCardID: 'hs1154',
     image: 'waterelemental.jpg',
     portraitPattern: 'waterelemental-portrait',
@@ -5000,6 +5156,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Air Elemental',
+    singleName: 'Air Elemental',
     armyCardID: 'hs1155',
     image: 'airelemental.jpg',
     portraitPattern: 'airelemental-portrait',
@@ -5036,6 +5193,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Wyvern',
+    singleName: 'Wyvern',
     armyCardID: 'hs1156',
     image: 'wyvern.jpg',
     portraitPattern: 'wyvern-portrait',
@@ -5072,6 +5230,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Greenscale Warriors',
+    singleName: 'Greenscale Warriors',
     armyCardID: 'hs1157',
     image: 'greenscalewarriors.jpg',
     portraitPattern: 'greenscalewarriors-portrait',
@@ -5104,6 +5263,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Drow Chainfighter',
+    singleName: 'Drow Chainfighter',
     armyCardID: 'hs1158',
     image: 'drowchainfighter.jpg',
     portraitPattern: 'drowchainfighter-portrait',
@@ -5136,6 +5296,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Greater Ice Elemental',
+    singleName: 'Greater Ice Elemental',
     armyCardID: 'hs1159',
     image: 'greatericeelemental.jpg',
     portraitPattern: 'greatericeelemental-portrait',
@@ -5172,6 +5333,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Phantom Knights',
+    singleName: 'Phantom Knights',
     armyCardID: 'hs1160',
     image: 'phantomknights.jpg',
     portraitPattern: 'phantomknights-portrait',
@@ -5204,6 +5366,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sahuagin Raider',
+    singleName: 'Sahuagin Raider',
     armyCardID: 'hs1161',
     image: 'sahuaginraider.jpg',
     portraitPattern: 'sahuaginraider-portrait',
@@ -5236,6 +5399,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Fen Hydra',
+    singleName: 'Fen Hydra',
     armyCardID: 'hs1162',
     image: 'fenhydra.jpg',
     portraitPattern: 'fenhydra-portrait',
@@ -5272,6 +5436,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Estivara',
+    singleName: 'Estivara',
     armyCardID: 'hs1163',
     image: 'estivara.jpg',
     portraitPattern: 'estivara-portrait',
@@ -5308,6 +5473,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Torin',
+    singleName: 'Torin',
     armyCardID: 'hs1164',
     image: 'torin.jpg',
     portraitPattern: 'torin-portrait',
@@ -5340,6 +5506,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sharwin Wildborn',
+    singleName: 'Sharwin Wildborn',
     armyCardID: 'hs1165',
     image: 'sharwinwildborn.jpg',
     portraitPattern: 'sharwinwildborn-portrait',
@@ -5376,6 +5543,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Brandis Skyhunter',
+    singleName: 'Brandis Skyhunter',
     armyCardID: 'hs1166',
     image: 'brandisskyhunter.jpg',
     portraitPattern: 'brandisskyhunter-portrait',
@@ -5408,6 +5576,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Mogrimm Forgehammer',
+    singleName: 'Mogrimm Forgehammer',
     armyCardID: 'hs1167',
     image: 'mogrimmforgehammer.jpg',
     portraitPattern: 'mogrimmforgehammer-portrait',
@@ -5444,6 +5613,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Iron Golem',
+    singleName: 'Iron Golem',
     armyCardID: 'hs1168',
     image: 'irongolem.jpg',
     portraitPattern: 'irongolem-portrait',
@@ -5480,6 +5650,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Black Wyrmling',
+    singleName: 'Black Wyrmling',
     armyCardID: 'hs1169',
     image: 'blackwyrmling.jpg',
     portraitPattern: 'blackwyrmling-portrait',
@@ -5516,6 +5687,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'White Wyrmling',
+    singleName: 'White Wyrmling',
     armyCardID: 'hs1170',
     image: 'whitewyrmling.jpg',
     portraitPattern: 'whitewyrmling-portrait',
@@ -5552,6 +5724,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Blue Wyrmling',
+    singleName: 'Blue Wyrmling',
     armyCardID: 'hs1171',
     image: 'bluewyrmling.jpg',
     portraitPattern: 'bluewyrmling-portrait',
@@ -5588,6 +5761,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Red Wyrmling',
+    singleName: 'Red Wyrmling',
     armyCardID: 'hs1172',
     image: 'redwyrmling.jpg',
     portraitPattern: 'redwyrmling-portrait',
@@ -5624,6 +5798,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ogre Warhulk',
+    singleName: 'Ogre Warhulk',
     armyCardID: 'hs1173',
     image: 'ogrewarhulk.jpg',
     portraitPattern: 'ogrewarhulk-portrait',
@@ -5656,6 +5831,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Goblin Cutters',
+    singleName: 'Goblin Cutters',
     armyCardID: 'hs1174',
     image: 'goblincutters.jpg',
     portraitPattern: 'goblincutters-portrait',
@@ -5692,6 +5868,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Warforged Soldiers',
+    singleName: 'Warforged Soldiers',
     armyCardID: 'hs1175',
     image: 'warforgedsoldiers.jpg',
     portraitPattern: 'warforgedsoldiers-portrait',
@@ -5724,6 +5901,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Mind Flayer Mastermind',
+    singleName: 'Mind Flayer Mastermind',
     armyCardID: 'hs1176',
     image: 'mindflayermastermind.jpg',
     portraitPattern: 'mindflayermastermind-portrait',
@@ -5756,6 +5934,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Werewolf Lord',
+    singleName: 'Werewolf Lord',
     armyCardID: 'hs1177',
     image: 'werewolflord.jpg',
     portraitPattern: 'werewolflord-portrait',
@@ -5788,6 +5967,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Kurrok the Elementalist',
+    singleName: 'Kurrok the Elementalist',
     armyCardID: 'hs1178',
     image: 'kurroktheelementalist.jpg',
     portraitPattern: 'kurroktheelementalist-portrait',
@@ -5820,6 +6000,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Rhogar Dragonspine',
+    singleName: 'Rhogar Dragonspine',
     armyCardID: 'hs1179',
     image: 'rhogardragonspine.jpg',
     portraitPattern: 'rhogardragonspine-portrait',
@@ -5852,6 +6033,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Shurrak',
+    singleName: 'Shurrak',
     armyCardID: 'hs1180',
     image: 'shurrak.jpg',
     portraitPattern: 'shurrak-portrait',
@@ -5888,6 +6070,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Heirloom',
+    singleName: 'Heirloom',
     armyCardID: 'hs1181',
     image: 'heirloom.jpg',
     portraitPattern: 'heirloom-portrait',
@@ -5924,6 +6107,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Mika Connour',
+    singleName: 'Mika Connour',
     armyCardID: 'hs1182',
     image: 'mikaconnour.jpg',
     portraitPattern: 'mikaconnour-portrait',
@@ -5960,6 +6144,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Death Chasers of Thesk',
+    singleName: 'Death Chasers of Thesk',
     armyCardID: 'hs1183',
     image: 'deathchasersofthesk.jpg',
     portraitPattern: 'deathchasersofthesk-portrait',
@@ -5992,6 +6177,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Horned Skull Brutes',
+    singleName: 'Horned Skull Brutes',
     armyCardID: 'hs1184',
     image: 'hornedskullbrutes.jpg',
     portraitPattern: 'hornedskullbrutes-portrait',
@@ -6024,6 +6210,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Mezzodemon Warmongers',
+    singleName: 'Mezzodemon Warmongers',
     armyCardID: 'hs1185',
     image: 'mezzodemonwarmongers.jpg',
     portraitPattern: 'mezzodemonwarmongers-portrait',
@@ -6056,6 +6243,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Death Knights of Valkrill',
+    singleName: 'Death Knights of Valkrill',
     armyCardID: 'hs1186',
     image: 'deathknightsofvalkrill.jpg',
     portraitPattern: 'deathknightsofvalkrill-portrait',
@@ -6088,6 +6276,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ogre Pulverizer',
+    singleName: 'Ogre Pulverizer',
     armyCardID: 'hs1187',
     image: 'ogrepulverizer.jpg',
     portraitPattern: 'ogrepulverizer-portrait',
@@ -6120,6 +6309,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Frost Giant of Morh',
+    singleName: 'Frost Giant of Morh',
     armyCardID: 'hs1188',
     image: 'frostgiantofmorh.jpg',
     portraitPattern: 'frostgiantofmorh-portrait',
@@ -6156,6 +6346,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ice Troll Berserker',
+    singleName: 'Ice Troll Berserker',
     armyCardID: 'hs1189',
     image: 'icetrollberserker.jpg',
     portraitPattern: 'icetrollberserker-portrait',
@@ -6188,6 +6379,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Master of the Hunt',
+    singleName: 'Master of the Hunt',
     armyCardID: 'hs1190',
     image: 'masterofthehunt.jpg',
     portraitPattern: 'masterofthehunt-portrait',
@@ -6220,6 +6412,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Eltahale',
+    singleName: 'Eltahale',
     armyCardID: 'hs1191',
     image: 'eltahale.jpg',
     portraitPattern: 'eltahale-portrait',
@@ -6252,6 +6445,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Siege',
+    singleName: 'Siege',
     armyCardID: 'hs1192',
     image: 'siege.jpg',
     portraitPattern: 'siege-portrait',
@@ -6280,6 +6474,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Evar Scarcarver',
+    singleName: 'Evar Scarcarver',
     armyCardID: 'hs1193',
     image: 'evarscarcarver.jpg',
     portraitPattern: 'evarscarcarver-portrait',
@@ -6312,6 +6507,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Moltenclaw',
+    singleName: 'Moltenclaw',
     armyCardID: 'hs1194',
     image: 'moltenclaw.jpg',
     portraitPattern: 'moltenclaw-portrait',
@@ -6348,6 +6544,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Dumutef Guard',
+    singleName: 'Dumutef Guard',
     armyCardID: 'hs1195',
     image: 'dumutefguard.jpg',
     portraitPattern: 'dumutefguard-portrait',
@@ -6380,6 +6577,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Obsidian Guards',
+    singleName: 'Obsidian Guards',
     armyCardID: 'hs1196',
     image: 'obsidianguards.jpg',
     portraitPattern: 'obsidianguards-portrait',
@@ -6416,6 +6614,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Dzu-Teh',
+    singleName: 'Dzu-Teh',
     armyCardID: 'hs1197',
     image: 'dzuteh.jpg',
     portraitPattern: 'dzuteh-portrait',
@@ -6452,6 +6651,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Fyorlag Spiders',
+    singleName: 'Fyorlag Spiders',
     armyCardID: 'hs1198',
     image: 'fyorlagspiders.jpg',
     portraitPattern: 'fyorlagspiders-portrait',
@@ -6488,6 +6688,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Master Win Chiu Woo',
+    singleName: 'Master Win Chiu Woo',
     armyCardID: 'hs1199',
     image: 'masterwinchiuwoo.jpg',
     portraitPattern: 'masterwinchiuwoo-portrait',
@@ -6524,6 +6725,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Agent Skahen',
+    singleName: 'Agent Skahen',
     armyCardID: 'hs1200',
     image: 'agentskahen.jpg',
     portraitPattern: 'agentskahen-portrait',
@@ -6560,6 +6762,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Sir Gilbert',
+    singleName: 'Sir Gilbert',
     armyCardID: 'hs1201',
     image: 'sirgilbert.jpg',
     portraitPattern: 'sirgilbert-portrait',
@@ -6592,6 +6795,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Acolarh',
+    singleName: 'Acolarh',
     armyCardID: 'hs1202',
     image: 'acolarh.jpg',
     portraitPattern: 'acolarh-portrait',
@@ -6624,6 +6828,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Laglor',
+    singleName: 'Laglor',
     armyCardID: 'hs1203',
     image: 'laglor.jpg',
     portraitPattern: 'laglor-portrait',
@@ -6656,6 +6861,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Hatamoto Taro',
+    singleName: 'Hatamoto Taro',
     armyCardID: 'hs1204',
     image: 'hatamototaro.jpg',
     portraitPattern: 'hatamototaro-portrait',
@@ -6688,6 +6894,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Ornak',
+    singleName: 'Ornak',
     armyCardID: 'hs1205',
     image: 'ornak.jpg',
     portraitPattern: 'ornak-portrait',
@@ -6720,6 +6927,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   },
   {
     name: 'Samuel Brown',
+    singleName: 'Samuel Brown',
     armyCardID: 'hs1206',
     image: 'samuelbrown.jpg',
     portraitPattern: 'samuelbrown-portrait',

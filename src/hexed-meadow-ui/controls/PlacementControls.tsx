@@ -3,9 +3,13 @@ import styled from 'styled-components'
 
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { useUIContext, usePlacementContext } from '../contexts'
-import { CardUnitIcon } from '../unit-icons'
+import { PlacementCardUnitIcon } from '../unit-icons'
 import { PlacementUnit } from 'game/types'
-import { StyledPlacementControlsWrapper } from './StyledPlacementControlsWrapper'
+import {
+  StyledControlsHeaderH2,
+  StyledControlsP,
+} from 'hexed-meadow-ui/layout/Typography'
+import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -28,34 +32,43 @@ export const PlacementControls = () => {
     (isAllPlacementUnitsPlaced || isNoMoreEmptyStartZoneHexes) && !isReady
   // once player has placed and confirmed, show waiting
   if (isReady) {
-    return <WaitingForOpponent />
+    return (
+      <StyledPlacementControlsWrapper>
+        <StyledControlsHeaderH2>
+          Waiting for opponents to finish placing armies...
+        </StyledControlsHeaderH2>
+      </StyledPlacementControlsWrapper>
+    )
+  } else {
+    // return UI
+    return (
+      <StyledPlacementControlsWrapper>
+        <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
+        {!isShowingConfirm && (
+          <StyledControlsP>
+            Select your units and place them within your start zone. Once all
+            players are ready, the game will begin!
+          </StyledControlsP>
+        )}
+        {isShowingConfirm && (
+          <ConfirmReady
+            makeReady={makeReady}
+            isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
+            isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
+          />
+        )}
+        <PlacementUnitTiles />
+      </StyledPlacementControlsWrapper>
+    )
   }
-  // return UI
-  return (
-    <StyledPlacementControlsWrapper>
-      <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-      {!isShowingConfirm && (
-        <p>
-          Select your units and place them within your start zone. Once all
-          players are ready, the game will begin!
-        </p>
-      )}
-      {isShowingConfirm && (
-        <ConfirmReady
-          makeReady={makeReady}
-          isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
-          isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
-        />
-      )}
-      <PlacementUnitTiles />
-    </StyledPlacementControlsWrapper>
-  )
 }
-export const StyledControlsHeaderH2 = styled.h2`
-  font-size: 1.3rem;
-  margin: 0;
-  text-align: center;
+const StyledPlacementControlsWrapper = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  color: var(--player-color);
 `
+
+// CONFIRM READY
 const ConfirmReady = ({
   makeReady,
   isNoMoreEmptyStartZoneHexes,
@@ -68,38 +81,55 @@ const ConfirmReady = ({
   const { onResetPlacementState } = usePlacementContext()
   return (
     <>
-      {isNoMoreEmptyStartZoneHexes && <p>Your start zone is full.</p>}
-      {isAllPlacementUnitsPlaced && <p>All of your units are placed.</p>}
-      <p>Please confirm, this placement is OK?</p>
-      {!isAllPlacementUnitsPlaced && (
-        <p style={{ color: 'var(--error-red)' }}>
-          Some of your units will not be placed! (See those units below)
-        </p>
+      {isNoMoreEmptyStartZoneHexes && (
+        <StyledControlsP>Your start zone is full.</StyledControlsP>
       )}
-      <button
-        onClick={makeReady}
-        style={{
-          color: 'var(--success-green)',
-          marginTop: '20px',
-          border: '1px solid var(--success-green)',
-        }}
-      >
-        CONFIRM PLACEMENT
-      </button>
-      <button
-        onClick={onResetPlacementState}
-        style={{
-          color: 'var(--error-red)',
-          marginTop: '20px',
-          border: '1px solid var(--error-red)',
-        }}
-      >
-        No, start over...
-      </button>
+      {isAllPlacementUnitsPlaced && (
+        <StyledControlsP>All of your units are placed.</StyledControlsP>
+      )}
+      <StyledControlsP>Please confirm, this placement is OK?</StyledControlsP>
+      {!isAllPlacementUnitsPlaced && (
+        <StyledControlsP style={{ color: 'var(--error-red)' }}>
+          Some of your units will not be placed! (See those units below)
+        </StyledControlsP>
+      )}
+      <StyledButtonWrapper>
+        <button
+          onClick={makeReady}
+          style={{
+            display: 'inline-block',
+            marginTop: '20px',
+            fontSize: '0.8rem',
+            color: 'var(--success-green)',
+            border: '1px solid var(--success-green)',
+          }}
+        >
+          Confirm Placement
+        </button>
+        <button
+          onClick={onResetPlacementState}
+          style={{
+            display: 'inline-block',
+            marginTop: '20px',
+            fontSize: '0.8rem',
+            color: 'var(--error-red)',
+            border: '1px solid var(--error-red)',
+          }}
+        >
+          No, reset my placement
+        </button>
+      </StyledButtonWrapper>
     </>
   )
 }
+const StyledButtonWrapper = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  max-width: 300px;
+  margin: 0 auto;
+`
 
+// PLACEMENT UNIT TILES
 const PlacementUnitTiles = () => {
   const { inflatedPlacementUnits } = usePlacementContext()
   const isLength = inflatedPlacementUnits.length > 0
@@ -108,17 +138,34 @@ const PlacementUnitTiles = () => {
     return null
   }
   return (
-    <>
-      <h3>Unplaced Units:</h3>
-      <ul>
+    <div
+      style={{
+        border: '1px solid var(--sub-white)',
+        margin: '10px 0 0 0',
+        padding: '5px',
+      }}
+    >
+      <StyledControlsH3>Unplaced Units</StyledControlsH3>
+      <StyledUl>
         {inflatedPlacementUnits &&
           inflatedPlacementUnits.map((unit) => (
             <PlacementUnitTile key={unit.unitID} unit={unit} />
           ))}
-      </ul>
-    </>
+      </StyledUl>
+    </div>
   )
 }
+const StyledUl = styled.ul`
+  display: flex;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  li {
+    padding: 0.3rem;
+  }
+`
 
 const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   const { selectedUnitID } = useUIContext()
@@ -128,29 +175,49 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
   }
   const selectedStyle = (unitID: string) => {
     if (selectedUnitID === unitID) {
-      return {
-        boxShadow: `0 0 2px var(--white)`,
-        border: `1px solid var(--white)`,
-        backgroundColor: `var(--selected-green)`,
-      }
+      return selectedTileStyle
     } else {
       return {}
     }
   }
   return (
-    <li key={unit.unitID}>
-      <button style={selectedStyle(unit.unitID)} onClick={onClick}>
-        <CardUnitIcon unit={unit} />
-        <span>{unit.name}</span>
-      </button>
-    </li>
+    <StyledPlacementTileLi
+      key={unit.unitID}
+      style={selectedStyle(unit.unitID)}
+      onClick={onClick}
+    >
+      <PlacementCardUnitIcon
+        armyCardID={unit.armyCardID}
+        playerID={unit.playerID}
+      />
+      <span>{unit.name}</span>
+    </StyledPlacementTileLi>
   )
 }
-
-const WaitingForOpponent = () => {
-  return (
-    <StyledPlacementControlsWrapper>
-      <p>Waiting for opponents to finish placing armies...</p>
-    </StyledPlacementControlsWrapper>
-  )
-}
+const StyledPlacementTileLi = styled.li`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid var(--player-color);
+  border-radius: 5px;
+  max-width: 100px;
+  @media screen and (max-width: 1100px) {
+    max-width: 50px;
+    svg {
+      font-size: 25px !important;
+    }
+    span {
+      font-size: 0.6rem;
+      text-align: center;
+    }
+  }
+`
+const StyledControlsH3 = styled.h3`
+  text-align: center;
+  font-size: 1.1rem;
+  margin: 0 0 3px 0;
+  @media screen and (max-width: 1100px) {
+    font-size: 0.9rem;
+  }
+`
