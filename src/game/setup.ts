@@ -48,7 +48,7 @@ function makeTestScenario(): GameState {
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 2,
+    mapSize: 1,
     withPrePlacedUnits,
     gameUnits: gameArmyCardsToGameUnits(armyCards),
     flat: false,
@@ -101,24 +101,33 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 
 //! TEST SCENARIO GAMEARMYCARDS
 function makeArmyCardsForTestScenario() {
-  return hsCardsToArmyCards(MS1Cards)
+  return hsCardsToArmyCards([...MS1Cards, ...MS1Cards])
     .filter(
       // filter down to the actual cards we want to use
-      (c) =>
-        c.armyCardID === 'hs1000' ||
-        c.armyCardID === 'hs1002' ||
-        c.armyCardID === 'hs1003' ||
-        c.armyCardID === 'hs1014'
+      (c) => c.armyCardID === 'hs1008'
+      // c.armyCardID === 'hs1000' ||
+      // c.armyCardID === 'hs1008' ||
+      // c.armyCardID === 'hs1002' ||
+      // c.armyCardID === 'hs1003' ||
+      // c.armyCardID === 'hs1014'
     )
-    .map((card) => {
+    .map((card, index) => {
+      // const isCardMarroWarriors = card.armyCardID === 'hs1000'
       // we give player 1 the marro + negoksa, and player 2 the samurai + sgt drake
       const isCardMarroWarriors = card.armyCardID === 'hs1000'
       const isCardNeGokSa = card.armyCardID === 'hs1014'
-      const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
+
+      // normal setup:
+      // const isCardForPlayer1 = isCardMarroWarriors || isCardNeGokSa
+
+      // setup 1 card move-range test:
+      const isCardForPlayer1 = index === 0
+
       const isCardIzumiSamurai = card.armyCardID === 'hs1002'
       const isCardSgtDrake = card.armyCardID === 'hs1003'
       const isCardForPlayer2 = isCardIzumiSamurai || isCardSgtDrake
-      const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
+      // const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
+      const playerID = isCardForPlayer1 ? '0' : '1'
       // id factory ...
       function makeGameCardID() {
         return `p${playerID}_${card.armyCardID}`
