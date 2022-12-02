@@ -1,7 +1,7 @@
 import { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
+import { calcUnitMoveRange } from './calcUnitMoveRange'
 import {
-  calcUnitMoveRange,
   selectHexForUnit,
   selectUnitsForCard,
   selectUnrevealedGameCard,

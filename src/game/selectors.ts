@@ -6,13 +6,11 @@ import {
   GameArmyCard,
   GameUnits,
   GameUnit,
-  MoveRange,
   OrderMarkers,
   OrderMarker,
   PlayerOrderMarkers,
 } from './types'
-import { generateHexID, generateBlankMoveRange } from './constants'
-import { uniq } from 'lodash'
+import { generateHexID } from './constants'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID)
@@ -63,111 +61,6 @@ export function selectUnrevealedGameCard(
 ) {
   const id = playerOrderMarkers[currentOrderMarker.toString()]
   return selectGameCardByID(armyCards, id)
-}
-// Related ⤵
-const deduplicateMoveRange = (result: MoveRange): MoveRange => {
-  return {
-    safe: uniq(result.safe),
-    engage: uniq(result.engage),
-    disengage: uniq(result.disengage),
-    denied: uniq(result.denied),
-  }
-}
-export function calcUnitMoveRange(
-  unit: GameUnit,
-  boardHexes: BoardHexes,
-  gameUnits: GameUnits
-): MoveRange {
-  // 1. return blank move-range if no necessary ingredients
-  const initialMoveRange = generateBlankMoveRange()
-  //*early out
-  if (!unit) {
-    return initialMoveRange
-  }
-  const playerID = unit?.playerID
-  const initialMovePoints = unit?.movePoints ?? 0
-  const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
-  //*early out again?
-  if (!startHex || !initialMovePoints) {
-    return initialMoveRange
-  }
-
-  // 2. deny they start hex as an end hex
-  initialMoveRange.denied.push(`${startHex.id}`)
-
-  // 3. recursively add hexes to move-range
-  const moveRange = deduplicateMoveRange(
-    moveRangeReduce(
-      startHex as BoardHex,
-      initialMovePoints,
-      boardHexes,
-      initialMoveRange,
-      gameUnits,
-      playerID
-    )
-  )
-
-  return moveRange
-
-  //* recursive reduce
-}
-function moveRangeReduce(
-  startHex: BoardHex,
-  movePoints: number,
-  boardHexes: BoardHexes,
-  initialMoveRange: MoveRange,
-  gameUnits: GameUnits,
-  playerID: string
-): MoveRange {
-  console.count()
-  const neighbors = selectHexNeighbors(startHex.id, boardHexes)
-  //*early out
-  if (movePoints <= 0) {
-    return initialMoveRange
-  }
-  let nextResults = neighbors.reduce(
-    (result: MoveRange, end: BoardHex): MoveRange => {
-      const endHexID = end.id
-      const endHexUnitID = end.occupyingUnitID
-      const endHexUnit = { ...gameUnits[endHexUnitID] }
-      const endHexUnitPlayerID = endHexUnit.playerID
-      const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
-      const movePointsLeftAfterMove = movePoints - moveCost
-      const isEndHexOccupied = Boolean(endHexUnitID)
-      const isTooCostly = movePointsLeftAfterMove < 0
-      const isEndHexEnemyOccupied =
-        isEndHexOccupied && endHexUnitPlayerID !== playerID
-      const isEndHexFriendlyOccupied = Boolean(
-        endHexUnitID && endHexUnitPlayerID === playerID
-      )
-      const isUnpassable = isTooCostly || isEndHexEnemyOccupied
-      if (isUnpassable || isEndHexFriendlyOccupied) {
-        result.denied.push(endHexID)
-      } else {
-        // Not unpassable or occupied, then can be moved to
-        result.safe.push(endHexID)
-      }
-
-      if (!isUnpassable) {
-        const recursiveMoveRange = moveRangeReduce(
-          end,
-          movePointsLeftAfterMove,
-          boardHexes,
-          result,
-          gameUnits,
-          playerID
-        )
-        return {
-          ...result,
-          ...recursiveMoveRange,
-        }
-      }
-      return result
-    },
-    // accumulator for reduce fn
-    initialMoveRange
-  )
-  return nextResults
 }
 
 export function selectHexNeighbors(

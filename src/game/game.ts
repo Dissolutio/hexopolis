@@ -1,10 +1,6 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
-import {
-  calcUnitMoveRange,
-  selectUnitsForCard,
-  selectUnrevealedGameCard,
-} from './selectors'
+import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import {
   phaseNames,
   stageNames,
@@ -19,6 +15,7 @@ import { moves } from './moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
 import { testScenario } from './setup'
+import { calcUnitMoveRange } from './calcUnitMoveRange'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },
