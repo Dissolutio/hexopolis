@@ -25,8 +25,8 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hs1000',
-        '1': 'p0_hs1000',
+        '0': 'p0_hs1185',
+        '1': 'p0_hs1185',
         '2': 'p0_hs1000',
         X: 'p0_hs1000',
       },
@@ -35,14 +35,38 @@ function playersStateWithPrePlacedOMs(): PlayersState {
       orderMarkers: {
         '0': 'p1_hs1008',
         '1': 'p1_hs1008',
-        '2': 'p1_hs1008',
-        X: 'p1_hs1008',
+        '2': 'p1_hs1002',
+        X: 'p1_hs1002',
       },
     },
   }
 }
 export const withPrePlacedUnits = true
 
+const isDevOverrideState = true
+// const isDevOverrideState = false
+
+const frequentlyChangedDevState = isDevOverrideState
+  ? {
+      placementReady: {
+        '0': true,
+        '1': true,
+      },
+      orderMarkersReady: { '0': true, '1': true },
+      roundOfPlayStartReady: { '0': true, '1': true },
+      players: playersStateWithPrePlacedOMs(),
+      orderMarkers: generatePreplacedOrderMarkers(),
+    }
+  : {
+      placementReady: {
+        '0': false,
+        '1': false,
+      },
+      orderMarkersReady: { '0': false, '1': false },
+      roundOfPlayStartReady: { '0': false, '1': false },
+      orderMarkers: generateBlankOrderMarkers(),
+      players: generateBlankPlayersState(),
+    }
 //!! TEST SCENARIO
 export const testScenario = makeTestScenario()
 function makeTestScenario(): GameState {
@@ -59,21 +83,12 @@ function makeTestScenario(): GameState {
     flat: false,
   })
   return {
-    placementReady: {
-      '0': false,
-      '1': false,
-    },
-    orderMarkersReady: { '0': false, '1': false },
-    roundOfPlayStartReady: { '0': false, '1': false },
+    ...frequentlyChangedDevState,
     currentRound: 0,
     currentOrderMarker: 0,
-    orderMarkers: generateBlankOrderMarkers(),
-    // orderMarkers: generatePreplacedOrderMarkers(),
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
-    players: generateBlankPlayersState(),
-    // players: playersStateWithPrePlacedOMs(),
     armyCards,
     gameUnits,
     hexMap: hexagonMap.hexMap,
