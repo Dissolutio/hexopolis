@@ -37,8 +37,8 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   padding: 0;
   margin: 0;
   color: var(--player-color);
-  /* background-image: url('${(props) => props.theme.bgContourLinesUrl}'); */
-  background-image: url('beesContourBG.svg');
+  background-image: url('${(props) => props.theme.bgContourLinesUrl}');
+  /* background-image: url('beesContourBG.svg'); */
 `
 const LayoutTop = styled.div`
   width: 100%;

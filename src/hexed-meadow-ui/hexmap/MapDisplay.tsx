@@ -1,4 +1,5 @@
 import { useBgioG } from 'bgio-contexts'
+import { Notifications } from 'hexed-meadow-ui/controls/Notifications'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import {
@@ -50,6 +51,7 @@ export const MapDisplay = () => {
         handleClickZoomIn={handleClickZoomIn}
         handleClickZoomOut={handleClickZoomOut}
       />
+      <Notifications />
       <TurnCounter />
       <ActiveHexReadout />
       <MapHexStyles hexSize={mapState.hexSize} ref={mapRef}>

@@ -7,6 +7,7 @@ import {
   PlacementControls,
   PlaceOrderMarkersControls,
 } from './'
+import { Notifications } from './Notifications'
 
 export const Controls = () => {
   const { playerID } = useBgioClientInfo()
@@ -29,13 +30,25 @@ export const Controls = () => {
   }
   if (isRoundOfPlayPhase) {
     if (!isMyTurn) {
-      return <RopIdleControls />
+      return (
+        <>
+          <RopIdleControls />
+        </>
+      )
     }
     if (isMyTurn && !isAttackingStage) {
-      return <RopMoveControls />
+      return (
+        <>
+          <RopMoveControls />
+        </>
+      )
     }
     if (isMyTurn && isAttackingStage) {
-      return <RopAttackControls />
+      return (
+        <>
+          <RopAttackControls />
+        </>
+      )
     }
   }
   if (isGameover) {

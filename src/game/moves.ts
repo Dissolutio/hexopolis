@@ -20,6 +20,7 @@ const attackAction: Move<GameState> = (
 ) => {
   const { unitID } = unit
   const unitGameCard = selectGameCardByID(G.armyCards, unit.gameCardID)
+  const unitName = unitGameCard?.name ?? ''
   const unitRange = unitGameCard?.range ?? 0
   const unitsMoved = [...G.unitsMoved]
   const unitsAttacked = [...G.unitsAttacked]
@@ -70,6 +71,7 @@ const attackAction: Move<GameState> = (
     G.armyCards,
     defenderGameUnit.gameCardID
   )
+  const defenderName = defenderGameCard?.name ?? ''
   const defense = defenderGameCard?.defense ?? 0
   const defenderLife = defenderGameCard?.life ?? 0
   const attackRoll = random?.Die(6, attack) ?? []
@@ -79,7 +81,7 @@ const attackAction: Move<GameState> = (
   const wounds = Math.max(skulls - shields, 0)
   const isHit = wounds > 0
   const isFatal = wounds >= defenderLife
-  console.log(`A:`, skulls, `D:`, shields, `wounds:`, wounds)
+  const gameLogMessage = `${unitName} attacked ${defenderName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
 
   // deal damage
   if (isHit && !isFatal) {
@@ -96,6 +98,8 @@ const attackAction: Move<GameState> = (
   // update units attacked
   unitsAttacked.push(unitID)
   G.unitsAttacked = unitsAttacked
+  // update game log
+  G.gameLog = [...G.gameLog, gameLogMessage]
 }
 
 //phase:___Placement
