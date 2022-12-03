@@ -10,6 +10,7 @@ import {
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
 import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
+import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -30,6 +31,7 @@ export const PlacementControls = () => {
   const isAllPlacementUnitsPlaced = placementUnits?.length === 0
   const isShowingConfirm =
     (isAllPlacementUnitsPlaced || isNoMoreEmptyStartZoneHexes) && !isReady
+
   // once player has placed and confirmed, show waiting
   if (isReady) {
     return (
@@ -42,15 +44,14 @@ export const PlacementControls = () => {
   } else {
     // return UI
     return (
-      <StyledPlacementControlsWrapper>
+      <div>
         <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-        {!isShowingConfirm && (
+        {!isShowingConfirm ? (
           <StyledControlsP>
             Select your units and place them within your start zone. Once all
             players are ready, the game will begin!
           </StyledControlsP>
-        )}
-        {isShowingConfirm && (
+        ) : (
           <ConfirmReady
             makeReady={makeReady}
             isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
@@ -58,7 +59,7 @@ export const PlacementControls = () => {
           />
         )}
         <PlacementUnitTiles />
-      </StyledPlacementControlsWrapper>
+      </div>
     )
   }
 }
@@ -93,41 +94,13 @@ const ConfirmReady = ({
           Some of your units will not be placed! (See those units below)
         </StyledControlsP>
       )}
-      <StyledButtonWrapper>
-        <button
-          onClick={makeReady}
-          style={{
-            display: 'inline-block',
-            marginTop: '20px',
-            fontSize: '0.8rem',
-            color: 'var(--success-green)',
-            border: '1px solid var(--success-green)',
-          }}
-        >
-          Confirm Placement
-        </button>
-        <button
-          onClick={onResetPlacementState}
-          style={{
-            display: 'inline-block',
-            marginTop: '20px',
-            fontSize: '0.8rem',
-            color: 'var(--error-red)',
-            border: '1px solid var(--error-red)',
-          }}
-        >
-          No, reset my placement
-        </button>
-      </StyledButtonWrapper>
+      <ConfirmOrResetButtons
+        confirm={makeReady}
+        reset={onResetPlacementState}
+      />
     </>
   )
 }
-const StyledButtonWrapper = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  max-width: 300px;
-  margin: 0 auto;
-`
 
 // PLACEMENT UNIT TILES
 const PlacementUnitTiles = () => {
