@@ -111,10 +111,11 @@ function armyCardsToGameArmyCardsForTest() {
   return hsCardsToArmyCards(coreHeroscapeCards)
     .filter(
       (c) =>
-        // c.armyCardID === 'hs1000' ||
-        // c.armyCardID === 'hs1002' ||
+        c.armyCardID === 'hs1000' ||
+        c.armyCardID === 'hs1002' ||
         // c.armyCardID === 'hs1003' ||
-        c.armyCardID === 'hs1008' || c.armyCardID === 'hs1185'
+        c.armyCardID === 'hs1008' ||
+        c.armyCardID === 'hs1185'
       // c.armyCardID === 'hs1014'
     )
     .map((card) => {

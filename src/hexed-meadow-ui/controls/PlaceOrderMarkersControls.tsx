@@ -1,11 +1,38 @@
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
-import { StyledControlsHeaderH2 } from 'hexed-meadow-ui/layout/Typography'
+import {
+  StyledControlsHeaderH2,
+  StyledControlsP,
+} from 'hexed-meadow-ui/layout/Typography'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { OrderMarkerArmyCards } from './order-markers/OrderMarkerArmyCards'
 import { omToString } from 'app/utilities'
 import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
-
+import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
+import { motion, AnimatePresence } from 'framer-motion'
+const AnimateMe = ({
+  children,
+  style,
+}: {
+  children: JSX.Element
+  style: React.CSSProperties
+}) => {
+  const isShowing = true
+  return (
+    <AnimatePresence>
+      {isShowing && (
+        <motion.div
+          style={style}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
 export const selectedOrderMarkerStyle = (
   activeMarker: string,
   orderMarker: string
@@ -30,8 +57,9 @@ export const PlaceOrderMarkersControls = () => {
   const [editingOrderMarkers, setEditingOrderMarkers] = useState(
     () => myOrderMarkers
   )
-  const { moves } = useBgioMoves()
-  const { confirmOrderMarkersReady, placeOrderMarkers } = moves
+  const {
+    moves: { confirmOrderMarkersReady, placeOrderMarkers },
+  } = useBgioMoves()
   const placeEditingOrderMarker = (order: string, gameCardID: string) => {
     setEditingOrderMarkers((prev) => ({ ...prev, [order]: gameCardID }))
   }
@@ -73,25 +101,15 @@ export const PlaceOrderMarkersControls = () => {
   }
   return (
     <>
-      <div>
-        <StyledControlsHeaderH2>{`Place your order markers for Round ${
-          currentRound + 1
-        }:`}</StyledControlsHeaderH2>
-        <StyledUnplacedOrderMarkersUl>
-          {toBePlacedOrderMarkers.map((om) => (
-            <li key={om}>
-              <button
-                onClick={() => selectOrderMarker(om)}
-                style={{
-                  ...selectedOrderMarkerStyle(activeMarker, om),
-                  ...orderMarkerButtonStyle,
-                }}
-              >
-                {omToString(om)}
-              </button>
-            </li>
-          ))}
-          {toBePlacedOrderMarkers.length > 0 && (
+      <StyledControlsHeaderH2>{`Place your order-markers for round ${
+        currentRound + 1
+      }:`}</StyledControlsHeaderH2>
+      <OMButtonList
+        activeMarker={activeMarker}
+        selectOrderMarker={selectOrderMarker}
+        toBePlacedOrderMarkers={toBePlacedOrderMarkers}
+        extraButton={
+          toBePlacedOrderMarkers.length > 0 ? (
             <li>
               <button
                 onClick={onClickAutoLayOrderMarkers}
@@ -102,28 +120,93 @@ export const PlaceOrderMarkersControls = () => {
                 Auto
               </button>
             </li>
-          )}
-        </StyledUnplacedOrderMarkersUl>
-        {areAllOMsAssigned && !orderMarkersReady[playerID] && (
-          <button onClick={onClickConfirm}>CONFIRM DONE</button>
-        )}
-        <OrderMarkerArmyCards
-          activeMarker={activeMarker}
-          setActiveMarker={setActiveMarker}
-          selectCard={selectCard}
-          editingOrderMarkers={editingOrderMarkers}
-        />
-        <div></div>
-      </div>
+          ) : (
+            <></>
+          )
+        }
+      />
+      {areAllOMsAssigned && !orderMarkersReady[playerID] && (
+        <AnimateMe
+          style={{
+            marginTop: '1rem',
+          }}
+        >
+          <>
+            <StyledControlsP>
+              All of your order markers are placed, confirm that these are your
+              choices for the round?
+            </StyledControlsP>
+            <ConfirmOrResetButtons
+              confirm={onClickConfirm}
+              reset={() => setEditingOrderMarkers(myOrderMarkers)}
+            />
+          </>
+        </AnimateMe>
+      )}
+      <OrderMarkerArmyCards
+        activeMarker={activeMarker}
+        setActiveMarker={setActiveMarker}
+        selectCard={selectCard}
+        editingOrderMarkers={editingOrderMarkers}
+      />
     </>
   )
 }
-const StyledUnplacedOrderMarkersUl = styled.ul`
+export const OMButtonList = ({
+  activeMarker,
+  selectOrderMarker,
+  toBePlacedOrderMarkers,
+  extraButton,
+}: {
+  activeMarker: string
+  selectOrderMarker: (om: string) => void
+  toBePlacedOrderMarkers: string[]
+  extraButton?: JSX.Element
+}) => {
+  return (
+    <StyledOrderMarkersUl>
+      {toBePlacedOrderMarkers.map((om) => (
+        <OMButton
+          key={om}
+          om={om}
+          activeMarker={activeMarker}
+          selectOrderMarker={selectOrderMarker}
+        ></OMButton>
+      ))}
+      {extraButton}
+    </StyledOrderMarkersUl>
+  )
+}
+const OMButton = ({
+  om,
+  activeMarker,
+  selectOrderMarker,
+}: {
+  om: string
+  activeMarker: string
+  selectOrderMarker: (om: string) => void
+}) => {
+  return (
+    <li>
+      <button
+        onClick={() => selectOrderMarker(om)}
+        style={{
+          ...selectedOrderMarkerStyle(activeMarker, om),
+          ...orderMarkerButtonStyle,
+        }}
+      >
+        {omToString(om)}
+      </button>
+    </li>
+  )
+}
+export const StyledOrderMarkersUl = styled.ul`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  flex-grow: 1;
-  margin: 1rem 0;
+  flex-grow: 0;
+  margin: 0;
   padding: 0;
   list-style-type: none;
+  font-size: 1rem;
 `

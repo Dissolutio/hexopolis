@@ -37,31 +37,39 @@ export const PlacementControls = () => {
   // once player has placed and confirmed, show waiting
   if (isReady) {
     return (
-      <StyledPlacementControlsWrapper>
-        <StyledControlsHeaderH2>
-          Waiting for opponents to finish placing armies...
-        </StyledControlsHeaderH2>
-      </StyledPlacementControlsWrapper>
+      <AnimatePresence>
+        <motion.div>
+          <StyledControlsHeaderH2>
+            Waiting for opponents to finish placing armies...
+          </StyledControlsHeaderH2>
+        </motion.div>
+      </AnimatePresence>
     )
   } else {
     // return UI
     return (
-      <div>
-        <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-        {!isShowingConfirm ? (
-          <StyledControlsP>
-            Select your units and place them within your start zone. Once all
-            players are ready, the game will begin!
-          </StyledControlsP>
-        ) : (
-          <ConfirmReady
-            makeReady={makeReady}
-            isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
-            isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
-          />
-        )}
-        <PlacementUnitTiles />
-      </div>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
+          {!isShowingConfirm ? (
+            <StyledControlsP>
+              Select your units and place them within your start zone. Once all
+              players are ready, the game will begin!
+            </StyledControlsP>
+          ) : (
+            <ConfirmReady
+              makeReady={makeReady}
+              isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
+              isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
+            />
+          )}
+          <PlacementUnitTiles />
+        </motion.div>
+      </AnimatePresence>
     )
   }
 }

@@ -1,4 +1,3 @@
-import { PlacementUnit } from 'game/types'
 import React from 'react'
 import {
   GiDiabloSkull,

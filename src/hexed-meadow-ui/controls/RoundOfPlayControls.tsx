@@ -9,6 +9,7 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
+import { StyledButtonWrapper } from './ConfirmOrResetButtons'
 
 export const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
@@ -48,10 +49,10 @@ export const RopMoveControls = () => {
       <StyledControlsP>
         You have moved {movedUnitsCount} / {allowedMoveCount} units{' '}
       </StyledControlsP>
-      <ButtonWrapper>
+      <StyledButtonWrapper>
         <button onClick={handleEndMovementClick}>END MOVE</button>
         <UndoRedoButtons />
-      </ButtonWrapper>
+      </StyledButtonWrapper>
       <RopArmyCardsList />
     </div>
   )
