@@ -1,4 +1,6 @@
 import React from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+
 import styled from 'styled-components'
 
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
@@ -120,10 +122,19 @@ const PlacementUnitTiles = () => {
     >
       <StyledControlsH3>Unplaced Units</StyledControlsH3>
       <StyledUl>
-        {inflatedPlacementUnits &&
-          inflatedPlacementUnits.map((unit) => (
-            <PlacementUnitTile key={unit.unitID} unit={unit} />
-          ))}
+        <AnimatePresence>
+          {inflatedPlacementUnits &&
+            inflatedPlacementUnits.map((unit) => (
+              <motion.li
+                key={unit.unitID}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <PlacementUnitTile key={unit.unitID} unit={unit} />
+              </motion.li>
+            ))}
+        </AnimatePresence>
       </StyledUl>
     </div>
   )
@@ -154,7 +165,7 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
     }
   }
   return (
-    <StyledPlacementTileLi
+    <StyledPlacementTileDiv
       key={unit.unitID}
       style={selectedStyle(unit.unitID)}
       onClick={onClick}
@@ -164,10 +175,10 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
         playerID={unit.playerID}
       />
       <span>{unit.singleName}</span>
-    </StyledPlacementTileLi>
+    </StyledPlacementTileDiv>
   )
 }
-const StyledPlacementTileLi = styled.li`
+const StyledPlacementTileDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
