@@ -83,7 +83,7 @@ const PlacementContextProvider = ({
         ...result,
         {
           ...gameUnit,
-          name: armyCard?.name ?? '',
+          singleName: armyCard?.singleName ?? '',
         },
       ]
     },

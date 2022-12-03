@@ -99,7 +99,7 @@ export type GameUnits = {
 }
 
 export type PlacementUnit = GameUnit & {
-  name: string
+  singleName: string
 }
 
 export type PlayerStateToggle = {

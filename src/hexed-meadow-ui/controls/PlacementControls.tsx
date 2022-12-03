@@ -190,7 +190,7 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
         armyCardID={unit.armyCardID}
         playerID={unit.playerID}
       />
-      <span>{unit.name}</span>
+      <span>{unit.singleName}</span>
     </StyledPlacementTileLi>
   )
 }
