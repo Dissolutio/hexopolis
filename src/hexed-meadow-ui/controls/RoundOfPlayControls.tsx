@@ -15,11 +15,11 @@ export const RopIdleControls = () => {
   const { revealedGameCard } = usePlayContext()
   return (
     <>
-      <h2>
+      <StyledControlsHeaderH2>
         {`Opponent's #${currentOrderMarker + 1} is ${
           revealedGameCard?.name ?? '...'
         }`}
-      </h2>
+      </StyledControlsHeaderH2>
     </>
   )
 }
@@ -37,14 +37,14 @@ export const RopMoveControls = () => {
     endCurrentMoveStage()
   }
   return (
-    <>
-      <StyledControlsHeaderH2>{`Your ${
+    <div>
+      <StyledControlsHeaderH2>{`Your #${
         {
-          0: '1st',
-          1: '2nd',
-          2: '3rd',
-        }[currentOrderMarker + 1]
-      } order: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
+          0: '1',
+          1: '2',
+          2: '3',
+        }[currentOrderMarker]
+      }: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
       <StyledControlsP>
         You have moved {movedUnitsCount} / {allowedMoveCount} units{' '}
       </StyledControlsP>
@@ -53,7 +53,7 @@ export const RopMoveControls = () => {
         <UndoRedoButtons />
       </ButtonWrapper>
       <RopArmyCardsList />
-    </>
+    </div>
   )
 }
 
