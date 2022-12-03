@@ -3,7 +3,6 @@ import { StyledControlsHeaderH2 } from 'hexed-meadow-ui/layout/Typography'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { OrderMarkerArmyCards } from './order-markers/OrderMarkerArmyCards'
-import { StyledOrderMarkersControlsWrapper } from './order-markers/StyledOrderMarkersControlsWrapper'
 import { omToString } from 'app/utilities'
 import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
 
@@ -17,10 +16,17 @@ export const selectedOrderMarkerStyle = (
     return {}
   }
 }
+const orderMarkerButtonStyle = {
+  fontSize: '1.5rem',
+  padding: '0 1rem',
+  margin: '0 0.5rem',
+}
+
 export const PlaceOrderMarkersControls = () => {
   const { playerID } = useBgioClientInfo()
   const { currentRound, orderMarkersReady, myCards, myOrderMarkers } =
     useBgioG()
+  const isReady = orderMarkersReady[playerID] === true
   const [editingOrderMarkers, setEditingOrderMarkers] = useState(
     () => myOrderMarkers
   )
@@ -45,6 +51,7 @@ export const PlaceOrderMarkersControls = () => {
     (om) => om === ''
   )
   const onClickAutoLayOrderMarkers = () => {
+    // place all unplaced order markers on first card
     toBePlacedOrderMarkers.forEach((order) => {
       placeEditingOrderMarker(order, myFirstCard.gameCardID)
     })
@@ -56,18 +63,17 @@ export const PlaceOrderMarkersControls = () => {
       setActiveMarker('')
     }
   }
-
+  // Early return: Ready and waiting for opponent
+  if (isReady) {
+    return (
+      <StyledControlsHeaderH2>
+        Waiting for opponents to finish placing order markers...
+      </StyledControlsHeaderH2>
+    )
+  }
   return (
     <>
-      <StyledOrderMarkersControlsWrapper>
-        {orderMarkersReady[playerID] === true && (
-          <p>Waiting for opponents to finish placing order markers...</p>
-        )}
-
-        {areAllOMsAssigned && !orderMarkersReady[playerID] && (
-          <button onClick={onClickConfirm}>CONFIRM DONE</button>
-        )}
-
+      <div>
         <StyledControlsHeaderH2>{`Place your order markers for Round ${
           currentRound + 1
         }:`}</StyledControlsHeaderH2>
@@ -78,44 +84,46 @@ export const PlaceOrderMarkersControls = () => {
                 onClick={() => selectOrderMarker(om)}
                 style={{
                   ...selectedOrderMarkerStyle(activeMarker, om),
-                  fontSize: '1.5rem',
-                  padding: '0 1rem',
-                  margin: '0 0.5rem',
+                  ...orderMarkerButtonStyle,
                 }}
               >
                 {omToString(om)}
               </button>
             </li>
           ))}
+          {toBePlacedOrderMarkers.length > 0 && (
+            <li>
+              <button
+                onClick={onClickAutoLayOrderMarkers}
+                style={{
+                  ...orderMarkerButtonStyle,
+                }}
+              >
+                Auto
+              </button>
+            </li>
+          )}
         </StyledUnplacedOrderMarkersUl>
+        {areAllOMsAssigned && !orderMarkersReady[playerID] && (
+          <button onClick={onClickConfirm}>CONFIRM DONE</button>
+        )}
         <OrderMarkerArmyCards
           activeMarker={activeMarker}
           setActiveMarker={setActiveMarker}
           selectCard={selectCard}
           editingOrderMarkers={editingOrderMarkers}
         />
-        <div>
-          <StyledErrorRedButton
-            type="button"
-            onClick={onClickAutoLayOrderMarkers}
-          >
-            Put all order markers on {myFirstCard.name}
-          </StyledErrorRedButton>
-        </div>
-      </StyledOrderMarkersControlsWrapper>
+        <div></div>
+      </div>
     </>
   )
 }
-const StyledErrorRedButton = styled.button`
-  color: var(--error-red);
-  border: 1px solid var(--error-red);
-`
 const StyledUnplacedOrderMarkersUl = styled.ul`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   flex-grow: 1;
-  list-style-type: none;
   margin: 1rem 0;
   padding: 0;
+  list-style-type: none;
 `

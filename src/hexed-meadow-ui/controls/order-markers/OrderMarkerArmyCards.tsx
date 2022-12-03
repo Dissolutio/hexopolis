@@ -6,19 +6,17 @@ import { omToString } from 'app/utilities'
 import { selectedOrderMarkerStyle } from '../PlaceOrderMarkersControls'
 import { useBgioG } from 'bgio-contexts'
 
-type Props = {
-  activeMarker: string
-  setActiveMarker: React.Dispatch<React.SetStateAction<string>>
-  selectCard: (gameCardID: string) => void
-  editingOrderMarkers: PlayerOrderMarkers
-}
-
 export const OrderMarkerArmyCards = ({
   activeMarker,
   setActiveMarker,
   selectCard,
   editingOrderMarkers,
-}: Props) => {
+}: {
+  activeMarker: string
+  setActiveMarker: React.Dispatch<React.SetStateAction<string>>
+  selectCard: (gameCardID: string) => void
+  editingOrderMarkers: PlayerOrderMarkers
+}) => {
   const { myCards } = useBgioG()
   return (
     <StyledOrderMarkerArmyCardsUl>
