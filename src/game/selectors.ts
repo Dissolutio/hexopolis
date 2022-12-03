@@ -88,17 +88,35 @@ export function calcMoveCostBetweenNeighbors(
   return totalCost
 }
 
-// export function selectEngagementsForHex(
-//   hexID: string,
-//   playerID: string,
-//   boardHexes: BoardHexes,
-//   gameUnits: GameUnits
-// ) {
-//   const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
-//     .filter((h) => h.occupyingUnitID)
-//     .map((h) => h.occupyingUnitID)
-//   const engagedUnitIDs = adjacentUnitIDs.filter(
-//     (id) => gameUnits[id].playerID !== playerID
-//   )
-//   return engagedUnitIDs
-// }
+export function selectEngagementsForHex({
+  hexID,
+  playerID,
+  boardHexes,
+  gameUnits,
+  overrideUnitID,
+}: {
+  hexID: string
+  playerID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  overrideUnitID?: string
+}) {
+  const hex = boardHexes[hexID]
+
+  // either use hex unit, or override unit
+  const unitOnHex = overrideUnitID
+    ? gameUnits?.[overrideUnitID]
+    : gameUnits?.[hex?.occupyingUnitID]
+
+  // if no unit, then no engagements
+  if (!unitOnHex) {
+    return []
+  }
+  const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
+    .filter((h) => h.occupyingUnitID)
+    .map((h) => h.occupyingUnitID)
+  const engagedUnitIDs = adjacentUnitIDs.filter(
+    (id) => gameUnits[id].playerID !== playerID
+  )
+  return engagedUnitIDs
+}

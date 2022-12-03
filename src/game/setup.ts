@@ -34,10 +34,10 @@ function playersStateWithPrePlacedOMs(): PlayersState {
     },
     '1': {
       orderMarkers: {
-        '0': 'p1_hs1002',
-        '1': 'p1_hs1002',
-        '2': 'p1_hs1002',
-        X: 'p1_hs1002',
+        '0': 'p1_hs1008',
+        '1': 'p1_hs1008',
+        '2': 'p1_hs1008',
+        X: 'p1_hs1008',
       },
     },
   }
@@ -54,7 +54,7 @@ function makeTestScenario(): GameState {
   const gameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 3,
+    mapSize: 2,
     withPrePlacedUnits,
     gameUnits: gameArmyCardsToGameUnits(armyCards),
     flat: false,
@@ -113,11 +113,10 @@ function armyCardsToGameArmyCardsForTest() {
     .filter(
       (c) =>
         // c.armyCardID === 'hs1000' ||
-        c.armyCardID === 'hs1002' ||
-        c.armyCardID === 'hs1003' ||
-        // c.armyCardID === 'hs1008' ||
-        c.armyCardID === 'hs1185' ||
-        c.armyCardID === 'hs1014'
+        // c.armyCardID === 'hs1002' ||
+        // c.armyCardID === 'hs1003' ||
+        c.armyCardID === 'hs1008' || c.armyCardID === 'hs1185'
+      // c.armyCardID === 'hs1014'
     )
     .map((card) => {
       const isCardMarroWarriors = card.armyCardID === 'hs1000'
@@ -129,7 +128,8 @@ function armyCardsToGameArmyCardsForTest() {
       const isCardIzumiSamurai = card.armyCardID === 'hs1002'
       const isCardSgtDrake = card.armyCardID === 'hs1003'
       const isCardZettianGuard = card.armyCardID === 'hs1008'
-      const isCardForPlayer2 = isCardIzumiSamurai || isCardSgtDrake
+      const isCardForPlayer2 =
+        isCardIzumiSamurai || isCardSgtDrake || isCardZettianGuard
       const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
 
       // id factory ...

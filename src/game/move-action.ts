@@ -10,7 +10,8 @@ import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from './types'
 
 export const moveAction: Move<GameState> = {
   undoable: ({ G, ctx }) => {
-    return false
+    // TODO: only can undo if no disengagements / special stuff happened
+    return true
   },
   move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
     const { unitID, movePoints } = unit
