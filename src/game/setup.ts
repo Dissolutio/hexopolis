@@ -13,6 +13,7 @@ import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
   generatePreplacedOrderMarkers,
+  generateBlankMoveRange,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 import {
@@ -25,10 +26,10 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hs1000',
-        '1': 'p0_hs1000',
-        '2': 'p0_hs1000',
-        X: 'p0_hs1000',
+        '0': 'p0_hs1185',
+        '1': 'p0_hs1185',
+        '2': 'p0_hs1185',
+        X: 'p0_hs1185',
       },
     },
     '1': {
@@ -60,20 +61,20 @@ function makeTestScenario(): GameState {
   })
   return {
     placementReady: {
-      '0': false,
-      '1': false,
+      '0': true,
+      '1': true,
     },
-    orderMarkersReady: { '0': false, '1': false },
-    roundOfPlayStartReady: { '0': false, '1': false },
+    orderMarkersReady: { '0': true, '1': true },
+    roundOfPlayStartReady: { '0': true, '1': true },
     currentRound: 0,
     currentOrderMarker: 0,
-    orderMarkers: generateBlankOrderMarkers(),
-    // orderMarkers: generatePreplacedOrderMarkers(),
+    // orderMarkers: generateBlankOrderMarkers(),
+    orderMarkers: generatePreplacedOrderMarkers(),
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
-    players: generateBlankPlayersState(),
-    // players: playersStateWithPrePlacedOMs(),
+    // players: generateBlankPlayersState(),
+    players: playersStateWithPrePlacedOMs(),
     armyCards,
     gameUnits,
     hexMap: hexagonMap.hexMap,
@@ -165,7 +166,7 @@ function gameArmyCardsToGameUnits(armyCards: GameArmyCard[]): GameUnits {
         playerID: card.playerID,
         gameCardID: card.gameCardID,
         movePoints: 0,
-        moveRange: { safe: [], engage: [], disengage: [], denied: [] },
+        moveRange: generateBlankMoveRange(),
       }
       return {
         ...unitsResult,
