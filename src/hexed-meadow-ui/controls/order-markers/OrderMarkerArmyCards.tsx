@@ -81,11 +81,11 @@ export const OrderMarkerArmyCard = ({
   )
 }
 const StyledOrderMarkerArmyCardsLi = styled.li`
-  border: 1px solid red;
-  font-size: 1.3rem;
   padding: 5px;
   margin: 5px;
   max-width: 300px;
+  border: 1px solid var(--player-color);
+  font-size: 1.3rem;
   @media screen and (max-width: 1100px) {
     max-width: 100px;
     font-size: 0.9rem;

@@ -12,16 +12,20 @@ import {
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
 import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
-import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from './ConfirmOrResetButtons'
+import { RedButton } from 'hexed-meadow-ui/layout/buttons'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
   const { placementReady, myStartZone } = useBgioG()
-  const { moves } = useBgioMoves()
-  const { deployUnits } = moves
+  const {
+    moves: { confirmPlacementReady, deployUnits, deconfirmPlacementReady },
+  } = useBgioMoves()
   const { placementUnits, editingBoardHexes } = usePlacementContext()
 
-  const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
     deployUnits(editingBoardHexes)
@@ -38,10 +42,19 @@ export const PlacementControls = () => {
   if (isReady) {
     return (
       <AnimatePresence>
-        <motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
           <StyledControlsHeaderH2>
             Waiting for opponents to finish placing armies...
           </StyledControlsHeaderH2>
+          <StyledButtonWrapper>
+            <RedButton onClick={() => deconfirmPlacementReady({ playerID })}>
+              Wait, go back!
+            </RedButton>
+          </StyledButtonWrapper>
         </motion.div>
       </AnimatePresence>
     )
@@ -73,11 +86,6 @@ export const PlacementControls = () => {
     )
   }
 }
-const StyledPlacementControlsWrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  color: var(--player-color);
-`
 
 // CONFIRM READY
 const ConfirmReady = ({
@@ -91,7 +99,7 @@ const ConfirmReady = ({
 }) => {
   const { onResetPlacementState } = usePlacementContext()
   return (
-    <>
+    <StyledConfirmDiv>
       {isNoMoreEmptyStartZoneHexes && (
         <StyledControlsP>Your start zone is full.</StyledControlsP>
       )}
@@ -108,10 +116,15 @@ const ConfirmReady = ({
         confirm={makeReady}
         reset={onResetPlacementState}
       />
-    </>
+    </StyledConfirmDiv>
   )
 }
-
+const StyledConfirmDiv = styled.div`
+  padding: 10px;
+  p {
+    margin: 5px 0;
+  }
+`
 // PLACEMENT UNIT TILES
 const PlacementUnitTiles = () => {
   const { inflatedPlacementUnits } = usePlacementContext()

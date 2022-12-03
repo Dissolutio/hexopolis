@@ -36,10 +36,13 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     font-size: ${(props) => `${props.hexSize / 75}rem`};
   }
   // All Hex Styles
-  // highlight all hexes
+  // highlight all hexes, and set fill-opacity to 0
   svg g polygon {
     stroke: var(--white);
     stroke-width: 0.1;
+    fill-opacity: 0;
+    transition: fill-opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out,
+      stroke 0.2s ease-in-out;
   }
   // paint all hexes
   .hexagon-group {
@@ -56,7 +59,8 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   //
 
   // PHASE: PLACEMENT
-  // highlight all player startzones
+
+  // highlight all player startzones,
   .maphex__startzone--player0 > g polygon {
     stroke: var(--bee-yellow);
     stroke-width: 0.3;
@@ -78,7 +82,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--player-color);
     stroke-width: 0.6;
     fill: var(--player-color);
-    fill-opacity: 0.8;
+    fill-opacity: 0.4;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.8;
@@ -90,7 +94,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--player-color);
     stroke-width: 0.6;
     fill: var(--player-color);
-    fill-opacity: 0.6;
+    fill-opacity: 0.1;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.8;
@@ -98,10 +102,10 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
   // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
   .maphex__start-zone--placement--selected-unit > g polygon {
-    stroke: var(--selected-green);
+    stroke: var(--success-green);
     /* stroke: var(--neon-green); */
     stroke-width: 0.6;
-    fill: var(--selected-green);
+    fill: var(--success-green);
     /* fill: var(--neon-green); */
     fill-opacity: 0.6;
     // style stroke width a little thicker on mobile so you can see it

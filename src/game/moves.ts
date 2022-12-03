@@ -154,6 +154,12 @@ const confirmPlacementReady: Move<GameState> = (
 ) => {
   G.placementReady[playerID] = true
 }
+const deconfirmPlacementReady: Move<GameState> = (
+  { G, ctx },
+  { playerID }: { playerID: string }
+) => {
+  G.placementReady[playerID] = false
+}
 
 //phase:___PlaceOrderMarkers
 const placeOrderMarkers: Move<GameState> = (
@@ -171,6 +177,12 @@ const confirmOrderMarkersReady: Move<GameState> = (
 ) => {
   G.orderMarkersReady[playerID] = true
 }
+const deconfirmOrderMarkersReady: Move<GameState> = (
+  { G, ctx },
+  { playerID }: { playerID: string }
+) => {
+  G.orderMarkersReady[playerID] = false
+}
 
 export const moves = {
   endCurrentMoveStage,
@@ -179,6 +191,8 @@ export const moves = {
   attackAction,
   deployUnits,
   confirmPlacementReady,
+  deconfirmPlacementReady,
   placeOrderMarkers,
   confirmOrderMarkersReady,
+  deconfirmOrderMarkersReady,
 }
