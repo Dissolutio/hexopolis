@@ -13,8 +13,6 @@ export const ConfirmOrResetButtons = ({
       <button
         onClick={confirm}
         style={{
-          display: 'inline-block',
-          marginTop: '20px',
           fontSize: '0.8rem',
           color: 'var(--success-green)',
           border: '1px solid var(--success-green)',
@@ -25,8 +23,6 @@ export const ConfirmOrResetButtons = ({
       <button
         onClick={reset}
         style={{
-          display: 'inline-block',
-          marginTop: '20px',
           fontSize: '0.8rem',
           color: 'var(--error-red)',
           border: '1px solid var(--error-red)',
@@ -40,6 +36,6 @@ export const ConfirmOrResetButtons = ({
 const StyledButtonWrapper = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  max-width: 300px;
-  margin: 0 auto;
+  justify-content: center;
+  margin-top: 20px;
 `
