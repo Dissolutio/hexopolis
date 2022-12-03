@@ -199,7 +199,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
-      const unitName = gameUnitCard?.name ?? ''
+      const unitName = gameUnitCard?.singleName ?? ''
       return (
         <Hexagon
           key={i}
