@@ -28,7 +28,8 @@ export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
   const { revealedGameCard } = usePlayContext()
-
+  const movedUnitsCount = unitsMoved.length
+  const allowedMoveCount = revealedGameCard?.figures ?? 0
   const { endCurrentMoveStage } = moves
 
   // handlers
@@ -45,8 +46,7 @@ export const RopMoveControls = () => {
         }[currentOrderMarker + 1]
       } order: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
       <StyledControlsP>
-        You have moved {unitsMoved.length} / {revealedGameCard?.figures ?? 0}{' '}
-        units{' '}
+        You have moved {movedUnitsCount} / {allowedMoveCount} units{' '}
       </StyledControlsP>
       <ButtonWrapper>
         <button onClick={handleEndMovementClick}>END MOVE</button>
