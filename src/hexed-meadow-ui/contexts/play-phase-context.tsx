@@ -25,7 +25,6 @@ type PlayContextValue = {
   selectedUnit: GameUnit
   revealedGameCard: GameArmyCard | undefined
   revealedGameCardUnits: GameUnit[]
-  selectedGameCard: GameArmyCard | undefined
   selectedGameCardUnits: GameUnit[]
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
@@ -45,7 +44,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { moves } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID, selectedGameCardID } =
     useUIContext()
-
   const { currentPlayer, isMyTurn, isAttackingStage } = ctx
   const { moveAction, attackAction } = moves
 
@@ -62,11 +60,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const revealedGameCardUnits = Object.values(gameUnits).filter(
     (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
   )
-  const selectedGameCard = Object.values(armyCards).find(
-    (armyCard: GameArmyCard) => armyCard?.gameCardID === selectedGameCardID
-  )
   const selectedGameCardUnits = Object.values(gameUnits).filter(
-    (unit: GameUnit) => unit.gameCardID === selectedGameCardID
+    (unit: GameUnit) => unit.gameCardID === currentTurnGameCardID
   )
   // HANDLERS
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
@@ -76,9 +71,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const isEndHexOccupied = Boolean(occupyingUnitID)
     const unitOnHex: GameUnit = { ...gameUnits[occupyingUnitID] }
     const endHexUnitPlayerID = unitOnHex.playerID
-    const isUnitReadyToSelect =
-      unitOnHex?.gameCardID === selectedGameCardID &&
-      selectedGameCardID === currentTurnGameCardID
+    const isUnitReadyToSelect = unitOnHex?.gameCardID === currentTurnGameCardID
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
 
     // MOVE STAGE
@@ -118,7 +111,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         const startHex = selectHexForUnit(selectedUnitID, boardHexes)
         const gameCard: any = Object.values(armyCards).find(
           (armyCard: GameArmyCard) =>
-            armyCard?.gameCardID === selectedGameCardID
+            armyCard?.gameCardID === currentTurnGameCardID
         )
         const isInRange =
           HexUtils.distance(startHex as BoardHex, boardHex) <=
@@ -136,7 +129,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       value={{
         // COMPUTED
         currentTurnGameCardID,
-        selectedGameCard,
         selectedGameCardUnits,
         selectedUnit,
         revealedGameCard,

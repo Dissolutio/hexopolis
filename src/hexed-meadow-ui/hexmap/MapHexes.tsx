@@ -27,9 +27,9 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
     onClickTurnHex,
-    selectedGameCard,
     selectedGameCardUnits,
     selectedUnit,
+    revealedGameCard,
     revealedGameCardUnits,
   } = usePlayContext()
 
@@ -153,7 +153,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           const startHex = selectHexForUnit(selectedUnitID, boardHexes)
           const isInRange =
             HexUtils.distance(startHex as Hex, hex) <=
-            (selectedGameCard?.range ?? 0)
+            (revealedGameCard?.range ?? 0)
           // ... and is in range
           if (isInRange) {
             classNames = classNames.concat(' maphex__targetable-enemy ')
