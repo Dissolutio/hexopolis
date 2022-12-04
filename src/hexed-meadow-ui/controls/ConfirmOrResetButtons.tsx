@@ -3,16 +3,22 @@ import styled from 'styled-components'
 
 type ConfirmOrResetButtonsProps = {
   confirm: () => void
-  reset: () => void
+  reset?: () => void
+  noResetButton?: boolean
+  confirmText?: string
 }
 export const ConfirmOrResetButtons = ({
   confirm,
   reset,
+  noResetButton,
+  confirmText,
 }: ConfirmOrResetButtonsProps) => {
   return (
     <StyledButtonWrapper>
-      <GreenButton onClick={confirm}>Confirm</GreenButton>
-      <RedButton onClick={reset}>Reset</RedButton>
+      <GreenButton onClick={confirm}>
+        {confirmText ? confirmText : 'Confirm'}
+      </GreenButton>
+      {noResetButton ? null : <RedButton onClick={reset}>Reset</RedButton>}
     </StyledButtonWrapper>
   )
 }

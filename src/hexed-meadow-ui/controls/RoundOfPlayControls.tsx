@@ -9,7 +9,10 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
-import { StyledButtonWrapper } from './ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from './ConfirmOrResetButtons'
 
 export const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
@@ -70,16 +73,18 @@ export const RopAttackControls = () => {
   }
   return (
     <>
-      <h2>{`Your #${currentOrderMarker + 1}: ${
+      <StyledControlsHeaderH2>{`Your #${currentOrderMarker + 1}: ${
         revealedGameCard?.name ?? ''
-      }`}</h2>
-      <p>
+      }`}</StyledControlsHeaderH2>
+      <StyledControlsP>
         You have used {unitsAttacked.length} / {revealedGameCard?.figures ?? 0}{' '}
         attacks{' '}
-      </p>
-      <ButtonWrapper>
-        <button onClick={handleEndTurnButtonClick}>END TURN</button>
-      </ButtonWrapper>
+      </StyledControlsP>
+      <ConfirmOrResetButtons
+        confirm={handleEndTurnButtonClick}
+        confirmText={'End Turn'}
+        noResetButton
+      />
       <RopArmyCardsList />
     </>
   )
