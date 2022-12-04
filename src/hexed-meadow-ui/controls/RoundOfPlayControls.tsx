@@ -11,6 +11,7 @@ import {
   ConfirmOrResetButtons,
   StyledButtonWrapper,
 } from './ConfirmOrResetButtons'
+import { uniq } from 'lodash'
 
 export const RoundOfPlayControls = () => {
   const { ctx } = useBgioCtx()
@@ -57,7 +58,7 @@ export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
   const { revealedGameCard } = usePlayContext()
-  const movedUnitsCount = unitsMoved.length
+  const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
   const { endCurrentMoveStage } = moves
 
