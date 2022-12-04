@@ -3,7 +3,6 @@ import React, {
   PropsWithChildren,
   SyntheticEvent,
   useContext,
-  useEffect,
 } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
@@ -29,7 +28,6 @@ type PlayContextValue = {
   selectedGameCard: GameArmyCard | undefined
   selectedGameCardUnits: GameUnit[]
   // handlers
-  onSelectCard__turn: (gameCardID: string) => void
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
 }
 
@@ -45,41 +43,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   } = useBgioG()
   const { ctx } = useBgioCtx()
   const { moves } = useBgioMoves()
-  const {
-    selectedUnitID,
-    setSelectedUnitID,
-    selectedGameCardID,
-    setSelectedGameCardID,
-  } = useUIContext()
+  const { selectedUnitID, setSelectedUnitID, selectedGameCardID } =
+    useUIContext()
 
   const { currentPlayer, isMyTurn, isAttackingStage } = ctx
   const { moveAction, attackAction } = moves
 
   const currentTurnGameCardID =
     players?.[playerID]?.orderMarkers?.[currentOrderMarker] ?? ''
-  // EFFECTS
-  useEffect(() => {
-    // auto select card on turn begin
-    if (isMyTurn) {
-      // auto select card AND deselect units on attack begin
-      if (isAttackingStage) {
-        setSelectedGameCardID(currentTurnGameCardID)
-        setSelectedUnitID('')
-      }
-      setSelectedGameCardID(currentTurnGameCardID)
-    }
-    //  auto deselect card/units on end turn
-    if (!isMyTurn) {
-      setSelectedGameCardID('')
-      setSelectedUnitID('')
-    }
-  }, [
-    isMyTurn,
-    isAttackingStage,
-    currentTurnGameCardID,
-    setSelectedGameCardID,
-    setSelectedUnitID,
-  ])
   // COMPUTED
   const selectedUnit = gameUnits?.[selectedUnitID]
   const revealedGameCard = selectRevealedGameCard(
@@ -98,15 +69,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     (unit: GameUnit) => unit.gameCardID === selectedGameCardID
   )
   // HANDLERS
-  function onSelectCard__turn(gameCardID: string) {
-    // deselect if already selected
-    if (gameCardID === selectedGameCardID) {
-      setSelectedGameCardID('')
-      return
-    }
-    setSelectedGameCardID(gameCardID)
-    return
-  }
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     event.stopPropagation()
     const boardHex = boardHexes[sourceHex.id]
@@ -181,7 +143,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCardUnits,
         // HANDLERS
         onClickTurnHex,
-        onSelectCard__turn,
       }}
     >
       {children}
