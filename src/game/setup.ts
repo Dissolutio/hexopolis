@@ -74,7 +74,7 @@ function makeTestScenario(): GameState {
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest()
   // GameUnits:
-  const gameUnits = gameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
     mapSize: 2,

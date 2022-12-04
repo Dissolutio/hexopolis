@@ -13,7 +13,7 @@ export interface GameState {
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
   // rop game state below
-  unitsMoved: string[]
+  unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: string[]
   gameLog: string[]
 }
