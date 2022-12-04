@@ -7,7 +7,7 @@ import {
 export const UndoRedoButtons = () => {
   const { undo, redo } = useBgioMoves()
   return (
-    <span>
+    <>
       <button onClick={undo}>
         <HiOutlineArrowCircleLeft />
         <span>UNDO</span>
@@ -16,6 +16,6 @@ export const UndoRedoButtons = () => {
         <HiOutlineArrowCircleRight />
         REDO
       </button>
-    </span>
+    </>
   )
 }

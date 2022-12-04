@@ -1,3 +1,4 @@
+import { GreenButton, RedButton } from 'hexed-meadow-ui/layout/buttons'
 import styled from 'styled-components'
 
 type ConfirmOrResetButtonsProps = {
@@ -10,36 +11,15 @@ export const ConfirmOrResetButtons = ({
 }: ConfirmOrResetButtonsProps) => {
   return (
     <StyledButtonWrapper>
-      <button
-        onClick={confirm}
-        style={{
-          display: 'inline-block',
-          marginTop: '20px',
-          fontSize: '0.8rem',
-          color: 'var(--success-green)',
-          border: '1px solid var(--success-green)',
-        }}
-      >
-        Confirm
-      </button>
-      <button
-        onClick={reset}
-        style={{
-          display: 'inline-block',
-          marginTop: '20px',
-          fontSize: '0.8rem',
-          color: 'var(--error-red)',
-          border: '1px solid var(--error-red)',
-        }}
-      >
-        Reset
-      </button>
+      <GreenButton onClick={confirm}>Confirm</GreenButton>
+      <RedButton onClick={reset}>Reset</RedButton>
     </StyledButtonWrapper>
   )
 }
-const StyledButtonWrapper = styled.div`
+
+export const StyledButtonWrapper = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  max-width: 300px;
-  margin: 0 auto;
+  justify-content: center;
+  margin-top: 20px;
 `

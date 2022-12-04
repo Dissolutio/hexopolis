@@ -2,8 +2,7 @@ import styled from 'styled-components'
 import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexed-meadow-ui/unit-icons'
 import React from 'react'
 import { GameArmyCard, PlayerOrderMarkers } from 'game/types'
-import { omToString } from 'app/utilities'
-import { selectedOrderMarkerStyle } from '../PlaceOrderMarkersControls'
+import { OMButtonList } from '../PlaceOrderMarkersControls'
 import { useBgioG } from 'bgio-contexts'
 
 export const OrderMarkerArmyCards = ({
@@ -37,10 +36,10 @@ const StyledOrderMarkerArmyCardsUl = styled.ul`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  flex-grow: 1;
+  flex-grow: 0;
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 5px;
 `
 
 export const OrderMarkerArmyCard = ({
@@ -60,60 +59,35 @@ export const OrderMarkerArmyCard = ({
     .filter((omEntry) => omEntry[1] === card.gameCardID)
     .map((omEntry) => omEntry[0])
 
+  const handleClickCard = () => {
+    selectCard(card.gameCardID)
+  }
+  const handleClickOrderMarker = (om: string) => {
+    setActiveMarker(om)
+  }
   return (
-    <StyledOrderMarkerArmyCardsLi onClick={() => selectCard(card.gameCardID)}>
-      <span>
-        <PlaceOrderMarkersArmyCardUnitIcon
-          armyCardID={card.armyCardID}
-          playerID={card.playerID}
-        />
-      </span>
+    <StyledOrderMarkerArmyCardsLi onClick={handleClickCard}>
+      <PlaceOrderMarkersArmyCardUnitIcon
+        armyCardID={card.armyCardID}
+        playerID={card.playerID}
+      />
       <span>{card.name}</span>
-      <div>
-        {orderMarkersOnThisCard.map((om) => (
-          <CardOrderMarker
-            key={om}
-            om={om}
-            activeMarker={activeMarker}
-            setActiveMarker={setActiveMarker}
-          />
-        ))}
-      </div>
+      <OMButtonList
+        activeMarker={activeMarker}
+        selectOrderMarker={handleClickOrderMarker}
+        toBePlacedOrderMarkers={orderMarkersOnThisCard}
+      />
     </StyledOrderMarkerArmyCardsLi>
   )
 }
 const StyledOrderMarkerArmyCardsLi = styled.li`
-  font-size: 1.2rem;
-`
-
-const CardOrderMarker = ({
-  om,
-  activeMarker,
-  setActiveMarker,
-}: {
-  om: string
-  activeMarker: string
-  setActiveMarker: React.Dispatch<React.SetStateAction<string>>
-}) => {
-  return (
-    <StyledOMButton
-      key={om}
-      onClick={() => setActiveMarker(om)}
-      style={selectedOrderMarkerStyle(activeMarker, om)}
-    >
-      {omToString(om)}
-    </StyledOMButton>
-  )
-}
-const StyledOMButton = styled.div`
-  display: inline-block;
-  vertical-align: middle;
-  max-width: 100px;
   padding: 5px;
-  text-align: center;
-  color: #444;
-  background: #ddd;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  margin: 5px;
+  max-width: 300px;
+  border: 1px solid var(--player-color);
+  font-size: 1.3rem;
+  @media screen and (max-width: 1100px) {
+    max-width: 100px;
+    font-size: 0.9rem;
+  }
 `

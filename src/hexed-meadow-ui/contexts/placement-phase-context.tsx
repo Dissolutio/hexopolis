@@ -6,7 +6,7 @@ import React, {
 } from 'react'
 import { useUIContext, useMapContext } from '.'
 import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/types'
-import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -33,7 +33,19 @@ const PlacementContextProvider = ({
   children: React.ReactNode
 }) => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useBgioG()
+  const {
+    boardHexes,
+    gameUnits,
+    myUnits,
+    myCards,
+    myStartZone,
+    placementReady,
+  } = useBgioG()
+  const isConfirmedReady = placementReady[playerID] === true
+  console.log(
+    '🚀 ~ file: placement-phase-context.tsx:38 ~ isConfirmedReady',
+    isConfirmedReady
+  )
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE
@@ -111,13 +123,13 @@ const PlacementContextProvider = ({
     const clickedHexId = sourceHex.id
     const isInStartZone = myStartZone.includes(clickedHexId)
     const unitIdAlreadyOnHex = editingBoardHexes?.[clickedHexId]
-
     //  -- 1A. No current unit, but there is a unit on the hex, select that unit -- 1B. No current unit, so since we're not placing on the hex, select the hex
     if (!selectedUnitID) {
-      if (unitIdAlreadyOnHex) {
+      if (unitIdAlreadyOnHex && !isConfirmedReady) {
         onClickPlacementUnit(unitIdAlreadyOnHex)
+      } else {
+        setSelectedMapHex(clickedHexId)
       }
-      setSelectedMapHex(clickedHexId)
       return
     }
 

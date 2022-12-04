@@ -1,4 +1,5 @@
 import React, { SyntheticEvent } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Hex, Hexagon, HexUtils, Text } from 'react-hexgrid'
 
 import {
@@ -211,13 +212,21 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           className={calcClassNames(hex)}
         >
           <g>
-            {gameUnit && isShowableUnit && (
-              <UnitIcon
-                hexSize={hexSize}
-                armyCardID={gameUnit.armyCardID}
-                iconPlayerID={gameUnit.playerID}
-              />
-            )}
+            <AnimatePresence>
+              {gameUnit && isShowableUnit && (
+                <motion.g
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <UnitIcon
+                    hexSize={hexSize}
+                    armyCardID={gameUnit.armyCardID}
+                    iconPlayerID={gameUnit.playerID}
+                  />
+                </motion.g>
+              )}
+            </AnimatePresence>
             {isPlacementPhase && <HexIDText hexSize={hexSize} text={hex.id} />}
             {!isPlacementPhase && (
               <HexIDText hexSize={hexSize} text={unitName} />

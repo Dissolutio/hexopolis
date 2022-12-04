@@ -1,4 +1,6 @@
 import React from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+
 import styled from 'styled-components'
 
 import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
@@ -10,16 +12,20 @@ import {
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
 import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
-import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from './ConfirmOrResetButtons'
+import { RedButton } from 'hexed-meadow-ui/layout/buttons'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
   const { placementReady, myStartZone } = useBgioG()
-  const { moves } = useBgioMoves()
-  const { deployUnits } = moves
+  const {
+    moves: { confirmPlacementReady, deployUnits, deconfirmPlacementReady },
+  } = useBgioMoves()
   const { placementUnits, editingBoardHexes } = usePlacementContext()
 
-  const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
     deployUnits(editingBoardHexes)
@@ -35,39 +41,51 @@ export const PlacementControls = () => {
   // once player has placed and confirmed, show waiting
   if (isReady) {
     return (
-      <StyledPlacementControlsWrapper>
-        <StyledControlsHeaderH2>
-          Waiting for opponents to finish placing armies...
-        </StyledControlsHeaderH2>
-      </StyledPlacementControlsWrapper>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <StyledControlsHeaderH2>
+            Waiting for opponents to finish placing armies...
+          </StyledControlsHeaderH2>
+          <StyledButtonWrapper>
+            <RedButton onClick={() => deconfirmPlacementReady({ playerID })}>
+              Wait, go back!
+            </RedButton>
+          </StyledButtonWrapper>
+        </motion.div>
+      </AnimatePresence>
     )
   } else {
     // return UI
     return (
-      <div>
-        <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-        {!isShowingConfirm ? (
-          <StyledControlsP>
-            Select your units and place them within your start zone. Once all
-            players are ready, the game will begin!
-          </StyledControlsP>
-        ) : (
-          <ConfirmReady
-            makeReady={makeReady}
-            isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
-            isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
-          />
-        )}
-        <PlacementUnitTiles />
-      </div>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
+          {!isShowingConfirm ? (
+            <StyledControlsP>
+              Select your units and place them within your start zone. Once all
+              players are ready, the game will begin!
+            </StyledControlsP>
+          ) : (
+            <ConfirmReady
+              makeReady={makeReady}
+              isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
+              isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
+            />
+          )}
+          <PlacementUnitTiles />
+        </motion.div>
+      </AnimatePresence>
     )
   }
 }
-const StyledPlacementControlsWrapper = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  color: var(--player-color);
-`
 
 // CONFIRM READY
 const ConfirmReady = ({
@@ -81,7 +99,7 @@ const ConfirmReady = ({
 }) => {
   const { onResetPlacementState } = usePlacementContext()
   return (
-    <>
+    <StyledConfirmDiv>
       {isNoMoreEmptyStartZoneHexes && (
         <StyledControlsP>Your start zone is full.</StyledControlsP>
       )}
@@ -98,10 +116,15 @@ const ConfirmReady = ({
         confirm={makeReady}
         reset={onResetPlacementState}
       />
-    </>
+    </StyledConfirmDiv>
   )
 }
-
+const StyledConfirmDiv = styled.div`
+  padding: 10px;
+  p {
+    margin: 5px 0;
+  }
+`
 // PLACEMENT UNIT TILES
 const PlacementUnitTiles = () => {
   const { inflatedPlacementUnits } = usePlacementContext()
@@ -120,10 +143,19 @@ const PlacementUnitTiles = () => {
     >
       <StyledControlsH3>Unplaced Units</StyledControlsH3>
       <StyledUl>
-        {inflatedPlacementUnits &&
-          inflatedPlacementUnits.map((unit) => (
-            <PlacementUnitTile key={unit.unitID} unit={unit} />
-          ))}
+        <AnimatePresence>
+          {inflatedPlacementUnits &&
+            inflatedPlacementUnits.map((unit) => (
+              <motion.li
+                key={unit.unitID}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <PlacementUnitTile key={unit.unitID} unit={unit} />
+              </motion.li>
+            ))}
+        </AnimatePresence>
       </StyledUl>
     </div>
   )
@@ -154,7 +186,7 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
     }
   }
   return (
-    <StyledPlacementTileLi
+    <StyledPlacementTileDiv
       key={unit.unitID}
       style={selectedStyle(unit.unitID)}
       onClick={onClick}
@@ -164,10 +196,10 @@ const PlacementUnitTile = ({ unit }: { unit: PlacementUnit }) => {
         playerID={unit.playerID}
       />
       <span>{unit.singleName}</span>
-    </StyledPlacementTileLi>
+    </StyledPlacementTileDiv>
   )
 }
-const StyledPlacementTileLi = styled.li`
+const StyledPlacementTileDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
