@@ -3,6 +3,7 @@ import { Hex, HexUtils } from 'react-hexgrid'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
 import {
   selectHexForUnit,
+  selectRevealedGameCard,
   selectUnitsForCard,
   selectUnrevealedGameCard,
 } from './selectors'
@@ -22,15 +23,32 @@ export const moveAction: Move<GameState> = {
     const currentMoveRange = G.gameUnits[unitID].moveRange
     const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
     const moveCost = HexUtils.distance(startHex as Hex, endHex)
-    // clone G
+    const revealedGameCard = selectRevealedGameCard(
+      Object.assign({}, G.orderMarkers),
+      [...G.armyCards],
+      G.currentOrderMarker,
+      ctx.currentPlayer
+    )
+    const movedUnitsCount = G.unitsMoved.length
+    const allowedMoveCount = revealedGameCard?.figures ?? 0
+    console.log('move report', {
+      movedUnitsCount,
+      allowedMoveCount,
+    })
+    //! EARLY OUTS
+    // DISALLOW - cannot move any more units
+    // if () {
+    //   console.error(`Attack action denied:no target`)
+    //   return
+    // }
+
+    // ALLOW
+    // make copies
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
-    // update moved units counter
-    const unitsMoved = [...G.unitsMoved]
-    if (!unitsMoved.includes(unitID)) {
-      unitsMoved.push(unitID)
-      G.unitsMoved = unitsMoved
-    }
+    // while making copies, update moved units counter
+    const unitsMoved = [...G.unitsMoved, unitID]
+
     // update unit position
     newBoardHexes[startHexID].occupyingUnitID = ''
     newBoardHexes[endHexID].occupyingUnitID = unitID
@@ -43,6 +61,7 @@ export const moveAction: Move<GameState> = {
       G.armyCards,
       G.currentOrderMarker
     )
+
     const currentTurnUnits = selectUnitsForCard(
       unrevealedGameCard?.gameCardID ?? '',
       G.gameUnits
@@ -53,10 +72,11 @@ export const moveAction: Move<GameState> = {
       const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)
       newGameUnits[unitID].moveRange = moveRange
     })
-    // Make the move
+    // update G
     if (isInSafeMoveRange) {
       G.boardHexes = { ...newBoardHexes }
       G.gameUnits = { ...newGameUnits }
+      G.unitsMoved = unitsMoved
     }
     return G
   },
