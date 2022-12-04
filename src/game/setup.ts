@@ -27,16 +27,16 @@ function playersStateWithPrePlacedOMs(): PlayersState {
       orderMarkers: {
         '0': 'p0_hs1185',
         '1': 'p0_hs1185',
-        '2': 'p0_hs1000',
-        X: 'p0_hs1000',
+        '2': 'p0_hs1185',
+        X: 'p0_hs1185',
       },
     },
     '1': {
       orderMarkers: {
         '0': 'p1_hs1008',
         '1': 'p1_hs1008',
-        '2': 'p1_hs1002',
-        X: 'p1_hs1002',
+        '2': 'p1_hs1008',
+        X: 'p1_hs1008',
       },
     },
   }
@@ -127,11 +127,10 @@ function armyCardsToGameArmyCardsForTest() {
   return hsCardsToArmyCards(coreHeroscapeCards)
     .filter(
       (c) =>
-        c.armyCardID === 'hs1000' ||
-        c.armyCardID === 'hs1002' ||
+        // c.armyCardID === 'hs1000' ||
+        // c.armyCardID === 'hs1002' ||
         // c.armyCardID === 'hs1003' ||
-        c.armyCardID === 'hs1008' ||
-        c.armyCardID === 'hs1185'
+        c.armyCardID === 'hs1008' || c.armyCardID === 'hs1185'
       // c.armyCardID === 'hs1014'
     )
     .map((card) => {
