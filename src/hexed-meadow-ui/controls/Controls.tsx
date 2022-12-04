@@ -1,14 +1,7 @@
 import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
 import React from 'react'
-import {
-  RopIdleControls,
-  RopMoveControls,
-  RopAttackControls,
-  PlacementControls,
-  PlaceOrderMarkersControls,
-} from './'
-import { Notifications } from './Notifications'
-
+import { PlacementControls, PlaceOrderMarkersControls } from './'
+import { RoundOfPlayControls } from './RoundOfPlayControls'
 export const Controls = () => {
   const { playerID } = useBgioClientInfo()
   const { ctx } = useBgioCtx()
@@ -17,8 +10,6 @@ export const Controls = () => {
     isOrderMarkerPhase,
     isPlacementPhase,
     isRoundOfPlayPhase,
-    isMyTurn,
-    isAttackingStage,
     isGameover,
   } = ctx
 
@@ -29,27 +20,7 @@ export const Controls = () => {
     return <PlaceOrderMarkersControls />
   }
   if (isRoundOfPlayPhase) {
-    if (!isMyTurn) {
-      return (
-        <>
-          <RopIdleControls />
-        </>
-      )
-    }
-    if (isMyTurn && !isAttackingStage) {
-      return (
-        <>
-          <RopMoveControls />
-        </>
-      )
-    }
-    if (isMyTurn && isAttackingStage) {
-      return (
-        <>
-          <RopAttackControls />
-        </>
-      )
-    }
+    return <RoundOfPlayControls />
   }
   if (isGameover) {
     const winnerID = gameover.winner

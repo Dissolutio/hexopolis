@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { usePlayContext } from '../contexts'
-import { useBgioG, useBgioMoves } from 'bgio-contexts'
+import { useBgioCtx, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
@@ -11,6 +11,33 @@ import {
   ConfirmOrResetButtons,
   StyledButtonWrapper,
 } from './ConfirmOrResetButtons'
+
+export const RoundOfPlayControls = () => {
+  const { ctx } = useBgioCtx()
+  const { isMyTurn, isAttackingStage } = ctx
+  if (!isMyTurn) {
+    return (
+      <>
+        <RopIdleControls />
+      </>
+    )
+  }
+  if (isMyTurn && !isAttackingStage) {
+    return (
+      <>
+        <RopMoveControls />
+      </>
+    )
+  }
+  if (isMyTurn && isAttackingStage) {
+    return (
+      <>
+        <RopAttackControls />
+      </>
+    )
+  }
+  return <></>
+}
 
 export const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
@@ -64,7 +91,8 @@ export const RopAttackControls = () => {
   const { endCurrentPlayerTurn } = moves
 
   const { revealedGameCard } = usePlayContext()
-
+  const attacksUsed = unitsAttacked.length
+  const attacksPossible = revealedGameCard?.figures ?? 0
   const handleEndTurnButtonClick = () => {
     endCurrentPlayerTurn()
   }
@@ -74,8 +102,7 @@ export const RopAttackControls = () => {
         revealedGameCard?.name ?? ''
       }`}</StyledControlsHeaderH2>
       <StyledControlsP>
-        You have used {unitsAttacked.length} / {revealedGameCard?.figures ?? 0}{' '}
-        attacks{' '}
+        You have used {attacksUsed} / {attacksPossible} attacks{' '}
       </StyledControlsP>
       <ConfirmOrResetButtons
         confirm={handleEndTurnButtonClick}
