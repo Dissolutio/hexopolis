@@ -10,11 +10,11 @@ export const UndoRedoButtons = () => {
     <>
       <button onClick={undo}>
         <HiOutlineArrowCircleLeft />
-        <span>UNDO</span>
+        <span>Undo</span>
       </button>
       <button onClick={redo}>
         <HiOutlineArrowCircleRight />
-        REDO
+        Redo
       </button>
     </>
   )

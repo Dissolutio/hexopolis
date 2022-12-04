@@ -89,6 +89,7 @@ function makeTestScenario(): GameState {
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
+    gameLog: [],
     armyCards,
     gameUnits,
     hexMap: hexagonMap.hexMap,

@@ -1,15 +1,43 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import { usePlayContext } from '../contexts'
-import { RopArmyCardsList } from './rop/RopArmyCardsList'
-import { useBgioG, useBgioMoves } from 'bgio-contexts'
+import { useBgioCtx, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
-import { StyledButtonWrapper } from './ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from './ConfirmOrResetButtons'
+
+export const RoundOfPlayControls = () => {
+  const { ctx } = useBgioCtx()
+  const { isMyTurn, isAttackingStage } = ctx
+  if (!isMyTurn) {
+    return (
+      <>
+        <RopIdleControls />
+      </>
+    )
+  }
+  if (isMyTurn && !isAttackingStage) {
+    return (
+      <>
+        <RopMoveControls />
+      </>
+    )
+  }
+  if (isMyTurn && isAttackingStage) {
+    return (
+      <>
+        <RopAttackControls />
+      </>
+    )
+  }
+  return <></>
+}
 
 export const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
@@ -53,7 +81,6 @@ export const RopMoveControls = () => {
         <button onClick={handleEndMovementClick}>END MOVE</button>
         <UndoRedoButtons />
       </StyledButtonWrapper>
-      <RopArmyCardsList />
     </div>
   )
 }
@@ -64,30 +91,24 @@ export const RopAttackControls = () => {
   const { endCurrentPlayerTurn } = moves
 
   const { revealedGameCard } = usePlayContext()
-
+  const attacksUsed = unitsAttacked.length
+  const attacksPossible = revealedGameCard?.figures ?? 0
   const handleEndTurnButtonClick = () => {
     endCurrentPlayerTurn()
   }
   return (
     <>
-      <h2>{`Your #${currentOrderMarker + 1}: ${
+      <StyledControlsHeaderH2>{`Your #${currentOrderMarker + 1}: ${
         revealedGameCard?.name ?? ''
-      }`}</h2>
-      <p>
-        You have used {unitsAttacked.length} / {revealedGameCard?.figures ?? 0}{' '}
-        attacks{' '}
-      </p>
-      <ButtonWrapper>
-        <button onClick={handleEndTurnButtonClick}>END TURN</button>
-      </ButtonWrapper>
-      <RopArmyCardsList />
+      }`}</StyledControlsHeaderH2>
+      <StyledControlsP>
+        You have used {attacksUsed} / {attacksPossible} attacks{' '}
+      </StyledControlsP>
+      <ConfirmOrResetButtons
+        confirm={handleEndTurnButtonClick}
+        confirmText={'End Turn'}
+        noResetButton
+      />
     </>
   )
 }
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  padding: 26px;
-`

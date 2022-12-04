@@ -1728,7 +1728,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     abilities: [
       {
         name: 'Stare of Store',
-        desc: 'Instead of attacking, choose any figure within 4 clear sight spaces of Sudema. Roll the 20-sided die. If the chosen figure is a Squad figure and you roll a 7 or higher, destroy it. If the chosen figure if a Hero figure and you roll a 17 or higher, destroy the chosen Hero.',
+        desc: 'Instead of attacking, choose any figure within 4 clear sight spaces of Sudema. Roll the 20-sided die. If the chosen figure is a Squad figure and you roll a 7 or higher, destroy it. If the chosen figure is a Hero figure and you roll a 17 or higher, destroy the chosen Hero.',
       },
     ],
   },

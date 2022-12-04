@@ -42,10 +42,6 @@ const PlacementContextProvider = ({
     placementReady,
   } = useBgioG()
   const isConfirmedReady = placementReady[playerID] === true
-  console.log(
-    '🚀 ~ file: placement-phase-context.tsx:38 ~ isConfirmedReady',
-    isConfirmedReady
-  )
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE

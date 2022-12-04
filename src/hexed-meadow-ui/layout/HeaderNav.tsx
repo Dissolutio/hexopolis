@@ -1,10 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
 import beesBigLogo from '../assets/beesBigLogo.png'
 import butterfliesLogo from '../assets/butterfliesLogo.png'
-import { isLocalApp } from 'app/constants'
 import { useBgioClientInfo } from 'bgio-contexts'
 
 export const HeaderNav = ({
@@ -19,9 +17,6 @@ export const HeaderNav = ({
         playerID={playerID}
         isLocalOrDemoGame={isLocalOrDemoGame}
       />
-      <Link to={'/help'}>Help</Link>
-      <Link to={'/rules'}>Rules</Link>
-      <Link to={'/feedback'}>Feedback</Link>
     </StyledNavbar>
   )
 }

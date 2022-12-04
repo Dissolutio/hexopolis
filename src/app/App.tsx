@@ -8,7 +8,6 @@ import { AuthProvider, useAuth } from 'hooks/useAuth'
 import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
 import { MultiplayerNav } from './MultiplayerNav'
 import { HexedMeadow } from 'game/game'
-import { FeedbackPage, HelpPage, RulesPage } from 'pages'
 import { isLocalApp, SERVER } from './constants'
 import { Board } from 'hexed-meadow-ui/Board'
 
@@ -82,9 +81,6 @@ export const App = () => {
                     </>
                   }
                 />
-                <Route path="/help" element={<HelpPage />} />
-                <Route path="/feedback" element={<FeedbackPage />} />
-                <Route path="/rules" element={<RulesPage />} />
               </Routes>
             </BrowserRouter>
           </MultiplayerLobbyProvider>
@@ -96,28 +92,16 @@ export const App = () => {
 
 const LocalApp = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <DemoGameClient
-                matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
-                playerID="0"
-              />
-              <DemoGameClient
-                matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
-                playerID="1"
-              />
-            </>
-          }
-        />
-        <Route path="/help" element={<HelpPage />} />
-        <Route path="/feedback" element={<FeedbackPage />} />
-        <Route path="/rules" element={<RulesPage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <DemoGameClient
+        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+        playerID="0"
+      />
+      <DemoGameClient
+        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+        playerID="1"
+      />
+    </>
   )
 }
 

@@ -15,6 +15,7 @@ export interface GameState {
   // rop game state below
   unitsMoved: string[]
   unitsAttacked: string[]
+  gameLog: string[]
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
