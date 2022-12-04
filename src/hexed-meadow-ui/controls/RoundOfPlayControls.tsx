@@ -1,8 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import { usePlayContext } from '../contexts'
-import { RopArmyCardsList } from './rop/RopArmyCardsList'
 import { useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import {
@@ -56,7 +54,6 @@ export const RopMoveControls = () => {
         <button onClick={handleEndMovementClick}>END MOVE</button>
         <UndoRedoButtons />
       </StyledButtonWrapper>
-      <RopArmyCardsList />
     </div>
   )
 }
@@ -85,14 +82,6 @@ export const RopAttackControls = () => {
         confirmText={'End Turn'}
         noResetButton
       />
-      <RopArmyCardsList />
     </>
   )
 }
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  padding: 26px;
-`

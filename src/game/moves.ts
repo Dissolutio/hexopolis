@@ -15,7 +15,7 @@ const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
 }
 // TODO: shall we mark this attack as unique, so react does not run it twice?
 const attackAction: Move<GameState> = (
-  { G, ctx, random },
+  { G, random },
   unit: GameUnit,
   defenderHex: BoardHex
 ) => {
