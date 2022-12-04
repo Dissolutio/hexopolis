@@ -6,19 +6,21 @@ import { useUIContext } from 'hexed-meadow-ui/contexts'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
-  console.log('🚀 ~ file: Notifications.tsx:8 ~ Notifications ~ toasts', toasts)
   const { gameLog } = useBgioG()
   const { startPause, endPause } = handlers
   const { indexOfLastShownToast, setIndexOfLastShownToast } = useUIContext()
+
+  // Effect: update toasts with all the latest game log entries
   useEffect(() => {
     if (gameLog.length > indexOfLastShownToast) {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
         const element = gameLog[i]
-        toast(element)
+        toast(element, { duration: 10000 })
       }
     }
     setIndexOfLastShownToast(gameLog.length)
   }, [gameLog, indexOfLastShownToast, setIndexOfLastShownToast, toasts.length])
+
   return (
     <StyledDiv onMouseEnter={startPause} onMouseLeave={endPause}>
       {toasts.map((toast) => {
