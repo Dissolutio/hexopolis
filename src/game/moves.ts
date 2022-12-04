@@ -13,6 +13,7 @@ const endCurrentMoveStage: Move<GameState> = ({ events }) => {
 const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
   events.endTurn()
 }
+// TODO: shall we mark this attack as unique, so react does not run it twice?
 const attackAction: Move<GameState> = (
   { G, ctx, random },
   unit: GameUnit,
@@ -32,19 +33,19 @@ const attackAction: Move<GameState> = (
   //! EARLY OUTS
   // DISALLOW - no target
   if (!defenderHex.occupyingUnitID) {
-    console.log(`no target`)
+    console.error(`Attack action denied:no target`)
     return
   }
   // DISALLOW - all attacks used
   const isEndAttacks = attacksLeft <= 0
   if (isEndAttacks) {
-    console.log(`all attacks used`)
+    console.error(`Attack action denied:all attacks used`)
     return
   }
   // DISALLOW - unit already attacked
   const isAlreadyAttacked = unitsAttacked.includes(unitID)
   if (isAlreadyAttacked) {
-    console.log(`unit already attacked`)
+    console.error(`Attack action denied:unit already attacked`)
     return
   }
   // DISALLOW - attack must be used by a moved unit
@@ -53,14 +54,14 @@ const attackAction: Move<GameState> = (
     attacksLeft > unitsMoved.filter((id) => !unitsAttacked.includes(id)).length
   const isUsableAttack = isMovedUnit || isAttackAvailableForUnmovedUnitToUse
   if (!isUsableAttack) {
-    console.log(`attack must be used by a moved unit`)
+    console.error(`Attack action denied:attack must be used by a moved unit`)
     return
   }
   // DISALLOW - defender is out of range
   const isInRange =
     HexUtils.distance(attackerHex as Hex, defenderHex) <= unitRange
   if (!isInRange) {
-    console.log(`defender is out of range`)
+    console.error(`Attack action denied:defender is out of range`)
     return
   }
 

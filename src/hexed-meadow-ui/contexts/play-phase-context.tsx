@@ -162,6 +162,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
           HexUtils.distance(startHex as BoardHex, boardHex) <=
             gameCard?.range ?? false
         if (isInRange) {
+          // TODO: shall we mark this attack as unique, so react does not run it twice?
           attackAction(selectedUnit, boardHexes[sourceHex.id])
         }
       }
