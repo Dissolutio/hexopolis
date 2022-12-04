@@ -15,6 +15,7 @@ const BgioGContext = React.createContext<
       myStartZone: string[]
       myUnits: GameUnit[]
       myOrderMarkers: PlayerOrderMarkers
+      currentRoundText: string
     })
   | undefined
 >(undefined)
@@ -25,9 +26,17 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const myStartZone: string[] = G.startZones[playerID]
   const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
   const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers
+  const currentRoundText = `${G.currentRound + 1}`
   return (
     <BgioGContext.Provider
-      value={{ ...G, myCards, myStartZone, myUnits, myOrderMarkers }}
+      value={{
+        ...G,
+        myCards,
+        myStartZone,
+        myUnits,
+        myOrderMarkers,
+        currentRoundText,
+      }}
     >
       {children}
     </BgioGContext.Provider>

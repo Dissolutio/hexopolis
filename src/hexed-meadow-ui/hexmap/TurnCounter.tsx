@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const TurnCounter = () => {
-  const { currentRound, currentOrderMarker } = useBgioG()
+  const { currentRoundText, currentOrderMarker } = useBgioG()
   const { ctx } = useBgioCtx()
 
   const { isPlacementPhase, isOrderMarkerPhase, isRoundOfPlayPhase } = ctx
@@ -14,7 +14,7 @@ export const TurnCounter = () => {
       {isOrderMarkerPhase && <div>Phase: Place Order Markers</div>}
       {isRoundOfPlayPhase && (
         <>
-          <div>Round: {currentRound + 1}</div>
+          <div>Round: {currentRoundText}</div>
           <div>Order marker: {currentOrderMarker + 1}</div>
         </>
       )}
