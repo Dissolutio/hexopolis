@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { usePlayContext } from '../contexts'
+import { usePlayContext, useUIContext } from '../contexts'
 import { useBgioCtx, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import {
@@ -58,12 +58,14 @@ export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
   const { revealedGameCard } = usePlayContext()
+  const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
   const { endCurrentMoveStage } = moves
 
   // handlers
   const handleEndMovementClick = () => {
+    setSelectedUnitID('')
     endCurrentMoveStage()
   }
   return (

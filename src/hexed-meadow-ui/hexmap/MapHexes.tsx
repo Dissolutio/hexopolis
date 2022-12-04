@@ -27,10 +27,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
     onClickTurnHex,
-    selectedGameCardUnits,
     selectedUnit,
     revealedGameCard,
     revealedGameCardUnits,
+    revealedGameCardUnitIDs,
   } = usePlayContext()
 
   const { isMyTurn, isPlacementPhase, isRoundOfPlayPhase, isAttackingStage } =
@@ -60,8 +60,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       return hex.id === selectedMapHex
     }
     const isSelectedCard = (hex: BoardHex) => {
-      const unitIDs = (selectedGameCardUnits ?? []).map((u) => u.unitID)
-      return unitIDs.includes(hex.occupyingUnitID)
+      return revealedGameCardUnitIDs.includes(hex.occupyingUnitID)
     }
     const isSelectedUnitHex = (hex: BoardHex) => {
       return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID

@@ -25,6 +25,7 @@ type PlayContextValue = {
   selectedUnit: GameUnit
   revealedGameCard: GameArmyCard | undefined
   revealedGameCardUnits: GameUnit[]
+  revealedGameCardUnitIDs: string[]
   selectedGameCardUnits: GameUnit[]
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
@@ -42,8 +43,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   } = useBgioG()
   const { ctx } = useBgioCtx()
   const { moves } = useBgioMoves()
-  const { selectedUnitID, setSelectedUnitID, selectedGameCardID } =
-    useUIContext()
+  const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const { currentPlayer, isMyTurn, isAttackingStage } = ctx
   const { moveAction, attackAction } = moves
 
@@ -59,6 +59,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   )
   const revealedGameCardUnits = Object.values(gameUnits).filter(
     (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
+  )
+  const revealedGameCardUnitIDs = (revealedGameCardUnits ?? []).map(
+    (u) => u.unitID
   )
   const selectedGameCardUnits = Object.values(gameUnits).filter(
     (unit: GameUnit) => unit.gameCardID === currentTurnGameCardID
@@ -76,10 +79,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
 
     // MOVE STAGE
     if (isMyTurn && !isAttackingStage) {
-      const moveRange = selectedUnit?.moveRange ?? generateBlankMoveRange()
-      const { safe, engage, disengage } = moveRange
+      const selectedUnitMoveRange =
+        selectedUnit?.moveRange ?? generateBlankMoveRange()
+      const { safe, engage, disengage } = selectedUnitMoveRange
       const allMoves = [safe, disengage, engage].flat()
-      const isInMoveRange = allMoves.includes(sourceHex.id)
+      const isInMoveRangeOfSelectedUnit = allMoves.includes(sourceHex.id)
       // select unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
@@ -89,7 +93,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         setSelectedUnitID('')
       }
       // move selected unit
-      if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
+      if (selectedUnitID && isInMoveRangeOfSelectedUnit && !isEndHexOccupied) {
         moveAction(selectedUnit, boardHexes[sourceHex.id])
       }
     }
@@ -133,6 +137,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         selectedUnit,
         revealedGameCard,
         revealedGameCardUnits,
+        revealedGameCardUnitIDs,
         // HANDLERS
         onClickTurnHex,
       }}
