@@ -1,14 +1,15 @@
 import styled from 'styled-components'
 import toast, { useToaster } from 'react-hot-toast/headless'
 import { useBgioG } from 'bgio-contexts'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useUIContext } from 'hexed-meadow-ui/contexts'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
   console.log('🚀 ~ file: Notifications.tsx:8 ~ Notifications ~ toasts', toasts)
   const { gameLog } = useBgioG()
   const { startPause, endPause } = handlers
-  const [indexOfLastShownToast, setIndexOfLastShownToast] = useState(0)
+  const { indexOfLastShownToast, setIndexOfLastShownToast } = useUIContext()
   useEffect(() => {
     if (gameLog.length > indexOfLastShownToast) {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
@@ -17,7 +18,7 @@ export const Notifications = () => {
       }
     }
     setIndexOfLastShownToast(gameLog.length)
-  }, [gameLog, indexOfLastShownToast, toasts.length])
+  }, [gameLog, indexOfLastShownToast, setIndexOfLastShownToast, toasts.length])
   return (
     <StyledDiv onMouseEnter={startPause} onMouseLeave={endPause}>
       {toasts.map((toast) => {
