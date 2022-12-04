@@ -24,30 +24,36 @@ export const moveAction: Move<GameState> = {
     const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
     const moveCost = HexUtils.distance(startHex as Hex, endHex)
     const revealedGameCard = selectRevealedGameCard(
-      Object.assign({}, G.orderMarkers),
-      [...G.armyCards],
+      G.orderMarkers,
+      G.armyCards,
       G.currentOrderMarker,
       ctx.currentPlayer
-    )
+    ) // revealedGameCard is a proxy object
     const movedUnitsCount = G.unitsMoved.length
     const allowedMoveCount = revealedGameCard?.figures ?? 0
-    console.log('move report', {
-      movedUnitsCount,
-      allowedMoveCount,
-    })
+
+    const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
+    const isMovePointsAvailable = movePoints > 0
+    const isUnitMoved = G.unitsMoved.includes(unitID)
+    const isUnitCanMove =
+      isAvailableMoveToBeUsed || (isMovePointsAvailable && isUnitMoved)
+    const isDisallowedBecauseMaxUnitsMoved =
+      !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
-    // DISALLOW - cannot move any more units
-    // if () {
-    //   console.error(`Attack action denied:no target`)
-    //   return
-    // }
+    // DISALLOW - max units moved, cannot move any NEW units, and this unit would be a newly moved unit
+    if (isDisallowedBecauseMaxUnitsMoved) {
+      console.error(
+        `Move action denied:no new units can move, max units have been moved`
+      )
+      return
+    }
 
     // ALLOW
     // make copies
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     // while making copies, update moved units counter
-    const unitsMoved = [...G.unitsMoved, unitID]
+    const newUnitsMoved = [...G.unitsMoved, unitID]
 
     // update unit position
     newBoardHexes[startHexID].occupyingUnitID = ''
@@ -76,7 +82,7 @@ export const moveAction: Move<GameState> = {
     if (isInSafeMoveRange) {
       G.boardHexes = { ...newBoardHexes }
       G.gameUnits = { ...newGameUnits }
-      G.unitsMoved = unitsMoved
+      G.unitsMoved = newUnitsMoved
     }
     return G
   },
