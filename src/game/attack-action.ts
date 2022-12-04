@@ -3,8 +3,8 @@ import { Hex, HexUtils } from 'react-hexgrid'
 
 import { selectHexForUnit, selectGameCardByID } from './selectors'
 import { GameState, BoardHex, GameUnit } from './types'
+import { encodeGameLogMessage } from './gamelog'
 
-// TODO: shall we mark this attack as unique, so react does not run it twice?
 export const attackAction: Move<GameState> = (
   { G, random },
   unit: GameUnit,
@@ -20,10 +20,10 @@ export const attackAction: Move<GameState> = (
   const attacksAllowed = unitGameCard?.figures ?? 0
   const attacksLeft = attacksAllowed - unitsAttacked.length
   const attackerHex = selectHexForUnit(unitID, G.boardHexes)
-
+  const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } = defenderHex
   //! EARLY OUTS
   // DISALLOW - no target
-  if (!defenderHex.occupyingUnitID) {
+  if (!defenderHexUnitID) {
     console.error(`Attack action denied:no target`)
     return
   }
@@ -58,35 +58,41 @@ export const attackAction: Move<GameState> = (
   }
 
   // ALLOW
-  const attack = unitGameCard?.attack ?? 0
-  const defenderGameUnit = G.gameUnits[defenderHex.occupyingUnitID]
+  const attackRolled = unitGameCard?.attack ?? 0
+  const defenderGameUnit = G.gameUnits[defenderHexUnitID]
   const defenderGameCard = selectGameCardByID(
     G.armyCards,
     defenderGameUnit.gameCardID
   )
-  const defenderName = defenderGameCard?.name ?? ''
-  const defense = defenderGameCard?.defense ?? 0
-  const defenderLife = defenderGameCard?.life ?? 0
-  const attackRoll = random?.Die(6, attack) ?? []
+  const defenderUnitName = defenderGameCard?.name ?? ''
+  const defenseRolled = defenderGameCard?.defense ?? 0
+  const defenderInitialLife = defenderGameCard?.life ?? 0
+  const attackRoll = random?.Die(6, attackRolled) ?? []
   const skulls = attackRoll.filter((n) => n <= 3).length
-  const defenseRoll = random?.Die(6, defense) ?? []
+  const defenseRoll = random?.Die(6, defenseRolled) ?? []
   const shields = defenseRoll.filter((n) => n === 4 || n === 5).length
   const wounds = Math.max(skulls - shields, 0)
   const isHit = wounds > 0
-  const isFatal = wounds >= defenderLife
-  const gameLogMessage = `${unitName} attacked ${defenderName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
+  const isFatal = wounds >= defenderInitialLife
+  const gameLogForThisAttack = encodeGameLogMessage({
+    type: 'attack',
+    unitID: unitID,
+    targetHexID: defenderHexID,
+  })
+  const gameLogMessage = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
 
   // deal damage
   if (isHit && !isFatal) {
     const gameCardIndex = G.armyCards.findIndex(
       (card) => card?.gameCardID === defenderGameUnit.gameCardID
     )
-    G.armyCards[gameCardIndex].life = defenderLife - wounds
+    // TODO this should track some kind of damage history, not adjust life directly
+    G.armyCards[gameCardIndex].life = defenderInitialLife - wounds
   }
   // kill unit, clear hex
   if (isFatal) {
     delete G.gameUnits[defenderGameUnit.unitID]
-    G.boardHexes[defenderHex.id].occupyingUnitID = ''
+    G.boardHexes[defenderHexID].occupyingUnitID = ''
   }
   // update units attacked
   unitsAttacked.push(unitID)
