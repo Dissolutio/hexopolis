@@ -12,6 +12,7 @@ export const attackAction: Move<GameState> = (
 ) => {
   const { unitID } = unit
   const unitGameCard = selectGameCardByID(G.armyCards, unit.gameCardID)
+  const { currentRound, currentOrderMarker } = G
   const unitName = unitGameCard?.name ?? ''
   const unitRange = unitGameCard?.range ?? 0
   const unitsMoved = [...G.unitsMoved]
@@ -64,7 +65,6 @@ export const attackAction: Move<GameState> = (
     G.armyCards,
     defenderGameUnit.gameCardID
   )
-  const defenderUnitName = defenderGameCard?.name ?? ''
   const defenseRolled = defenderGameCard?.defense ?? 0
   const defenderInitialLife = defenderGameCard?.life ?? 0
   const attackRoll = random?.Die(6, attackRolled) ?? []
@@ -74,19 +74,31 @@ export const attackAction: Move<GameState> = (
   const wounds = Math.max(skulls - shields, 0)
   const isHit = wounds > 0
   const isFatal = wounds >= defenderInitialLife
+  const defenderUnitName = defenderGameCard?.name ?? ''
+  const indexOfThisAttack = unitsAttacked.length
+  const attackId = `r${currentRound}:om${currentOrderMarker}:${unitID}:a${indexOfThisAttack}`
+  // const gameLogHumanFriendly = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
   const gameLogForThisAttack = encodeGameLogMessage({
     type: 'attack',
+    id: attackId,
     unitID: unitID,
+    unitName,
     targetHexID: defenderHexID,
+    defenderUnitName,
+    attackRolled,
+    defenseRolled,
+    skulls,
+    shields,
+    wounds,
+    isFatal,
   })
-  const gameLogMessage = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
 
   // deal damage
   if (isHit && !isFatal) {
     const gameCardIndex = G.armyCards.findIndex(
       (card) => card?.gameCardID === defenderGameUnit.gameCardID
     )
-    // TODO this should track some kind of damage history, not adjust life directly
+    // TODO this should track some kind of damage history AKA card.wounds or unit.wounds, not adjust life directly
     G.armyCards[gameCardIndex].life = defenderInitialLife - wounds
   }
   // kill unit, clear hex
@@ -98,5 +110,5 @@ export const attackAction: Move<GameState> = (
   unitsAttacked.push(unitID)
   G.unitsAttacked = unitsAttacked
   // update game log
-  G.gameLog = [...G.gameLog, gameLogMessage]
+  G.gameLog = [...G.gameLog, gameLogForThisAttack]
 }

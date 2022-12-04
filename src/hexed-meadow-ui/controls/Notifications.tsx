@@ -3,6 +3,7 @@ import toast, { useToaster } from 'react-hot-toast/headless'
 import { useBgioG } from 'bgio-contexts'
 import { useEffect } from 'react'
 import { useUIContext } from 'hexed-meadow-ui/contexts'
+import { decodeGameLogMessage } from 'game/gamelog'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
@@ -14,12 +15,23 @@ export const Notifications = () => {
   useEffect(() => {
     if (gameLog.length > indexOfLastShownToast) {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
-        const element = gameLog[i]
-        toast(element, { duration: 10000 })
+        const gameLogString = gameLog[i]
+        const gameLogMessage = decodeGameLogMessage(gameLogString)
+        toast(gameLogMessage?.msg ?? '', { duration: 10000 })
       }
     }
     setIndexOfLastShownToast(gameLog.length)
   }, [gameLog, indexOfLastShownToast, setIndexOfLastShownToast, toasts.length])
+
+  // UNCOMMENT THIS FOR DEBUGGING: This will show all the game log messages from G
+  // return (
+  //   <StyledDiv onMouseEnter={startPause} onMouseLeave={endPause}>
+  //     {gameLogMessages.map((gameLogObj) => {
+  //       if (!gameLogObj) return null
+  //       return <div key={gameLogObj.id}>{gameLogObj.msg}</div>
+  //     })}
+  //   </StyledDiv>
+  // )
 
   return (
     <StyledDiv onMouseEnter={startPause} onMouseLeave={endPause}>
