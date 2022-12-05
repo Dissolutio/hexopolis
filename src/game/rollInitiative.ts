@@ -32,12 +32,13 @@ function rollsToInitiative(
     return [...initiative, curr.playerID]
   }
 }
-function genRolls(players: string[]) {
+function genRolls(players: string[]): Roll[] {
   const rolls = players.map(function (playerID) {
     return { playerID: playerID, roll: rollDie(20) }
   })
   return rolls.sort(highToLow)
 }
+
 function highToLow(a: Roll, b: Roll) {
   if (a.roll > b.roll) {
     return -1

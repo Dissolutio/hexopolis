@@ -163,16 +163,33 @@ export const OMButtonList = ({
   toBePlacedOrderMarkers: string[]
   extraButton?: JSX.Element
 }) => {
+  const { playerID } = useBgioClientInfo()
+  const { orderMarkersReady } = useBgioG()
+  const isReady = orderMarkersReady[playerID] === true
+  const onClick = (om: string) => {
+    selectOrderMarker(om)
+  }
   return (
     <AnimatePresence>
       <StyledOrderMarkersUl>
         {toBePlacedOrderMarkers.map((om) => (
-          <OMButton
+          <motion.li
             key={om}
-            om={om}
-            activeMarker={activeMarker}
-            selectOrderMarker={selectOrderMarker}
-          ></OMButton>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <button
+              disabled={isReady}
+              onClick={() => onClick(om)}
+              style={{
+                ...selectedOrderMarkerStyle(activeMarker, om),
+                ...orderMarkerButtonStyle,
+              }}
+            >
+              {omToString(om)}
+            </button>
+          </motion.li>
         ))}
         {extraButton}
       </StyledOrderMarkersUl>
@@ -189,37 +206,3 @@ export const StyledOrderMarkersUl = styled.ul`
   list-style-type: none;
   font-size: 1rem;
 `
-const OMButton = ({
-  om,
-  activeMarker,
-  selectOrderMarker,
-}: {
-  om: string
-  activeMarker: string
-  selectOrderMarker: (om: string) => void
-}) => {
-  const { playerID } = useBgioClientInfo()
-  const { orderMarkersReady } = useBgioG()
-  const isReady = orderMarkersReady[playerID] === true
-  const onClick = () => {
-    selectOrderMarker(om)
-  }
-  return (
-    <motion.li
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <button
-        disabled={isReady}
-        onClick={onClick}
-        style={{
-          ...selectedOrderMarkerStyle(activeMarker, om),
-          ...orderMarkerButtonStyle,
-        }}
-      >
-        {omToString(om)}
-      </button>
-    </motion.li>
-  )
-}

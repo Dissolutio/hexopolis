@@ -33,10 +33,7 @@ export const moveAction: Move<GameState> = {
     const allowedMoveCount = revealedGameCard?.figures ?? 0
 
     const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
-    const isMovePointsAvailable = movePoints > 0
     const isUnitMoved = G.unitsMoved.includes(unitID)
-    const isUnitCanMove =
-      isAvailableMoveToBeUsed || (isMovePointsAvailable && isUnitMoved)
     const isDisallowedBecauseMaxUnitsMoved =
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
