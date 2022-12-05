@@ -25,7 +25,7 @@ type PlacementContextValue = {
   onResetPlacementState: () => void
 }
 
-type DeploymentProposition = { [boardHexId: string]: string }
+export type DeploymentProposition = { [boardHexId: string]: string }
 
 const PlacementContextProvider = ({
   children,

@@ -158,5 +158,8 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
+    filter: drop-shadow(10px 10px 9px #801d22)
+      drop-shadow(-10px -10px 9px #801d22) drop-shadow(10px -10px 9px #801d22)
+      drop-shadow(-10px 10px 9px #801d22);
   }
 `
