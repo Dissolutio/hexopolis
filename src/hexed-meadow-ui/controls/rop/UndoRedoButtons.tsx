@@ -3,11 +3,12 @@ import {
   HiOutlineArrowCircleLeft,
   HiOutlineArrowCircleRight,
 } from 'react-icons/hi'
+import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 
 export const UndoRedoButtons = () => {
   const { undo, redo } = useBgioMoves()
   return (
-    <>
+    <StyledButtonWrapper>
       <button onClick={undo}>
         <HiOutlineArrowCircleLeft />
         <span>Undo</span>
@@ -16,6 +17,6 @@ export const UndoRedoButtons = () => {
         <HiOutlineArrowCircleRight />
         Redo
       </button>
-    </>
+    </StyledButtonWrapper>
   )
 }

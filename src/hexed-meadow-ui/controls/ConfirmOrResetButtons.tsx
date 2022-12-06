@@ -2,23 +2,31 @@ import { GreenButton, RedButton } from 'hexed-meadow-ui/layout/buttons'
 import styled from 'styled-components'
 
 type ConfirmOrResetButtonsProps = {
-  confirm: () => void
-  reset?: () => void
-  noResetButton?: boolean
+  confirm?: () => void
   confirmText?: string
+  reset?: () => void
+  resetText?: string
+  noResetButton?: boolean
+  noConfirmButton?: boolean
 }
 export const ConfirmOrResetButtons = ({
   confirm,
-  reset,
-  noResetButton,
   confirmText,
+  noConfirmButton,
+  reset,
+  resetText,
+  noResetButton,
 }: ConfirmOrResetButtonsProps) => {
   return (
     <StyledButtonWrapper>
-      <GreenButton onClick={confirm}>
-        {confirmText ? confirmText : 'Confirm'}
-      </GreenButton>
-      {noResetButton ? null : <RedButton onClick={reset}>Reset</RedButton>}
+      {noConfirmButton ? null : (
+        <GreenButton onClick={confirm}>
+          {confirmText ? confirmText : 'Confirm'}
+        </GreenButton>
+      )}
+      {noResetButton ? null : (
+        <RedButton onClick={reset}>{resetText ? resetText : 'Reset'}</RedButton>
+      )}
     </StyledButtonWrapper>
   )
 }

@@ -61,7 +61,10 @@ export const RopMoveControls = () => {
   const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
-  const initialCountOfUnitsAvailableToMove = revealedGameCardUnitIDs.length
+  const unitsAliveCount = revealedGameCardUnitIDs.length
+  const movesAvailable =
+    Math.min(allowedMoveCount, unitsAliveCount) - movedUnitsCount
+  const isAllMovesUsed = movesAvailable <= 0
   const { endCurrentMoveStage } = moves
 
   // handlers
@@ -79,40 +82,91 @@ export const RopMoveControls = () => {
         }[currentOrderMarker]
       }: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
       <StyledControlsP>
-        You have used {movedUnitsCount} / {allowedMoveCount} moves
+        You have used {movedUnitsCount} /{' '}
+        {Math.min(allowedMoveCount, unitsAliveCount)} moves
       </StyledControlsP>
-      <StyledButtonWrapper>
-        <button onClick={handleEndMovementClick}>END MOVE</button>
-        <UndoRedoButtons />
-      </StyledButtonWrapper>
+
+      <UndoRedoButtons />
+      {isAllMovesUsed ? (
+        <ConfirmOrResetButtons
+          confirm={handleEndMovementClick}
+          confirmText={'End move, begin attack'}
+          noResetButton
+        />
+      ) : (
+        <ConfirmOrResetButtons
+          reset={handleEndMovementClick}
+          resetText={`End Move, skip ${movesAvailable} available move${
+            movesAvailable > 1 ? 's' : ''
+          }, begin attack`}
+          noConfirmButton
+        />
+      )}
     </div>
   )
 }
 
 export const RopAttackControls = () => {
-  const { unitsAttacked, currentOrderMarker } = useBgioG()
+  const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
   const { endCurrentPlayerTurn } = moves
 
-  const { revealedGameCard } = usePlayContext()
+  const {
+    revealedGameCard,
+    countOfRevealedGameCardUnitsWithTargetsInRange,
+    freeAttacksAvailable,
+  } = usePlayContext()
+  const attacksAllowed = revealedGameCard?.figures ?? 0
+  const isLessUnitsWithTargetsThanNumberOfAttacks =
+    countOfRevealedGameCardUnitsWithTargetsInRange < attacksAllowed
   const attacksUsed = unitsAttacked.length
-  const attacksPossible = revealedGameCard?.figures ?? 0
   const handleEndTurnButtonClick = () => {
     endCurrentPlayerTurn()
   }
+  const maxAttacks = isLessUnitsWithTargetsThanNumberOfAttacks
+    ? countOfRevealedGameCardUnitsWithTargetsInRange
+    : attacksAllowed
+  const attacksAvailable = maxAttacks - attacksUsed
+  const isAllAttacksUsed = attacksAvailable <= 0
   return (
     <>
       <StyledControlsHeaderH2>{`Your #${currentOrderMarker + 1}: ${
         revealedGameCard?.name ?? ''
       }`}</StyledControlsHeaderH2>
+
+      {attacksAvailable <= 0 && (
+        <StyledControlsP>
+          You now have no units with targets in range
+        </StyledControlsP>
+      )}
+
       <StyledControlsP>
-        You have used {attacksUsed} / {attacksPossible} attacks{' '}
+        You have used {attacksUsed} / {attacksAllowed} attacks allowed
       </StyledControlsP>
-      <ConfirmOrResetButtons
-        confirm={handleEndTurnButtonClick}
-        confirmText={'End Turn'}
-        noResetButton
-      />
+
+      <StyledControlsP style={{ marginBottom: '60px' }}>
+        {`You moved ${uniqUnitsMoved.length} unit${
+          uniqUnitsMoved.length > 1 ? 's' : ''
+        }, and have ${freeAttacksAvailable} attack${
+          freeAttacksAvailable > 1 ? 's' : ''
+        } available for unmoved units`}
+      </StyledControlsP>
+
+      {isAllAttacksUsed ? (
+        <ConfirmOrResetButtons
+          confirm={handleEndTurnButtonClick}
+          confirmText={'End Turn'}
+          noResetButton
+        />
+      ) : (
+        <ConfirmOrResetButtons
+          reset={handleEndTurnButtonClick}
+          resetText={`End Turn, skip my ${attacksAvailable} attack${
+            attacksAvailable > 1 ? 's' : ''
+          }`}
+          noConfirmButton
+        />
+      )}
     </>
   )
 }

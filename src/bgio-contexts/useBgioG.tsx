@@ -4,6 +4,7 @@ import {
   GameUnit,
   PlayerOrderMarkers,
 } from 'game/types'
+import { uniq } from 'lodash'
 import * as React from 'react'
 import { useBgioClientInfo } from './useBgioClientInfo'
 
@@ -16,6 +17,7 @@ const BgioGContext = React.createContext<
       myUnits: GameUnit[]
       myOrderMarkers: PlayerOrderMarkers
       currentRoundText: string
+      uniqUnitsMoved: string[]
     })
   | undefined
 >(undefined)
@@ -27,6 +29,7 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
   const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers
   const currentRoundText = `${G.currentRound + 1}`
+  const uniqUnitsMoved = uniq(G.unitsMoved)
   return (
     <BgioGContext.Provider
       value={{
@@ -36,6 +39,7 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
         myUnits,
         myOrderMarkers,
         currentRoundText,
+        uniqUnitsMoved,
       }}
     >
       {children}

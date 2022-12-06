@@ -133,10 +133,9 @@ export function calcRopHexClassNames({
     // Highlight targetable enemy units
     const endHexUnitID = hex.occupyingUnitID
     const isEndHexOccupied = Boolean(endHexUnitID)
-    const endHexUnit = { ...gameUnits[endHexUnitID] }
-    const endHexUnitPlayerID = endHexUnit.playerID
+    const endHexUnitPlayerID = gameUnits[endHexUnitID]?.playerID
     const isEndHexEnemyOccupied =
-      isEndHexOccupied && endHexUnitPlayerID !== playerID
+      isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
     // If unit selected, hex is enemy occupied...
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)

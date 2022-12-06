@@ -61,7 +61,7 @@ export const decodeGameLogMessage = (
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
-        const attackMsgText = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
+        const attackMsgText = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
         return {
           type,
           id,
