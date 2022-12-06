@@ -40,7 +40,6 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   svg g polygon {
     stroke: var(--white);
     stroke-width: 0.1;
-    fill-opacity: 0;
     transition: fill-opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out,
       stroke 0.2s ease-in-out;
   }
