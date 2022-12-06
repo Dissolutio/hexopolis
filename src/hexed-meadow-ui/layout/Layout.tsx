@@ -31,7 +31,7 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   // SET CSS VARS
   --player-color: ${(props) => props.theme.playerColor};
   --player-bg: ${(props) => playerIdsTContourBackgroundFile[props.playerID]};
-  --navbar-height: 46px;
+  --navbar-height: 30px;
   --navbar-logo-height: 32px;
 
   position: relative;
