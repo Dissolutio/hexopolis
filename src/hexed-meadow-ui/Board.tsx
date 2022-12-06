@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ThemeProvider } from 'styled-components'
 import { BoardProps } from 'boardgame.io/react'
 import {
@@ -54,46 +54,51 @@ export const Board = ({
 }: MyGameProps) => {
   const isLocalOrDemoGame =
     matchID === specialMatchIdToTellHeaderNavThisMatchIsLocal
+
   return (
-    <ThemeProvider theme={theme(playerID ?? '')}>
-      <BgioClientInfoProvider
-        log={log}
-        playerID={playerID || ''}
-        matchID={matchID}
-        matchData={matchData}
-        credentials={credentials || ''}
-        isMultiplayer={isMultiplayer}
-        isConnected={isConnected}
-        isActive={isActive}
-      >
-        <BgioGProvider G={G}>
-          <BgioCtxProvider ctx={ctx}>
-            <BgioMovesProvider moves={moves} undo={undo} redo={redo}>
-              <BgioEventsProvider reset={reset} events={events}>
-                <BgioChatProvider
-                  chatMessages={chatMessages}
-                  sendChatMessage={sendChatMessage}
-                >
-                  <MapContextProvider>
-                    {/* UI Context is consumed by PlacementContext and PlayContext */}
-                    <UIContextProvider>
-                      <PlacementContextProvider>
-                        <PlayContextProvider>
-                          <Layout>
-                            <HeaderNav isLocalOrDemoGame={isLocalOrDemoGame} />
-                            <MapDisplay />
-                            <Controls />
-                          </Layout>
-                        </PlayContextProvider>
-                      </PlacementContextProvider>
-                    </UIContextProvider>
-                  </MapContextProvider>
-                </BgioChatProvider>
-              </BgioEventsProvider>
-            </BgioMovesProvider>
-          </BgioCtxProvider>
-        </BgioGProvider>
-      </BgioClientInfoProvider>
-    </ThemeProvider>
+    <>
+      <ThemeProvider theme={theme(playerID ?? '')}>
+        <BgioClientInfoProvider
+          log={log}
+          playerID={playerID || ''}
+          matchID={matchID}
+          matchData={matchData}
+          credentials={credentials || ''}
+          isMultiplayer={isMultiplayer}
+          isConnected={isConnected}
+          isActive={isActive}
+        >
+          <BgioGProvider G={G}>
+            <BgioCtxProvider ctx={ctx}>
+              <BgioMovesProvider moves={moves} undo={undo} redo={redo}>
+                <BgioEventsProvider reset={reset} events={events}>
+                  <BgioChatProvider
+                    chatMessages={chatMessages}
+                    sendChatMessage={sendChatMessage}
+                  >
+                    <MapContextProvider>
+                      {/* UI Context is consumed by PlacementContext and PlayContext */}
+                      <UIContextProvider>
+                        <PlacementContextProvider>
+                          <PlayContextProvider>
+                            <Layout>
+                              <HeaderNav
+                                isLocalOrDemoGame={isLocalOrDemoGame}
+                              />
+                              <MapDisplay />
+                              <Controls />
+                            </Layout>
+                          </PlayContextProvider>
+                        </PlacementContextProvider>
+                      </UIContextProvider>
+                    </MapContextProvider>
+                  </BgioChatProvider>
+                </BgioEventsProvider>
+              </BgioMovesProvider>
+            </BgioCtxProvider>
+          </BgioGProvider>
+        </BgioClientInfoProvider>
+      </ThemeProvider>
+    </>
   )
 }

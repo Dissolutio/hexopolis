@@ -10,11 +10,14 @@ const UIContext = React.createContext<
       setSelectedUnitID: React.Dispatch<React.SetStateAction<string>>
       selectedGameCardID: string
       setSelectedGameCardID: React.Dispatch<React.SetStateAction<string>>
+      indexOfLastShownToast: number
+      setIndexOfLastShownToast: React.Dispatch<React.SetStateAction<number>>
     }
   | undefined
 >(undefined)
 
 export function UIContextProvider({ children }: UIContextProviderProps) {
+  const [indexOfLastShownToast, setIndexOfLastShownToast] = React.useState(0)
   const [selectedUnitID, setSelectedUnitID] = React.useState('')
   const [selectedGameCardID, setSelectedGameCardID] = React.useState('')
   return (
@@ -24,6 +27,8 @@ export function UIContextProvider({ children }: UIContextProviderProps) {
         setSelectedUnitID,
         selectedGameCardID,
         setSelectedGameCardID,
+        indexOfLastShownToast,
+        setIndexOfLastShownToast,
       }}
     >
       {children}

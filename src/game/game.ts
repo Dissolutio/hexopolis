@@ -16,6 +16,7 @@ import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
 import { testScenario } from './setup'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
+import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },
@@ -107,8 +108,15 @@ export const HexedMeadow: Game<GameState> = {
       // roll initiative
       onBegin: ({ G }) => {
         const initiativeRoll = rollD20Initiative(['0', '1'])
+        const roundBeginID = `${G.currentRound}`
+        const roundBeginGameLog = encodeGameLogMessage({
+          type: gameLogTypes.roundBegin,
+          id: roundBeginID,
+          // initiativeRoll,
+        })
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
+        G.gameLog = [...G.gameLog, roundBeginGameLog]
       },
       // reset state, update currentRound
       onEnd: ({ G }) => {

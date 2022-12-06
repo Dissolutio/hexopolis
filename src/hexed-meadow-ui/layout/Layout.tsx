@@ -23,10 +23,15 @@ export const Layout = ({ children }: { children: ReactNode[] }) => {
 type LayoutContainerProps = {
   playerID: string
 }
+const playerIdsTContourBackgroundFile: { [player: string]: string } = {
+  '0': 'beesContourBG.svg',
+  '1': 'purpleContourBG.svg',
+}
 const LayoutContainer = styled.div<LayoutContainerProps>`
   // SET CSS VARS
   --player-color: ${(props) => props.theme.playerColor};
-  --navbar-height: 46px;
+  --player-bg: ${(props) => playerIdsTContourBackgroundFile[props.playerID]};
+  --navbar-height: 30px;
   --navbar-logo-height: 32px;
 
   position: relative;
@@ -37,8 +42,8 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   padding: 0;
   margin: 0;
   color: var(--player-color);
-  /* background-image: url('${(props) => props.theme.bgContourLinesUrl}'); */
-  background-image: url('beesContourBG.svg');
+  // formatting the line below breaks it, no idea why
+  background-image: url("${props => playerIdsTContourBackgroundFile[props.playerID]}");
 `
 const LayoutTop = styled.div`
   width: 100%;

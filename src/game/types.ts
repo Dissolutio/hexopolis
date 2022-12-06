@@ -12,8 +12,10 @@ export interface GameState {
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
-  unitsMoved: string[]
+  // rop game state below
+  unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: string[]
+  gameLog: string[]
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
@@ -98,7 +100,7 @@ export type GameUnits = {
 }
 
 export type PlacementUnit = GameUnit & {
-  name: string
+  singleName: string
 }
 
 export type PlayerStateToggle = {

@@ -1,10 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
-import beesBigLogo from '../assets/beesBigLogo.png'
-import butterfliesLogo from '../assets/butterfliesLogo.png'
-import { isLocalApp } from 'app/constants'
 import { useBgioClientInfo } from 'bgio-contexts'
 
 export const HeaderNav = ({
@@ -19,9 +15,6 @@ export const HeaderNav = ({
         playerID={playerID}
         isLocalOrDemoGame={isLocalOrDemoGame}
       />
-      <Link to={'/help'}>Help</Link>
-      <Link to={'/rules'}>Rules</Link>
-      <Link to={'/feedback'}>Feedback</Link>
     </StyledNavbar>
   )
 }
@@ -60,31 +53,27 @@ const PlayerTeamLogo = ({
     if (isLocalOrDemoGame) {
       return (
         <a href="#player1">
-          <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" />
+          <PlayerTeamLogoH1>Hexopolis: Player 1</PlayerTeamLogoH1>
         </a>
       )
     }
-    return <PlayerTeamLogoImg src={beesBigLogo} alt="Bees team logo" />
+    return <PlayerTeamLogoH1>Hexopolis: Player 1</PlayerTeamLogoH1>
   }
   if (playerID === '1') {
     if (isLocalOrDemoGame) {
       return (
         <a href="#player0">
-          <PlayerTeamLogoImg
-            src={butterfliesLogo}
-            alt="Butterflies team logo"
-          />
+          <PlayerTeamLogoH1>Hexopolis: Player 2</PlayerTeamLogoH1>
         </a>
       )
     }
-    return (
-      <PlayerTeamLogoImg src={butterfliesLogo} alt="Butterflies team logo" />
-    )
+    return <PlayerTeamLogoH1>Hexopolis: Player 2</PlayerTeamLogoH1>
   }
   return null
 }
 
-const PlayerTeamLogoImg = styled.img`
-  height: var(--navbar-logo-height);
-  width: auto;
+const PlayerTeamLogoH1 = styled.h1`
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--player-color);
 `

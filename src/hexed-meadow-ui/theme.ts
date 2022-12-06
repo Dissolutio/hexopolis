@@ -1,6 +1,4 @@
 import { StringKeyedObj } from 'game/types'
-import { contourLinesBG } from './assets/contourLinesBG'
-import { makeHexagonsHeroPatternDataUrl } from './assets/hexagonsHeroPatternDataUrl'
 
 export const colors = {
   gray: '#5d576b',
@@ -28,11 +26,6 @@ const playerColorsUrlEncoded: StringKeyedObj = {
   '5': colors.humansGoldenrodUrlEncoded,
 }
 
-const bgContourLines = (playerID: string) =>
-  contourLinesBG(playerColorsUrlEncoded[playerID], '0.1')
-const hexSvgBgUrl = (playerID: string) =>
-  makeHexagonsHeroPatternDataUrl(playerColors[playerID], 0.2)
-
 const playerColors: StringKeyedObj = {
   '0': colors.beeYellow,
   '1': colors.butterflyPurple,
@@ -44,7 +37,5 @@ export const theme = (playerID: string) => {
     playerColors,
     playerColor: playerColors[playerID],
     playerColorUrlEncoded: encodeURIComponent(playerColorsUrlEncoded[playerID]),
-    bgContourLinesUrl: bgContourLines(playerID),
-    hexSvgBgUrl: hexSvgBgUrl(playerID),
   }
 }

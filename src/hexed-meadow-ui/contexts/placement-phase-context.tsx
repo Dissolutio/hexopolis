@@ -6,7 +6,7 @@ import React, {
 } from 'react'
 import { useUIContext, useMapContext } from '.'
 import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/types'
-import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -25,7 +25,7 @@ type PlacementContextValue = {
   onResetPlacementState: () => void
 }
 
-type DeploymentProposition = { [boardHexId: string]: string }
+export type DeploymentProposition = { [boardHexId: string]: string }
 
 const PlacementContextProvider = ({
   children,
@@ -33,7 +33,15 @@ const PlacementContextProvider = ({
   children: React.ReactNode
 }) => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useBgioG()
+  const {
+    boardHexes,
+    gameUnits,
+    myUnits,
+    myCards,
+    myStartZone,
+    placementReady,
+  } = useBgioG()
+  const isConfirmedReady = placementReady[playerID] === true
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE
@@ -83,7 +91,7 @@ const PlacementContextProvider = ({
         ...result,
         {
           ...gameUnit,
-          name: armyCard?.name ?? '',
+          singleName: armyCard?.singleName ?? '',
         },
       ]
     },
@@ -111,13 +119,13 @@ const PlacementContextProvider = ({
     const clickedHexId = sourceHex.id
     const isInStartZone = myStartZone.includes(clickedHexId)
     const unitIdAlreadyOnHex = editingBoardHexes?.[clickedHexId]
-
     //  -- 1A. No current unit, but there is a unit on the hex, select that unit -- 1B. No current unit, so since we're not placing on the hex, select the hex
     if (!selectedUnitID) {
-      if (unitIdAlreadyOnHex) {
+      if (unitIdAlreadyOnHex && !isConfirmedReady) {
         onClickPlacementUnit(unitIdAlreadyOnHex)
+      } else {
+        setSelectedMapHex(clickedHexId)
       }
-      setSelectedMapHex(clickedHexId)
       return
     }
 
