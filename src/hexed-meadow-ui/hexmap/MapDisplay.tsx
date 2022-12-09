@@ -11,7 +11,7 @@ import { ZoomControls } from './ZoomControls'
 
 export const MapDisplay = () => {
   const { hexMap } = useBgioG()
-  const mapSize = hexMap.mapSize
+  const { mapSize } = hexMap
   const mapRef = useRef<HTMLDivElement>(null)
   const zoomInterval = 100
   const [mapState, setMapState] = React.useState(() => ({
@@ -19,6 +19,7 @@ export const MapDisplay = () => {
     height: 100,
     hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
     spacing: 1.15,
+    flat: hexMap.flat,
   }))
   const handleClickZoomIn = () => {
     const el = mapRef.current
@@ -43,6 +44,11 @@ export const MapDisplay = () => {
     }))
     el && el.scrollBy(-2 * zoomInterval, -2 * zoomInterval)
   }
+  const calcViewBox = (mapSize: number) => {
+    const halfViewBox = mapSize * -50
+    const fullViewBox = mapSize * 100
+    return `${halfViewBox} ${halfViewBox} ${fullViewBox} ${fullViewBox}`
+  }
   return (
     <MapStyle>
       <ZoomControls
@@ -53,15 +59,22 @@ export const MapDisplay = () => {
       <TurnCounter />
       <ActiveHexReadout />
       <MapHexStyles hexSize={mapState.hexSize} ref={mapRef}>
-        <ReactHexgrid
-          mapSize={mapSize}
+        <svg
           width={`${mapState.width}%`}
           height={`${mapState.height}%`}
-          hexSize={mapState.hexSize}
-          spacing={mapState.spacing}
+          viewBox={calcViewBox(mapSize)}
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <MapHexes hexSize={mapState.hexSize} />
-        </ReactHexgrid>
+          <Layout
+            size={{ x: mapState.hexSize, y: mapState.hexSize }}
+            flat={mapState.flat}
+            spacing={mapState.spacing}
+            className="hexgrid-layout"
+          >
+            <MapHexes hexSize={mapState.hexSize} />
+          </Layout>
+        </svg>
       </MapHexStyles>
     </MapStyle>
   )
