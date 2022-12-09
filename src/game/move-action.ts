@@ -30,7 +30,7 @@ export const moveAction: Move<GameState> = {
     const moveCost = HexUtils.distance(startHex as Hex, endHex)
     const revealedGameCard = selectRevealedGameCard(
       G.orderMarkers,
-      G.armyCards,
+      G.gameArmyCards,
       G.currentOrderMarker,
       ctx.currentPlayer
     ) // revealedGameCard is a proxy object
@@ -73,7 +73,7 @@ export const moveAction: Move<GameState> = {
     // update move-ranges for this turn's units
     const unrevealedGameCard = selectUnrevealedGameCard(
       playersOrderMarkers,
-      G.armyCards,
+      G.gameArmyCards,
       G.currentOrderMarker
     )
 
@@ -88,7 +88,7 @@ export const moveAction: Move<GameState> = {
         unit,
         newBoardHexes,
         newGameUnits,
-        G.armyCards
+        G.gameArmyCards
       )
       newGameUnits[unitID].moveRange = moveRange
     })

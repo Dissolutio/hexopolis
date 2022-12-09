@@ -147,7 +147,7 @@ export const HexedMeadow: Game<GameState> = {
           // Assign move points/ranges
           const unrevealedGameCard = selectUnrevealedGameCard(
             currentPlayersOrderMarkers,
-            G.armyCards,
+            G.gameArmyCards,
             G.currentOrderMarker
           )
           const currentTurnUnits = selectUnitsForCard(
@@ -172,7 +172,7 @@ export const HexedMeadow: Game<GameState> = {
                 unitWithMovePoints,
                 G.boardHexes,
                 mutatedGameUnits,
-                G.armyCards
+                G.gameArmyCards
               )
               const unitWithMoveRange = {
                 ...unitWithMovePoints,

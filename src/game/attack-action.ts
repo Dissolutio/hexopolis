@@ -11,7 +11,7 @@ export const attackAction: Move<GameState> = (
   defenderHex: BoardHex
 ) => {
   const { unitID } = unit
-  const unitGameCard = selectGameCardByID(G.armyCards, unit.gameCardID)
+  const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
   const { currentRound, currentOrderMarker } = G
   const unitName = unitGameCard?.name ?? ''
   const unitRange = unitGameCard?.range ?? 0
@@ -62,7 +62,7 @@ export const attackAction: Move<GameState> = (
   const attackRolled = unitGameCard?.attack ?? 0
   const defenderGameUnit = G.gameUnits[defenderHexUnitID]
   const defenderGameCard = selectGameCardByID(
-    G.armyCards,
+    G.gameArmyCards,
     defenderGameUnit.gameCardID
   )
   const defenseRolled = defenderGameCard?.defense ?? 0
@@ -95,11 +95,11 @@ export const attackAction: Move<GameState> = (
 
   // deal damage
   if (isHit && !isFatal) {
-    const gameCardIndex = G.armyCards.findIndex(
+    const gameCardIndex = G.gameArmyCards.findIndex(
       (card) => card?.gameCardID === defenderGameUnit.gameCardID
     )
     // TODO this should track some kind of damage history AKA card.wounds or unit.wounds, not adjust life directly
-    G.armyCards[gameCardIndex].life = defenderInitialLife - wounds
+    G.gameArmyCards[gameCardIndex].life = defenderInitialLife - wounds
   }
   // kill unit, clear hex
   if (isFatal) {

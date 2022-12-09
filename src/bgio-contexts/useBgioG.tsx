@@ -24,7 +24,7 @@ const BgioGContext = React.createContext<
 
 export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const { playerID, belongsToPlayer } = useBgioClientInfo()
-  const myCards: GameArmyCard[] = G.armyCards.filter(belongsToPlayer)
+  const myCards: GameArmyCard[] = G.gameArmyCards.filter(belongsToPlayer)
   const myStartZone: string[] = G.startZones[playerID]
   const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
   const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers

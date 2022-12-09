@@ -1,6 +1,6 @@
 export interface GameState {
   initialArmyCards: GameArmyCard[]
-  armyCards: GameArmyCard[]
+  gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
   players: PlayersState
   hexMap: HexMap
