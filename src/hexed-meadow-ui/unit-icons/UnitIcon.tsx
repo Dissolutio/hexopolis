@@ -1,4 +1,5 @@
 import React from 'react'
+import { IconBaseProps } from 'react-icons'
 import {
   GiDiabloSkull,
   GiNinjaArmor,
@@ -13,7 +14,7 @@ const playerIconColors: { [key: string]: string } = {
   '0': 'var(--bee-yellow)',
   '1': 'var(--butterfly-purple)',
 }
-type Props = {
+type Props = IconBaseProps & {
   armyCardID: string
   iconPlayerID?: String
   hexSize?: number
@@ -27,6 +28,7 @@ export const UnitIcon = ({
   iconPlayerID,
   hexSize,
   iconProps,
+  ...rest
 }: Props) => {
   if (!armyCardID) {
     return null
@@ -42,6 +44,7 @@ export const UnitIcon = ({
       fill: `${playerIconColors?.[iconPlayerID as string] ?? 'var(--white)'}`,
       fontSize: iconProps?.x ?? `${iconSize}px`,
     },
+    ...rest,
   }
 
   switch (armyCardID) {
