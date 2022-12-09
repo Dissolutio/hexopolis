@@ -88,7 +88,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
 
-  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
+  // highlight placeable hexes for selected unit, if hex is occupied
   .maphex__start-zone--placement--occupied > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
@@ -136,6 +136,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--neon-red);
     stroke-width: 0.6;
   }
+
   //PHASE: ROP-move
   // paint safe moverange
   .maphex__move-safe > g polygon {
