@@ -146,11 +146,7 @@ export function selectAreTwoUnitsEngaged({
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
 
-/* 
-Now I understand why we need to select for the hex and provide an override unit id. Not select for the unit and derive it all from game state.
-Because we WANT to be able to theorize the engagement, for use within move range calculations.
-*/
-
+// this function will lookup the unit on the hex, OR you can pass an override unit to place on the hex to predict engagements
 export function selectEngagementsForHex({
   hexID,
   playerID,
@@ -181,7 +177,8 @@ export function selectEngagementsForHex({
     return []
   }
   const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
-    .filter((h) => h.occupyingUnitID)
+    // unit cannot engage/be-adjacent-to itself
+    .filter((h) => h.occupyingUnitID && h.occupyingUnitID !== overrideUnitID)
     .map((h) => h.occupyingUnitID)
   const engagedUnitIDs = adjacentUnitIDs.filter(
     (id) => gameUnits[id].playerID !== playerID
