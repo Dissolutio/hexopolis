@@ -77,7 +77,7 @@ function makeTestScenario(): GameState {
   const gameUnits: GameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 3,
+    mapSize: 2,
     withPrePlacedUnits,
     gameUnits: gameArmyCardsToGameUnits(armyCards),
     flat: false,
@@ -155,7 +155,8 @@ function armyCardsToGameArmyCardsForTest() {
       return {
         ...card,
         playerID,
-        cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
+        // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
+        cardQuantity: 1,
         gameCardID: makeGameCardID(),
       }
     })

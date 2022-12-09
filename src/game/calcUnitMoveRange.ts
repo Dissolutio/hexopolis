@@ -54,6 +54,7 @@ export function calcUnitMoveRange(
   const moveRange = computeWalkMoveRange({
     startHex: startHex as BoardHex,
     movePoints: initialMovePoints,
+    unit,
     boardHexes,
     gameUnits,
     armyCards,
@@ -69,6 +70,7 @@ export function calcUnitMoveRange(
 function computeWalkMoveRange({
   startHex,
   movePoints,
+  unit,
   boardHexes,
   gameUnits,
   armyCards,
@@ -83,6 +85,7 @@ function computeWalkMoveRange({
   initialMoveRange: MoveRange
   initialEngagements: string[]
   hexesVisited: { [hexID: string]: number }
+  unit: GameUnit
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
@@ -107,10 +110,13 @@ function computeWalkMoveRange({
         boardHexes,
         gameUnits,
         armyCards,
-        overrideUnitID: end.occupyingUnitID,
+        overrideUnitID: unit.unitID,
       })
       const isCausingEngagement = engagementsForCurrentHex.some(
-        (currentEngagement) => !initialEngagements.includes(currentEngagement)
+        (id) => !initialEngagements.includes(id)
+      )
+      const isCausingDisngagement = initialEngagements.some(
+        (id) => !engagementsForCurrentHex.includes(id)
       )
       const endHexUnit = { ...gameUnits[endHexUnitID] }
       const endHexUnitPlayerID = endHexUnit.playerID
@@ -123,21 +129,30 @@ function computeWalkMoveRange({
       const isUnpassable = isTooCostly || isEndHexEnemyOccupied
       // if it's not unpassable, we can move there, but we only continue the recursion if it's a SAFE
       if (!isUnpassable) {
-        result.safe.push(endHexID)
-        const recursiveMoveRange = computeWalkMoveRange({
-          startHex: end,
-          movePoints: movePointsLeftAfterMove,
-          boardHexes,
-          initialMoveRange: result,
-          initialEngagements,
-          gameUnits,
-          playerID,
-          hexesVisited: hexesVisitedCopy,
-          armyCards,
-        })
-        return {
-          ...result,
-          ...recursiveMoveRange,
+        if (isCausingEngagement) {
+          result.engage.push(endHexID)
+          return { ...result }
+        } else if (isCausingDisngagement) {
+          result.disengage.push(endHexID)
+          return { ...result }
+        } else {
+          result.safe.push(endHexID)
+          const recursiveMoveRange = computeWalkMoveRange({
+            startHex: end,
+            movePoints: movePointsLeftAfterMove,
+            unit,
+            boardHexes,
+            initialMoveRange: result,
+            initialEngagements,
+            gameUnits,
+            playerID,
+            hexesVisited: hexesVisitedCopy,
+            armyCards,
+          })
+          return {
+            ...result,
+            ...recursiveMoveRange,
+          }
         }
       } else {
         return result
