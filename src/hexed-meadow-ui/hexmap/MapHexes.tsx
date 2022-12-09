@@ -84,6 +84,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     }
   }
   const onClickHex = (e: React.SyntheticEvent, source: any) => {
+    console.log('🚀 ~ file: MapHexes.tsx:87 ~ onClickHex ~ source', source)
     const boardHex = source.data as BoardHex
     onClickBoardHex(e, boardHex)
   }
@@ -99,6 +100,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
       const unitName = gameUnitCard?.singleName ?? ''
+      const onClickIcon: React.MouseEventHandler<SVGElement> = (event) => {
+        event.stopPropagation()
+        console.log('clicked icon')
+      }
       return (
         <Hexagon
           key={i}
@@ -118,6 +123,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                   exit={{ opacity: 0 }}
                 >
                   <UnitIcon
+                    onClick={onClickIcon}
                     hexSize={hexSize}
                     armyCardID={gameUnit.armyCardID}
                     iconPlayerID={gameUnit.playerID}
