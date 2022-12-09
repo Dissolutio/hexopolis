@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Hexagon, Text } from 'react-hexgrid'
+import { Text } from 'react-hexgrid'
 
 import {
   useUIContext,
@@ -17,6 +17,7 @@ import {
   calcPlacementHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
+import Hexagon from './Hexagon'
 
 type MapHexesProps = {
   hexSize: number

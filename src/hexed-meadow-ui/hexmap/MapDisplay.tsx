@@ -2,14 +2,12 @@ import { useBgioG } from 'bgio-contexts'
 import { Notifications } from 'hexed-meadow-ui/controls/Notifications'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import {
-  ReactHexgrid,
-  MapHexStyles,
-  MapHexes,
-  TurnCounter,
-  ZoomControls,
-} from './'
 import { ActiveHexReadout } from './ActiveHexReadout'
+import { Layout } from './Layout'
+import { MapHexes } from './MapHexes'
+import { MapHexStyles } from './MapHexStyles'
+import { TurnCounter } from './TurnCounter'
+import { ZoomControls } from './ZoomControls'
 
 export const MapDisplay = () => {
   const { hexMap } = useBgioG()

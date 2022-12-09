@@ -9,7 +9,7 @@ import {
 } from './contexts'
 import { Layout, HeaderNav } from './layout'
 import { Controls } from './controls'
-import { MapDisplay } from './hexmap'
+import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from './theme'
 import {
   BgioClientInfoProvider,
