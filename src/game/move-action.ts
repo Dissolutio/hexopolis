@@ -72,7 +72,12 @@ export const moveAction: Move<GameState> = {
 
     currentTurnUnits.forEach((unit: GameUnit) => {
       const { unitID } = unit
-      const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)
+      const moveRange = calcUnitMoveRange(
+        unit,
+        newBoardHexes,
+        newGameUnits,
+        G.armyCards
+      )
       newGameUnits[unitID].moveRange = moveRange
     })
     // update G

@@ -67,7 +67,8 @@ export function selectHexNeighbors(
   startHexID: string,
   boardHexes: BoardHexes
 ): BoardHex[] {
-  const startHex = boardHexes[startHexID]
+  const startHex = boardHexes?.[startHexID]
+  if (!startHex) return []
   return HexUtils.neighbors(startHex)
     .map((hex) => {
       const id = generateHexID(hex)
@@ -87,18 +88,82 @@ export function calcMoveCostBetweenNeighbors(
   const totalCost = heightCost + distanceCost
   return totalCost
 }
+export function selectEngagementsForUnit({
+  unitID,
+  boardHexes,
+  gameUnits,
+  armyCards,
+}: {
+  unitID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
+}) {
+  const hex = selectHexForUnit(unitID, boardHexes)
+  // either use hex unit, or override unit
+  const unitOnHex = gameUnits[unitID]
+  const armyCardForUnitOnHex = selectGameCardByID(
+    armyCards,
+    unitOnHex?.gameCardID
+  )
+  const playerID = unitOnHex?.playerID
+
+  // if no unit, then no engagements
+  if (!unitOnHex) {
+    return []
+  }
+  const adjacentUnitIDs = selectHexNeighbors(hex?.id ?? '', boardHexes)
+    .filter((h) => h.occupyingUnitID)
+    .map((h) => h.occupyingUnitID)
+  const engagedUnitIDs = adjacentUnitIDs.filter(
+    (id) => gameUnits[id].playerID !== playerID
+  )
+  return engagedUnitIDs.filter((unitBID) => {
+    const unitB = gameUnits[unitBID]
+    const hexB = selectHexForUnit(unitBID, boardHexes)
+    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
+    return selectAreTwoUnitsEngaged({
+      aHeight: armyCardForUnitOnHex?.height ?? 0,
+      aAltitude: hex?.altitude ?? 0,
+      bHeight: unitBCard?.height ?? 0,
+      bAltitude: hexB?.altitude ?? 0,
+    })
+  })
+}
+export function selectAreTwoUnitsEngaged({
+  aHeight,
+  aAltitude,
+  bHeight,
+  bAltitude,
+}: {
+  aHeight: number
+  aAltitude: number
+  bHeight: number
+  bAltitude: number
+}) {
+  // this just checks if the top of one unit is above the bottom of the other
+  // TODO: account for barriers between two hexes
+  return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
+}
+
+/* 
+Now I understand why we need to select for the hex and provide an override unit id. Not select for the unit and derive it all from game state.
+Because we WANT to be able to theorize the engagement, for use within move range calculations.
+*/
 
 export function selectEngagementsForHex({
   hexID,
   playerID,
   boardHexes,
   gameUnits,
+  armyCards,
   overrideUnitID,
 }: {
   hexID: string
   playerID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  armyCards: GameArmyCard[]
   overrideUnitID?: string
 }) {
   const hex = boardHexes[hexID]
@@ -107,7 +172,10 @@ export function selectEngagementsForHex({
   const unitOnHex = overrideUnitID
     ? gameUnits?.[overrideUnitID]
     : gameUnits?.[hex?.occupyingUnitID]
-
+  const armyCardForUnitOnHex = selectGameCardByID(
+    armyCards,
+    unitOnHex?.gameCardID
+  )
   // if no unit, then no engagements
   if (!unitOnHex) {
     return []
@@ -118,5 +186,15 @@ export function selectEngagementsForHex({
   const engagedUnitIDs = adjacentUnitIDs.filter(
     (id) => gameUnits[id].playerID !== playerID
   )
-  return engagedUnitIDs
+  return engagedUnitIDs.filter((unitBID) => {
+    const unitB = gameUnits[unitBID]
+    const hexB = selectHexForUnit(unitBID, boardHexes)
+    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
+    return selectAreTwoUnitsEngaged({
+      aHeight: armyCardForUnitOnHex?.height ?? 0,
+      aAltitude: hex?.altitude ?? 0,
+      bHeight: unitBCard?.height ?? 0,
+      bAltitude: hexB?.altitude ?? 0,
+    })
+  })
 }

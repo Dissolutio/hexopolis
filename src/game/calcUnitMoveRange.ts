@@ -1,8 +1,17 @@
-import { BoardHexes, BoardHex, GameUnits, GameUnit, MoveRange } from './types'
+import {
+  BoardHexes,
+  BoardHex,
+  GameUnits,
+  GameUnit,
+  MoveRange,
+  GameArmyCard,
+} from './types'
 import { generateBlankMoveRange } from './constants'
 import { uniq } from 'lodash'
 import {
   calcMoveCostBetweenNeighbors,
+  selectEngagementsForHex,
+  selectEngagementsForUnit,
   selectHexForUnit,
   selectHexNeighbors,
 } from './selectors'
@@ -15,10 +24,12 @@ const deduplicateMoveRange = (result: MoveRange): MoveRange => {
     denied: uniq(result.denied),
   }
 }
+
 export function calcUnitMoveRange(
   unit: GameUnit,
   boardHexes: BoardHexes,
-  gameUnits: GameUnits
+  gameUnits: GameUnits,
+  armyCards: GameArmyCard[]
 ): MoveRange {
   // 1. return blank move-range if no necessary ingredients
   const initialMoveRange = generateBlankMoveRange()
@@ -33,17 +44,21 @@ export function calcUnitMoveRange(
   if (!startHex || !initialMovePoints) {
     return initialMoveRange
   }
-
-  // 2. deny they start hex as an end hex
-  initialMoveRange.denied.push(`${startHex.id}`)
-
-  // 3. recursively add hexes to move-range
+  const initialEngagements: string[] = selectEngagementsForUnit({
+    unitID: unit?.unitID ?? '',
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  // 2. recursively add hexes to move-range
   const moveRange = computeWalkMoveRange({
     startHex: startHex as BoardHex,
     movePoints: initialMovePoints,
     boardHexes,
-    initialMoveRange,
     gameUnits,
+    armyCards,
+    initialMoveRange,
+    initialEngagements,
     playerID,
     hexesVisited: {},
   })
@@ -55,18 +70,22 @@ function computeWalkMoveRange({
   startHex,
   movePoints,
   boardHexes,
-  initialMoveRange,
   gameUnits,
+  armyCards,
+  initialMoveRange,
+  initialEngagements,
   playerID,
   hexesVisited,
 }: {
   startHex: BoardHex
   movePoints: number
-  boardHexes: BoardHexes
-  initialMoveRange: MoveRange
-  gameUnits: GameUnits
   playerID: string
+  initialMoveRange: MoveRange
+  initialEngagements: string[]
   hexesVisited: { [hexID: string]: number }
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
 }): MoveRange {
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   const isVisitedAlready = hexesVisited?.[startHex.id] >= movePoints
@@ -82,6 +101,17 @@ function computeWalkMoveRange({
   let nextResults = neighbors.reduce(
     (result: MoveRange, end: BoardHex): MoveRange => {
       const { id: endHexID, occupyingUnitID: endHexUnitID } = end
+      const engagementsForCurrentHex = selectEngagementsForHex({
+        hexID: end.id,
+        playerID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+        overrideUnitID: end.occupyingUnitID,
+      })
+      const isCausingEngagement = engagementsForCurrentHex.some(
+        (currentEngagement) => !initialEngagements.includes(currentEngagement)
+      )
       const endHexUnit = { ...gameUnits[endHexUnitID] }
       const endHexUnitPlayerID = endHexUnit.playerID
       const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
@@ -91,6 +121,7 @@ function computeWalkMoveRange({
       const isEndHexEnemyOccupied =
         isEndHexOccupied && endHexUnitPlayerID !== playerID
       const isUnpassable = isTooCostly || isEndHexEnemyOccupied
+      // if it's not unpassable, we can move there, but we only continue the recursion if it's a SAFE
       if (!isUnpassable) {
         result.safe.push(endHexID)
         const recursiveMoveRange = computeWalkMoveRange({
@@ -98,16 +129,19 @@ function computeWalkMoveRange({
           movePoints: movePointsLeftAfterMove,
           boardHexes,
           initialMoveRange: result,
+          initialEngagements,
           gameUnits,
           playerID,
           hexesVisited: hexesVisitedCopy,
+          armyCards,
         })
         return {
           ...result,
           ...recursiveMoveRange,
         }
+      } else {
+        return result
       }
-      return result
     },
     // accumulator for reduce fn
     initialMoveRange

@@ -171,7 +171,8 @@ export const HexedMeadow: Game<GameState> = {
               const moveRange = calcUnitMoveRange(
                 unitWithMovePoints,
                 G.boardHexes,
-                mutatedGameUnits
+                mutatedGameUnits,
+                G.armyCards
               )
               const unitWithMoveRange = {
                 ...unitWithMovePoints,

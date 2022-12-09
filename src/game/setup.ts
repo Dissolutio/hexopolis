@@ -77,7 +77,7 @@ function makeTestScenario(): GameState {
   const gameUnits: GameUnits = gameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 5,
+    mapSize: 3,
     withPrePlacedUnits,
     gameUnits: gameArmyCardsToGameUnits(armyCards),
     flat: false,
