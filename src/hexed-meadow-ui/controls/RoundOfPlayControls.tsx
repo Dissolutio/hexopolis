@@ -146,9 +146,9 @@ export const RopAttackControls = () => {
 
       <StyledControlsP style={{ marginBottom: '60px' }}>
         {`You moved ${uniqUnitsMoved.length} unit${
-          uniqUnitsMoved.length > 1 ? 's' : ''
+          uniqUnitsMoved.length !== 1 ? 's' : ''
         }, and have ${freeAttacksAvailable} attack${
-          freeAttacksAvailable > 1 ? 's' : ''
+          freeAttacksAvailable !== 1 ? 's' : ''
         } available for unmoved units`}
       </StyledControlsP>
 
@@ -162,7 +162,7 @@ export const RopAttackControls = () => {
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
           resetText={`End Turn, skip my ${attacksAvailable} attack${
-            attacksAvailable > 1 ? 's' : ''
+            attacksAvailable !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />
