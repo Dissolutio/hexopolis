@@ -8,7 +8,7 @@ type MapHexStylesProps = {
 
 export const MapHexStyles = styled.div<MapHexStylesProps>`
   height: 100%;
-  position: relative;
+  /* position: relative; */
   overflow: scroll;
   // Style Map Scrollbars
   scrollbar-width: thin;

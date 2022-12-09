@@ -50,7 +50,7 @@ export const MapDisplay = () => {
     return `${halfViewBox} ${halfViewBox} ${fullViewBox} ${fullViewBox}`
   }
   return (
-    <MapStyle>
+    <MapHexStyles hexSize={mapState.hexSize} ref={mapRef}>
       <ZoomControls
         handleClickZoomIn={handleClickZoomIn}
         handleClickZoomOut={handleClickZoomOut}
@@ -58,28 +58,22 @@ export const MapDisplay = () => {
       <Notifications />
       <TurnCounter />
       <ActiveHexReadout />
-      <MapHexStyles hexSize={mapState.hexSize} ref={mapRef}>
-        <svg
-          width={`${mapState.width}%`}
-          height={`${mapState.height}%`}
-          viewBox={calcViewBox(mapSize)}
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
+      <svg
+        width={`${mapState.width}%`}
+        height={`${mapState.height}%`}
+        viewBox={calcViewBox(mapSize)}
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <Layout
+          size={{ x: mapState.hexSize, y: mapState.hexSize }}
+          flat={mapState.flat}
+          spacing={mapState.spacing}
+          className="hexgrid-layout"
         >
-          <Layout
-            size={{ x: mapState.hexSize, y: mapState.hexSize }}
-            flat={mapState.flat}
-            spacing={mapState.spacing}
-            className="hexgrid-layout"
-          >
-            <MapHexes hexSize={mapState.hexSize} />
-          </Layout>
-        </svg>
-      </MapHexStyles>
-    </MapStyle>
+          <MapHexes hexSize={mapState.hexSize} />
+        </Layout>
+      </svg>
+    </MapHexStyles>
   )
 }
-
-const MapStyle = styled.div`
-  height: 100%;
-`
