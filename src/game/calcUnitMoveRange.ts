@@ -38,33 +38,20 @@ export function calcUnitMoveRange(
   initialMoveRange.denied.push(`${startHex.id}`)
 
   // 3. recursively add hexes to move-range
-  const moveRange = moveRangeReduce({
+  const moveRange = computeWalkMoveRange({
     startHex: startHex as BoardHex,
     movePoints: initialMovePoints,
     boardHexes,
     initialMoveRange,
     gameUnits,
     playerID,
+    hexesVisited: {},
   })
 
   return moveRange
 }
 
-function moveRangeReduce(params: {
-  startHex: BoardHex
-  movePoints: number
-  boardHexes: BoardHexes
-  initialMoveRange: MoveRange
-  gameUnits: GameUnits
-  playerID: string
-}): MoveRange {
-  // if we have been to this hex, we mark the move points available, so we can skip a hex, later, if we've been there before with more move points
-  const finalAnswer = deduplicateMoveRange(
-    recursiveMoveRangeReduce({ ...params, hexesVisited: {} })
-  )
-  return finalAnswer
-}
-function recursiveMoveRangeReduce({
+function computeWalkMoveRange({
   startHex,
   movePoints,
   boardHexes,
@@ -103,23 +90,10 @@ function recursiveMoveRangeReduce({
       const isTooCostly = movePointsLeftAfterMove < 0
       const isEndHexEnemyOccupied =
         isEndHexOccupied && endHexUnitPlayerID !== playerID
-      const isEndHexFriendlyOccupied = Boolean(
-        endHexUnitID && endHexUnitPlayerID === playerID
-      )
-      // !! TODO:
-      // if we are engaged currently
-      // if the friendly unit on hex is engaged
-
       const isUnpassable = isTooCostly || isEndHexEnemyOccupied
-      if (isUnpassable || isEndHexFriendlyOccupied) {
-        result.denied.push(endHexID)
-      } else {
-        // Not unpassable or occupied, then can be moved to
-        result.safe.push(endHexID)
-      }
-
       if (!isUnpassable) {
-        const recursiveMoveRange = recursiveMoveRangeReduce({
+        result.safe.push(endHexID)
+        const recursiveMoveRange = computeWalkMoveRange({
           startHex: end,
           movePoints: movePointsLeftAfterMove,
           boardHexes,
@@ -138,5 +112,5 @@ function recursiveMoveRangeReduce({
     // accumulator for reduce fn
     initialMoveRange
   )
-  return nextResults
+  return deduplicateMoveRange(nextResults)
 }
