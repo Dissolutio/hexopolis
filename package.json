@@ -64,6 +64,7 @@
     "@types/koa-static": "^4.0.2",
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.11.0",
+    "@types/react-helmet": "^6.1.6",
     "@types/styled-components": "^5.1.26",
     "eslint": "^8.21.0",
     "nodemon": "^2.0.19",
