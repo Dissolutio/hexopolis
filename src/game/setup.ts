@@ -20,6 +20,7 @@ import {
   ICoreHeroscapeCard,
   MS1Cards,
 } from './coreHeroscapeCards'
+import { transformGameArmyCardsToGameUnits } from './transformers'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -74,12 +75,12 @@ function makeTestScenario(): GameState {
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest()
   // GameUnits:
-  const gameUnits: GameUnits = gameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 2,
+    mapSize: 3,
     withPrePlacedUnits,
-    gameUnits: gameArmyCardsToGameUnits(armyCards),
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
     flat: false,
   })
   return {
@@ -89,8 +90,10 @@ function makeTestScenario(): GameState {
     initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
+    unitsKilled: {},
     gameLog: [],
     armyCards,
+    initialArmyCards: [...armyCards],
     gameUnits,
     hexMap: hexagonMap.hexMap,
     boardHexes: hexagonMap.boardHexes,
@@ -160,38 +163,4 @@ function armyCardsToGameArmyCardsForTest() {
         gameCardID: makeGameCardID(),
       }
     })
-}
-
-//! TEST SCENARIO GAMEUNITS
-function gameArmyCardsToGameUnits(armyCards: GameArmyCard[]): GameUnits {
-  // id factory
-  let unitID = 0
-  function makeUnitID(playerID: string) {
-    return `p${playerID}u${unitID++}`
-  }
-  return armyCards.reduce((result, card) => {
-    // CARD => FIGURES (this is where commons and uncommons get crazy?)
-    const numFigures = card.figures * card.cardQuantity
-    const figuresArr = Array.apply({}, Array(numFigures))
-    // FIGURES => UNITS
-    const unitsFromCard = (figuresArr as GameUnit[]).reduce((unitsResult) => {
-      const unitID = makeUnitID(card.playerID)
-      const newGameUnit = {
-        unitID,
-        armyCardID: card.armyCardID,
-        playerID: card.playerID,
-        gameCardID: card.gameCardID,
-        movePoints: 0,
-        moveRange: { safe: [], engage: [], disengage: [], denied: [] },
-      }
-      return {
-        ...unitsResult,
-        [unitID]: newGameUnit,
-      }
-    }, {})
-    return {
-      ...result,
-      ...unitsFromCard,
-    }
-  }, {})
 }
