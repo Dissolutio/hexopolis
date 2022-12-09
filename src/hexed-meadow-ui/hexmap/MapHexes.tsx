@@ -110,7 +110,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           className={hexClassNames(hex)}
         >
           <g>
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {gameUnit && isShowableUnit && (
                 <motion.g
                   initial={{ opacity: 0 }}
