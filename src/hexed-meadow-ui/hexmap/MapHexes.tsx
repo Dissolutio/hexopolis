@@ -25,7 +25,8 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, armyCards, startZones, gameUnits } = useBgioG()
+  const { boardHexes, armyCards, startZones, gameUnits, unitsMoved } =
+    useBgioG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
   const { ctx } = useBgioCtx()
@@ -72,13 +73,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         selectedUnitID,
         hex,
         playerID,
+        revealedGameCard,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
-        revealedGameCard,
         boardHexes,
         gameUnits,
+        unitsMoved,
         selectedUnitMoveRange,
       })
     }

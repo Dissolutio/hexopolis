@@ -36,7 +36,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     font-size: ${(props) => `${props.hexSize / 75}rem`};
   }
   // All Hex Styles
-  // highlight all hexes, and set fill-opacity to 0
+  // highlight all hexes, and set fill-opacity to its initial value (it has given problems with flickering to 1, before)
   svg g polygon {
     stroke: var(--white);
     stroke-width: 0.1;
@@ -145,15 +145,28 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     fill-opacity: 1;
   }
   // paint engage moverange
-  .maphex__move-engage > g {
+  .maphex__move-engage > g polygon {
     fill: var(--neon-orange);
     fill-opacity: 1;
   }
   // paint disengage moverange
-  .maphex__move-disengage > g {
+  .maphex__move-disengage > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
   }
+  // paint partially moves units
+  .maphex__move-partially-moved-unit > g polygon {
+    stroke: var(--caution-yellow);
+    stroke-opacity: 0.3;
+    stroke-width: 5;
+  }
+  // paint totally moves units
+  .maphex__move-totally-moved-unit > g polygon {
+    stroke: var(--error-red);
+    stroke-opacity: 0.3;
+    stroke-width: 5;
+  }
+
   //PHASE: ROP-attack
   // paint targetable enemy unit
   .maphex__targetable-enemy > g polygon {
