@@ -21,6 +21,11 @@ export const moveAction: Move<GameState> = {
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const startHexID = startHex?.id ?? ''
     const currentMoveRange = G.gameUnits[unitID].moveRange
+    const isEndHexInMoveRange = [
+      ...currentMoveRange.disengage,
+      ...currentMoveRange.engage,
+      ...currentMoveRange.safe,
+    ].includes(endHexID)
     const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
     const moveCost = HexUtils.distance(startHex as Hex, endHex)
     const revealedGameCard = selectRevealedGameCard(
@@ -37,6 +42,13 @@ export const moveAction: Move<GameState> = {
     const isDisallowedBecauseMaxUnitsMoved =
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
+    // DISALLOW - move not in move range
+    if (!isEndHexInMoveRange) {
+      console.error(
+        `Move action denied:The end hex is not in the unit's move range`
+      )
+      return
+    }
     // DISALLOW - max units moved, cannot move any NEW units, and this unit would be a newly moved unit
     if (isDisallowedBecauseMaxUnitsMoved) {
       console.error(
