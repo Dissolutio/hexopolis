@@ -180,6 +180,7 @@ export function selectEngagementsForHex({
     // unit cannot engage/be-adjacent-to itself
     .filter((h) => h.occupyingUnitID && h.occupyingUnitID !== overrideUnitID)
     .map((h) => h.occupyingUnitID)
+  // TODO: account for team play here, where adjacent units may be friendly
   const engagedUnitIDs = adjacentUnitIDs.filter(
     (id) => gameUnits[id].playerID !== playerID
   )
