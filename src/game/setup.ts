@@ -85,7 +85,7 @@ function makeTestScenario(): GameState {
   })
   return {
     ...frequentlyChangedDevState,
-    currentRound: 0,
+    currentRound: 1,
     currentOrderMarker: 0,
     initiative: [],
     unitsMoved: [],

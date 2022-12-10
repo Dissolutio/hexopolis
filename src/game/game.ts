@@ -63,7 +63,7 @@ export const HexedMeadow: Game<GameState> = {
       // reset order-markers state
       onBegin: ({ G }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
-        if (G.currentRound > 0) {
+        if (G.currentRound > 1) {
           // clear secret order marker state
           G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
           G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
