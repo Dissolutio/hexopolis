@@ -4,33 +4,61 @@ import {
   GameArmyCard,
   GameState,
   GameUnits,
+  OrderMarkers,
   PlayersState,
 } from './types'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
-  generatePreplacedOrderMarkers,
+  OM_COUNT,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
-import { coreHeroscapeCards, ICoreHeroscapeCard } from './coreHeroscapeCards'
+import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
 import { transformGameArmyCardsToGameUnits } from './transformers'
 
+const isEven = (numberToCheck: number) => {
+  //check if the number is even
+  if (numberToCheck % 2 === 0) {
+    return true
+  }
+  // if the number is odd
+  else {
+    return false
+  }
+}
+export function generatePreplacedOrderMarkers(): OrderMarkers {
+  const orderMarkers: OrderMarkers = {
+    '0': [
+      { order: '0', gameCardID: 'p1_hs1000' },
+      { order: '1', gameCardID: 'p1_hs1000' },
+      { order: '2', gameCardID: 'p1_hs1000' },
+      { order: 'X', gameCardID: 'p1_hs1000' },
+    ],
+    '1': [
+      { order: '0', gameCardID: 'p1_hs1002' },
+      { order: '1', gameCardID: 'p1_hs1002' },
+      { order: '2', gameCardID: 'p1_hs1002' },
+      { order: 'X', gameCardID: 'p1_hs1002' },
+    ],
+  }
+  return orderMarkers
+}
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hs1185',
-        '1': 'p0_hs1185',
-        '2': 'p0_hs1185',
-        X: 'p0_hs1185',
+        '0': 'p0_hs1000',
+        '1': 'p0_hs1000',
+        '2': 'p0_hs1000',
+        X: 'p0_hs1000',
       },
     },
     '1': {
       orderMarkers: {
-        '0': 'p1_hs1008',
-        '1': 'p1_hs1008',
-        '2': 'p1_hs1008',
-        X: 'p1_hs1008',
+        '0': 'p1_hs1002',
+        '1': 'p1_hs1002',
+        '2': 'p1_hs1002',
+        X: 'p1_hs1002',
       },
     },
   }
@@ -67,11 +95,11 @@ function makeTestScenario(): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest()
-  // GameUnits:
+  // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
   const hexagonMap = makeHexagonShapedMap({
-    mapSize: 3,
+    mapSize: 8,
     withPrePlacedUnits,
     gameUnits: transformGameArmyCardsToGameUnits(armyCards),
     flat: false,
@@ -120,40 +148,50 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 
 //! TEST SCENARIO GAMEARMYCARDS
 function armyCardsToGameArmyCardsForTest() {
-  return hsCardsToArmyCards(coreHeroscapeCards)
-    .filter(
-      (c) =>
-        // c.armyCardID === 'hs1000' ||
-        // c.armyCardID === 'hs1002' ||
-        // c.armyCardID === 'hs1003' ||
-        c.armyCardID === 'hs1008' || c.armyCardID === 'hs1185'
-      // c.armyCardID === 'hs1014'
-    )
-    .map((card) => {
-      const isCardMarroWarriors = card.armyCardID === 'hs1000'
-      const isCardNeGokSa = card.armyCardID === 'hs1014'
-      const isCardMezzodemonWarmongers = card.armyCardID === 'hs1185'
-      const isCardForPlayer1 =
-        isCardMarroWarriors || isCardNeGokSa || isCardMezzodemonWarmongers
+  return (
+    hsCardsToArmyCards(MS1Cards)
+      // .filter(
+      //   (c) =>
+      //     // c.armyCardID === 'hs1000' ||
+      //     // c.armyCardID === 'hs1002' ||
+      //     // c.armyCardID === 'hs1003' ||
+      //     c.armyCardID === 'hs1008' || c.armyCardID === 'hs1185'
+      //   // c.armyCardID === 'hs1014'
+      // )
+      .map((card) => {
+        const isCardMarroWarriors = card.armyCardID === 'hs1000'
+        const isCardNeGokSa = card.armyCardID === 'hs1014'
+        const isCardMezzodemonWarmongers = card.armyCardID === 'hs1185'
+        const isCardForPlayer1 =
+          isCardMarroWarriors || isCardNeGokSa || isCardMezzodemonWarmongers
 
-      const isCardIzumiSamurai = card.armyCardID === 'hs1002'
-      const isCardSgtDrake = card.armyCardID === 'hs1003'
-      const isCardZettianGuard = card.armyCardID === 'hs1008'
-      const isCardForPlayer2 =
-        isCardIzumiSamurai || isCardSgtDrake || isCardZettianGuard
-      const playerID = isCardForPlayer1 ? '0' : isCardForPlayer2 ? '1' : ''
+        const isCardIzumiSamurai = card.armyCardID === 'hs1002'
+        const isCardSgtDrake = card.armyCardID === 'hs1003'
+        const isCardZettianGuard = card.armyCardID === 'hs1008'
+        const isCardForPlayer2 =
+          isCardIzumiSamurai || isCardSgtDrake || isCardZettianGuard
+        const numberFromEndOfId = parseInt(
+          card.armyCardID.slice(card.armyCardID.length - 2)
+        )
+        const playerID = isCardForPlayer1
+          ? '0'
+          : isCardForPlayer2
+          ? '1'
+          : isEven(numberFromEndOfId)
+          ? '0'
+          : '1'
+        // id factory ...
+        function makeGameCardID() {
+          return `p${playerID}_${card.armyCardID}`
+        }
 
-      // id factory ...
-      function makeGameCardID() {
-        return `p${playerID}_${card.armyCardID}`
-      }
-
-      return {
-        ...card,
-        playerID,
-        // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
-        cardQuantity: 1,
-        gameCardID: makeGameCardID(),
-      }
-    })
+        return {
+          ...card,
+          playerID,
+          // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
+          cardQuantity: 1,
+          gameCardID: makeGameCardID(),
+        }
+      })
+  )
 }
