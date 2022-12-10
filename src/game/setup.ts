@@ -1,11 +1,8 @@
 // import { hexedMeadowCards } from './cards'
 import {
   ArmyCard,
-  BaseGameOptions,
-  DevGameOptions,
   GameArmyCard,
   GameState,
-  GameUnit,
   GameUnits,
   PlayersState,
 } from './types'
@@ -15,11 +12,7 @@ import {
   generatePreplacedOrderMarkers,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
-import {
-  coreHeroscapeCards,
-  ICoreHeroscapeCard,
-  MS1Cards,
-} from './coreHeroscapeCards'
+import { coreHeroscapeCards, ICoreHeroscapeCard } from './coreHeroscapeCards'
 import { transformGameArmyCardsToGameUnits } from './transformers'
 
 function playersStateWithPrePlacedOMs(): PlayersState {
