@@ -7,10 +7,7 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
-import {
-  ConfirmOrResetButtons,
-  StyledButtonWrapper,
-} from './ConfirmOrResetButtons'
+import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
 import { uniq } from 'lodash'
 
 export const RoundOfPlayControls = () => {
