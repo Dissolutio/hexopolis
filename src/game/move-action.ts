@@ -1,4 +1,5 @@
 import { Move } from 'boardgame.io'
+import { uniq } from 'lodash'
 import { Hex, HexUtils } from 'react-hexgrid'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
 import {
@@ -34,7 +35,7 @@ export const moveAction: Move<GameState> = {
       G.currentOrderMarker,
       ctx.currentPlayer
     ) // revealedGameCard is a proxy object
-    const movedUnitsCount = G.unitsMoved.length
+    const movedUnitsCount = uniq(G.unitsMoved).length
     const allowedMoveCount = revealedGameCard?.figures ?? 0
 
     const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
@@ -93,11 +94,9 @@ export const moveAction: Move<GameState> = {
       newGameUnits[unitID].moveRange = moveRange
     })
     // update G
-    if (isInSafeMoveRange) {
-      G.boardHexes = { ...newBoardHexes }
-      G.gameUnits = { ...newGameUnits }
-      G.unitsMoved = newUnitsMoved
-    }
+    G.boardHexes = { ...newBoardHexes }
+    G.gameUnits = { ...newGameUnits }
+    G.unitsMoved = newUnitsMoved
     return G
   },
 }
