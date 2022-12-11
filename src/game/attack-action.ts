@@ -71,9 +71,9 @@ export const attackAction: Move<GameState> = (
   const skulls = attackRoll.filter((n) => n <= 3).length
   const defenseRoll = random?.Die(6, defenseRolled) ?? []
   const shields = defenseRoll.filter((n) => n === 4 || n === 5).length
-  const wounds = Math.max(skulls - shields, 0)
-  const isHit = wounds > 0
-  const isFatal = wounds >= defenderInitialLife
+  const woundsDealt = Math.max(skulls - shields, 0)
+  const isHit = woundsDealt > 0
+  const isFatal = woundsDealt >= defenderInitialLife - defenderGameUnit.wounds
   const defenderUnitName = defenderGameCard?.name ?? ''
   const indexOfThisAttack = unitsAttacked.length
   const attackId = `r${currentRound}:om${currentOrderMarker}:${unitID}:a${indexOfThisAttack}`
@@ -89,20 +89,20 @@ export const attackAction: Move<GameState> = (
     defenseRolled,
     skulls,
     shields,
-    wounds,
+    wounds: woundsDealt,
     isFatal,
   })
 
   // deal damage
-  if (isHit && !isFatal) {
-    const gameCardIndex = G.gameArmyCards.findIndex(
-      (card) => card?.gameCardID === defenderGameUnit.gameCardID
-    )
-    // TODO this should track some kind of damage history AKA card.wounds or unit.wounds, not adjust life directly
-    G.gameArmyCards[gameCardIndex].life = defenderInitialLife - wounds
+  if (isHit) {
+    G.gameUnits[defenderHexUnitID].wounds += woundsDealt
   }
   // kill unit, clear hex
   if (isFatal) {
+    G.unitsKilled = {
+      ...G.unitsKilled,
+      [unitID]: [...G.unitsKilled[unitID], defenderGameUnit.unitID],
+    }
     delete G.gameUnits[defenderGameUnit.unitID]
     G.boardHexes[defenderHexID].occupyingUnitID = ''
   }

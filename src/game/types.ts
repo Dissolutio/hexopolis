@@ -93,6 +93,7 @@ export type GameUnit = {
   playerID: string
   gameCardID: string
   armyCardID: string
+  wounds: number
   movePoints: number
   moveRange: MoveRange
 }

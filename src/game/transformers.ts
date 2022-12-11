@@ -20,6 +20,7 @@ export function transformGameArmyCardsToGameUnits(
         armyCardID: card.armyCardID,
         playerID: card.playerID,
         gameCardID: card.gameCardID,
+        wounds: 0,
         movePoints: 0,
         moveRange: { safe: [], engage: [], disengage: [], denied: [] },
       }
