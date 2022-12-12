@@ -11,10 +11,6 @@ import {
 import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from './types'
 
 export const moveAction: Move<GameState> = {
-  undoable: ({ G, ctx }) => {
-    // TODO: only can undo if no disengagements / special stuff happened
-    return true
-  },
   move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
     const { unitID, movePoints } = unit
     const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
@@ -27,7 +23,6 @@ export const moveAction: Move<GameState> = {
       ...currentMoveRange.engage,
       ...currentMoveRange.safe,
     ].includes(endHexID)
-    const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
     const moveCost = HexUtils.distance(startHex as Hex, endHex)
     const revealedGameCard = selectRevealedGameCard(
       G.orderMarkers,

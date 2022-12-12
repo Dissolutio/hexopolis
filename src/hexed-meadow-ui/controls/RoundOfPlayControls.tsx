@@ -141,13 +141,16 @@ export const RopAttackControls = () => {
         You have used {attacksUsed} / {attacksAllowed} attacks allowed
       </StyledControlsP>
 
-      <StyledControlsP style={{ marginBottom: '60px' }}>
+      <StyledControlsP>
         {`You moved ${uniqUnitsMoved.length} unit${
           uniqUnitsMoved.length !== 1 ? 's' : ''
         }, and have ${freeAttacksAvailable} attack${
           freeAttacksAvailable !== 1 ? 's' : ''
         } available for unmoved units`}
       </StyledControlsP>
+      {unitsAttacked.length <= 0 && (
+        <UndoRedoButtons undoText="Go back to movement stage" noRedo />
+      )}
 
       {isAllAttacksUsed ? (
         <ConfirmOrResetButtons
