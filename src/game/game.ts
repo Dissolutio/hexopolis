@@ -1,4 +1,4 @@
-import { TurnOrder, PlayerView } from 'boardgame.io/core'
+import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import {
@@ -128,6 +128,10 @@ export const HexedMeadow: Game<GameState> = {
       turn: {
         // d20 roll-offs for initiative
         order: TurnOrder.CUSTOM_FROM('initiative'),
+        activePlayers: {
+          currentPlayer: stageNames.movement,
+          others: Stage.NULL,
+        },
         // reveal order marker, assign move-points/move-ranges to eligible units
         onBegin: ({ G, ctx }) => {
           // Reveal order marker

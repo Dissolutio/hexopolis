@@ -12,7 +12,7 @@ import { uniq } from 'lodash'
 
 export const RoundOfPlayControls = () => {
   const { ctx } = useBgioCtx()
-  const { isMyTurn, isAttackingStage } = ctx
+  const { isMyTurn, isAttackingStage, isMovementStage } = ctx
   if (!isMyTurn) {
     return (
       <>
@@ -20,7 +20,7 @@ export const RoundOfPlayControls = () => {
       </>
     )
   }
-  if (isMyTurn && !isAttackingStage) {
+  if (isMovementStage) {
     return (
       <>
         <RopMoveControls />

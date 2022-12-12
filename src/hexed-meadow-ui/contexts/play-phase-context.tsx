@@ -16,7 +16,6 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { uniq } from 'lodash'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -55,7 +54,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { ctx } = useBgioCtx()
   const { moves } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
-  const { currentPlayer, isMyTurn, isAttackingStage } = ctx
+  const { currentPlayer, isMyTurn, isMovementStage, isAttackingStage } = ctx
   const { moveAction, attackAction } = moves
 
   const currentTurnGameCardID =
@@ -148,12 +147,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
 
     // MOVE STAGE
-    if (isMyTurn && !isAttackingStage) {
+    if (isMovementStage) {
       const selectedUnitMoveRange =
         selectedUnit?.moveRange ?? generateBlankMoveRange()
       const { safe, engage, disengage } = selectedUnitMoveRange
       const allMoves = [safe, disengage, engage].flat()
       const isInMoveRangeOfSelectedUnit = allMoves.includes(sourceHex.id)
+      const isInDisengageRange = selectedUnitMoveRange.disengage.includes(
+        sourceHex.id
+      )
       // select unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)

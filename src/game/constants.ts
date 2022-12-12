@@ -17,6 +17,9 @@ export const stageNames = {
   placeOrderMarkers: 'placeOrderMarkers',
   placingUnits: 'placingUnits',
   attacking: 'attacking',
+  movement: 'movement',
+  waitingForDisengageSwipe: 'waitingForDisengageSwipe',
+  disengagementSwipe: 'disengagementSwipe',
 }
 
 export const OM_COUNT = 3
