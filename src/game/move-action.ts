@@ -2,7 +2,9 @@ import { Move } from 'boardgame.io'
 import { uniq } from 'lodash'
 import { Hex, HexUtils } from 'react-hexgrid'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
+import { encodeGameLogMessage } from './gamelog'
 import {
+  selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
   selectUnitsForCard,
@@ -16,6 +18,7 @@ export const moveAction: Move<GameState> = {
     const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
     const endHexID = endHex.id
     const startHex = selectHexForUnit(unitID, G.boardHexes)
+    const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
     const currentMoveRange = G.gameUnits[unitID].moveRange
     const isEndHexInMoveRange = [
@@ -72,12 +75,10 @@ export const moveAction: Move<GameState> = {
       G.gameArmyCards,
       G.currentOrderMarker
     )
-
     const currentTurnUnits = selectUnitsForCard(
       unrevealedGameCard?.gameCardID ?? '',
       G.gameUnits
     )
-
     currentTurnUnits.forEach((unit: GameUnit) => {
       const { unitID } = unit
       const moveRange = calcUnitMoveRange(
@@ -88,6 +89,17 @@ export const moveAction: Move<GameState> = {
       )
       newGameUnits[unitID].moveRange = moveRange
     })
+    const indexOfThisMove = G.unitsMoved.length
+    const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:m${indexOfThisMove}`
+    const gameLogForThisMove = encodeGameLogMessage({
+      type: 'move',
+      id: moveId,
+      unitID: unitID,
+      unitSingleName: unitGameCard?.singleName ?? '',
+      startHexID,
+      endHexID,
+    })
+    G.gameLog.push(gameLogForThisMove)
     // update G
     G.boardHexes = { ...newBoardHexes }
     G.gameUnits = { ...newGameUnits }

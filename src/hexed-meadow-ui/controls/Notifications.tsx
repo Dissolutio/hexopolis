@@ -7,6 +7,7 @@ import { decodeGameLogMessage } from 'game/gamelog'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
+  const toatsInReverse = [...toasts].reverse()
   const { gameLog } = useBgioG()
   const { startPause, endPause } = handlers
   const { indexOfLastShownToast, setIndexOfLastShownToast } = useUIContext()
@@ -35,7 +36,7 @@ export const Notifications = () => {
 
   return (
     <StyledDiv onMouseEnter={startPause} onMouseLeave={endPause}>
-      {toasts.map((toast) => {
+      {toatsInReverse.map((toast) => {
         return (
           <div
             key={toast.id}

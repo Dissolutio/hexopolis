@@ -1,8 +1,9 @@
+import { capitalize } from 'lodash'
 import { Roll } from './rollInitiative'
 
 export type GameLogMessage = {
   type: string // 'roundBegin' 'attack'
-  id: string // formatted for attacks, just plain round number for roundBegin, tbd how helpful it is
+  id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
 
   // attack logs below
   unitID?: string
@@ -18,6 +19,12 @@ export type GameLogMessage = {
 
   // roundBegin logs below
   initiativeRolls?: Roll[][]
+
+  // move logs below
+  // unitID?: string
+  unitSingleName?: string
+  startHexID?: string
+  endHexID?: string
 }
 export const gameLogTypes = {
   move: 'move',
@@ -55,6 +62,12 @@ export const decodeGameLogMessage = (
       shields,
       wounds,
       isFatal,
+      // roundBegin
+      initiativeRolls,
+      // moves
+      unitSingleName,
+      startHexID,
+      endHexID,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -80,6 +93,13 @@ export const decodeGameLogMessage = (
           type,
           id, // id is the round number, for roundBegin log types
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.move:
+        const moveMsgText = `${unitSingleName} is on the move`
+        return {
+          type,
+          id, // id is the round number, for roundBegin log types
+          msg: moveMsgText,
         }
       default:
         break
