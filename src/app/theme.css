@@ -24,10 +24,11 @@ html {
   --neon-green: hsla(74, 64%, 59%, 0.5);
   --neon-orange: rgba(224, 150, 40, 0.5);
   --neon-red: rgba(226, 83, 40, 0.5);
-  /* #62A87C shiny shamrock green as success color, https://coolors.co/0c151c-ffffff-fe938c-62a87c-3590f3 */
+  /* #62A87C shiny shamrock green, #03CEA4 is Carribean,  Carribean preferred MAYBE as success color? https://coolors.co/0c151c-ffffff-fe938c-62a87c-3590f3 */
   --success-green: #62a87c;
-  /* #FF5E5B orange-red-crayola as error color, #246EB9 is spanish-blue, https://coolors.co/0c151c-ffffff-ff5e5b-62a87c-246eb9 */
+  /* #FF5E5B orange-red-crayola as error color, #246EB9 is spanish-blue, #EAC435 is Saffron https://coolors.co/0c151c-ffffff-ff5e5b-62a87c-246eb9 */
   --selected-green: #0b5d1e;
+  --caution-yellow: #eac435;
   --error-red: #ff5e5b;
   --info-blue: #246eb9;
 }

@@ -32,7 +32,6 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   --player-color: ${(props) => props.theme.playerColor};
   --player-bg: ${(props) => playerIdsTContourBackgroundFile[props.playerID]};
   --navbar-height: 30px;
-  --navbar-logo-height: 32px;
 
   position: relative;
   display: flex;
@@ -52,7 +51,7 @@ const LayoutTop = styled.div`
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  height: 50vh;
+  height: 70vh;
   position: relative;
   overflow: auto;
 `

@@ -1,4 +1,5 @@
 import { Move } from 'boardgame.io'
+import { uniq } from 'lodash'
 import { Hex, HexUtils } from 'react-hexgrid'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
 import {
@@ -10,10 +11,6 @@ import {
 import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from './types'
 
 export const moveAction: Move<GameState> = {
-  undoable: ({ G, ctx }) => {
-    // TODO: only can undo if no disengagements / special stuff happened
-    return true
-  },
   move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
     const { unitID, movePoints } = unit
     const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
@@ -21,15 +18,19 @@ export const moveAction: Move<GameState> = {
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const startHexID = startHex?.id ?? ''
     const currentMoveRange = G.gameUnits[unitID].moveRange
-    const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
+    const isEndHexInMoveRange = [
+      ...currentMoveRange.disengage,
+      ...currentMoveRange.engage,
+      ...currentMoveRange.safe,
+    ].includes(endHexID)
     const moveCost = HexUtils.distance(startHex as Hex, endHex)
     const revealedGameCard = selectRevealedGameCard(
       G.orderMarkers,
-      G.armyCards,
+      G.gameArmyCards,
       G.currentOrderMarker,
       ctx.currentPlayer
     ) // revealedGameCard is a proxy object
-    const movedUnitsCount = G.unitsMoved.length
+    const movedUnitsCount = uniq(G.unitsMoved).length
     const allowedMoveCount = revealedGameCard?.figures ?? 0
 
     const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
@@ -37,6 +38,13 @@ export const moveAction: Move<GameState> = {
     const isDisallowedBecauseMaxUnitsMoved =
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
+    // DISALLOW - move not in move range
+    if (!isEndHexInMoveRange) {
+      console.error(
+        `Move action denied:The end hex is not in the unit's move range`
+      )
+      return
+    }
     // DISALLOW - max units moved, cannot move any NEW units, and this unit would be a newly moved unit
     if (isDisallowedBecauseMaxUnitsMoved) {
       console.error(
@@ -61,7 +69,7 @@ export const moveAction: Move<GameState> = {
     // update move-ranges for this turn's units
     const unrevealedGameCard = selectUnrevealedGameCard(
       playersOrderMarkers,
-      G.armyCards,
+      G.gameArmyCards,
       G.currentOrderMarker
     )
 
@@ -72,15 +80,18 @@ export const moveAction: Move<GameState> = {
 
     currentTurnUnits.forEach((unit: GameUnit) => {
       const { unitID } = unit
-      const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)
+      const moveRange = calcUnitMoveRange(
+        unit,
+        newBoardHexes,
+        newGameUnits,
+        G.gameArmyCards
+      )
       newGameUnits[unitID].moveRange = moveRange
     })
     // update G
-    if (isInSafeMoveRange) {
-      G.boardHexes = { ...newBoardHexes }
-      G.gameUnits = { ...newGameUnits }
-      G.unitsMoved = newUnitsMoved
-    }
+    G.boardHexes = { ...newBoardHexes }
+    G.gameUnits = { ...newGameUnits }
+    G.unitsMoved = newUnitsMoved
     return G
   },
 }

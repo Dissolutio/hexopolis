@@ -63,7 +63,7 @@ export const HexedMeadow: Game<GameState> = {
       // reset order-markers state
       onBegin: ({ G }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
-        if (G.currentRound > 0) {
+        if (G.currentRound > 1) {
           // clear secret order marker state
           G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
           G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
@@ -108,7 +108,7 @@ export const HexedMeadow: Game<GameState> = {
       // roll initiative
       onBegin: ({ G }) => {
         const initiativeRoll = rollD20Initiative(['0', '1'])
-        const roundBeginID = `${G.currentRound}`
+        const roundBeginID = `roundBegin${G.currentRound}`
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: roundBeginID,
@@ -147,7 +147,7 @@ export const HexedMeadow: Game<GameState> = {
           // Assign move points/ranges
           const unrevealedGameCard = selectUnrevealedGameCard(
             currentPlayersOrderMarkers,
-            G.armyCards,
+            G.gameArmyCards,
             G.currentOrderMarker
           )
           const currentTurnUnits = selectUnitsForCard(
@@ -171,7 +171,8 @@ export const HexedMeadow: Game<GameState> = {
               const moveRange = calcUnitMoveRange(
                 unitWithMovePoints,
                 G.boardHexes,
-                mutatedGameUnits
+                mutatedGameUnits,
+                G.gameArmyCards
               )
               const unitWithMoveRange = {
                 ...unitWithMovePoints,

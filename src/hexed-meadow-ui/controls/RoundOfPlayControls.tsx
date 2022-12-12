@@ -7,10 +7,7 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexed-meadow-ui/layout/Typography'
-import {
-  ConfirmOrResetButtons,
-  StyledButtonWrapper,
-} from './ConfirmOrResetButtons'
+import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
 import { uniq } from 'lodash'
 
 export const RoundOfPlayControls = () => {
@@ -144,13 +141,16 @@ export const RopAttackControls = () => {
         You have used {attacksUsed} / {attacksAllowed} attacks allowed
       </StyledControlsP>
 
-      <StyledControlsP style={{ marginBottom: '60px' }}>
+      <StyledControlsP>
         {`You moved ${uniqUnitsMoved.length} unit${
-          uniqUnitsMoved.length > 1 ? 's' : ''
+          uniqUnitsMoved.length !== 1 ? 's' : ''
         }, and have ${freeAttacksAvailable} attack${
-          freeAttacksAvailable > 1 ? 's' : ''
+          freeAttacksAvailable !== 1 ? 's' : ''
         } available for unmoved units`}
       </StyledControlsP>
+      {unitsAttacked.length <= 0 && (
+        <UndoRedoButtons undoText="Go back to movement stage" noRedo />
+      )}
 
       {isAllAttacksUsed ? (
         <ConfirmOrResetButtons
@@ -162,7 +162,7 @@ export const RopAttackControls = () => {
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
           resetText={`End Turn, skip my ${attacksAvailable} attack${
-            attacksAvailable > 1 ? 's' : ''
+            attacksAvailable !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />

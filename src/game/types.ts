@@ -1,5 +1,6 @@
 export interface GameState {
-  armyCards: GameArmyCard[]
+  initialArmyCards: GameArmyCard[]
+  gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
   players: PlayersState
   hexMap: HexMap
@@ -15,6 +16,7 @@ export interface GameState {
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: string[]
+  unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]
 }
 // for secret state
@@ -91,6 +93,7 @@ export type GameUnit = {
   playerID: string
   gameCardID: string
   armyCardID: string
+  wounds: number
   movePoints: number
   moveRange: MoveRange
 }

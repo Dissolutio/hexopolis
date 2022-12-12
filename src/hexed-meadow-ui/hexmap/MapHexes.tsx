@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Hexagon, Text } from 'react-hexgrid'
+import { Text } from 'react-hexgrid'
 
 import {
   useUIContext,
@@ -17,6 +17,7 @@ import {
   calcPlacementHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
+import Hexagon from './Hexagon'
 
 type MapHexesProps = {
   hexSize: number
@@ -24,7 +25,13 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, armyCards, startZones, gameUnits } = useBgioG()
+  const {
+    boardHexes,
+    gameArmyCards: armyCards,
+    startZones,
+    gameUnits,
+    unitsMoved,
+  } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
   const { ctx } = useBgioCtx()
@@ -71,13 +78,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         selectedUnitID,
         hex,
         playerID,
+        revealedGameCard,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
-        revealedGameCard,
         boardHexes,
         gameUnits,
+        unitsMoved,
         selectedUnitMoveRange,
       })
     }
@@ -109,7 +117,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           className={hexClassNames(hex)}
         >
           <g>
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {gameUnit && isShowableUnit && (
                 <motion.g
                   initial={{ opacity: 0 }}

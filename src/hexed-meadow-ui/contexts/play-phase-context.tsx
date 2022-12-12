@@ -44,7 +44,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
-    armyCards,
+    gameArmyCards: armyCards,
     gameUnits,
     unitsAttacked,
     orderMarkers,

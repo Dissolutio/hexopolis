@@ -1,4 +1,5 @@
 import React from 'react'
+import { IconBaseProps } from 'react-icons'
 import {
   GiDiabloSkull,
   GiNinjaArmor,
@@ -7,13 +8,23 @@ import {
   GiAlliedStar,
   GiWalkingTurret,
   GiSadCrab,
+  GiArcher,
+  GiPistolGun,
+  GiVikingHelmet,
+  GiNinjaHeroicStance,
+  GiLeeEnfield,
+  GiSverdIFjell,
+  GiVikingShield,
+  GiAngelOutfit,
+  GiDragonBreath,
+  GiDinosaurRex,
 } from 'react-icons/gi'
 
 const playerIconColors: { [key: string]: string } = {
   '0': 'var(--bee-yellow)',
   '1': 'var(--butterfly-purple)',
 }
-type Props = {
+type Props = IconBaseProps & {
   armyCardID: string
   iconPlayerID?: String
   hexSize?: number
@@ -27,6 +38,7 @@ export const UnitIcon = ({
   iconPlayerID,
   hexSize,
   iconProps,
+  ...rest
 }: Props) => {
   if (!armyCardID) {
     return null
@@ -42,6 +54,7 @@ export const UnitIcon = ({
       fill: `${playerIconColors?.[iconPlayerID as string] ?? 'var(--white)'}`,
       fontSize: iconProps?.x ?? `${iconSize}px`,
     },
+    ...rest,
   }
 
   switch (armyCardID) {
@@ -57,12 +70,42 @@ export const UnitIcon = ({
     case 'hs1003':
       // sgt drake
       return <GiAlliedStar {...gameIconProps} />
+    case 'hs1004':
+      // syvarris
+      return <GiArcher {...gameIconProps} />
+    case 'hs1005':
+      // krav maga agents
+      return <GiPistolGun {...gameIconProps} />
+    case 'hs1006':
+      // tarn viking warriors
+      return <GiVikingHelmet {...gameIconProps} />
+    case 'hs1007':
+      // agent carr
+      return <GiNinjaHeroicStance {...gameIconProps} />
     case 'hs1008':
       // zettian guard
       return <GiWalkingTurret {...gameIconProps} />
+    case 'hs1009':
+      // airborne elite
+      return <GiLeeEnfield {...gameIconProps} />
+    case 'hs1010':
+      // finn the viking champion
+      return <GiSverdIFjell {...gameIconProps} />
+    case 'hs1011':
+      // thorgrim the viking champion
+      return <GiVikingShield {...gameIconProps} />
+    case 'hs1012':
+      // raelin the kyrie warrior
+      return <GiAngelOutfit {...gameIconProps} />
+    case 'hs1013':
+      // mimring
+      return <GiDragonBreath {...gameIconProps} />
     case 'hs1014':
       // negoksa
       return <GiAlienStare {...gameIconProps} />
+    case 'hs1015':
+      // grimnak
+      return <GiDinosaurRex {...gameIconProps} />
     case 'hs1185':
       // mezzodemon
       return <GiSadCrab {...gameIconProps} />

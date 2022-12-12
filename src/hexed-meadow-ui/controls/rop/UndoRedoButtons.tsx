@@ -5,18 +5,25 @@ import {
 } from 'react-icons/hi'
 import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 
-export const UndoRedoButtons = () => {
+type Props = {
+  noRedo?: boolean
+  undoText?: string
+}
+
+export const UndoRedoButtons = ({ noRedo, undoText }: Props) => {
   const { undo, redo } = useBgioMoves()
   return (
     <StyledButtonWrapper>
       <button onClick={undo}>
         <HiOutlineArrowCircleLeft />
-        <span>Undo</span>
+        <span>{undoText || 'Undo'}</span>
       </button>
-      <button onClick={redo}>
-        <HiOutlineArrowCircleRight />
-        Redo
-      </button>
+      {!noRedo && (
+        <button onClick={redo}>
+          <HiOutlineArrowCircleRight />
+          Redo
+        </button>
+      )}
     </StyledButtonWrapper>
   )
 }

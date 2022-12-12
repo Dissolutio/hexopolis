@@ -76,39 +76,44 @@ export function calcPlacementHexClassNames({
 }
 
 export function calcRopHexClassNames({
+  isMyTurn,
+  isAttackingStage,
   selectedUnitID,
   hex,
   playerID,
   revealedGameCardUnits,
   revealedGameCardUnitIDs,
-  isMyTurn,
-  isAttackingStage,
   revealedGameCard,
   boardHexes,
   gameUnits,
+  unitsMoved,
   selectedUnitMoveRange,
 }: {
+  isMyTurn: boolean
+  isAttackingStage: boolean
   selectedUnitID: string
   hex: BoardHex
   playerID: string
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
-  isMyTurn: boolean
-  isAttackingStage: boolean
   revealedGameCard: GameArmyCard | undefined
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
 }) {
+  const hexUnitID = hex.occupyingUnitID
+  const hexUnit = gameUnits[hexUnitID]
+  const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
   const isSelectedCard = (hex: BoardHex) => {
-    return revealedGameCardUnitIDs.includes(hex.occupyingUnitID)
+    return revealedGameCardUnitIDs.includes(hexUnitID)
   }
   const isSelectedUnitHex = (hex: BoardHex) => {
-    return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
+    return hexUnitID && hexUnitID === selectedUnitID
   }
   const activeEnemyUnitIDs = (revealedGameCardUnits ?? []).map((u) => u.unitID)
   const isOpponentsActiveUnitHex = (hex: BoardHex) => {
-    return activeEnemyUnitIDs.includes(hex.occupyingUnitID)
+    return activeEnemyUnitIDs.includes(hexUnitID)
   }
   // TODO: extract functions for className pieces (i.e. makePlacementPhaseClassNames(startZones, isMyStartZoneHex, isSelectedHex)), instead of building classNames procedurally like this
   let classNames = ''
@@ -128,12 +133,12 @@ export function calcRopHexClassNames({
   if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
     classNames = classNames.concat(' maphex__opponents-active-unit ')
   }
+
   //phase: ROP-attack
   if (isAttackingStage) {
     // Highlight targetable enemy units
-    const endHexUnitID = hex.occupyingUnitID
-    const isEndHexOccupied = Boolean(endHexUnitID)
-    const endHexUnitPlayerID = gameUnits[endHexUnitID]?.playerID
+    const isEndHexOccupied = Boolean(hexUnitID)
+    const endHexUnitPlayerID = hexUnit?.playerID
     const isEndHexEnemyOccupied =
       isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
     // If unit selected, hex is enemy occupied...
@@ -150,23 +155,37 @@ export function calcRopHexClassNames({
   }
 
   // phase: ROP-move
-  // todo: make movement its own stage
   if (!isAttackingStage) {
     const { safe, engage, disengage } = selectedUnitMoveRange
     const isInSafeMoveRange = safe.includes(hex.id)
     const isInEngageMoveRange = engage.includes(hex.id)
+    const hasUnitOnHexMoved = unitsMoved.includes(hexUnitID)
     const isInDisengageMoveRange = disengage.includes(hex.id)
-    // Paint safe moves
-    if (isInSafeMoveRange) {
-      classNames = classNames.concat(' maphex__move-safe ')
-    }
-    // Paint engage moves
-    if (isInEngageMoveRange) {
-      classNames = classNames.concat(' maphex__move-engage ')
-    }
-    // Paint disengage moves
-    if (isInDisengageMoveRange) {
-      classNames = classNames.concat(' maphex__move-disengage ')
+    const isUnitMovePartiallyExpended =
+      hasUnitOnHexMoved && hexUnit.movePoints > 0
+    const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0
+    // only do moveRange/move-expended coloring on non-selected units/hexes
+    if (hex.id !== hexOfSelectedUnit?.id) {
+      // Paint safe moves
+      if (isInSafeMoveRange) {
+        classNames = classNames.concat(' maphex__move-safe ')
+      }
+      // Paint engage moves
+      if (isInEngageMoveRange) {
+        classNames = classNames.concat(' maphex__move-engage ')
+      }
+      // Paint disengage moves
+      if (isInDisengageMoveRange) {
+        classNames = classNames.concat(' maphex__move-disengage ')
+      }
+      // Paint hexes with units that have partially expended moves
+      if (isUnitMovePartiallyExpended) {
+        classNames = classNames.concat(' maphex__move-partially-moved-unit ')
+      }
+      // Paint hexes with units that have totally expended moves
+      if (isUnitMoveTotallyUsed) {
+        classNames = classNames.concat(' maphex__move-totally-moved-unit ')
+      }
     }
   }
   return classNames

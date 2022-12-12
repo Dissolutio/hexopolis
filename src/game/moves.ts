@@ -22,22 +22,6 @@ const deployUnits: Move<GameState> = (
     [boardHexId: string]: string // occupyingUnitId
   }
 ) => {
-  /*
-   ALL this below was WIP, and abandoned for SIMPLICITY, AKA just place the units and worry about cheaters later
-   Goals:
-  1. Get list of units that player is deploying
-  2. Validate units belong to player (note all WRONGLY placed units, for dev-obs?)
-  3. Validate assigned hexes are in player's startZone (note all WRONGLY placed hexes, for dev-obs?)
-  4. Assign valid game units to valid hexes
-  5. All other units marked as destroyed? Or forfeited, somehow?
-  Work:
-  //  1. get units
-  // const playerStartZone = G.startZones[playerID]
-  // const validHexIds = propositions
-  //   .map((i) => i[0])
-  //   .filter((i) => playerStartZone.includes(i))
-  // const validGameUnitIds = propositions.map((i) => i[1])
-  */
   const propositions = Object.entries(deploymentProposition)
   let newG = {
     ...G,
@@ -62,23 +46,22 @@ const deployUnits: Move<GameState> = (
     newG.boardHexes[boardHexId].occupyingUnitID = placedGameUnitId
   })
   G.boardHexes = newG.boardHexes
-  //  2. get start zone
-  //  3. assign units
 }
 const confirmPlacementReady: Move<GameState> = (
-  { G, ctx },
+  { G },
   { playerID }: { playerID: string }
 ) => {
   G.placementReady[playerID] = true
 }
 const deconfirmPlacementReady: Move<GameState> = (
-  { G, ctx },
+  { G },
   { playerID }: { playerID: string }
 ) => {
   G.placementReady[playerID] = false
 }
 
 //phase:___PlaceOrderMarkers
+// placeOrderMarkers places the private order markers, the public ones get revealed each turn
 const placeOrderMarkers: Move<GameState> = (
   { G },
   {
@@ -89,13 +72,13 @@ const placeOrderMarkers: Move<GameState> = (
   G.players[playerID].orderMarkers = orders
 }
 const confirmOrderMarkersReady: Move<GameState> = (
-  { G, ctx },
+  { G },
   { playerID }: { playerID: string }
 ) => {
   G.orderMarkersReady[playerID] = true
 }
 const deconfirmOrderMarkersReady: Move<GameState> = (
-  { G, ctx },
+  { G },
   { playerID }: { playerID: string }
 ) => {
   G.orderMarkersReady[playerID] = false

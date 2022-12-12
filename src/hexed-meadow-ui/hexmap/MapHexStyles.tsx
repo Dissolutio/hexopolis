@@ -8,7 +8,7 @@ type MapHexStylesProps = {
 
 export const MapHexStyles = styled.div<MapHexStylesProps>`
   height: 100%;
-  position: relative;
+  /* position: relative; */
   overflow: scroll;
   // Style Map Scrollbars
   scrollbar-width: thin;
@@ -36,10 +36,11 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     font-size: ${(props) => `${props.hexSize / 75}rem`};
   }
   // All Hex Styles
-  // highlight all hexes, and set fill-opacity to 0
+  // highlight all hexes, and set fill-opacity to its initial value (it has given problems with flickering to 1, before)
   svg g polygon {
     stroke: var(--white);
     stroke-width: 0.1;
+    fill-opacity: 0.4;
     transition: fill-opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out,
       stroke 0.2s ease-in-out;
   }
@@ -88,7 +89,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
 
-  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
+  // highlight placeable hexes for selected unit, if hex is occupied
   .maphex__start-zone--placement--occupied > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
@@ -136,6 +137,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--neon-red);
     stroke-width: 0.6;
   }
+
   //PHASE: ROP-move
   // paint safe moverange
   .maphex__move-safe > g polygon {
@@ -143,22 +145,36 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     fill-opacity: 1;
   }
   // paint engage moverange
-  .maphex__move-engage > g {
+  .maphex__move-engage > g polygon {
     fill: var(--neon-orange);
     fill-opacity: 1;
   }
   // paint disengage moverange
-  .maphex__move-disengage > g {
+  .maphex__move-disengage > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
   }
+  // paint partially moves units
+  .maphex__move-partially-moved-unit > g polygon {
+    stroke: var(--caution-yellow);
+    stroke-opacity: 0.3;
+    stroke-width: 5;
+  }
+  // paint totally moves units
+  .maphex__move-totally-moved-unit > g polygon {
+    stroke: var(--error-red);
+    stroke-opacity: 0.3;
+    stroke-width: 5;
+  }
+
   //PHASE: ROP-attack
   // paint targetable enemy unit
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
-    filter: drop-shadow(10px 10px 9px #801d22)
-      drop-shadow(-10px -10px 9px #801d22) drop-shadow(10px -10px 9px #801d22)
-      drop-shadow(-10px 10px 9px #801d22);
+    filter: drop-shadow(5px 5px 4px var(--neon-red))
+      drop-shadow(-5px -5px 4px var(--neon-red))
+      drop-shadow(5px -5px 4px var(--neon-red))
+      drop-shadow(-5px 5px 4px var(--neon-red));
   }
 `

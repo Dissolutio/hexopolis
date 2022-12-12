@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Link, Routes } from 'react-router-dom'
 import { Client } from 'boardgame.io/react'
 import { Local, SocketIO } from 'boardgame.io/multiplayer'
 import { Debug } from 'boardgame.io/debug'
-
+import { Helmet } from 'react-helmet'
 import { BgioLobbyApiProvider } from 'bgio-contexts'
 import { AuthProvider, useAuth } from 'hooks/useAuth'
 import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
@@ -45,6 +45,9 @@ export const App = () => {
       <AuthProvider>
         <BgioLobbyApiProvider serverAddress={SERVER}>
           <MultiplayerLobbyProvider>
+            <Helmet>
+              <title>Hexopolis</title>
+            </Helmet>
             <BrowserRouter>
               <Routes>
                 <Route
@@ -93,6 +96,9 @@ export const App = () => {
 const LocalApp = () => {
   return (
     <>
+      <Helmet>
+        <title>Hexopolis - Local Game</title>
+      </Helmet>
       <DemoGameClient
         matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
         playerID="0"

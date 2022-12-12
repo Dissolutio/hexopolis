@@ -38,7 +38,7 @@ const orderMarkerButtonStyle = {
 
 export const PlaceOrderMarkersControls = () => {
   const { playerID } = useBgioClientInfo()
-  const { currentRound, orderMarkersReady, myCards, myOrderMarkers } =
+  const { currentRoundText, orderMarkersReady, myCards, myOrderMarkers } =
     useBgioG()
   const isReady = orderMarkersReady[playerID] === true
   const [editingOrderMarkers, setEditingOrderMarkers] = useState(
@@ -97,9 +97,7 @@ export const PlaceOrderMarkersControls = () => {
         </>
       ) : (
         <>
-          <StyledControlsHeaderH2>{`Place your order-markers for round ${
-            currentRound + 1
-          }:`}</StyledControlsHeaderH2>
+          <StyledControlsHeaderH2>{`Place your order-markers for round ${currentRoundText}:`}</StyledControlsHeaderH2>
           <OMButtonList
             activeMarker={activeMarker}
             selectOrderMarker={selectOrderMarker}
