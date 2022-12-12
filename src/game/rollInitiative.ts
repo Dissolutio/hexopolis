@@ -1,22 +1,30 @@
-type Roll = {
+export type Roll = {
   playerID: string
   roll: number
 }
 
-export function rollD20Initiative(playerIDs: string[]) {
-  const initialRolls = genRolls(playerIDs)
-  return initialRolls.reduce(rollsToInitiative, [])
+type InitiativeResult = {
+  rolls: Roll[][]
+  initiative: string[]
+}
+
+export function rollD20Initiative(playerIDs: string[]): InitiativeResult {
+  const initialRolls: Roll[] = genRolls(playerIDs)
+  return initialRolls.reduce(rollsToInitiative, {
+    rolls: [initialRolls],
+    initiative: [],
+  })
 }
 
 function rollsToInitiative(
-  initiative: string[],
+  result: InitiativeResult,
   curr: Roll,
   i: number,
   arr: Roll[]
-): string[] {
+): InitiativeResult {
   // Player already in initiative result? Move on
-  if (initiative.find((elem) => elem === curr.playerID)) {
-    return [...initiative]
+  if (result.initiative.find((elem) => elem === curr.playerID)) {
+    return result
   }
   // Player has tied other player(s) ? Settle tie, add all involved to initiative
   const tiedRolls = arr.filter((rollObj) => rollObj.roll === curr.roll)
@@ -25,11 +33,17 @@ function rollsToInitiative(
     const newRollsForTiedPlayers = genRolls(tiedPlayers)
     const initiativeFromTieBreaker = newRollsForTiedPlayers.reduce(
       rollsToInitiative,
-      []
+      { rolls: [...result.rolls, newRollsForTiedPlayers], initiative: [] }
     )
-    return [...initiative, ...initiativeFromTieBreaker]
+    return {
+      ...result,
+      initiative: [
+        ...result.initiative,
+        ...initiativeFromTieBreaker.initiative,
+      ],
+    }
   } else {
-    return [...initiative, curr.playerID]
+    return { ...result, initiative: [...result.initiative, curr.playerID] }
   }
 }
 function genRolls(players: string[]): Roll[] {

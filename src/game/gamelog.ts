@@ -1,7 +1,10 @@
+import { Roll } from './rollInitiative'
+
 export type GameLogMessage = {
   type: string // 'roundBegin' 'attack'
-  id: string // round1:orderMarker1:unit1:attack3 => r1:om1:p1u1_hs1008:a3
-  // attack related ones below
+  id: string // formatted for attacks, just plain round number for roundBegin, tbd how helpful it is
+
+  // attack logs below
   unitID?: string
   unitName?: string
   targetHexID?: string
@@ -12,7 +15,9 @@ export type GameLogMessage = {
   shields?: number
   wounds?: number
   isFatal?: boolean
-  // roundBegin related ones below
+
+  // roundBegin logs below
+  initiativeRolls?: Roll[][]
 }
 export const gameLogTypes = {
   move: 'move',
@@ -27,14 +32,6 @@ export type GameLogMessageDecoded = GameLogMessage & {
 export const encodeGameLogMessage = (gameLog: GameLogMessage): string => {
   try {
     return JSON.stringify(gameLog)
-    // switch (gameLog.type) {
-    //   case 'attack':
-    //     return JSON.stringify(gameLog)
-    //   case 'roundBegin':
-    //     return JSON.stringify(gameLog)
-    //   default:
-    //     return ''
-    // }
   } catch (error) {
     console.error('🚀 ~ file: gamelog.ts ~ encodeGameLogMessage ~ error', error)
     return ''
