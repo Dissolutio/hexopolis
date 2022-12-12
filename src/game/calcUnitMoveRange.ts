@@ -102,6 +102,7 @@ function computeWalkMoveRange({
   // recursive reduce over neighbors
   let nextResults = neighbors.reduce(
     (result: MoveRange, end: BoardHex): MoveRange => {
+      // 1. Gather data about the current hex
       const { id: endHexID, occupyingUnitID: endHexUnitID } = end
       const engagementsForCurrentHex = selectEngagementsForHex({
         overrideUnitID: unit.unitID,
@@ -140,40 +141,40 @@ function computeWalkMoveRange({
       const isUnpassable =
         isTooCostly || isEndHexEnemyOccupied || isEndHexUnitEngaged
       const isUnparkable = isEndHexOccupied
-      // if it's not unpassable, we can move there, but we only continue the recursion if it's a SAFE
-      if (!isUnpassable) {
-        if (isCausingEngagement && !isUnparkable) {
-          result.engage.push(endHexID)
-          // we do not continue recursion past engagement hexes
-          return { ...result }
-        } else if (isCausingDisngagement && !isUnparkable) {
-          result.disengage.push(endHexID)
-          // we do not continue recursion past disengagement hexes
-          return { ...result }
-        } else {
-          // the space is safe to pass thru, continue to neighbors but we can only stop there if it's not occupied (or, i.e. if we are a squad and hex has a treasure glyph, then we cannot stop there)
-          if (!isUnparkable) {
-            result.safe.push(endHexID)
-          }
-          const recursiveMoveRange = computeWalkMoveRange({
-            startHex: end,
-            movePoints: movePointsLeftAfterMove,
-            unit,
-            boardHexes,
-            initialMoveRange: result,
-            initialEngagements,
-            gameUnits,
-            playerID,
-            hexesVisited: hexesVisitedCopy,
-            armyCards,
-          })
-          return {
-            ...result,
-            ...recursiveMoveRange,
-          }
-        }
-      } else {
+      // 2. If it's unpassable
+      if (isUnpassable) {
         return result
+      }
+      // 3. Passable: We can move there, but we only continue the recursion if it's a SAFE
+      if (isCausingEngagement && !isUnparkable) {
+        result.engage.push(endHexID)
+        // we do not continue recursion past engagement hexes
+        return { ...result }
+      } else if (isCausingDisngagement && !isUnparkable) {
+        result.disengage.push(endHexID)
+        // we do not continue recursion past disengagement hexes
+        return { ...result }
+      } else {
+        // the space is safe to pass thru, continue to neighbors but we can only stop there if it's not occupied (or, i.e. if we are a squad and hex has a treasure glyph, then we cannot stop there)
+        if (!isUnparkable) {
+          result.safe.push(endHexID)
+        }
+        const recursiveMoveRange = computeWalkMoveRange({
+          startHex: end,
+          movePoints: movePointsLeftAfterMove,
+          unit,
+          boardHexes,
+          initialMoveRange: result,
+          initialEngagements,
+          gameUnits,
+          playerID,
+          hexesVisited: hexesVisitedCopy,
+          armyCards,
+        })
+        return {
+          ...result,
+          ...recursiveMoveRange,
+        }
       }
     },
     // accumulator for reduce fn

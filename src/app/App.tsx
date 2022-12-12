@@ -46,7 +46,7 @@ export const App = () => {
         <BgioLobbyApiProvider serverAddress={SERVER}>
           <MultiplayerLobbyProvider>
             <Helmet>
-              <title>Hexopolis</title>
+              <title>Hexoscape</title>
             </Helmet>
             <BrowserRouter>
               <Routes>
