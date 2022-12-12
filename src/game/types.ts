@@ -34,11 +34,12 @@ export type GameMap = {
 export type HexMap = {
   mapShape: string
   mapSize: number
-  hexGridLayout: string
   hexHeight: number
   hexWidth: number
   flat: boolean
-  withPrePlacedUnits: boolean
+  // from hexxaform below: mapId so when we have multiple maps we can switch between them, hexSize so we can scale the map
+  mapId: string
+  hexSize: number
 }
 export type BoardHex = {
   id: string

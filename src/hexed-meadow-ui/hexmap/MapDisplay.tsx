@@ -1,7 +1,6 @@
 import { useBgioG } from 'bgio-contexts'
 import { Notifications } from 'hexed-meadow-ui/controls/Notifications'
 import React, { useRef } from 'react'
-import styled from 'styled-components'
 import { ActiveHexReadout } from './ActiveHexReadout'
 import { Layout } from './Layout'
 import { MapHexes } from './MapHexes'
@@ -11,16 +10,14 @@ import { ZoomControls } from './ZoomControls'
 
 export const MapDisplay = () => {
   const { hexMap } = useBgioG()
-  const { mapSize } = hexMap
+  const { mapSize, hexSize, flat } = hexMap
   const mapRef = useRef<HTMLDivElement>(null)
   const zoomInterval = 100
   const [mapState, setMapState] = React.useState(() => ({
     width: 100,
     height: 100,
-    hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
-    spacing: 1.15,
-    flat: hexMap.flat,
   }))
+  const spacing = 1.15
   const handleClickZoomIn = () => {
     const el = mapRef.current
     setMapState((mapState) => ({
@@ -50,7 +47,7 @@ export const MapDisplay = () => {
     return `${halfViewBox} ${halfViewBox} ${fullViewBox} ${fullViewBox}`
   }
   return (
-    <MapHexStyles hexSize={mapState.hexSize} ref={mapRef}>
+    <MapHexStyles hexSize={hexSize} ref={mapRef}>
       <ZoomControls
         handleClickZoomIn={handleClickZoomIn}
         handleClickZoomOut={handleClickZoomOut}
@@ -66,12 +63,12 @@ export const MapDisplay = () => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <Layout
-          size={{ x: mapState.hexSize, y: mapState.hexSize }}
-          flat={mapState.flat}
-          spacing={mapState.spacing}
+          size={{ x: hexSize, y: hexSize }}
+          flat={flat}
+          spacing={spacing}
           className="hexgrid-layout"
         >
-          <MapHexes hexSize={mapState.hexSize} />
+          <MapHexes hexSize={hexSize} />
         </Layout>
       </svg>
     </MapHexStyles>
