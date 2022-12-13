@@ -29,7 +29,8 @@ const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
 export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const { playerID } = useBgioClientInfo()
   const isMyTurn: boolean = ctx.currentPlayer === playerID
-  const isMovementStage: boolean = ctx.activePlayers?.[playerID] === 'movement'
+  const isMovementStage: boolean =
+    ctx.activePlayers?.[playerID] === stageNames.movement
   const isOrderMarkerPhase: boolean = ctx.phase === phaseNames.placeOrderMarkers
   const isPlacementPhase: boolean = ctx.phase === phaseNames.placement
   const isRoundOfPlayPhase: boolean = ctx.phase === phaseNames.roundOfPlay
