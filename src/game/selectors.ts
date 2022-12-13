@@ -196,3 +196,63 @@ export function selectEngagementsForHex({
     })
   })
 }
+// take a unit and an end hex, and return true if the move will cause disengagements
+export function selectIsMoveCausingDisengagements({
+  unit,
+  endHexID,
+  boardHexes,
+  gameUnits,
+  armyCards,
+}: {
+  unit: GameUnit
+  endHexID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
+}) {
+  const initialEngagements: string[] = selectEngagementsForUnit({
+    unitID: unit.unitID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  const engagementsForCurrentHex = selectEngagementsForHex({
+    overrideUnitID: unit.unitID,
+    hexID: endHexID,
+    playerID: unit.playerID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  return initialEngagements.some((id) => !engagementsForCurrentHex.includes(id))
+}
+// take a unit and an end hex, and return true if the move will cause engagements
+export function selectIsMoveCausingEngagements({
+  unit,
+  endHexID,
+  boardHexes,
+  gameUnits,
+  armyCards,
+}: {
+  unit: GameUnit
+  endHexID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
+}) {
+  const initialEngagements: string[] = selectEngagementsForUnit({
+    unitID: unit.unitID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  const engagementsForCurrentHex = selectEngagementsForHex({
+    overrideUnitID: unit.unitID,
+    hexID: endHexID,
+    playerID: unit.playerID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
+}
