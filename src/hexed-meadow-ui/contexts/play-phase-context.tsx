@@ -30,9 +30,9 @@ const PlayContext = createContext<PlayContextValue | undefined>(undefined)
 
 type PlayContextValue = {
   // state
-  // disengageConfirm: DisengageConfirmState
-  disengageConfirm: string
-  // isDisengageConfirm: boolean
+  showDisengageConfirm: boolean
+  confirmDisengageAttempt: () => void
+  cancelDisengageAttempt: () => void
   toggleDisengageConfirm: (endHexID: string) => void
   // computed
   currentTurnGameCardID: string
@@ -69,9 +69,20 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { currentPlayer, isMyTurn, isMovementStage, isAttackingStage } = ctx
   const { moveAction, attackAction, attemptDisengage } = moves
   // disengage confirm
-  const [disengageConfirm, setDisengageConfirm] = useState('')
+  const [disengageAttempt, setDisengageAttempt] = useState<
+    | undefined
+    | { unit: GameUnit; endHexID: string; defendersToDisengage: GameUnit[] }
+  >(undefined)
+  const showDisengageConfirm = disengageAttempt !== undefined
   // const isDisengageConfirm = disengageConfirm !== undefined
-  const toggleDisengageConfirm = (endHexID: string) => {
+  const confirmDisengageAttempt = () => {
+    attemptDisengage(disengageAttempt)
+    setDisengageAttempt(undefined)
+  }
+  const cancelDisengageAttempt = () => {
+    setDisengageAttempt(undefined)
+  }
+  const onClickDisengageHex = (endHexID: string) => {
     const selectedUnitHexID = selectedUnitHex?.id ?? ''
     const currentEngagements = selectEngagementsForHex({
       hexID: selectedUnitHexID,
@@ -91,13 +102,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const defendersToDisengage = currentEngagements
       .filter((id) => !predictedEngagements.includes(id))
       .map((id) => gameUnits[id])
-    attemptDisengage({
+    setDisengageAttempt({
       unit: selectedUnit,
-      defendersToDisengage,
-      startHexID: selectedUnitHexID,
       endHexID,
+      defendersToDisengage,
     })
-    setDisengageConfirm('')
   }
 
   // COMPUTED
@@ -208,7 +217,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         moveAction(selectedUnit, boardHexes[sourceHex.id])
       } else if (selectedUnitID && isInDisengageRange) {
         // if clicked in disengage hex, then make them confirm...
-        toggleDisengageConfirm(sourceHexID)
+        onClickDisengageHex(sourceHexID)
       } else {
         // ...otherwise, select or deselect
         // select unit
@@ -256,8 +265,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     <PlayContext.Provider
       value={{
         // disengage confirm
-        disengageConfirm,
-        toggleDisengageConfirm,
+        showDisengageConfirm,
+        confirmDisengageAttempt,
+        cancelDisengageAttempt,
+        toggleDisengageConfirm: onClickDisengageHex,
         // COMPUTED
         currentTurnGameCardID,
         selectedGameCardUnits,

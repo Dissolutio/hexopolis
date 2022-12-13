@@ -84,8 +84,9 @@ export const RopMoveControls = () => {
   const {
     revealedGameCard,
     revealedGameCardUnitIDs,
-    disengageConfirm,
-    toggleDisengageConfirm,
+    showDisengageConfirm,
+    confirmDisengageAttempt,
+    cancelDisengageAttempt,
   } = usePlayContext()
   const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
@@ -101,15 +102,18 @@ export const RopMoveControls = () => {
     setSelectedUnitID('')
     endCurrentMoveStage()
   }
-  if (disengageConfirm) {
+  if (showDisengageConfirm) {
     return (
       <div>
         <StyledControlsHeaderH2>
           Confirm you want to disengage:
         </StyledControlsHeaderH2>
-        <button onClick={() => toggleDisengageConfirm(disengageConfirm)}>
-          Yes, disengage
-        </button>
+        <ConfirmOrResetButtons
+          confirm={confirmDisengageAttempt}
+          confirmText={`Yes, disengage them!`}
+          reset={cancelDisengageAttempt}
+          resetText={`No, we will find another way...`}
+        />
       </div>
     )
   }
