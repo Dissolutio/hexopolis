@@ -115,7 +115,7 @@ function computeWalkMoveRange({
       const isCausingEngagement = engagementsForCurrentHex.some(
         (id) => !initialEngagements.includes(id)
       )
-      const isCausingDisngagement = initialEngagements.some(
+      const isCausingDisengagement = initialEngagements.some(
         (id) => !engagementsForCurrentHex.includes(id)
       )
       const endHexUnit = { ...gameUnits[endHexUnitID] }
@@ -150,7 +150,7 @@ function computeWalkMoveRange({
         result.engage.push(endHexID)
         // we do not continue recursion past engagement hexes
         return { ...result }
-      } else if (isCausingDisngagement && !isUnparkable) {
+      } else if (isCausingDisengagement && !isUnparkable) {
         result.disengage.push(endHexID)
         // we do not continue recursion past disengagement hexes
         return { ...result }
