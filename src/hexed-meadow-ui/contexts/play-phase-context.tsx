@@ -88,14 +88,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       armyCards,
       overrideUnitID: selectedUnitID,
     })
-    const defenderIdsToDisengage = currentEngagements.filter(
-      (id) => !predictedEngagements.includes(id)
-    )
-    const defendersToDisengage = defenderIdsToDisengage.map((id) => ({
-      unitID: id,
-      hexID: selectHexForUnit(id, boardHexes)?.id ?? '',
-      playerID: gameUnits[id]?.playerID ?? '',
-    }))
+    const defendersToDisengage = currentEngagements
+      .filter((id) => !predictedEngagements.includes(id))
+      .map((id) => gameUnits[id])
     attemptDisengage({
       unit: selectedUnit,
       defendersToDisengage,

@@ -1,9 +1,7 @@
 import type { Move } from 'boardgame.io'
-import { groupBy } from 'lodash'
-
-import { selectGameCardByID } from '../selectors'
-import { GameState, GameUnit, DefendersToDisengage } from '../types'
+import { GameState, GameUnit } from '../types'
 import { stageNames } from '../constants'
+import { selectGameCardByID } from 'game/selectors'
 
 export const attemptDisengage: Move<GameState> = {
   undoable: false,
@@ -11,36 +9,34 @@ export const attemptDisengage: Move<GameState> = {
     { G, events },
     {
       unit,
-      defendersToDisengage,
-      startHexID,
       endHexID,
+      defendersToDisengage,
     }: {
       unit: GameUnit
-      defendersToDisengage: DefendersToDisengage[]
-      startHexID?: string
-      endHexID?: string
+      endHexID: string
+      defendersToDisengage: GameUnit[]
     }
   ) => {
-    // const { unitID } = unit
-    // const unitName = unitGameCard?.name ?? ''
-    // const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
-    const disengagedUnitsGroupedByPlayerID = groupBy(
-      defendersToDisengage,
-      'playerID'
-    )
-    const playersWithRelevantUnitsToStageMap = Object.keys(
-      disengagedUnitsGroupedByPlayerID
-    ).reduce((prev, curr) => {
-      return {
-        ...prev,
-        [curr]: stageNames.disengagementSwipe,
-      }
-    }, {})
-    console.log(
-      '🚀 ~ file: attempt-disengage.ts:39 ~ playersWithRelevantUnitsToStageMap',
-      playersWithRelevantUnitsToStageMap
-    )
+    const { unitID } = unit
+    const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
+    const unitName = unitGameCard?.name ?? ''
 
+    // format for activePlayers -- we are just putting the relevant players in the disengagement swipe stage
+    const playersWithRelevantUnitsToStageMap = defendersToDisengage.reduce(
+      (prev, curr) => {
+        return {
+          ...prev,
+          [curr.playerID]: stageNames.disengagementSwipe,
+        }
+      },
+      {}
+    )
+    // pass the relevant data to the disengagement swipe stage
+    G.disengagesAttempting = {
+      unit,
+      endHexID,
+      defendersToDisengage,
+    }
     events.setActivePlayers({
       currentPlayer: stageNames.waitingForDisengageSwipe,
       value: playersWithRelevantUnitsToStageMap,

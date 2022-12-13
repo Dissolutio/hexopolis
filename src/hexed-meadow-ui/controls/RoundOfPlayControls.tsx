@@ -1,7 +1,12 @@
 import React from 'react'
 
 import { usePlayContext, useUIContext } from '../contexts'
-import { useBgioCtx, useBgioG, useBgioMoves } from 'bgio-contexts'
+import {
+  useBgioClientInfo,
+  useBgioCtx,
+  useBgioG,
+  useBgioMoves,
+} from 'bgio-contexts'
 import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
@@ -9,6 +14,7 @@ import {
 } from 'hexed-meadow-ui/layout/Typography'
 import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
 import { uniq } from 'lodash'
+import { GreenButton, RedButton } from 'hexed-meadow-ui/layout/buttons'
 
 export const RoundOfPlayControls = () => {
   const { ctx } = useBgioCtx()
@@ -210,6 +216,7 @@ export const RopAttackControls = () => {
 }
 
 const RopWaitingForDisengageControls = () => {
+  // where are we moving to? who is swiping us?
   return (
     <>
       <StyledControlsHeaderH2>Waiting to get swiped</StyledControlsHeaderH2>
@@ -218,10 +225,29 @@ const RopWaitingForDisengageControls = () => {
 }
 
 const RopDisengagementSwipeControls = () => {
+  const { disengagesAttempting } = useBgioG()
+  const {
+    moves: { takeDisengagementSwipe },
+  } = useBgioMoves()
+  const { playerID } = useBgioClientInfo()
+  console.log(
+    '🚀 ~ file: RoundOfPlayControls.tsx:222 ~ RopDisengagementSwipeControls ~ disengagesAttempting',
+    disengagesAttempting
+  )
   return (
     <>
       <StyledControlsHeaderH2>
         Take a disengagement strike?
+        <GreenButton
+          onClick={() => takeDisengagementSwipe({ playerID, isTaking: true })}
+        >
+          YES, KILL!!!
+        </GreenButton>
+        <RedButton
+          onClick={() => takeDisengagementSwipe({ playerID, isTaking: false })}
+        >
+          No, we have other plans...
+        </RedButton>
       </StyledControlsHeaderH2>
     </>
   )
