@@ -130,7 +130,6 @@ export const HexedMeadow: Game<GameState> = {
         order: TurnOrder.CUSTOM_FROM('initiative'),
         activePlayers: {
           currentPlayer: stageNames.movement,
-          others: Stage.NULL,
         },
         // reveal order marker, assign move-points/move-ranges to eligible units
         onBegin: ({ G, ctx }) => {

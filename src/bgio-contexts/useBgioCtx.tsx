@@ -34,7 +34,7 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const isPlacementPhase: boolean = ctx.phase === phaseNames.placement
   const isRoundOfPlayPhase: boolean = ctx.phase === phaseNames.roundOfPlay
   const isIdleStage: boolean =
-    isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === Stage.NULL
+    isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === undefined
   const isAttackingStage: boolean =
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
   const isWaitingForDisengagementSwipeStage: boolean =
