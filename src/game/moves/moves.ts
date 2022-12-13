@@ -1,4 +1,4 @@
-import type { Move } from 'boardgame.io'
+import type { Move, MoveMap } from 'boardgame.io'
 import { selectHexForUnit } from '../selectors'
 import { GameState, PlayerOrderMarkers } from '../types'
 import { stageNames } from '../constants'
@@ -6,6 +6,7 @@ import { stageNames } from '../constants'
 //phase:___RoundOfPlay
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
+import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
 
 //phase:___RoundOfPlay
@@ -85,11 +86,12 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
   G.orderMarkersReady[playerID] = false
 }
 
-export const moves = {
+export const moves: MoveMap<GameState> = {
   endCurrentMoveStage,
   endCurrentPlayerTurn,
   moveAction,
   attemptDisengage,
+  takeDisengagementSwipe,
   attackAction,
   deployUnits,
   confirmPlacementReady,

@@ -110,6 +110,7 @@ function makeTestScenario(): GameState {
     currentOrderMarker: 0,
     initiative: [],
     unitsMoved: [],
+    disengagesAttempting: undefined,
     disengagedUnitIds: [],
     unitsAttacked: [],
     unitsKilled: {},

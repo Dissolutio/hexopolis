@@ -15,7 +15,25 @@ export interface GameState {
   roundOfPlayStartReady: PlayerStateToggle
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
-  disengagedUnitIds: string[] // disengagedUnitIds tracks for a unit who has survived a disengage with unit(s) and should now have its move range adjusted. disengagedUnitIds should be reset to avoid stale data
+  /* 
+    START 
+    Tracks the data passed from 
+    1. clicking a `moveRange.disengage` hex in UI while moving
+    to
+    2. the bgio-move `disengagementSwipe`
+   */
+  disengagesAttempting:
+    | undefined
+    | { unit: GameUnit; defendersToDisengage: GameUnit[]; endHexID: string }
+  /* END */
+
+  /* 
+    START
+    disengagedUnitIds tracks for a unit who has survived a disengage with unit(s) and should now have its move range adjusted. disengagedUnitIds should be reset (every move?) to avoid stale data
+   */
+  disengagedUnitIds: string[]
+  /* END disengagedUnitIds */
+
   unitsAttacked: string[]
   unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]
@@ -117,11 +135,6 @@ export type MoveRange = {
   engage: string[]
   disengage: string[]
   denied: string[]
-}
-export type DefendersToDisengage = {
-  unitID: string
-  playerID: string
-  hexID: string
 }
 export type PlayerOrderMarkers = { [order: string]: string }
 
