@@ -19,13 +19,16 @@ import { GreenButton, RedButton } from 'hexed-meadow-ui/layout/buttons'
 export const RoundOfPlayControls = () => {
   const { ctx } = useBgioCtx()
   const {
-    isMyTurn,
     isIdleStage,
     isMovementStage,
     isWaitingForDisengagementSwipeStage,
     isDisengagementSwipeStage,
     isAttackingStage,
   } = ctx
+  const { showDisengageConfirm } = usePlayContext()
+  if (showDisengageConfirm) {
+    return <RopConfirmDisengageAttemptControls />
+  }
   if (isIdleStage) {
     return (
       <>
@@ -81,13 +84,7 @@ export const RopIdleControls = () => {
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
-  const {
-    revealedGameCard,
-    revealedGameCardUnitIDs,
-    showDisengageConfirm,
-    confirmDisengageAttempt,
-    cancelDisengageAttempt,
-  } = usePlayContext()
+  const { revealedGameCard, revealedGameCardUnitIDs } = usePlayContext()
   const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
@@ -97,25 +94,9 @@ export const RopMoveControls = () => {
   const isAllMovesUsed = movesAvailable <= 0
   const { endCurrentMoveStage } = moves
 
-  // handlers
   const handleEndMovementClick = () => {
     setSelectedUnitID('')
     endCurrentMoveStage()
-  }
-  if (showDisengageConfirm) {
-    return (
-      <div>
-        <StyledControlsHeaderH2>
-          Confirm you want to disengage:
-        </StyledControlsHeaderH2>
-        <ConfirmOrResetButtons
-          confirm={confirmDisengageAttempt}
-          confirmText={`Yes, disengage them!`}
-          reset={cancelDisengageAttempt}
-          resetText={`No, we will find another way...`}
-        />
-      </div>
-    )
   }
   return (
     <div>
@@ -219,6 +200,23 @@ export const RopAttackControls = () => {
   )
 }
 
+const RopConfirmDisengageAttemptControls = () => {
+  const { confirmDisengageAttempt, cancelDisengageAttempt } = usePlayContext()
+  return (
+    <>
+      <StyledControlsHeaderH2>
+        Confirm you want to disengage:
+      </StyledControlsHeaderH2>
+      <ConfirmOrResetButtons
+        confirm={confirmDisengageAttempt}
+        confirmText={`Yes, disengage them!`}
+        reset={cancelDisengageAttempt}
+        resetText={`No, we will find another way...`}
+      />
+    </>
+  )
+}
+
 const RopWaitingForDisengageControls = () => {
   // where are we moving to? who is swiping us?
   return (
@@ -234,10 +232,6 @@ const RopDisengagementSwipeControls = () => {
     moves: { takeDisengagementSwipe },
   } = useBgioMoves()
   const { playerID } = useBgioClientInfo()
-  console.log(
-    '🚀 ~ file: RoundOfPlayControls.tsx:222 ~ RopDisengagementSwipeControls ~ disengagesAttempting',
-    disengagesAttempting
-  )
   return (
     <>
       <StyledControlsHeaderH2>
