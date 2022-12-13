@@ -13,7 +13,7 @@ import {
 import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from '../types'
 
 export const moveAction: Move<GameState> = {
-  undoable: true,
+  undoable: ({ G, ctx }) => true,
   move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
     const { unitID, movePoints } = unit
     const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
