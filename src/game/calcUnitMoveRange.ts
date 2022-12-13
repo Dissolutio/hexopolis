@@ -146,12 +146,18 @@ function computeWalkMoveRange({
         return result
       }
       // 3. Passable: We can move there, but we only continue the recursion if it's a SAFE
-      if (isCausingEngagement && !isUnparkable) {
-        result.engage.push(endHexID)
+      if (isCausingEngagement) {
+        // the space causes engagements, so no recursion, and we can only stop there if it's not occupied
+        if (!isUnparkable) {
+          result.engage.push(endHexID)
+        }
         // we do not continue recursion past engagement hexes
         return { ...result }
-      } else if (isCausingDisengagement && !isUnparkable) {
-        result.disengage.push(endHexID)
+      } else if (isCausingDisengagement) {
+        // the space causes disengagements, so no recursion, and we can only stop there if it's not occupied
+        if (!isUnparkable) {
+          result.disengage.push(endHexID)
+        }
         // we do not continue recursion past disengagement hexes
         return { ...result }
       } else {
