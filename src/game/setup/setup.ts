@@ -6,15 +6,15 @@ import {
   GameUnits,
   OrderMarkers,
   PlayersState,
-} from './types'
+} from '../types'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
   OM_COUNT,
-} from './constants'
+} from '../constants'
 import { makeHexagonShapedMap } from './mapGen'
-import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
-import { transformGameArmyCardsToGameUnits } from './transformers'
+import { ICoreHeroscapeCard, MS1Cards } from '../coreHeroscapeCards'
+import { transformGameArmyCardsToGameUnits } from '../transformers'
 
 const isEven = (numberToCheck: number) => {
   //check if the number is even
@@ -110,6 +110,7 @@ function makeTestScenario(): GameState {
     currentOrderMarker: 0,
     initiative: [],
     unitsMoved: [],
+    disengagedUnitIds: [],
     unitsAttacked: [],
     unitsKilled: {},
     gameLog: [],

@@ -1,6 +1,12 @@
 import { nanoid } from 'nanoid'
 import { generateHexagon } from './hexGen'
-import { BoardHexes, GameMap, GameUnits, MapOptions, StartZones } from './types'
+import {
+  BoardHexes,
+  GameMap,
+  GameUnits,
+  MapOptions,
+  StartZones,
+} from '../types'
 
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   // destructure mapOptions: mapSize, withPrePlacedUnits, gameUnits, flat

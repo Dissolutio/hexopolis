@@ -1,10 +1,11 @@
 import type { Move } from 'boardgame.io'
-import { selectHexForUnit } from './selectors'
-import { GameState, PlayerOrderMarkers } from './types'
-import { stageNames } from './constants'
+import { selectHexForUnit } from '../selectors'
+import { GameState, PlayerOrderMarkers } from '../types'
+import { stageNames } from '../constants'
 
 //phase:___RoundOfPlay
 import { moveAction } from './move-action'
+import { attemptDisengage } from './attempt-disengage'
 import { attackAction } from './attack-action'
 
 //phase:___RoundOfPlay
@@ -88,6 +89,7 @@ export const moves = {
   endCurrentMoveStage,
   endCurrentPlayerTurn,
   moveAction,
+  attemptDisengage,
   attackAction,
   deployUnits,
   confirmPlacementReady,

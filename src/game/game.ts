@@ -11,10 +11,10 @@ import {
 } from './constants'
 
 import { GameState, OrderMarker, GameUnit } from './types'
-import { moves } from './moves'
+import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
-import { testScenario } from './setup'
+import { testScenario } from './setup/setup'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 

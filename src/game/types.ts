@@ -15,6 +15,7 @@ export interface GameState {
   roundOfPlayStartReady: PlayerStateToggle
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
+  disengagedUnitIds: string[] // disengagedUnitIds tracks for a unit who has survived a disengage with unit(s) and should now have its move range adjusted. disengagedUnitIds should be reset to avoid stale data
   unitsAttacked: string[]
   unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]
@@ -116,6 +117,11 @@ export type MoveRange = {
   engage: string[]
   disengage: string[]
   denied: string[]
+}
+export type DefendersToDisengage = {
+  unitID: string
+  playerID: string
+  hexID: string
 }
 export type PlayerOrderMarkers = { [order: string]: string }
 

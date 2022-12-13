@@ -12,8 +12,15 @@ import { uniq } from 'lodash'
 
 export const RoundOfPlayControls = () => {
   const { ctx } = useBgioCtx()
-  const { isMyTurn, isAttackingStage, isMovementStage } = ctx
-  if (!isMyTurn) {
+  const {
+    isMyTurn,
+    isIdleStage,
+    isMovementStage,
+    isWaitingForDisengagementSwipeStage,
+    isDisengagementSwipeStage,
+    isAttackingStage,
+  } = ctx
+  if (isIdleStage) {
     return (
       <>
         <RopIdleControls />
@@ -27,10 +34,24 @@ export const RoundOfPlayControls = () => {
       </>
     )
   }
-  if (isMyTurn && isAttackingStage) {
+  if (isAttackingStage) {
     return (
       <>
         <RopAttackControls />
+      </>
+    )
+  }
+  if (isWaitingForDisengagementSwipeStage) {
+    return (
+      <>
+        <RopWaitingForDisengageControls />
+      </>
+    )
+  }
+  if (isDisengagementSwipeStage) {
+    return (
+      <>
+        <RopDisengagementSwipeControls />
       </>
     )
   }
@@ -54,7 +75,12 @@ export const RopIdleControls = () => {
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
-  const { revealedGameCard, revealedGameCardUnitIDs } = usePlayContext()
+  const {
+    revealedGameCard,
+    revealedGameCardUnitIDs,
+    disengageConfirm,
+    toggleDisengageConfirm,
+  } = usePlayContext()
   const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
@@ -68,6 +94,18 @@ export const RopMoveControls = () => {
   const handleEndMovementClick = () => {
     setSelectedUnitID('')
     endCurrentMoveStage()
+  }
+  if (disengageConfirm) {
+    return (
+      <div>
+        <StyledControlsHeaderH2>
+          Confirm you want to disengage:
+        </StyledControlsHeaderH2>
+        <button onClick={() => toggleDisengageConfirm(disengageConfirm)}>
+          Yes, disengage
+        </button>
+      </div>
+    )
   }
   return (
     <div>
@@ -167,6 +205,24 @@ export const RopAttackControls = () => {
           noConfirmButton
         />
       )}
+    </>
+  )
+}
+
+const RopWaitingForDisengageControls = () => {
+  return (
+    <>
+      <StyledControlsHeaderH2>Waiting to get swiped</StyledControlsHeaderH2>
+    </>
+  )
+}
+
+const RopDisengagementSwipeControls = () => {
+  return (
+    <>
+      <StyledControlsHeaderH2>
+        Take a disengagement strike?
+      </StyledControlsHeaderH2>
     </>
   )
 }

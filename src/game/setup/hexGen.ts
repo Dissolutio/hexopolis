@@ -1,6 +1,6 @@
 import { GridGenerator, Hex } from 'react-hexgrid'
-import { BoardHexes } from './types'
-import { generateHexID } from './constants'
+import { BoardHexes } from '../types'
+import { generateHexID } from '../constants'
 
 // REACT-HEXGRID GENERATORS
 export const generateHexagon = (mapSize: number): BoardHexes => {

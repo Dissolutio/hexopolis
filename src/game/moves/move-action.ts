@@ -1,16 +1,16 @@
 import { Move } from 'boardgame.io'
 import { uniq } from 'lodash'
 import { Hex, HexUtils } from 'react-hexgrid'
-import { calcUnitMoveRange } from './calcUnitMoveRange'
-import { encodeGameLogMessage } from './gamelog'
+import { calcUnitMoveRange } from '../calcUnitMoveRange'
+import { encodeGameLogMessage } from '../gamelog'
 import {
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
   selectUnitsForCard,
   selectUnrevealedGameCard,
-} from './selectors'
-import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from './types'
+} from '../selectors'
+import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from '../types'
 
 export const moveAction: Move<GameState> = {
   move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
@@ -21,8 +21,7 @@ export const moveAction: Move<GameState> = {
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
     const currentMoveRange = G.gameUnits[unitID].moveRange
-    const isEndHexInMoveRange = [
-      ...currentMoveRange.disengage,
+    const isEndHexOutOfRange = ![
       ...currentMoveRange.engage,
       ...currentMoveRange.safe,
     ].includes(endHexID)
@@ -32,7 +31,7 @@ export const moveAction: Move<GameState> = {
       G.gameArmyCards,
       G.currentOrderMarker,
       ctx.currentPlayer
-    ) // revealedGameCard is a proxy object
+    )
     const movedUnitsCount = uniq(G.unitsMoved).length
     const allowedMoveCount = revealedGameCard?.figures ?? 0
 
@@ -42,7 +41,7 @@ export const moveAction: Move<GameState> = {
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
     // DISALLOW - move not in move range
-    if (!isEndHexInMoveRange) {
+    if (isEndHexOutOfRange) {
       console.error(
         `Move action denied:The end hex is not in the unit's move range`
       )

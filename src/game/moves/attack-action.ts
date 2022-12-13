@@ -1,9 +1,9 @@
 import type { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
 
-import { selectHexForUnit, selectGameCardByID } from './selectors'
-import { GameState, BoardHex, GameUnit } from './types'
-import { encodeGameLogMessage } from './gamelog'
+import { selectHexForUnit, selectGameCardByID } from '../selectors'
+import { GameState, BoardHex, GameUnit } from '../types'
+import { encodeGameLogMessage } from '../gamelog'
 
 export const attackAction: Move<GameState> = {
   undoable: false,

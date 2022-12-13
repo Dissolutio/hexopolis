@@ -1,16 +1,11 @@
 import type { Move } from 'boardgame.io'
-import { DefenderToDisengage } from './attempt-disengage'
 
-import { selectGameCardByID } from './selectors'
-import { GameState, GameUnit } from './types'
+import { selectGameCardByID } from '../selectors'
+import { GameState, GameUnit } from '../types'
 
 export const takeDisengagementSwipe: Move<GameState> = {
   undoable: false,
-  move: (
-    { G },
-    disengagingUnit: GameUnit,
-    defendersToDisengage: DefenderToDisengage[]
-  ) => {
+  move: ({ G }, disengagingUnit: GameUnit) => {
     /* 
     WIP
     1. 
