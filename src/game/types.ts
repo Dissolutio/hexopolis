@@ -15,6 +15,9 @@ export interface GameState {
   roundOfPlayStartReady: PlayerStateToggle
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
+  unitsAttacked: string[]
+  unitsKilled: { [unitID: string]: string[] }
+  gameLog: string[]
   /* 
     START 
     Tracks the data passed from 
@@ -29,14 +32,10 @@ export interface GameState {
 
   /* 
     START
-    disengagedUnitIds tracks for a unit who has survived a disengage with unit(s) and should now have its move range adjusted. disengagedUnitIds should be reset (every move?) to avoid stale data
+     tracks for a unit who has survived a disengage with unit(s) and should now have its move range adjusted. Should be reset (every move?)
    */
   disengagedUnitIds: string[]
-  /* END disengagedUnitIds */
-
-  unitsAttacked: string[]
-  unitsKilled: { [unitID: string]: string[] }
-  gameLog: string[]
+  /* END */
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
@@ -178,3 +177,4 @@ export type MapOptions = {
 export type StringKeyedObj = {
   [key: string]: string
 }
+export type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }

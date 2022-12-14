@@ -10,35 +10,29 @@ import {
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
-  OM_COUNT,
 } from '../constants'
 import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from '../coreHeroscapeCards'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 
-const isEven = (numberToCheck: number) => {
-  //check if the number is even
-  if (numberToCheck % 2 === 0) {
-    return true
-  }
-  // if the number is odd
-  else {
-    return false
-  }
-}
+const isDevOverrideState = true
+// const isDevOverrideState = false
+const devPlayer1orderMarkers = 'p1_hs1014'
+const devPlayer2orderMarkers = 'p1_hs1003'
+
 export function generatePreplacedOrderMarkers(): OrderMarkers {
   const orderMarkers: OrderMarkers = {
     '0': [
-      { order: '0', gameCardID: 'p1_hs1000' },
-      { order: '1', gameCardID: 'p1_hs1000' },
-      { order: '2', gameCardID: 'p1_hs1000' },
-      { order: 'X', gameCardID: 'p1_hs1000' },
+      { order: '0', gameCardID: devPlayer1orderMarkers },
+      { order: '1', gameCardID: devPlayer1orderMarkers },
+      { order: '2', gameCardID: devPlayer1orderMarkers },
+      { order: 'X', gameCardID: devPlayer1orderMarkers },
     ],
     '1': [
-      { order: '0', gameCardID: 'p1_hs1002' },
-      { order: '1', gameCardID: 'p1_hs1002' },
-      { order: '2', gameCardID: 'p1_hs1002' },
-      { order: 'X', gameCardID: 'p1_hs1002' },
+      { order: '0', gameCardID: devPlayer2orderMarkers },
+      { order: '1', gameCardID: devPlayer2orderMarkers },
+      { order: '2', gameCardID: devPlayer2orderMarkers },
+      { order: 'X', gameCardID: devPlayer2orderMarkers },
     ],
   }
   return orderMarkers
@@ -63,10 +57,17 @@ function playersStateWithPrePlacedOMs(): PlayersState {
     },
   }
 }
-export const withPrePlacedUnits = true
 
-const isDevOverrideState = true
-// const isDevOverrideState = false
+const isEven = (numberToCheck: number) => {
+  //check if the number is even
+  if (numberToCheck % 2 === 0) {
+    return true
+  }
+  // if the number is odd
+  else {
+    return false
+  }
+}
 
 const frequentlyChangedDevState = isDevOverrideState
   ? {
@@ -100,7 +101,7 @@ function makeTestScenario(): GameState {
   // Map
   const hexagonMap = makeHexagonShapedMap({
     mapSize: 3,
-    withPrePlacedUnits,
+    withPrePlacedUnits: isDevOverrideState,
     gameUnits: transformGameArmyCardsToGameUnits(armyCards),
     flat: false,
   })

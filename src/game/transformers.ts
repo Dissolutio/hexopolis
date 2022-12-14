@@ -1,5 +1,17 @@
 import { GameArmyCard, GameUnit, GameUnits } from './types'
 
+export function playerIDDisplay(playerID: string): string {
+  return (
+    {
+      '0': 'Player 1',
+      '1': 'Player 2',
+      '2': 'Player 3',
+      '3': 'Player 4',
+      '4': 'Player 5',
+      '5': 'Player 6',
+    }[playerID] || 'Player X'
+  )
+}
 export function transformGameArmyCardsToGameUnits(
   armyCards: GameArmyCard[]
 ): GameUnits {

@@ -89,6 +89,9 @@ export const moveAction: Move<GameState> = {
       )
       newGameUnits[unitID].moveRange = moveRange
     })
+    // end updating move-ranges for this turn's units
+
+    // update game log
     const indexOfThisMove = G.unitsMoved.length
     const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:m${indexOfThisMove}`
     const gameLogForThisMove = encodeGameLogMessage({

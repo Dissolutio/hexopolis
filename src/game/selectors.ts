@@ -26,10 +26,12 @@ export function selectUnitForHex(
   return unit
 }
 export function selectGameCardByID(
-  armyCards: GameArmyCard[],
+  gameArmyCards: GameArmyCard[],
   gameCardID: string
 ): GameArmyCard | undefined {
-  return armyCards.find((card: GameArmyCard) => card.gameCardID === gameCardID)
+  return gameArmyCards.find(
+    (card: GameArmyCard) => card.gameCardID === gameCardID
+  )
 }
 export function selectUnitsForCard(
   gameCardID: string,

@@ -25,11 +25,18 @@ export type GameLogMessage = {
   unitSingleName?: string
   startHexID?: string
   endHexID?: string
+  // disengage attempts below
+  unitIdsToAttemptToDisengage?: string[]
 }
 export const gameLogTypes = {
   move: 'move',
   attack: 'attack',
   roundBegin: 'roundBegin',
+  disengageAttempt: 'disengageAttempt',
+  disengageSwipeDenied: 'disengageSwipeDenied',
+  disengageSwipeMiss: 'disengageSwipeMiss',
+  disengageSwipeFatal: 'disengageSwipeFatal',
+  disengageSwipeNonFatal: 'disengageSwipeNonFatal',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -68,6 +75,11 @@ export const decodeGameLogMessage = (
       unitSingleName,
       startHexID,
       endHexID,
+      // disengage attempts
+      // unitID,
+      // endHexID,
+      // unitSingleName,
+      unitIdsToAttemptToDisengage,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -88,18 +100,56 @@ export const decodeGameLogMessage = (
           msg: attackMsgText,
         }
       case gameLogTypes.roundBegin:
+        // TODO display initiative rolls
         const roundBeginMsgText = `Round ${id} has begun!`
         return {
           type,
-          id, // id is the round number, for roundBegin log types
+          id,
           msg: roundBeginMsgText,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`
         return {
           type,
-          id, // id is the round number, for roundBegin log types
+          id,
           msg: moveMsgText,
+        }
+      case gameLogTypes.disengageAttempt:
+        const disengageAttemptMsgText = `${unitSingleName} is attempting to disengage from ${
+          unitIdsToAttemptToDisengage.length
+        } unit${unitIdsToAttemptToDisengage.length === 1 ? 's' : ''}`
+        return {
+          type,
+          id,
+          msg: disengageAttemptMsgText,
+        }
+      case gameLogTypes.disengageSwipeFatal:
+        const disengageSwipeFatalMsgText = `A unit died while disengaging!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeFatalMsgText,
+        }
+      case gameLogTypes.disengageSwipeNonFatal:
+        const disengageSwipeNonFatalMsgText = `A unit was hit while disengaging!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeNonFatalMsgText,
+        }
+      case gameLogTypes.disengageSwipeDenied:
+        const disengageSwipeDeniedMsgText = `A unit denied their disengagement swipe!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeDeniedMsgText,
+        }
+      case gameLogTypes.disengageSwipeMiss:
+        const disengageSwipeMissMsgText = `A unit missed their disengagement swipe!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeMissMsgText,
         }
       default:
         break

@@ -133,6 +133,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     // for each unit, go through all hexes and count how many are in range
     const result = unitsToConsider.reduce((resultTargetsInRange, unit) => {
       const attackerHex = selectHexForUnit(unit.unitID, boardHexes)
+      // if (!attackerHex) {
+      //   // the unit
+      //   return resultTargetsInRange
+      // }
       const attackerPlayerID = unit.playerID
       const numberUnitsInRangeForThisUnit = Object.values(boardHexes).reduce(
         (resultHexIDs: string[], iteratedHex) => {
