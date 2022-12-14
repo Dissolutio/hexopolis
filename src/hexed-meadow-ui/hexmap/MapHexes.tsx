@@ -132,8 +132,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                 </motion.g>
               )}
             </AnimatePresence>
-            {isPlacementPhase && <HexIDText hexSize={hexSize} text={hex.id} />}
-            {!isPlacementPhase && (
+            {isPlacementPhase && (
+              <HexIDText
+                hexSize={hexSize}
+                text={`${hex.altitude}`}
+                textLine2={`${unitName}`}
+              />
+            )}
+            {!isPlacementPhase && !!unitName && (
               <HexIDText hexSize={hexSize} text={unitName} />
             )}
           </g>
@@ -143,10 +149,25 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   }
   return <>{hexJSX()}</>
 }
-const HexIDText = ({ hexSize, text }: { hexSize: number; text: string }) => {
+const HexIDText = ({
+  hexSize,
+  text,
+  textLine2,
+}: {
+  hexSize: number
+  text: string
+  textLine2?: string
+}) => {
   return (
-    <Text className="maphex_altitude-text" y={hexSize * 0.6}>
-      {text.toString()}
-    </Text>
+    <>
+      <Text className="maphex_altitude-text" y={hexSize * 0.6}>
+        {text.toString()}
+      </Text>
+      {textLine2 && (
+        <Text className="maphex_altitude-text" y={hexSize * 0.8}>
+          {textLine2.toString()}
+        </Text>
+      )}
+    </>
   )
 }
