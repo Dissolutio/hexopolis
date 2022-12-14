@@ -15,8 +15,8 @@ import { makeHexagonShapedMap } from './mapGen'
 import { ICoreHeroscapeCard, MS1Cards } from '../coreHeroscapeCards'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 
-const isDevOverrideState = true
-// const isDevOverrideState = false
+// const isDevOverrideState = true
+const isDevOverrideState = false
 const devPlayer1orderMarkers = 'p0_hs1014'
 const devPlayer2orderMarkers = 'p1_hs1003'
 
