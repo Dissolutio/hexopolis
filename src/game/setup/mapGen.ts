@@ -9,7 +9,6 @@ import {
 } from '../types'
 
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
-  // destructure mapOptions: mapSize, withPrePlacedUnits, gameUnits, flat
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false
   const gameUnits = mapOptions?.gameUnits ?? {}
@@ -24,23 +23,17 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     hexWidth: Math.sqrt(3),
   }
   const mapDimensions = flat ? flatDimensions : pointyDimensions
-  const startZones: StartZones = startZonesNoUnits(
+
+  const boardHexes: BoardHexes = transformBoardHexesToHaveStartZones(
     generateHexagon(mapSize),
     mapSize
   )
-  const startZonesWithPrePlacedUnits: StartZones = startZonesNoUnits(
-    generateHexagon(mapSize),
-    mapSize
-  )
-  const boardHexes: BoardHexes = generateHexagon(mapSize)
-  let boardHexesWithPrePlacedUnits: BoardHexes = startZonesWithUnits(
-    generateHexagon(mapSize),
-    startZonesWithPrePlacedUnits,
-    gameUnits
-  )
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  let boardHexesWithPrePlacedUnits: BoardHexes =
+    transformBoardHexesWithPrePlacedUnits(boardHexes, startZones, gameUnits)
   return {
     boardHexes: withPrePlacedUnits ? boardHexesWithPrePlacedUnits : boardHexes,
-    startZones: withPrePlacedUnits ? startZonesWithPrePlacedUnits : startZones,
+    startZones,
     hexMap: {
       ...mapDimensions,
       mapShape: 'hexagon',
@@ -51,28 +44,12 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     },
   }
 }
-function startZonesNoUnits(
-  boardHexes: BoardHexes,
-  mapSize: number
-): StartZones {
-  // this divides the map in half along the S-axis
-  const boardHexesArr = Object.values(boardHexes)
-  const P0StartZone = boardHexesArr
-    .filter((hex) => hex.s >= Math.max(mapSize - 1, 1))
-    .map((hex) => hex.id)
-  const P1StartZone = boardHexesArr
-    .filter((hex) => hex.s <= -1 * Math.max(mapSize - 1, 1))
-    .map((hex) => hex.id)
-  return {
-    '0': P0StartZone,
-    '1': P1StartZone,
-  }
-}
-function startZonesWithUnits(
+function transformBoardHexesWithPrePlacedUnits(
   boardHexes: BoardHexes,
   zones: StartZones,
   gameUnits: GameUnits
 ): BoardHexes {
+  const copy = { ...boardHexes }
   const gameUnitsArr = Object.values(gameUnits)
   // k, j are just increment values for uniqueness of hex
   let k = 0
@@ -88,7 +65,7 @@ function startZonesWithUnits(
         randomHexID = zones?.[unit.playerID][j++] ?? ''
       }
       // update boardHex
-      boardHexes[randomHexID].occupyingUnitID = unit.unitID
+      copy[randomHexID].occupyingUnitID = unit.unitID
     } catch (error) {
       console.error(
         '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
@@ -97,5 +74,39 @@ function startZonesWithUnits(
       )
     }
   })
-  return boardHexes
+  return copy
+}
+
+const transformBoardHexesToHaveStartZones = (
+  map: BoardHexes,
+  mapSize: number
+): BoardHexes => {
+  let result: BoardHexes = {}
+  for (const hexID in map) {
+    if (Object.prototype.hasOwnProperty.call(map, hexID)) {
+      const p1 = map[hexID].s >= Math.max(mapSize - 1, 1) ? '0' : ''
+      const p2 = map[hexID].s <= -1 * Math.max(mapSize - 1, 1) ? '1' : ''
+      const p3 = map[hexID].r >= Math.max(mapSize - 1, 1) ? '2' : ''
+      const p4 = map[hexID].r <= -1 * Math.max(mapSize - 1, 1) ? '3' : ''
+      const p5 = map[hexID].q >= Math.max(mapSize - 1, 1) ? '4' : ''
+      const p6 = map[hexID].q <= -1 * Math.max(mapSize - 1, 1) ? '5' : ''
+
+      result[hexID] = {
+        ...map[hexID],
+        startzonePlayerIDs: [p1, p2, p3, p4, p5, p6].filter((s) => s !== ''),
+      }
+    }
+  }
+  return result
+}
+const getStartZonesFromBoardHexes = (map: BoardHexes): StartZones => {
+  let result: StartZones = {}
+  for (const boardHex in map) {
+    if (Object.prototype.hasOwnProperty.call(map, boardHex)) {
+      map[boardHex].startzonePlayerIDs.forEach(
+        (id) => (result[id] = [...(result?.[id] ?? []), map[boardHex].id])
+      )
+    }
+  }
+  return result
 }

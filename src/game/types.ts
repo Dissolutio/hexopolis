@@ -66,6 +66,8 @@ export type BoardHex = {
   s: number
   occupyingUnitID: string
   altitude: number
+  startzonePlayerIDs: string[]
+  terrain: string
 }
 export type BoardHexes = {
   [key: string]: BoardHex

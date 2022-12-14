@@ -16,6 +16,8 @@ function hexesToBoardHexes(hexgridHexes: Hex[]): BoardHexes {
       id: generateHexID(curr),
       occupyingUnitID: '',
       altitude: 1,
+      terrain: 'grass',
+      startzonePlayerIDs: [],
     }
     return {
       ...prev,
