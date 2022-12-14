@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { generateHexagon } from './hexGen'
 import {
   BoardHexes,
@@ -7,6 +6,16 @@ import {
   MapOptions,
   StartZones,
 } from '../types'
+
+function generateUID() {
+  // I generate the UID from two parts here
+  // to ensure the random number provide enough bits.
+  let firstPart: string | number = (Math.random() * 46656) | 0
+  let secondPart: string | number = (Math.random() * 46656) | 0
+  firstPart = ('000' + firstPart.toString(36)).slice(-3)
+  secondPart = ('000' + secondPart.toString(36)).slice(-3)
+  return firstPart + secondPart
+}
 
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   const mapSize = mapOptions?.mapSize ?? 3
@@ -40,7 +49,7 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
       flat,
       mapSize,
       hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
-      mapId: nanoid(),
+      mapId: generateUID(),
     },
   }
 }
