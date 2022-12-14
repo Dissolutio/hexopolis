@@ -1,16 +1,14 @@
 import type { Move } from 'boardgame.io'
-import { calcUnitMoveRange } from 'game/calcUnitMoveRange'
-import { stageNames } from 'game/constants'
-import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
+import { HexUtils } from 'react-hexgrid'
+import { calcUnitMoveRange } from '../calcUnitMoveRange'
+import { stageNames } from '../constants'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
   selectUnitsForCard,
-  selectUnrevealedGameCard,
-} from 'game/selectors'
-import { Hex, HexUtils } from 'react-hexgrid'
-
+} from '../selectors'
 import { BoardHexes, GameState, GameUnit, GameUnits } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 
@@ -61,10 +59,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
       )
       return
     }
-    const myUnitIdsBeingDisengaged =
-      disengagesAttempting.defendersToDisengage.filter(
-        (d) => d.playerID === unitSwiping.playerID
-      )
     if (G.disengagedUnitIds.includes(unitID)) {
       console.error(
         `Disengagement swipe action denied, this unit has already been disengaged`
@@ -129,7 +123,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
         G.boardHexes = { ...newBoardHexes }
         G.gameUnits = { ...newGameUnits }
         // update game log for fatal disengagement
-        const indexOfThisMove = G.unitsMoved.length
         const indexOfThisDisengage = G.disengagedUnitIds.length
         const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:d-fatal-${indexOfThisDisengage}`
         const gameLogForThisMove = encodeGameLogMessage({
