@@ -1,8 +1,8 @@
 import type { Move } from 'boardgame.io'
 import { GameState, GameUnit } from '../types'
 import { stageNames } from '../constants'
-import { selectGameCardByID } from 'game/selectors'
-import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
+import { selectGameCardByID } from '../selectors'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 
 export const attemptDisengage: Move<GameState> = {
   undoable: false,
