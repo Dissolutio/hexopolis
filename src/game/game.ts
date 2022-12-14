@@ -1,4 +1,4 @@
-import { TurnOrder, PlayerView } from 'boardgame.io/core'
+import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import {
@@ -11,10 +11,10 @@ import {
 } from './constants'
 
 import { GameState, OrderMarker, GameUnit } from './types'
-import { moves } from './moves'
+import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
-import { testScenario } from './setup'
+import { testScenario } from './setup/setup'
 import { calcUnitMoveRange } from './calcUnitMoveRange'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 
@@ -108,13 +108,12 @@ export const HexedMeadow: Game<GameState> = {
       // roll initiative
       onBegin: ({ G }) => {
         const initiativeRoll = rollD20Initiative(['0', '1'])
-        const roundBeginID = `roundBegin${G.currentRound}`
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
-          id: roundBeginID,
-          // initiativeRoll,
+          id: `${G.currentRound}`,
+          initiativeRolls: initiativeRoll.rolls,
         })
-        G.initiative = initiativeRoll
+        G.initiative = initiativeRoll.initiative
         G.currentOrderMarker = 0
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },
@@ -129,6 +128,9 @@ export const HexedMeadow: Game<GameState> = {
       turn: {
         // d20 roll-offs for initiative
         order: TurnOrder.CUSTOM_FROM('initiative'),
+        activePlayers: {
+          currentPlayer: stageNames.movement,
+        },
         // reveal order marker, assign move-points/move-ranges to eligible units
         onBegin: ({ G, ctx }) => {
           // Reveal order marker

@@ -18,6 +18,24 @@ export interface GameState {
   unitsAttacked: string[]
   unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]
+  /* 
+    START 
+    Tracks the data passed from 
+    1. clicking a `moveRange.disengage` hex in UI while moving
+    to
+    2. the bgio-move `disengagementSwipe`
+   */
+  disengagesAttempting:
+    | undefined
+    | { unit: GameUnit; defendersToDisengage: GameUnit[]; endHexID: string }
+  /* END */
+
+  /* 
+    START
+     tracks for a unit who has survived a disengage with unit(s) and should now have its move range adjusted. Should be reset (every move?)
+   */
+  disengagedUnitIds: string[]
+  /* END */
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
@@ -34,11 +52,12 @@ export type GameMap = {
 export type HexMap = {
   mapShape: string
   mapSize: number
-  hexGridLayout: string
   hexHeight: number
   hexWidth: number
   flat: boolean
-  withPrePlacedUnits: boolean
+  // from hexxaform below: mapId so when we have multiple maps we can switch between them, hexSize so we can scale the map
+  mapId: string
+  hexSize: number
 }
 export type BoardHex = {
   id: string
@@ -47,6 +66,8 @@ export type BoardHex = {
   s: number
   occupyingUnitID: string
   altitude: number
+  startzonePlayerIDs: string[]
+  terrain: string
 }
 export type BoardHexes = {
   [key: string]: BoardHex
@@ -158,3 +179,4 @@ export type MapOptions = {
 export type StringKeyedObj = {
   [key: string]: string
 }
+export type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }

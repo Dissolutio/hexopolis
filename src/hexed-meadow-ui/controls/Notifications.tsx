@@ -4,9 +4,11 @@ import { useBgioG } from 'bgio-contexts'
 import { useEffect } from 'react'
 import { useUIContext } from 'hexed-meadow-ui/contexts'
 import { decodeGameLogMessage } from 'game/gamelog'
+import { uniqBy } from 'lodash'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
+  const toastsInReverse = [...toasts].reverse()
   const { gameLog } = useBgioG()
   const { startPause, endPause } = handlers
   const { indexOfLastShownToast, setIndexOfLastShownToast } = useUIContext()
@@ -17,7 +19,10 @@ export const Notifications = () => {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
         const gameLogString = gameLog[i]
         const gameLogMessage = decodeGameLogMessage(gameLogString)
-        toast(gameLogMessage?.msg ?? '', { duration: 10000 })
+        toast(gameLogMessage?.msg ?? '', {
+          duration: 10000,
+          id: gameLogMessage?.id,
+        })
       }
     }
     setIndexOfLastShownToast(gameLog.length)
@@ -35,7 +40,7 @@ export const Notifications = () => {
 
   return (
     <StyledDiv onMouseEnter={startPause} onMouseLeave={endPause}>
-      {toasts.map((toast) => {
+      {uniqBy(toastsInReverse, (t) => t.id).map((toast) => {
         return (
           <div
             key={toast.id}
@@ -57,5 +62,5 @@ const StyledDiv = styled.div`
   bottom: 12px;
   left: Min(10%, 600px);
   /* width: 300px; */
-  font-size: 0.6rem;
+  font-size: 0.8rem;
 `

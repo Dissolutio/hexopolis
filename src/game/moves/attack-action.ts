@@ -1,9 +1,40 @@
 import type { Move } from 'boardgame.io'
 import { Hex, HexUtils } from 'react-hexgrid'
 
-import { selectHexForUnit, selectGameCardByID } from './selectors'
-import { GameState, BoardHex, GameUnit } from './types'
-import { encodeGameLogMessage } from './gamelog'
+import { selectHexForUnit, selectGameCardByID } from '../selectors'
+import { GameState, BoardHex, GameUnit } from '../types'
+import { encodeGameLogMessage } from '../gamelog'
+import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
+
+type HeroscapeDieRoll = {
+  skulls: number
+  shields: number
+  blanks: number
+}
+
+export const rollHeroscapeDice = (
+  count: number,
+  random: RandomAPI
+): HeroscapeDieRoll => {
+  const dice = []
+  for (let i = 0; i < count; i++) {
+    dice.push(random.Die(6))
+  }
+  return dice.reduce(
+    (result, die) => {
+      if (die === 1 || die === 2 || die === 3) {
+        return { ...result, skulls: result.skulls + 1 }
+      } else if (die === 4 || die === 5) {
+        return { ...result, shields: result.skulls + 1 }
+      } else if (die === 6) {
+        return { ...result, blanks: result.skulls + 1 }
+      } else {
+        return result
+      }
+    },
+    { skulls: 0, shields: 0, blanks: 0 }
+  )
+}
 
 export const attackAction: Move<GameState> = {
   undoable: false,
@@ -67,10 +98,12 @@ export const attackAction: Move<GameState> = {
     )
     const defenseRolled = defenderGameCard?.defense ?? 0
     const defenderInitialLife = defenderGameCard?.life ?? 0
-    const attackRoll = random?.Die(6, attackRolled) ?? []
-    const skulls = attackRoll.filter((n) => n <= 3).length
-    const defenseRoll = random?.Die(6, defenseRolled) ?? []
-    const shields = defenseRoll.filter((n) => n === 4 || n === 5).length
+    // const attackRoll = random?.Die(6, attackRolled) ?? []
+    const attackRoll = rollHeroscapeDice(attackRolled, random)
+    const skulls = attackRoll.skulls
+    // const defenseRoll = random?.Die(6, defenseRolled) ?? []
+    const defenseRoll = rollHeroscapeDice(defenseRolled, random)
+    const shields = defenseRoll.shields
     const woundsDealt = Math.max(skulls - shields, 0)
     const isHit = woundsDealt > 0
     const isFatal = woundsDealt >= defenderInitialLife - defenderGameUnit.wounds

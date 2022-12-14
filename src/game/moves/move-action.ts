@@ -1,25 +1,28 @@
 import { Move } from 'boardgame.io'
 import { uniq } from 'lodash'
 import { Hex, HexUtils } from 'react-hexgrid'
-import { calcUnitMoveRange } from './calcUnitMoveRange'
+import { calcUnitMoveRange } from '../calcUnitMoveRange'
+import { encodeGameLogMessage } from '../gamelog'
 import {
+  selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
   selectUnitsForCard,
   selectUnrevealedGameCard,
-} from './selectors'
-import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from './types'
+} from '../selectors'
+import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from '../types'
 
 export const moveAction: Move<GameState> = {
+  undoable: ({ G, ctx }) => true,
   move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
     const { unitID, movePoints } = unit
     const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
     const endHexID = endHex.id
     const startHex = selectHexForUnit(unitID, G.boardHexes)
+    const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
     const currentMoveRange = G.gameUnits[unitID].moveRange
-    const isEndHexInMoveRange = [
-      ...currentMoveRange.disengage,
+    const isEndHexOutOfRange = ![
       ...currentMoveRange.engage,
       ...currentMoveRange.safe,
     ].includes(endHexID)
@@ -29,7 +32,7 @@ export const moveAction: Move<GameState> = {
       G.gameArmyCards,
       G.currentOrderMarker,
       ctx.currentPlayer
-    ) // revealedGameCard is a proxy object
+    )
     const movedUnitsCount = uniq(G.unitsMoved).length
     const allowedMoveCount = revealedGameCard?.figures ?? 0
 
@@ -39,7 +42,7 @@ export const moveAction: Move<GameState> = {
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
     // DISALLOW - move not in move range
-    if (!isEndHexInMoveRange) {
+    if (isEndHexOutOfRange) {
       console.error(
         `Move action denied:The end hex is not in the unit's move range`
       )
@@ -72,12 +75,10 @@ export const moveAction: Move<GameState> = {
       G.gameArmyCards,
       G.currentOrderMarker
     )
-
     const currentTurnUnits = selectUnitsForCard(
       unrevealedGameCard?.gameCardID ?? '',
       G.gameUnits
     )
-
     currentTurnUnits.forEach((unit: GameUnit) => {
       const { unitID } = unit
       const moveRange = calcUnitMoveRange(
@@ -88,6 +89,20 @@ export const moveAction: Move<GameState> = {
       )
       newGameUnits[unitID].moveRange = moveRange
     })
+    // end updating move-ranges for this turn's units
+
+    // update game log
+    const indexOfThisMove = G.unitsMoved.length
+    const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:m${indexOfThisMove}`
+    const gameLogForThisMove = encodeGameLogMessage({
+      type: 'move',
+      id: moveId,
+      unitID: unitID,
+      unitSingleName: unitGameCard?.singleName ?? '',
+      startHexID,
+      endHexID,
+    })
+    G.gameLog.push(gameLogForThisMove)
     // update G
     G.boardHexes = { ...newBoardHexes }
     G.gameUnits = { ...newGameUnits }

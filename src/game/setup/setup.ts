@@ -6,15 +6,57 @@ import {
   GameUnits,
   OrderMarkers,
   PlayersState,
-} from './types'
+} from '../types'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
-  OM_COUNT,
-} from './constants'
+} from '../constants'
 import { makeHexagonShapedMap } from './mapGen'
-import { ICoreHeroscapeCard, MS1Cards } from './coreHeroscapeCards'
-import { transformGameArmyCardsToGameUnits } from './transformers'
+import { ICoreHeroscapeCard, MS1Cards } from '../coreHeroscapeCards'
+import { transformGameArmyCardsToGameUnits } from '../transformers'
+
+const isDevOverrideState = true
+// const isDevOverrideState = false
+const devPlayer1orderMarkers = 'p0_hs1014'
+const devPlayer2orderMarkers = 'p1_hs1003'
+
+export function generatePreplacedOrderMarkers(): OrderMarkers {
+  const orderMarkers: OrderMarkers = {
+    '0': [
+      { order: '0', gameCardID: devPlayer1orderMarkers },
+      { order: '1', gameCardID: devPlayer1orderMarkers },
+      { order: '2', gameCardID: devPlayer1orderMarkers },
+      { order: 'X', gameCardID: devPlayer1orderMarkers },
+    ],
+    '1': [
+      { order: '0', gameCardID: devPlayer2orderMarkers },
+      { order: '1', gameCardID: devPlayer2orderMarkers },
+      { order: '2', gameCardID: devPlayer2orderMarkers },
+      { order: 'X', gameCardID: devPlayer2orderMarkers },
+    ],
+  }
+  return orderMarkers
+}
+function playersStateWithPrePlacedOMs(): PlayersState {
+  return {
+    '0': {
+      orderMarkers: {
+        '0': devPlayer1orderMarkers,
+        '1': devPlayer1orderMarkers,
+        '2': devPlayer1orderMarkers,
+        X: devPlayer1orderMarkers,
+      },
+    },
+    '1': {
+      orderMarkers: {
+        '0': devPlayer2orderMarkers,
+        '1': devPlayer2orderMarkers,
+        '2': devPlayer2orderMarkers,
+        X: devPlayer2orderMarkers,
+      },
+    },
+  }
+}
 
 const isEven = (numberToCheck: number) => {
   //check if the number is even
@@ -26,47 +68,6 @@ const isEven = (numberToCheck: number) => {
     return false
   }
 }
-export function generatePreplacedOrderMarkers(): OrderMarkers {
-  const orderMarkers: OrderMarkers = {
-    '0': [
-      { order: '0', gameCardID: 'p1_hs1000' },
-      { order: '1', gameCardID: 'p1_hs1000' },
-      { order: '2', gameCardID: 'p1_hs1000' },
-      { order: 'X', gameCardID: 'p1_hs1000' },
-    ],
-    '1': [
-      { order: '0', gameCardID: 'p1_hs1002' },
-      { order: '1', gameCardID: 'p1_hs1002' },
-      { order: '2', gameCardID: 'p1_hs1002' },
-      { order: 'X', gameCardID: 'p1_hs1002' },
-    ],
-  }
-  return orderMarkers
-}
-function playersStateWithPrePlacedOMs(): PlayersState {
-  return {
-    '0': {
-      orderMarkers: {
-        '0': 'p0_hs1000',
-        '1': 'p0_hs1000',
-        '2': 'p0_hs1000',
-        X: 'p0_hs1000',
-      },
-    },
-    '1': {
-      orderMarkers: {
-        '0': 'p1_hs1002',
-        '1': 'p1_hs1002',
-        '2': 'p1_hs1002',
-        X: 'p1_hs1002',
-      },
-    },
-  }
-}
-export const withPrePlacedUnits = true
-
-const isDevOverrideState = true
-// const isDevOverrideState = false
 
 const frequentlyChangedDevState = isDevOverrideState
   ? {
@@ -100,7 +101,7 @@ function makeTestScenario(): GameState {
   // Map
   const hexagonMap = makeHexagonShapedMap({
     mapSize: 3,
-    withPrePlacedUnits,
+    withPrePlacedUnits: isDevOverrideState,
     gameUnits: transformGameArmyCardsToGameUnits(armyCards),
     flat: false,
   })
@@ -110,6 +111,8 @@ function makeTestScenario(): GameState {
     currentOrderMarker: 0,
     initiative: [],
     unitsMoved: [],
+    disengagesAttempting: undefined,
+    disengagedUnitIds: [],
     unitsAttacked: [],
     unitsKilled: {},
     gameLog: [],

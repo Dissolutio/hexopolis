@@ -26,10 +26,12 @@ export function selectUnitForHex(
   return unit
 }
 export function selectGameCardByID(
-  armyCards: GameArmyCard[],
+  gameArmyCards: GameArmyCard[],
   gameCardID: string
 ): GameArmyCard | undefined {
-  return armyCards.find((card: GameArmyCard) => card.gameCardID === gameCardID)
+  return gameArmyCards.find(
+    (card: GameArmyCard) => card.gameCardID === gameCardID
+  )
 }
 export function selectUnitsForCard(
   gameCardID: string,
@@ -195,4 +197,64 @@ export function selectEngagementsForHex({
       bAltitude: hexB?.altitude ?? 0,
     })
   })
+}
+// take a unit and an end hex, and return true if the move will cause disengagements
+export function selectIsMoveCausingDisengagements({
+  unit,
+  endHexID,
+  boardHexes,
+  gameUnits,
+  armyCards,
+}: {
+  unit: GameUnit
+  endHexID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
+}) {
+  const initialEngagements: string[] = selectEngagementsForUnit({
+    unitID: unit.unitID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  const engagementsForCurrentHex = selectEngagementsForHex({
+    overrideUnitID: unit.unitID,
+    hexID: endHexID,
+    playerID: unit.playerID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  return initialEngagements.some((id) => !engagementsForCurrentHex.includes(id))
+}
+// take a unit and an end hex, and return true if the move will cause engagements
+export function selectIsMoveCausingEngagements({
+  unit,
+  endHexID,
+  boardHexes,
+  gameUnits,
+  armyCards,
+}: {
+  unit: GameUnit
+  endHexID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
+}) {
+  const initialEngagements: string[] = selectEngagementsForUnit({
+    unitID: unit.unitID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  const engagementsForCurrentHex = selectEngagementsForHex({
+    overrideUnitID: unit.unitID,
+    hexID: endHexID,
+    playerID: unit.playerID,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
 }

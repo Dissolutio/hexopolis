@@ -3,11 +3,16 @@ import React, {
   PropsWithChildren,
   SyntheticEvent,
   useContext,
+  useState,
 } from 'react'
 import { Hex, HexUtils } from 'react-hexgrid'
 
 import { BoardHex, GameArmyCard, GameUnit } from 'game/types'
-import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
+import {
+  selectHexForUnit,
+  selectRevealedGameCard,
+  selectEngagementsForHex,
+} from '../../game/selectors'
 import { generateBlankMoveRange } from 'game/constants'
 import { useUIContext } from '../contexts'
 import {
@@ -16,7 +21,6 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { uniq } from 'lodash'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -25,6 +29,11 @@ export type TargetsInRange = {
 const PlayContext = createContext<PlayContextValue | undefined>(undefined)
 
 type PlayContextValue = {
+  // state
+  showDisengageConfirm: boolean
+  confirmDisengageAttempt: () => void
+  cancelDisengageAttempt: () => void
+  toggleDisengageConfirm: (endHexID: string) => void
   // computed
   currentTurnGameCardID: string
   selectedUnit: GameUnit
@@ -55,13 +64,54 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { ctx } = useBgioCtx()
   const { moves } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
-  const { currentPlayer, isMyTurn, isAttackingStage } = ctx
-  const { moveAction, attackAction } = moves
+  const selectedUnit = gameUnits?.[selectedUnitID]
+  const selectedUnitHex = selectHexForUnit(selectedUnitID, boardHexes)
+  const { currentPlayer, isMyTurn, isMovementStage, isAttackingStage } = ctx
+  const { moveAction, attackAction, attemptDisengage } = moves
+  // disengage confirm
+  const [disengageAttempt, setDisengageAttempt] = useState<
+    | undefined
+    | { unit: GameUnit; endHexID: string; defendersToDisengage: GameUnit[] }
+  >(undefined)
+  const showDisengageConfirm = disengageAttempt !== undefined
+  // const isDisengageConfirm = disengageConfirm !== undefined
+  const confirmDisengageAttempt = () => {
+    attemptDisengage(disengageAttempt)
+    setDisengageAttempt(undefined)
+  }
+  const cancelDisengageAttempt = () => {
+    setDisengageAttempt(undefined)
+  }
+  const onClickDisengageHex = (endHexID: string) => {
+    const selectedUnitHexID = selectedUnitHex?.id ?? ''
+    const currentEngagements = selectEngagementsForHex({
+      hexID: selectedUnitHexID,
+      playerID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+    })
+    const predictedEngagements = selectEngagementsForHex({
+      hexID: endHexID,
+      playerID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+      overrideUnitID: selectedUnitID,
+    })
+    const defendersToDisengage = currentEngagements
+      .filter((id) => !predictedEngagements.includes(id))
+      .map((id) => gameUnits[id])
+    setDisengageAttempt({
+      unit: selectedUnit,
+      endHexID,
+      defendersToDisengage,
+    })
+  }
 
+  // COMPUTED
   const currentTurnGameCardID =
     players?.[playerID]?.orderMarkers?.[currentOrderMarker] ?? ''
-  // COMPUTED
-  const selectedUnit = gameUnits?.[selectedUnitID]
   const revealedGameCard = selectRevealedGameCard(
     orderMarkers,
     armyCards,
@@ -83,6 +133,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     // for each unit, go through all hexes and count how many are in range
     const result = unitsToConsider.reduce((resultTargetsInRange, unit) => {
       const attackerHex = selectHexForUnit(unit.unitID, boardHexes)
+      // if (!attackerHex) {
+      //   // the unit
+      //   return resultTargetsInRange
+      // }
       const attackerPlayerID = unit.playerID
       const numberUnitsInRangeForThisUnit = Object.values(boardHexes).reduce(
         (resultHexIDs: string[], iteratedHex) => {
@@ -139,32 +193,45 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // HANDLERS
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     event.stopPropagation()
+    const sourceHexID = sourceHex.id
     const boardHex = boardHexes[sourceHex.id]
     const occupyingUnitID = boardHex.occupyingUnitID
     const isEndHexOccupied = Boolean(occupyingUnitID)
     const unitOnHex: GameUnit = { ...gameUnits[occupyingUnitID] }
     const endHexUnitPlayerID = unitOnHex.playerID
-    const isUnitReadyToSelect = unitOnHex?.gameCardID === currentTurnGameCardID
-    const isUnitSelected = unitOnHex?.unitID === selectedUnitID
+    const isUnitOnHexReadyToSelect =
+      unitOnHex?.gameCardID === currentTurnGameCardID
+    const isUnitOnHexSelected = unitOnHex?.unitID === selectedUnitID
 
     // MOVE STAGE
-    if (isMyTurn && !isAttackingStage) {
+    if (isMovementStage) {
       const selectedUnitMoveRange =
         selectedUnit?.moveRange ?? generateBlankMoveRange()
-      const { safe, engage, disengage } = selectedUnitMoveRange
-      const allMoves = [safe, disengage, engage].flat()
-      const isInMoveRangeOfSelectedUnit = allMoves.includes(sourceHex.id)
-      // select unit
-      if (isUnitReadyToSelect) {
-        setSelectedUnitID(unitOnHex.unitID)
-      }
-      // deselect unit
-      if (isUnitSelected) {
-        setSelectedUnitID('')
-      }
-      // move selected unit
-      if (selectedUnitID && isInMoveRangeOfSelectedUnit && !isEndHexOccupied) {
+      const isInSafeMoveRangeOfSelectedUnit =
+        selectedUnitMoveRange.safe.includes(sourceHex.id)
+      const isInEngageMoveRangeOfSelectedUnit =
+        selectedUnitMoveRange.engage.includes(sourceHex.id)
+      const isAbleToMakeMove =
+        isInSafeMoveRangeOfSelectedUnit || isInEngageMoveRangeOfSelectedUnit
+      const isInDisengageRange = selectedUnitMoveRange.disengage.includes(
+        sourceHex.id
+      )
+      // move selected unit if possible...
+      if (selectedUnitID && isAbleToMakeMove) {
         moveAction(selectedUnit, boardHexes[sourceHex.id])
+      } else if (selectedUnitID && isInDisengageRange) {
+        // if clicked in disengage hex, then make them confirm...
+        onClickDisengageHex(sourceHexID)
+      } else {
+        // ...otherwise, select or deselect
+        // select unit
+        if (isUnitOnHexReadyToSelect) {
+          setSelectedUnitID(unitOnHex.unitID)
+        }
+        // deselect unit
+        if (isUnitOnHexSelected) {
+          setSelectedUnitID('')
+        }
       }
     }
     // ATTACK STAGE
@@ -173,11 +240,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         isEndHexOccupied && endHexUnitPlayerID !== playerID
 
       // select unit
-      if (isUnitReadyToSelect) {
+      if (isUnitOnHexReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
       }
       // deselect unit
-      if (isUnitSelected) {
+      if (isUnitOnHexSelected) {
         setSelectedUnitID('')
       }
       // attack with selected unit
@@ -201,6 +268,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   return (
     <PlayContext.Provider
       value={{
+        // disengage confirm
+        showDisengageConfirm,
+        confirmDisengageAttempt,
+        cancelDisengageAttempt,
+        toggleDisengageConfirm: onClickDisengageHex,
         // COMPUTED
         currentTurnGameCardID,
         selectedGameCardUnits,

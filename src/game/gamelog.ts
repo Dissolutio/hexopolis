@@ -1,7 +1,11 @@
+import { capitalize } from 'lodash'
+import { Roll } from './rollInitiative'
+
 export type GameLogMessage = {
   type: string // 'roundBegin' 'attack'
-  id: string // round1:orderMarker1:unit1:attack3 => r1:om1:p1u1_hs1008:a3
-  // attack related ones below
+  id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
+
+  // attack logs below
   unitID?: string
   unitName?: string
   targetHexID?: string
@@ -12,12 +16,27 @@ export type GameLogMessage = {
   shields?: number
   wounds?: number
   isFatal?: boolean
-  // roundBegin related ones below
+
+  // roundBegin logs below
+  initiativeRolls?: Roll[][]
+
+  // move logs below
+  // unitID?: string
+  unitSingleName?: string
+  startHexID?: string
+  endHexID?: string
+  // disengage attempts below
+  unitIdsToAttemptToDisengage?: string[]
 }
 export const gameLogTypes = {
   move: 'move',
   attack: 'attack',
   roundBegin: 'roundBegin',
+  disengageAttempt: 'disengageAttempt',
+  disengageSwipeDenied: 'disengageSwipeDenied',
+  disengageSwipeMiss: 'disengageSwipeMiss',
+  disengageSwipeFatal: 'disengageSwipeFatal',
+  disengageSwipeNonFatal: 'disengageSwipeNonFatal',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -27,14 +46,6 @@ export type GameLogMessageDecoded = GameLogMessage & {
 export const encodeGameLogMessage = (gameLog: GameLogMessage): string => {
   try {
     return JSON.stringify(gameLog)
-    // switch (gameLog.type) {
-    //   case 'attack':
-    //     return JSON.stringify(gameLog)
-    //   case 'roundBegin':
-    //     return JSON.stringify(gameLog)
-    //   default:
-    //     return ''
-    // }
   } catch (error) {
     console.error('🚀 ~ file: gamelog.ts ~ encodeGameLogMessage ~ error', error)
     return ''
@@ -58,6 +69,17 @@ export const decodeGameLogMessage = (
       shields,
       wounds,
       isFatal,
+      // roundBegin
+      initiativeRolls,
+      // moves
+      unitSingleName,
+      startHexID,
+      endHexID,
+      // disengage attempts
+      // unitID,
+      // endHexID,
+      // unitSingleName,
+      unitIdsToAttemptToDisengage,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -78,11 +100,56 @@ export const decodeGameLogMessage = (
           msg: attackMsgText,
         }
       case gameLogTypes.roundBegin:
+        // TODO display initiative rolls
         const roundBeginMsgText = `Round ${id} has begun!`
         return {
           type,
-          id, // id is the round number, for roundBegin log types
+          id,
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.move:
+        const moveMsgText = `${unitSingleName} is on the move`
+        return {
+          type,
+          id,
+          msg: moveMsgText,
+        }
+      case gameLogTypes.disengageAttempt:
+        const disengageAttemptMsgText = `${unitSingleName} is attempting to disengage from ${
+          unitIdsToAttemptToDisengage.length
+        } unit${unitIdsToAttemptToDisengage.length === 1 ? 's' : ''}`
+        return {
+          type,
+          id,
+          msg: disengageAttemptMsgText,
+        }
+      case gameLogTypes.disengageSwipeFatal:
+        const disengageSwipeFatalMsgText = `A unit died while disengaging!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeFatalMsgText,
+        }
+      case gameLogTypes.disengageSwipeNonFatal:
+        const disengageSwipeNonFatalMsgText = `A unit was hit while disengaging!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeNonFatalMsgText,
+        }
+      case gameLogTypes.disengageSwipeDenied:
+        const disengageSwipeDeniedMsgText = `A unit denied their disengagement swipe!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeDeniedMsgText,
+        }
+      case gameLogTypes.disengageSwipeMiss:
+        const disengageSwipeMissMsgText = `A unit missed their disengagement swipe!`
+        return {
+          type,
+          id,
+          msg: disengageSwipeMissMsgText,
         }
       default:
         break
