@@ -17,7 +17,7 @@ import { transformGameArmyCardsToGameUnits } from '../transformers'
 
 const isDevOverrideState = true
 // const isDevOverrideState = false
-const devPlayer1orderMarkers = 'p1_hs1014'
+const devPlayer1orderMarkers = 'p0_hs1014'
 const devPlayer2orderMarkers = 'p1_hs1003'
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {
@@ -41,18 +41,18 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': 'p0_hs1000',
-        '1': 'p0_hs1000',
-        '2': 'p0_hs1000',
-        X: 'p0_hs1000',
+        '0': devPlayer1orderMarkers,
+        '1': devPlayer1orderMarkers,
+        '2': devPlayer1orderMarkers,
+        X: devPlayer1orderMarkers,
       },
     },
     '1': {
       orderMarkers: {
-        '0': 'p1_hs1002',
-        '1': 'p1_hs1002',
-        '2': 'p1_hs1002',
-        X: 'p1_hs1002',
+        '0': devPlayer2orderMarkers,
+        '1': devPlayer2orderMarkers,
+        '2': devPlayer2orderMarkers,
+        X: devPlayer2orderMarkers,
       },
     },
   }
