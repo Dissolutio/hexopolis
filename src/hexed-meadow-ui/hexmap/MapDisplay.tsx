@@ -1,7 +1,6 @@
 import { useBgioG } from 'bgio-contexts'
 import { Notifications } from 'hexed-meadow-ui/controls/Notifications'
 import React, { useRef } from 'react'
-import { ActiveHexReadout } from './ActiveHexReadout'
 import { Layout } from './Layout'
 import { MapHexes } from './MapHexes'
 import { MapHexStyles } from './MapHexStyles'
@@ -54,7 +53,6 @@ export const MapDisplay = () => {
       />
       <Notifications />
       <TurnCounter />
-      <ActiveHexReadout />
       <svg
         width={`${mapState.width}%`}
         height={`${mapState.height}%`}
