@@ -7,6 +7,11 @@ type MapHexStylesProps = {
 }
 
 export const MapHexStyles = styled.div<MapHexStylesProps>`
+  @keyframes dash {
+    to {
+      stroke-dashoffset: 100;
+    }
+  }
   height: 100%;
   /* position: relative; */
   overflow: scroll;
@@ -158,8 +163,11 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   //PHASE: ROP-move
   // paint safe moverange
   .maphex__move-safe > g polygon {
-    fill: var(--neon-green);
-    fill-opacity: 1;
+    /* fill: var(--neon-green); */
+    stroke: var(--neon-green);
+    stroke-width: 2;
+    stroke-dasharray: 10;
+    animation: dash 10s linear infinite;
   }
   // paint engage moverange
   .maphex__move-engage > g polygon {

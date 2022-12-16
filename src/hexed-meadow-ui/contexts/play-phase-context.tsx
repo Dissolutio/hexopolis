@@ -3,6 +3,7 @@ import React, {
   PropsWithChildren,
   SyntheticEvent,
   useContext,
+  useEffect,
   useState,
 } from 'react'
 import { Hex, HexUtils } from 'react-hexgrid'
@@ -79,6 +80,13 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
+  useEffect(() => {
+    if (selectedUnitID)
+      setSelectedUnitMoveRange(() =>
+        calcUnitMoveRange(selectedUnitID, boardHexes, gameUnits, armyCards)
+      )
+  }, [armyCards, boardHexes, gameUnits, selectedUnitID])
+
   const showDisengageConfirm = disengageAttempt !== undefined
   // const isDisengageConfirm = disengageConfirm !== undefined
   const confirmDisengageAttempt = () => {
@@ -222,22 +230,24 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       )
       // move selected unit if possible...
       if (selectedUnitID && isAbleToMakeMove) {
-        moveAction(selectedUnit, boardHexes[sourceHex.id])
+        moveAction(
+          selectedUnit,
+          boardHexes[sourceHex.id],
+          selectedUnitMoveRange
+        )
       } else if (selectedUnitID && isInDisengageRange) {
         // if clicked in disengage hex, then make them confirm...
         onClickDisengageHex(sourceHexID)
       } else {
         // ...otherwise, select or deselect
         // select unit
-        if (isUnitOnHexReadyToSelect) {
-          setSelectedUnitID(unitOnHex.unitID)
-          setSelectedUnitMoveRange(() =>
-            calcUnitMoveRange(unitOnHex, boardHexes, gameUnits, armyCards)
-          )
-        }
         // deselect unit
         if (isUnitOnHexSelected) {
           setSelectedUnitID('')
+          setSelectedUnitMoveRange(generateBlankMoveRange())
+        } else if (isUnitOnHexReadyToSelect) {
+          setSelectedUnitID(unitOnHex.unitID)
+          setSelectedUnitMoveRange(generateBlankMoveRange())
         }
       }
     }
