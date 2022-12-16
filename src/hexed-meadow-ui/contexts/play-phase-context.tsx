@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import { Hex, HexUtils } from 'react-hexgrid'
 
-import { BoardHex, GameArmyCard, GameUnit } from 'game/types'
+import { BoardHex, GameArmyCard, GameUnit, MoveRange } from 'game/types'
 import {
   selectHexForUnit,
   selectRevealedGameCard,
@@ -31,6 +31,7 @@ const PlayContext = createContext<PlayContextValue | undefined>(undefined)
 
 type PlayContextValue = {
   // state
+  selectedUnitMoveRange: MoveRange
   showDisengageConfirm: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
@@ -74,6 +75,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     | undefined
     | { unit: GameUnit; endHexID: string; defendersToDisengage: GameUnit[] }
   >(undefined)
+  // client-side moverange
+  const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
+    generateBlankMoveRange()
+  )
   const showDisengageConfirm = disengageAttempt !== undefined
   // const isDisengageConfirm = disengageConfirm !== undefined
   const confirmDisengageAttempt = () => {
@@ -228,7 +233,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         // select unit
         if (isUnitOnHexReadyToSelect) {
           setSelectedUnitID(unitOnHex.unitID)
-          calcUnitMoveRange(unitOnHex, boardHexes, gameUnits, armyCards)
+          setSelectedUnitMoveRange(() =>
+            calcUnitMoveRange(unitOnHex, boardHexes, gameUnits, armyCards)
+          )
         }
         // deselect unit
         if (isUnitOnHexSelected) {
@@ -270,6 +277,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   return (
     <PlayContext.Provider
       value={{
+        selectedUnitMoveRange,
         // disengage confirm
         showDisengageConfirm,
         confirmDisengageAttempt,

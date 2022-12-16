@@ -9,7 +9,6 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { generateBlankMoveRange } from 'game/constants'
 import { selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
@@ -38,16 +37,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     useBgioCtx()
   const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
+    selectedUnitMoveRange,
     onClickTurnHex,
-    selectedUnit,
     revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
   } = usePlayContext()
 
   // computed
-  const selectedUnitMoveRange =
-    selectedUnit?.moveRange ?? generateBlankMoveRange()
 
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
