@@ -20,6 +20,7 @@ export const stageNames = {
   movement: 'movement',
   waitingForDisengageSwipe: 'waitingForDisengageSwipe',
   disengagementSwipe: 'disengagementSwipe',
+  waterClone: 'waterClone',
 }
 
 export const OM_COUNT = 3

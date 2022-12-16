@@ -1,38 +1,4 @@
-export interface ICoreHeroscapeCard {
-  name: string
-  singleName: string
-  armyCardID: string
-  race: string
-  life: string
-  move: string
-  range: string
-  attack: string
-  defense: string
-  height: string
-  heightClass: string
-  points: string
-  figures: string
-  hexes: string
-  image: string
-  portraitPattern: string
-  general:
-    | 'jandar'
-    | 'utgar'
-    | 'ullar'
-    | 'vydar'
-    | 'einar'
-    | 'aquilla'
-    | 'valkrill'
-  type: string
-  cardClass: string
-  personality: string
-  setWave: string
-  abilities: CardAbility[]
-}
-export type CardAbility = {
-  name: string
-  desc: string
-}
+import { ICoreHeroscapeCard } from './types'
 
 export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   {
@@ -61,6 +27,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
       {
         name: 'Water Clone',
         desc: 'Instead of attacking with all of the Marro Warriors, one at a time, roll the 20-sided die for each Marro Warrior in play. If you roll a 15 or higher, place a previously destroyed Marro Warrior on a same-level space adjacent to that Marro Warrior. Any Marro Warrior on a water space needs a 10 or higher to Water Clone. You may only Water Clone after you move.',
+        isAfterMove: true,
       },
     ],
   },

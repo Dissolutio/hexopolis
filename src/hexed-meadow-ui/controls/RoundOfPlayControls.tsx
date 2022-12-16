@@ -17,7 +17,9 @@ import { uniq } from 'lodash'
 import { GreenButton, RedButton } from 'hexed-meadow-ui/layout/buttons'
 import { selectGameCardByID } from 'game/selectors'
 import { playerIDDisplay } from 'game/transformers'
-import { GameUnit, PlayerIdToUnitsMap } from 'game/types'
+import { PlayerIdToUnitsMap } from 'game/types'
+import { RopAttackControls } from './rop/RopAttackControls'
+import { WaterCloneControls } from './rop/WaterCloneControls'
 
 export const RoundOfPlayControls = () => {
   const { ctx } = useBgioCtx()
@@ -27,6 +29,7 @@ export const RoundOfPlayControls = () => {
     isWaitingForDisengagementSwipeStage,
     isDisengagementSwipeStage,
     isAttackingStage,
+    isWaterCloneStage,
   } = ctx
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
@@ -64,6 +67,13 @@ export const RoundOfPlayControls = () => {
     return (
       <>
         <RopDisengagementSwipeControls />
+      </>
+    )
+  }
+  if (isWaterCloneStage) {
+    return (
+      <>
+        <WaterCloneControls />
       </>
     )
   }
@@ -138,74 +148,6 @@ export const RopMoveControls = () => {
         />
       )}
     </div>
-  )
-}
-
-export const RopAttackControls = () => {
-  const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
-  const { moves } = useBgioMoves()
-  const { endCurrentPlayerTurn } = moves
-
-  const {
-    revealedGameCard,
-    countOfRevealedGameCardUnitsWithTargetsInRange,
-    freeAttacksAvailable,
-  } = usePlayContext()
-  const attacksAllowed = revealedGameCard?.figures ?? 0
-  const isLessUnitsWithTargetsThanNumberOfAttacks =
-    countOfRevealedGameCardUnitsWithTargetsInRange < attacksAllowed
-  const attacksUsed = unitsAttacked.length
-  const handleEndTurnButtonClick = () => {
-    endCurrentPlayerTurn()
-  }
-  const maxAttacks = isLessUnitsWithTargetsThanNumberOfAttacks
-    ? countOfRevealedGameCardUnitsWithTargetsInRange
-    : attacksAllowed
-  const attacksAvailable = maxAttacks - attacksUsed
-  const isAllAttacksUsed = attacksAvailable <= 0
-  return (
-    <>
-      <StyledControlsHeaderH2>{`Your #${currentOrderMarker + 1}: ${
-        revealedGameCard?.name ?? ''
-      }`}</StyledControlsHeaderH2>
-
-      {attacksAvailable <= 0 && (
-        <StyledControlsP>
-          You now have no units with targets in range
-        </StyledControlsP>
-      )}
-
-      <StyledControlsP>
-        You have used {attacksUsed} / {attacksAllowed} attacks allowed
-      </StyledControlsP>
-
-      <StyledControlsP>
-        {`You moved ${uniqUnitsMoved.length} unit${
-          uniqUnitsMoved.length !== 1 ? 's' : ''
-        }, and have ${freeAttacksAvailable} attack${
-          freeAttacksAvailable !== 1 ? 's' : ''
-        } available for unmoved units`}
-      </StyledControlsP>
-      {unitsAttacked.length <= 0 && (
-        <UndoRedoButtons undoText="Go back to movement stage" noRedo />
-      )}
-
-      {isAllAttacksUsed ? (
-        <ConfirmOrResetButtons
-          confirm={handleEndTurnButtonClick}
-          confirmText={'End Turn'}
-          noResetButton
-        />
-      ) : (
-        <ConfirmOrResetButtons
-          reset={handleEndTurnButtonClick}
-          resetText={`End Turn, skip my ${attacksAvailable} attack${
-            attacksAvailable !== 1 ? 's' : ''
-          }`}
-          noConfirmButton
-        />
-      )}
-    </>
   )
 }
 

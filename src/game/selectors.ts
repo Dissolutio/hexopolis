@@ -258,3 +258,30 @@ export function selectIsMoveCausingEngagements({
   })
   return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
 }
+
+// for after move abilities (water clone)
+// export function selectCardsWithAfterMoveAbilities({
+//   playerID,
+//   gameUnits,
+//   armyCards,
+// }: {
+//   playerID: string
+//   gameUnits: GameUnits
+//   armyCards: GameArmyCard[]
+// }) {
+//   const initialEngagements: string[] = selectEngagementsForUnit({
+//     unitID: unit.unitID,
+//     boardHexes,
+//     gameUnits,
+//     armyCards,
+//   })
+//   const engagementsForCurrentHex = selectEngagementsForHex({
+//     overrideUnitID: unit.unitID,
+//     hexID: endHexID,
+//     playerID: unit.playerID,
+//     boardHexes,
+//     gameUnits,
+//     armyCards,
+//   })
+//   return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
+// }
