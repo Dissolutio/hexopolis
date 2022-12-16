@@ -143,6 +143,10 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__selected-card-unit--active > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
+    filter: drop-shadow(1px 1px 1px var(--sub-white))
+      drop-shadow(-1px -1px 1px var(--sub-white))
+      drop-shadow(1px -1px 1px var(--sub-white))
+      drop-shadow(-1px 1px 1px var(--sub-white));
   }
   // PHASE: ROP-opponent's turn
   // highlight active enemy unit
