@@ -129,7 +129,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              text={`${hex.altitude}`}
+              text={`${hex.id}`}
               textLine2={`${unitName}`}
             />
           </g>

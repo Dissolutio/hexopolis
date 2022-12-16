@@ -17,7 +17,7 @@ import { MS1Cards } from '../coreHeroscapeCards'
 
 const isDevOverrideState = true
 // const isDevOverrideState = false
-const devPlayer1orderMarkers = 'p0_hs1000'
+const devPlayer1orderMarkers = 'p0_hs1014'
 const devPlayer2orderMarkers = 'p1_hs1003'
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {
