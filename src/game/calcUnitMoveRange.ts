@@ -98,17 +98,16 @@ function computeWalkMoveRange({
 }): MoveRange {
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   const isVisitedAlready = hexesVisited?.[startHex.id] >= movePoints
-  const hexesVisitedCopy = { ...hexesVisited }
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
   }
   // mark this hex as visited
-  hexesVisitedCopy[startHex.id] = movePoints
+  hexesVisited[startHex.id] = movePoints
   // recursive reduce over neighbors
   let nextResults = neighbors.reduce(
     (result: MoveRange, end: BoardHex): MoveRange => {
-      if (hexesVisitedCopy[end.id] >= movePoints) {
+      if (hexesVisited[end.id] >= movePoints) {
         return result
       }
       const { id: endHexID, occupyingUnitID: endHexUnitID } = end
@@ -173,7 +172,16 @@ function computeWalkMoveRange({
           result.safe.push(endHexID)
         }
         // only continue to neighbors if we have move points left
-        if (movePointsLeftAfterMove > 0) {
+        if (
+          movePointsLeftAfterMove > 0 &&
+          (!hexesVisited[endHexID] ||
+            hexesVisited[endHexID] < movePointsLeftAfterMove)
+        ) {
+          console.log('calling recurse on endHexID: ', {
+            endHexID,
+            movePointsLeftAfterMove,
+            hexesVisitedScore: hexesVisited[endHexID],
+          })
           const recursiveMoveRange = computeWalkMoveRange({
             startHex: end,
             movePoints: movePointsLeftAfterMove,
@@ -183,7 +191,7 @@ function computeWalkMoveRange({
             initialEngagements,
             gameUnits,
             playerID,
-            hexesVisited: hexesVisitedCopy,
+            hexesVisited,
             armyCards,
           })
           return {
