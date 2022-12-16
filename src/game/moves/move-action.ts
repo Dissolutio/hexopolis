@@ -1,27 +1,34 @@
 import { Move } from 'boardgame.io'
 import { uniq } from 'lodash'
 import { Hex, HexUtils } from 'react-hexgrid'
-import { calcUnitMoveRange } from '../calcUnitMoveRange'
 import { encodeGameLogMessage } from '../gamelog'
 import {
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
-  selectUnitsForCard,
-  selectUnrevealedGameCard,
 } from '../selectors'
-import { BoardHex, BoardHexes, GameState, GameUnit, GameUnits } from '../types'
+import {
+  BoardHex,
+  BoardHexes,
+  GameState,
+  GameUnit,
+  GameUnits,
+  MoveRange,
+} from '../types'
 
 export const moveAction: Move<GameState> = {
   undoable: ({ G, ctx }) => true,
-  move: ({ G, ctx }, unit: GameUnit, endHex: BoardHex) => {
+  move: (
+    { G, ctx },
+    unit: GameUnit,
+    endHex: BoardHex,
+    currentMoveRange: MoveRange
+  ) => {
     const { unitID, movePoints } = unit
-    const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
     const endHexID = endHex.id
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
-    const currentMoveRange = G.gameUnits[unitID].moveRange
     const isEndHexOutOfRange = ![
       ...currentMoveRange.engage,
       ...currentMoveRange.safe,
@@ -69,27 +76,6 @@ export const moveAction: Move<GameState> = {
     // update unit move-points
     const newMovePoints = movePoints - moveCost
     newGameUnits[unitID].movePoints = newMovePoints
-    // update move-ranges for this turn's units
-    const unrevealedGameCard = selectUnrevealedGameCard(
-      playersOrderMarkers,
-      G.gameArmyCards,
-      G.currentOrderMarker
-    )
-    const currentTurnUnits = selectUnitsForCard(
-      unrevealedGameCard?.gameCardID ?? '',
-      G.gameUnits
-    )
-    currentTurnUnits.forEach((unit: GameUnit) => {
-      const { unitID } = unit
-      const moveRange = calcUnitMoveRange(
-        unit,
-        newBoardHexes,
-        newGameUnits,
-        G.gameArmyCards
-      )
-      newGameUnits[unitID].moveRange = moveRange
-    })
-    // end updating move-ranges for this turn's units
 
     // update game log
     const indexOfThisMove = G.unitsMoved.length

@@ -211,8 +211,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
 
     // MOVE STAGE
     if (isMovementStage) {
-      const selectedUnitMoveRange =
-        selectedUnit?.moveRange ?? generateBlankMoveRange()
       const isInSafeMoveRangeOfSelectedUnit =
         selectedUnitMoveRange.safe.includes(sourceHex.id)
       const isInEngageMoveRangeOfSelectedUnit =
