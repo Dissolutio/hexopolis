@@ -4,6 +4,7 @@ import {
   GameArmyCard,
   GameState,
   GameUnits,
+  ICoreHeroscapeCard,
   OrderMarkers,
   PlayersState,
 } from '../types'
@@ -12,12 +13,12 @@ import {
   generateBlankOrderMarkers,
 } from '../constants'
 import { makeHexagonShapedMap } from './mapGen'
-import { ICoreHeroscapeCard, MS1Cards } from '../coreHeroscapeCards'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
+import { MS1Cards } from 'game/coreHeroscapeCards'
 
-// const isDevOverrideState = true
-const isDevOverrideState = false
-const devPlayer1orderMarkers = 'p0_hs1014'
+const isDevOverrideState = true
+// const isDevOverrideState = false
+const devPlayer1orderMarkers = 'p0_hs1000'
 const devPlayer2orderMarkers = 'p1_hs1003'
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {
@@ -127,6 +128,7 @@ function makeTestScenario(): GameState {
 function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   return params.map((hsCard) => {
     return {
+      abilities: hsCard.abilities,
       name: hsCard.name,
       singleName: hsCard.singleName,
       armyCardID: hsCard.armyCardID,
