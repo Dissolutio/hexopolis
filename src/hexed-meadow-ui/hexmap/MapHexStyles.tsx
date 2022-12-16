@@ -37,52 +37,42 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
   // All Hex Styles
   // highlight all hexes, and set fill-opacity to its initial value (it has given problems with flickering to 1, before)
-  .hexagon-group {
+  .hexagon-group polygon {
     stroke: var(--white);
     stroke-width: 0.1;
     fill-opacity: 0.4;
     transition: fill-opacity 0.2s ease-in-out, stroke-width 0.2s ease-in-out,
       stroke 0.2s ease-in-out;
   }
-  // paint all hexes
+  // polygons, highlight on hover
   .hexagon-group {
     fill: var(--black);
     polygon {
       @media (hover: hover) {
         &:hover {
           fill: var(--neon-orange);
-          fill-opacity: 0.6;
         }
       }
     }
   }
-  .maphex__terrain--void {
-    stroke: var(--white);
-    stroke-width: 0.1;
-    border: 3px dashed var(--white);
-    fill: var(--white);
-    fill-opacity: 0.02;
-  }
-  .maphex__terrain--water {
+  .maphex__terrain--water polygon {
     fill: var(--water);
     fill-opacity: 0.4;
   }
-  .maphex__terrain--grass {
+  .maphex__terrain--grass polygon {
     fill: var(--grass);
     fill-opacity: 0.4;
   }
-  .maphex__terrain--sand {
+  .maphex__terrain--sand polygon {
     fill: var(--sand);
     fill-opacity: 0.4;
   }
-  .maphex__terrain--rock {
+  .maphex__terrain--rock polygon {
     fill: var(--rock);
     fill-opacity: 0.4;
   }
-  //
 
   // PHASE: PLACEMENT
-
   // highlight all player startzones,
   .maphex__startzone--player0 > g polygon {
     stroke: var(--bee-yellow);
