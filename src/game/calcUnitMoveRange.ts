@@ -28,7 +28,7 @@ const deduplicateMoveRange = (result: MoveRange): MoveRange => {
 }
 
 export function calcUnitMoveRange(
-  unit: GameUnit,
+  unitID: string,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
@@ -36,6 +36,7 @@ export function calcUnitMoveRange(
   const timeA = performance.now()
   // 1. return blank move-range if no necessary ingredients
   const initialMoveRange = generateBlankMoveRange()
+  const unit = gameUnits[unitID]
   //*early out
   if (!unit) {
     return initialMoveRange
@@ -171,21 +172,26 @@ function computeWalkMoveRange({
         if (isEndHexUnoccupied) {
           result.safe.push(endHexID)
         }
-        const recursiveMoveRange = computeWalkMoveRange({
-          startHex: end,
-          movePoints: movePointsLeftAfterMove,
-          unit,
-          boardHexes,
-          initialMoveRange: result,
-          initialEngagements,
-          gameUnits,
-          playerID,
-          hexesVisited: hexesVisitedCopy,
-          armyCards,
-        })
-        return {
-          ...result,
-          ...recursiveMoveRange,
+        // only continue to neighbors if we have move points left
+        if (movePointsLeftAfterMove > 0) {
+          const recursiveMoveRange = computeWalkMoveRange({
+            startHex: end,
+            movePoints: movePointsLeftAfterMove,
+            unit,
+            boardHexes,
+            initialMoveRange: result,
+            initialEngagements,
+            gameUnits,
+            playerID,
+            hexesVisited: hexesVisitedCopy,
+            armyCards,
+          })
+          return {
+            ...result,
+            ...recursiveMoveRange,
+          }
+        } else {
+          return result
         }
       }
     },
