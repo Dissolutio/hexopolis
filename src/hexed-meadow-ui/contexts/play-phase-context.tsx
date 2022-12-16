@@ -21,6 +21,7 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
+import { calcUnitMoveRange } from 'game/calcUnitMoveRange'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -227,6 +228,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         // select unit
         if (isUnitOnHexReadyToSelect) {
           setSelectedUnitID(unitOnHex.unitID)
+          calcUnitMoveRange(unitOnHex, boardHexes, gameUnits, armyCards)
         }
         // deselect unit
         if (isUnitOnHexSelected) {
