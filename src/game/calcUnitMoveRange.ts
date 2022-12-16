@@ -33,6 +33,7 @@ export function calcUnitMoveRange(
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
 ): MoveRange {
+  const timeA = performance.now()
   // 1. return blank move-range if no necessary ingredients
   const initialMoveRange = generateBlankMoveRange()
   //*early out
@@ -65,6 +66,8 @@ export function calcUnitMoveRange(
     playerID,
     hexesVisited: {},
   })
+  const timeB = performance.now()
+  console.log(`TOOK: ${timeA - timeB} ms`)
 
   return moveRange
 }
@@ -104,6 +107,9 @@ function computeWalkMoveRange({
   // recursive reduce over neighbors
   let nextResults = neighbors.reduce(
     (result: MoveRange, end: BoardHex): MoveRange => {
+      if (hexesVisitedCopy[end.id] >= movePoints) {
+        return result
+      }
       const { id: endHexID, occupyingUnitID: endHexUnitID } = end
       const isCausingEngagement = selectIsMoveCausingEngagements({
         unit,
