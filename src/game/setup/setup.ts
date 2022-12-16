@@ -1,4 +1,3 @@
-// import { hexedMeadowCards } from './cards'
 import {
   ArmyCard,
   GameArmyCard,
@@ -12,9 +11,9 @@ import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
 } from '../constants'
-import { makeHexagonShapedMap } from './mapGen'
+import { makeGiantsTableMap, makeHexagonShapedMap } from './mapGen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
-import { MS1Cards } from 'game/coreHeroscapeCards'
+import { MS1Cards } from '../coreHeroscapeCards'
 
 const isDevOverrideState = true
 // const isDevOverrideState = false
@@ -100,12 +99,13 @@ function makeTestScenario(): GameState {
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  const hexagonMap = makeHexagonShapedMap({
-    mapSize: 3,
-    withPrePlacedUnits: isDevOverrideState,
-    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-    flat: false,
-  })
+  // const hexagonMap = makeHexagonShapedMap({
+  //   mapSize: 3,
+  //   withPrePlacedUnits: isDevOverrideState,
+  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+  //   flat: false,
+  // })
+  const hexagonMap = makeGiantsTableMap(gameUnits)
   return {
     ...frequentlyChangedDevState,
     currentRound: 1,
