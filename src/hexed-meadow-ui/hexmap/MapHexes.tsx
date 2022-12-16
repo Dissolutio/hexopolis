@@ -34,7 +34,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
-  const { ctx } = useBgioCtx()
+  const { isMyTurn, isPlacementPhase, isRoundOfPlayPhase, isAttackingStage } =
+    useBgioCtx()
   const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
     onClickTurnHex,
@@ -43,9 +44,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
   } = usePlayContext()
-
-  const { isMyTurn, isPlacementPhase, isRoundOfPlayPhase, isAttackingStage } =
-    ctx
 
   // computed
   const selectedUnitMoveRange =

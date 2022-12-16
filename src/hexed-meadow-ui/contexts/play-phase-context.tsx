@@ -61,12 +61,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     players,
     uniqUnitsMoved,
   } = useBgioG()
-  const { ctx } = useBgioCtx()
+  const { currentPlayer, isMyTurn, isMovementStage, isAttackingStage } =
+    useBgioCtx()
   const { moves } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
   const selectedUnitHex = selectHexForUnit(selectedUnitID, boardHexes)
-  const { currentPlayer, isMyTurn, isMovementStage, isAttackingStage } = ctx
   const { moveAction, attackAction, attemptDisengage } = moves
   // disengage confirm
   const [disengageAttempt, setDisengageAttempt] = useState<

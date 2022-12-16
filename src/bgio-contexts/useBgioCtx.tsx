@@ -9,20 +9,18 @@ type BgioCtxProviderProps = {
 }
 
 // add two handy properties
-type BgioCtxValue = {
-  ctx: BoardProps['ctx'] & {
-    isMyTurn: boolean
-    isOrderMarkerPhase: boolean
-    isPlacementPhase: boolean
-    isRoundOfPlayPhase: boolean
-    isIdleStage: boolean
-    isMovementStage: boolean
-    isWaitingForDisengagementSwipeStage: boolean
-    isDisengagementSwipeStage: boolean
-    isWaterCloneStage: boolean
-    isAttackingStage: boolean
-    isGameover: boolean
-  }
+type BgioCtxValue = BoardProps['ctx'] & {
+  isMyTurn: boolean
+  isOrderMarkerPhase: boolean
+  isPlacementPhase: boolean
+  isRoundOfPlayPhase: boolean
+  isIdleStage: boolean
+  isMovementStage: boolean
+  isWaitingForDisengagementSwipeStage: boolean
+  isDisengagementSwipeStage: boolean
+  isWaterCloneStage: boolean
+  isAttackingStage: boolean
+  isGameover: boolean
 }
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
 
@@ -51,20 +49,18 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   return (
     <BgioCtxContext.Provider
       value={{
-        ctx: {
-          ...ctx,
-          isMyTurn,
-          isOrderMarkerPhase,
-          isPlacementPhase,
-          isRoundOfPlayPhase,
-          isIdleStage,
-          isMovementStage,
-          isWaitingForDisengagementSwipeStage,
-          isDisengagementSwipeStage,
-          isWaterCloneStage,
-          isAttackingStage,
-          isGameover,
-        },
+        ...ctx,
+        isMyTurn,
+        isOrderMarkerPhase,
+        isPlacementPhase,
+        isRoundOfPlayPhase,
+        isIdleStage,
+        isMovementStage,
+        isWaitingForDisengagementSwipeStage,
+        isDisengagementSwipeStage,
+        isWaterCloneStage,
+        isAttackingStage,
+        isGameover,
       }}
     >
       {children}

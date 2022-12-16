@@ -5,9 +5,7 @@ import styled from 'styled-components'
 
 export const ActiveHexReadout = () => {
   const { boardHexes, gameUnits, gameArmyCards: armyCards } = useBgioG()
-  const {
-    ctx: { isPlacementPhase },
-  } = useBgioCtx()
+  const { isPlacementPhase } = useBgioCtx()
   const { editingBoardHexes } = usePlacementContext()
   const { selectedMapHex } = useMapContext()
   const activeHex = boardHexes?.[selectedMapHex]

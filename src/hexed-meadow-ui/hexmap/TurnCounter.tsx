@@ -4,9 +4,8 @@ import styled from 'styled-components'
 
 export const TurnCounter = () => {
   const { currentRoundText, currentOrderMarker } = useBgioG()
-  const { ctx } = useBgioCtx()
-
-  const { isPlacementPhase, isOrderMarkerPhase, isRoundOfPlayPhase } = ctx
+  const { isPlacementPhase, isOrderMarkerPhase, isRoundOfPlayPhase } =
+    useBgioCtx()
 
   return (
     <StyledTurnCounter>

@@ -22,7 +22,6 @@ import { RopAttackControls } from './rop/RopAttackControls'
 import { WaterCloneControls } from './rop/WaterCloneControls'
 
 export const RoundOfPlayControls = () => {
-  const { ctx } = useBgioCtx()
   const {
     isIdleStage,
     isMovementStage,
@@ -30,7 +29,7 @@ export const RoundOfPlayControls = () => {
     isDisengagementSwipeStage,
     isAttackingStage,
     isWaterCloneStage,
-  } = ctx
+  } = useBgioCtx()
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
     return <RopConfirmDisengageAttemptControls />

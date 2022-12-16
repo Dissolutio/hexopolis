@@ -4,14 +4,13 @@ import { PlacementControls, PlaceOrderMarkersControls } from './'
 import { RoundOfPlayControls } from './RoundOfPlayControls'
 export const Controls = () => {
   const { playerID } = useBgioClientInfo()
-  const { ctx } = useBgioCtx()
   const {
     gameover,
     isOrderMarkerPhase,
     isPlacementPhase,
     isRoundOfPlayPhase,
     isGameover,
-  } = ctx
+  } = useBgioCtx()
 
   if (isPlacementPhase) {
     return <PlacementControls />
