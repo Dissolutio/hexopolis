@@ -37,7 +37,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
   // All Hex Styles
   // highlight all hexes, and set fill-opacity to its initial value (it has given problems with flickering to 1, before)
-  svg g polygon {
+  .hexagon-group {
     stroke: var(--white);
     stroke-width: 0.1;
     fill-opacity: 0.4;
@@ -47,7 +47,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   // paint all hexes
   .hexagon-group {
     fill: var(--black);
-    g polygon {
+    polygon {
       @media (hover: hover) {
         &:hover {
           fill: var(--neon-orange);
@@ -55,6 +55,29 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
         }
       }
     }
+  }
+  .maphex__terrain--void {
+    stroke: var(--white);
+    stroke-width: 0.1;
+    border: 3px dashed var(--white);
+    fill: var(--white);
+    fill-opacity: 0.02;
+  }
+  .maphex__terrain--water {
+    fill: var(--water);
+    fill-opacity: 0.4;
+  }
+  .maphex__terrain--grass {
+    fill: var(--grass);
+    fill-opacity: 0.4;
+  }
+  .maphex__terrain--sand {
+    fill: var(--sand);
+    fill-opacity: 0.4;
+  }
+  .maphex__terrain--rock {
+    fill: var(--rock);
+    fill-opacity: 0.4;
   }
   //
 

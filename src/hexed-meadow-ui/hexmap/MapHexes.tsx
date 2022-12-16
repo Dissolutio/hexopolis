@@ -130,16 +130,11 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                 </motion.g>
               )}
             </AnimatePresence>
-            {isPlacementPhase && (
-              <HexIDText
-                hexSize={hexSize}
-                text={`${hex.altitude}`}
-                textLine2={`${unitName}`}
-              />
-            )}
-            {!isPlacementPhase && !!unitName && (
-              <HexIDText hexSize={hexSize} text={unitName} />
-            )}
+            <HexIDText
+              hexSize={hexSize}
+              text={`${hex.altitude}`}
+              textLine2={`${unitName}`}
+            />
           </g>
         </Hexagon>
       )

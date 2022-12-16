@@ -33,7 +33,8 @@ export function calcPlacementHexClassNames({
   const isSelectedHex = (hex: BoardHex) => {
     return hex.id === selectedMapHex
   }
-  let classNames = ''
+  // Start: Paint Terrain
+  let classNames = `maphex__terrain--${hex.terrain}`
   //phase: Placement
   const occupyingPlacementUnitId = editingBoardHexes[hex.id]
   // paint all player startzones
@@ -44,10 +45,12 @@ export function calcPlacementHexClassNames({
   if (startZones?.['1'].includes(hex.id)) {
     classNames = classNames.concat(` maphex__startzone--player1 `)
   }
+
   // highlight placeable hexes that DO NOT have units
   if (selectedUnitID && isMyStartZoneHex(hex) && !occupyingPlacementUnitId) {
     classNames = classNames.concat(` maphex__start-zone--placement `)
   }
+
   // highlight placeable hexes that DO have units, but the one with the currently selected unit will be styled separately, below
   if (
     selectedUnitID &&
@@ -57,6 +60,7 @@ export function calcPlacementHexClassNames({
   ) {
     classNames = classNames.concat(` maphex__start-zone--placement--occupied `)
   }
+
   // highlight hex with currently selected unit
   if (
     selectedUnitID &&
@@ -68,6 +72,7 @@ export function calcPlacementHexClassNames({
       ` maphex__start-zone--placement--selected-unit `
     )
   }
+
   // highlight active hex
   if (isSelectedHex(hex)) {
     classNames = classNames.concat(' maphex__selected--active ')
@@ -115,8 +120,8 @@ export function calcRopHexClassNames({
   const isOpponentsActiveUnitHex = (hex: BoardHex) => {
     return activeEnemyUnitIDs.includes(hexUnitID)
   }
-  // TODO: extract functions for className pieces (i.e. makePlacementPhaseClassNames(startZones, isMyStartZoneHex, isSelectedHex)), instead of building classNames procedurally like this
-  let classNames = ''
+  // Start: Paint Terrain
+  let classNames = `maphex__terrain--${hex.terrain}`
   //phase: ROP
   // Highlight selected card units
   // TODO Color selectable units based on if they have moved, have not moved, or have finished moving

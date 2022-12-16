@@ -16,10 +16,12 @@ html {
   --hummingbird-green: #75dbcd;
   --orange: #e8aa14;
   /* TERRAIN */
-  --green: #95c623;
+  --grass: #60840d;
   --forest-green: #37480d;
   --wood-brown: #573319;
-  --water-blue: #044389;
+  --water: #3794fd;
+  --sand: #ab8e10;
+  --rock: #475776;
   /* UTILITY */
   --neon-green: hsla(74, 64%, 59%, 0.5);
   --neon-orange: rgba(224, 150, 40, 0.5);
