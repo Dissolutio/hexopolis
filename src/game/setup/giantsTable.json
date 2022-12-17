@@ -3381,7 +3381,7 @@
     "flat": false,
     "hexHeight": 2,
     "hexWidth": 1.73,
-    "hexSize": 40,
+    "hexSize": 50,
     "mapShape": "orientedRectangle",
     "mapSize": 25,
     "mapLength": 25,
