@@ -4,9 +4,11 @@ import { GameArmyCard, OrderMarker } from 'game/types'
 import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { playerIDDisplay } from 'game/transformers'
 import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexopolis-ui/unit-icons'
+import { compact } from 'lodash'
 
 export const Armies = () => {
   const { gameArmyCards } = useBgioG()
+  const { playerID } = useBgioClientInfo()
   const armies = gameArmyCards.reduce(
     (prev: { [playerID: string]: GameArmyCard[] }, curr) => {
       return {
@@ -21,7 +23,9 @@ export const Armies = () => {
     <>
       {Object.entries(armies).map((entry) => (
         <div key={entry[0]}>
-          <h4>{playerIDDisplay(entry[0])}</h4>
+          <h4>{`${playerIDDisplay(entry[0])}${
+            entry[0] === playerID ? ' (You)' : ''
+          }`}</h4>
           <Army cards={entry[1]} playerID={entry[0]} />
         </div>
       ))}
@@ -55,11 +59,20 @@ const StyledOrderMarkerArmyCardsUl = styled.ul<{ playerID: string }>`
   color: ${(props) => `var(--player${props.playerID})`};
 `
 const ArmyCard = ({ card }: { card: GameArmyCard }) => {
-  const { orderMarkers } = useBgioG()
+  const { orderMarkers, players } = useBgioG()
   const { playerID } = useBgioClientInfo()
-  const orderMarkersOnThisCard = orderMarkers[playerID].filter(
-    (om) => om.gameCardID === card.gameCardID
-  )
+  const cardPlayerID = card.playerID
+  const isMyCard = playerID === cardPlayerID
+  let orderMarkersOnThisCard: OrderMarker[]
+  if (isMyCard) {
+    orderMarkersOnThisCard = Object.entries(players[playerID].orderMarkers)
+      .map((om) => ({ gameCardID: om[1], order: om[0] }))
+      .filter((om) => om.gameCardID === card.gameCardID)
+  } else {
+    orderMarkersOnThisCard = orderMarkers[cardPlayerID].filter(
+      (om) => om.gameCardID === card.gameCardID
+    )
+  }
 
   return (
     <StyledOrderMarkerArmyCardsLi>
