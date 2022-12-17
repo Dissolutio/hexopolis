@@ -22,15 +22,21 @@ export const Armies = () => {
       {Object.entries(armies).map((entry) => (
         <div key={entry[0]}>
           <h4>{playerIDDisplay(entry[0])}</h4>
-          <Army cards={entry[1]} />
+          <Army cards={entry[1]} playerID={entry[0]} />
         </div>
       ))}
     </>
   )
 }
-const Army = ({ cards }: { cards: GameArmyCard[] }) => {
+const Army = ({
+  cards,
+  playerID,
+}: {
+  cards: GameArmyCard[]
+  playerID: string
+}) => {
   return (
-    <StyledOrderMarkerArmyCardsUl>
+    <StyledOrderMarkerArmyCardsUl playerID={playerID}>
       {cards.map((card) => (
         <ArmyCard card={card} />
       ))}
@@ -38,7 +44,7 @@ const Army = ({ cards }: { cards: GameArmyCard[] }) => {
   )
 }
 
-const StyledOrderMarkerArmyCardsUl = styled.ul`
+const StyledOrderMarkerArmyCardsUl = styled.ul<{ playerID: string }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -46,6 +52,7 @@ const StyledOrderMarkerArmyCardsUl = styled.ul`
   list-style-type: none;
   margin: 0;
   padding: 5px;
+  color: ${(props) => `var(--player${props.playerID})`};
 `
 const ArmyCard = ({ card }: { card: GameArmyCard }) => {
   const { orderMarkers } = useBgioG()
@@ -69,7 +76,7 @@ const StyledOrderMarkerArmyCardsLi = styled.li`
   padding: 5px;
   margin: 5px;
   max-width: 300px;
-  border: 1px solid var(--player-color);
+  border: 1px solid;
   font-size: 1.3rem;
   @media screen and (max-width: 1100px) {
     max-width: 100px;
@@ -99,7 +106,6 @@ export const OMList = ({ orderMarkers }: { orderMarkers: OrderMarker[] }) => {
 }
 export const StyledOrderMarkersUl = styled.ul`
   display: flex;
-  border: 1px solid red;
   flex-flow: row wrap;
   justify-content: center;
   flex-grow: 0;

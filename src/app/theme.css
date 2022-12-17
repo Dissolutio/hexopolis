@@ -10,11 +10,17 @@ html {
   --gray: #5d576b;
   /* PLAYER COLORS */
   --bee-yellow: #e0bb00;
+  --player0: #e0bb00;
   --butterfly-purple: #fc65b8;
-  --wasp-red: #e4572e;
+  --player1: #fc65b8;
+  --wasp-red: ##e55812;
+  --player2: ##e55812;
   --beetle-blue: #058ed9;
+  --player3: #058ed9;
   --hummingbird-green: #75dbcd;
-  --orange: #e8aa14;
+  --player4: #75dbcd;
+  --orange: #4c2c69;
+  --player5: #4c2c69;
   /* TERRAIN */
   --grass: #60840d;
   --forest-green: #37480d;
