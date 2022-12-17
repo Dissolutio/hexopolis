@@ -8,7 +8,7 @@ import {
   MoveRange,
   StartZones,
 } from 'game/types'
-import { DeploymentProposition } from 'hexed-meadow-ui/contexts'
+import { DeploymentProposition } from 'hexopolis-ui/contexts'
 import { Hex, HexUtils } from 'react-hexgrid'
 
 export function calcPlacementHexClassNames({

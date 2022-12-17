@@ -1,5 +1,5 @@
 import { useBgioCtx, useBgioG } from 'bgio-contexts'
-import { useMapContext, usePlacementContext } from 'hexed-meadow-ui/contexts'
+import { useMapContext, usePlacementContext } from 'hexopolis-ui/contexts'
 import React from 'react'
 import styled from 'styled-components'
 

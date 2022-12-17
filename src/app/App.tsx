@@ -9,7 +9,7 @@ import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
 import { MultiplayerNav } from './MultiplayerNav'
 import { HexedMeadow } from 'game/game'
 import { isLocalApp, SERVER } from './constants'
-import { Board } from 'hexed-meadow-ui/Board'
+import { Board } from 'hexopolis-ui/Board'
 
 // Enable Redux DevTools in development
 const reduxDevTools =

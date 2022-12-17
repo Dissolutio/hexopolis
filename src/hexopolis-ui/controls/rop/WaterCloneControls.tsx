@@ -6,9 +6,9 @@ import { UndoRedoButtons } from '../rop/UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
-} from 'hexed-meadow-ui/layout/Typography'
+} from 'hexopolis-ui/layout/Typography'
 import { ConfirmOrResetButtons } from '../ConfirmOrResetButtons'
-import { GreenButton } from 'hexed-meadow-ui/layout/buttons'
+import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 
 export const WaterCloneControls = () => {

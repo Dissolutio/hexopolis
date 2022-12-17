@@ -1,5 +1,5 @@
 import { useBgioG } from 'bgio-contexts'
-import { Notifications } from 'hexed-meadow-ui/controls/Notifications'
+import { Notifications } from 'hexopolis-ui/controls/Notifications'
 import React, { useRef } from 'react'
 import { Layout } from './Layout'
 import { MapHexes } from './MapHexes'
