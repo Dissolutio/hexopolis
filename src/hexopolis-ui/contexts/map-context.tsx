@@ -14,6 +14,7 @@ const MapContext = React.createContext<
       viewBoxX: number
       viewBoxY: number
       viewBox: string
+      scale: number
       onIncrementX: () => void
       onDecrementX: () => void
       onIncrementY: () => void
@@ -22,6 +23,8 @@ const MapContext = React.createContext<
       onDecreaseLength: () => void
       onIncreaseHeight: () => void
       onDecreaseHeight: () => void
+      onIncrementScale: () => void
+      onDecrementScale: () => void
       // altitudeViewer: number
       // goUpAltitudeViewer: () => void
       // goDownAltitudeViewer: () => void
@@ -38,30 +41,38 @@ export function MapContextProvider({
   const [viewBoxHeight, setViewBoxHeight] = React.useState(mapSize * 100)
   const [viewBoxX, setViewBoxX] = React.useState(mapSize * -40)
   const [viewBoxY, setViewBoxY] = React.useState(mapSize * -40)
+  const [scale, setScale] = React.useState(10)
   const viewBox = `${viewBoxX} ${viewBoxY} ${viewBoxLength} ${viewBoxHeight}`
+  const incrementor = mapSize * scale
   const onIncrementX = () => {
-    setViewBoxX((s) => s + 100)
+    setViewBoxX((s) => s + incrementor)
   }
   const onDecrementX = () => {
-    setViewBoxX((s) => s - 100)
+    setViewBoxX((s) => s - incrementor)
   }
   const onIncrementY = () => {
-    setViewBoxY((s) => s + 100)
+    setViewBoxY((s) => s + incrementor)
   }
   const onDecrementY = () => {
-    setViewBoxY((s) => s - 100)
+    setViewBoxY((s) => s - incrementor)
   }
   const onIncreaseLength = () => {
-    setViewBoxLength((s) => s + 100)
+    setViewBoxLength((s) => s + incrementor)
   }
   const onDecreaseLength = () => {
-    setViewBoxLength((s) => s - 100)
+    setViewBoxLength((s) => s - incrementor)
   }
   const onIncreaseHeight = () => {
-    setViewBoxHeight((s) => s + 100)
+    setViewBoxHeight((s) => s + incrementor)
   }
   const onDecreaseHeight = () => {
-    setViewBoxHeight((s) => s - 100)
+    setViewBoxHeight((s) => s - incrementor)
+  }
+  const onIncrementScale = () => {
+    setScale((s) => s * 10)
+  }
+  const onDecrementScale = () => {
+    setScale((s) => s / 10)
   }
   // Altitude viewer
   // const [altitudeViewer, setAltitudeViewer] = React.useState(0)
@@ -87,6 +98,7 @@ export function MapContextProvider({
         viewBoxHeight,
         viewBoxX,
         viewBoxY,
+        scale,
         onIncrementX,
         onDecrementX,
         onIncrementY,
@@ -95,6 +107,8 @@ export function MapContextProvider({
         onDecreaseLength,
         onIncreaseHeight,
         onDecreaseHeight,
+        onIncrementScale,
+        onDecrementScale,
         // altitudeViewer,
         // goUpAltitudeViewer,
         // goDownAltitudeViewer,

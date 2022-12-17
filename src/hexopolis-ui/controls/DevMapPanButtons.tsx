@@ -8,6 +8,7 @@ export const DevMapPanButtons = () => {
     viewBoxHeight,
     viewBoxX,
     viewBoxY,
+    scale,
     onIncrementX,
     onDecrementX,
     onIncrementY,
@@ -16,6 +17,8 @@ export const DevMapPanButtons = () => {
     onDecreaseLength,
     onIncreaseHeight,
     onDecreaseHeight,
+    onIncrementScale,
+    onDecrementScale,
   } = useMapContext()
   return (
     <StyledSection>
@@ -55,6 +58,15 @@ export const DevMapPanButtons = () => {
       <StyledMapButton aria-label="+ height" onClick={onIncreaseHeight}>
         <ImPlus color="var(--white)" />
         <span>Height</span>
+      </StyledMapButton>
+      <StyledMapButton aria-label="- scale" onClick={onDecrementScale}>
+        <ImMinus color="var(--white)" />
+        <span>Scale</span>
+      </StyledMapButton>
+      <span>Scale (the multiplier for all the other buttons): {scale}</span>
+      <StyledMapButton aria-label="+ scale" onClick={onIncrementScale}>
+        <ImPlus color="var(--white)" />
+        <span>Scale</span>
       </StyledMapButton>
     </StyledSection>
   )
