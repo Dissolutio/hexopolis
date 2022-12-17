@@ -1,15 +1,13 @@
 import type { Move } from 'boardgame.io'
 import { HexUtils } from 'react-hexgrid'
-import { calcUnitMoveRange } from '../calcUnitMoveRange'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
-  selectUnitsForCard,
 } from '../selectors'
-import { BoardHexes, GameState, GameUnit, GameUnits } from '../types'
+import { BoardHexes, GameState, GameUnits } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 
 // This move is either fatal, not fatal, or denied
@@ -104,21 +102,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
         // ...and reset disengagement state and...
         G.disengagesAttempting = undefined
         G.disengagedUnitIds = []
-        // ... update move-ranges for this turn's units
-        const currentTurnUnits = selectUnitsForCard(
-          revealedGameCard?.gameCardID ?? '',
-          newGameUnits
-        )
-        currentTurnUnits.forEach((unit: GameUnit) => {
-          const { unitID } = unit
-          const moveRange = calcUnitMoveRange(
-            unit,
-            newBoardHexes,
-            newGameUnits,
-            G.gameArmyCards
-          )
-          newGameUnits[unitID].moveRange = moveRange
-        })
         // update G
         G.boardHexes = { ...newBoardHexes }
         G.gameUnits = { ...newGameUnits }
@@ -174,20 +157,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
           newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
             newMovePoints
-          // update move-ranges for this turn's units
-          const currentTurnUnits = selectUnitsForCard(
-            revealedGameCard?.gameCardID ?? '',
-            newGameUnits
-          )
-          currentTurnUnits.forEach((unit: GameUnit) => {
-            const moveRange = calcUnitMoveRange(
-              unit,
-              newBoardHexes,
-              newGameUnits,
-              G.gameArmyCards
-            )
-            newGameUnits[unit.unitID].moveRange = moveRange
-          })
+
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
@@ -238,20 +208,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
         const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
         newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
           newMovePoints
-        // update move-ranges for this turn's units
-        const currentTurnUnits = selectUnitsForCard(
-          revealedGameCard?.gameCardID ?? '',
-          newGameUnits
-        )
-        currentTurnUnits.forEach((unit: GameUnit) => {
-          const moveRange = calcUnitMoveRange(
-            unit,
-            newBoardHexes,
-            newGameUnits,
-            G.gameArmyCards
-          )
-          newGameUnits[unit.unitID].moveRange = moveRange
-        })
         G.boardHexes = { ...newBoardHexes }
         G.gameUnits = { ...newGameUnits }
         G.unitsMoved = newUnitsMoved

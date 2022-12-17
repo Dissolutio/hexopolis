@@ -17,8 +17,8 @@ import { MS1Cards } from '../coreHeroscapeCards'
 
 const isDevOverrideState = true
 // const isDevOverrideState = false
-const devPlayer1orderMarkers = 'p0_hs1000'
-const devPlayer2orderMarkers = 'p1_hs1003'
+const devPlayer1orderMarkers = 'p0_hs1012'
+const devPlayer2orderMarkers = 'p1_hs1002'
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {
   const orderMarkers: OrderMarkers = {
@@ -153,48 +153,51 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 
 //! TEST SCENARIO GAMEARMYCARDS
 function armyCardsToGameArmyCardsForTest() {
-  return hsCardsToArmyCards(MS1Cards)
-    .filter(
-      (c) =>
-        c.armyCardID === 'hs1000' ||
-        c.armyCardID === 'hs1002' ||
-        c.armyCardID === 'hs1003' ||
-        // c.armyCardID === 'hs1008' ||
-        c.armyCardID === 'hs1014'
-    )
-    .map((card) => {
-      const isCardMarroWarriors = card.armyCardID === 'hs1000'
-      const isCardNeGokSa = card.armyCardID === 'hs1014'
-      const isCardMezzodemonWarmongers = card.armyCardID === 'hs1185'
-      const isCardForPlayer1 =
-        isCardMarroWarriors || isCardNeGokSa || isCardMezzodemonWarmongers
+  return (
+    hsCardsToArmyCards(MS1Cards)
+      // .filter(
+      //   (c) =>
+      //     c.armyCardID === 'hs1000' ||
+      //     c.armyCardID === 'hs1002' ||
+      //     c.armyCardID === 'hs1003' ||
+      //     // c.armyCardID === 'hs1008' ||
+      //     c.armyCardID === 'hs1014'
+      // )
+      .map((card) => {
+        const player1Ids = [
+          'hs1000',
+          'hs1001',
+          'hs1003',
+          'hs1004',
+          'hs1008',
+          'hs1009',
+          'hs1010',
+          'hs1012',
+        ]
+        const player2Ids = [
+          'hs1002',
+          'hs1005',
+          'hs1006',
+          'hs1007',
+          'hs1011',
+          'hs1013',
+          'hs1014',
+          'hs1015',
+        ]
+        const isCardForPlayer1 = player1Ids.includes(card.armyCardID)
+        const playerID = isCardForPlayer1 ? '0' : '1'
+        // id factory ...
+        function makeGameCardID() {
+          return `p${playerID}_${card.armyCardID}`
+        }
 
-      const isCardIzumiSamurai = card.armyCardID === 'hs1002'
-      const isCardSgtDrake = card.armyCardID === 'hs1003'
-      const isCardZettianGuard = card.armyCardID === 'hs1008'
-      const isCardForPlayer2 =
-        isCardIzumiSamurai || isCardSgtDrake || isCardZettianGuard
-      const numberFromEndOfId = parseInt(
-        card.armyCardID.slice(card.armyCardID.length - 2)
-      )
-      const playerID = isCardForPlayer1
-        ? '0'
-        : isCardForPlayer2
-        ? '1'
-        : isEven(numberFromEndOfId)
-        ? '0'
-        : '1'
-      // id factory ...
-      function makeGameCardID() {
-        return `p${playerID}_${card.armyCardID}`
-      }
-
-      return {
-        ...card,
-        playerID,
-        // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
-        cardQuantity: 1,
-        gameCardID: makeGameCardID(),
-      }
-    })
+        return {
+          ...card,
+          playerID,
+          // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
+          cardQuantity: 1,
+          gameCardID: makeGameCardID(),
+        }
+      })
+  )
 }

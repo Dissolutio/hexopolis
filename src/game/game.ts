@@ -1,4 +1,4 @@
-import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
+import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import {
@@ -6,7 +6,6 @@ import {
   stageNames,
   OM_COUNT,
   generateBlankOrderMarkers,
-  generateBlankMoveRange,
   generateBlankPlayersOrderMarkers,
 } from './constants'
 
@@ -15,7 +14,6 @@ import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
 import { testScenario } from './setup/setup'
-import { calcUnitMoveRange } from './calcUnitMoveRange'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 
 export const defaultSetupData = {
@@ -146,7 +144,7 @@ export const HexedMeadow: Game<GameState> = {
             G.orderMarkers[ctx.currentPlayer][indexToReveal].order =
               G.currentOrderMarker.toString()
           }
-          // Assign move points/ranges
+          // Assign move points
           const unrevealedGameCard = selectUnrevealedGameCard(
             currentPlayersOrderMarkers,
             G.gameArmyCards,
@@ -157,7 +155,6 @@ export const HexedMeadow: Game<GameState> = {
             G.gameUnits
           )
           const movePoints = unrevealedGameCard?.move ?? 0
-
           // loop thru this turns units
           let mutatedGameUnits = { ...G.gameUnits }
           currentTurnUnits.length &&
@@ -169,32 +166,18 @@ export const HexedMeadow: Game<GameState> = {
                 movePoints,
               }
               mutatedGameUnits[unitID] = unitWithMovePoints
-              // move-range
-              const moveRange = calcUnitMoveRange(
-                unitWithMovePoints,
-                G.boardHexes,
-                mutatedGameUnits,
-                G.gameArmyCards
-              )
-              const unitWithMoveRange = {
-                ...unitWithMovePoints,
-                moveRange,
-              }
-              mutatedGameUnits[unitID] = unitWithMoveRange
             })
-          // end loop
 
           // finally, update state
           G.gameUnits = mutatedGameUnits
           G.unitsMoved = []
           G.unitsAttacked = []
         },
-        // clear move-points/move-ranges,  update currentOrderMarker, end round after last turn (go to place order-markers)
+        // clear move-points,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {
-          // reset unit move-points/move-ranges
+          // reset unit move-points
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0
-            G.gameUnits[uid].moveRange = { ...generateBlankMoveRange() }
           })
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
           const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
