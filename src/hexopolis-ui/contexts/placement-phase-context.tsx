@@ -42,7 +42,7 @@ const PlacementContextProvider = ({
     placementReady,
   } = useBgioG()
   const isConfirmedReady = placementReady[playerID] === true
-  const { setSelectedMapHex } = useMapContext()
+  const { selectMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE
   const myUnitIds = myUnits.map((u) => u.unitID)
@@ -109,7 +109,7 @@ const PlacementContextProvider = ({
       setSelectedUnitID('')
     } else {
       setSelectedUnitID(unitID)
-      setSelectedMapHex('')
+      selectMapHex('')
     }
   }
 
@@ -124,7 +124,7 @@ const PlacementContextProvider = ({
       if (unitIdAlreadyOnHex && !isConfirmedReady) {
         onClickPlacementUnit(unitIdAlreadyOnHex)
       } else {
-        setSelectedMapHex(clickedHexId)
+        selectMapHex(clickedHexId)
       }
       return
     }
@@ -167,7 +167,7 @@ const PlacementContextProvider = ({
               })),
         ])
         setSelectedUnitID('')
-        setSelectedMapHex(clickedHexId)
+        selectMapHex(clickedHexId)
         return
       }
       // finally, deselect the unit

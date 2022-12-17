@@ -54,7 +54,7 @@ export const Board = ({
 }: MyGameProps) => {
   const isLocalOrDemoGame =
     matchID === specialMatchIdToTellHeaderNavThisMatchIsLocal
-
+  const mapWrapperRef = React.useRef<HTMLDivElement>(null)
   return (
     <>
       <ThemeProvider theme={theme(playerID ?? '')}>
@@ -76,16 +76,18 @@ export const Board = ({
                     chatMessages={chatMessages}
                     sendChatMessage={sendChatMessage}
                   >
-                    <MapContextProvider>
+                    {/* // pass mapSize to MapContextProvider so it does not need to consume bgio-G ctx */}
+                    <MapContextProvider mapSize={G.hexMap.mapSize}>
                       {/* UI Context is consumed by PlacementContext and PlayContext */}
                       <UIContextProvider>
                         <PlacementContextProvider>
                           <PlayContextProvider>
-                            <Layout>
+                            <Layout mapWrapperRef={mapWrapperRef}>
                               <HeaderNav
                                 isLocalOrDemoGame={isLocalOrDemoGame}
                               />
-                              <MapDisplay />
+
+                              <MapDisplay mapWrapperRef={mapWrapperRef} />
                               <TabsComponent />
                             </Layout>
                           </PlayContextProvider>

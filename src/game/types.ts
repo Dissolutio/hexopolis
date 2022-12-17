@@ -59,6 +59,12 @@ export type HexMap = {
   mapId: string
   hexSize: number
 }
+export enum MapShapes {
+  hexagon = 'hexagon',
+  orientedRectangle = 'orientedRectangle', // rectangle tilted 45 degrees
+  rectangle = 'rectangle',
+}
+
 export type BoardHex = {
   id: string
   q: number

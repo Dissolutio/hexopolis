@@ -8,8 +8,15 @@ function generateChatID() {
     .replace(/[^a-z]+/g, '')
     .substr(0, 5)
 }
-
-export const ChatInput = () => {
+export const Chat = () => {
+  return (
+    <>
+      <ChatList />
+      <ChatInput />
+    </>
+  )
+}
+const ChatInput = () => {
   const [chatInputText, setChatInputText] = React.useState('')
   const { sendChatMessage } = useBgioChat()
   const { playerID } = useBgioClientInfo()
@@ -44,7 +51,7 @@ export const ChatInput = () => {
   )
 }
 
-export const ChatList = () => {
+const ChatList = () => {
   const chatCtxVal = useBgioChat()
   const chatMessages = uniqBy(chatCtxVal.chatMessages, 'id')
   return (

@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 type MapHexStylesProps = {
   hexSize: number
-  ref: Ref<HTMLDivElement> | null
 }
 
 export const MapHexStyles = styled.div<MapHexStylesProps>`

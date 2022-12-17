@@ -9,38 +9,34 @@ import {
   GiConsoleController,
 } from 'react-icons/gi'
 import { Controls } from './Controls'
-import { ChatInput, ChatList } from './Chat'
+import { Chat } from './Chat'
+import { DevMapPanButtons } from './DevMapPanButtons'
 
 type Tab = {
   title: string
   id: string
   icon: JSX.Element
-  color: string
 }
 const tabs: Tab[] = [
   {
     title: 'Command',
     id: 'tab1',
     icon: <GiConsoleController />,
-    color: '#5d5dff',
   },
   {
     title: 'Scout',
     id: 'tab2',
     icon: <GiCardPick />,
-    color: '#67bb67',
-  },
-  {
-    title: 'Repair',
-    id: 'tab3',
-    icon: <GiAutoRepair />,
-    color: '#63a7c7',
   },
   {
     title: 'Chat',
-    id: 'tab4',
     icon: <GiChatBubble />,
-    color: '#f56868',
+    id: 'tab3',
+  },
+  {
+    title: 'Settings',
+    id: 'tab4',
+    icon: <GiAutoRepair />,
   },
 ]
 
@@ -116,14 +112,8 @@ export const TabsComponent = () => {
       </StyledLinkList>
       {activeTabIndex === 0 && <Controls />}
       {activeTabIndex === 1 && <div>Army Cards! With Order Markers!</div>}
-      {activeTabIndex === 2 && <div>Big whoop!</div>}
-      {activeTabIndex === 3 && (
-        <>
-          <h3>Chats</h3>
-          <ChatList />
-          <ChatInput />
-        </>
-      )}
+      {activeTabIndex === 2 && <Chat />}
+      {activeTabIndex === 3 && <DevMapPanButtons />}
     </StyledTabsComponent>
   )
 }
