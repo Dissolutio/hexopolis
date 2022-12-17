@@ -11,7 +11,6 @@ export const Controls = () => {
     isRoundOfPlayPhase,
     isGameover,
   } = useBgioCtx()
-
   if (isPlacementPhase) {
     return <PlacementControls />
   }
