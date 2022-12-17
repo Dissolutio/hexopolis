@@ -13,6 +13,7 @@ import { selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
+  calcOrderMarkerHexClassNames,
   calcPlacementHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
@@ -33,8 +34,13 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
-  const { isMyTurn, isPlacementPhase, isRoundOfPlayPhase, isAttackingStage } =
-    useBgioCtx()
+  const {
+    isMyTurn,
+    isPlacementPhase,
+    isOrderMarkerPhase,
+    isRoundOfPlayPhase,
+    isAttackingStage,
+  } = useBgioCtx()
   const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
     selectedUnitMoveRange,
@@ -66,6 +72,12 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         startZones,
         playerID,
         editingBoardHexes,
+      })
+    }
+    if (isOrderMarkerPhase) {
+      return calcOrderMarkerHexClassNames({
+        selectedMapHex,
+        hex,
       })
     }
     if (isRoundOfPlayPhase) {

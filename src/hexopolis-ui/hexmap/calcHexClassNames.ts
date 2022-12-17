@@ -80,6 +80,26 @@ export function calcPlacementHexClassNames({
   return classNames
 }
 
+export function calcOrderMarkerHexClassNames({
+  selectedMapHex,
+  hex,
+}: {
+  selectedMapHex: string
+  hex: BoardHex
+}) {
+  const isSelectedHex = (hex: BoardHex) => {
+    return hex.id === selectedMapHex
+  }
+  // Start: Paint Terrain
+  let classNames = `maphex__terrain--${hex.terrain}`
+
+  // highlight active hex
+  if (isSelectedHex(hex)) {
+    classNames = classNames.concat(' maphex__selected--active ')
+  }
+  return classNames
+}
+
 export function calcRopHexClassNames({
   isMyTurn,
   isAttackingStage,
