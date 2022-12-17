@@ -180,8 +180,12 @@ function computeWalkMoveRange({
           console.log('calling recurse on endHexID: ', {
             endHexID,
             movePointsLeftAfterMove,
+            movePoints,
+            moveCost,
             hexesVisitedScore: hexesVisited[endHexID],
+            hexesVisited,
           })
+          console.count(endHexID)
           const recursiveMoveRange = computeWalkMoveRange({
             startHex: end,
             movePoints: movePointsLeftAfterMove,

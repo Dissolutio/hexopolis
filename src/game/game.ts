@@ -1,4 +1,4 @@
-import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
+import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import {
@@ -6,7 +6,6 @@ import {
   stageNames,
   OM_COUNT,
   generateBlankOrderMarkers,
-  generateBlankMoveRange,
   generateBlankPlayersOrderMarkers,
 } from './constants'
 
@@ -15,7 +14,6 @@ import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
 import { testScenario } from './setup/setup'
-import { calcUnitMoveRange } from './calcUnitMoveRange'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 
 export const defaultSetupData = {
