@@ -75,12 +75,12 @@ const frequentlyChangedDevState = isDevOverrideState
         '0': true,
         '1': true,
       },
-      orderMarkersReady: { '0': false, '1': false },
-      roundOfPlayStartReady: { '0': false, '1': false },
-      // players: playersStateWithPrePlacedOMs(),
-      // orderMarkers: generatePreplacedOrderMarkers(),
-      orderMarkers: generateBlankOrderMarkers(),
-      players: generateBlankPlayersState(),
+      orderMarkersReady: { '0': true, '1': true },
+      roundOfPlayStartReady: { '0': true, '1': true },
+      players: playersStateWithPrePlacedOMs(),
+      orderMarkers: generatePreplacedOrderMarkers(),
+      // orderMarkers: generateBlankOrderMarkers(),
+      // players: generateBlankPlayersState(),
     }
   : {
       placementReady: {

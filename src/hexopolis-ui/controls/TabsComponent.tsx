@@ -11,6 +11,7 @@ import {
 import { Controls } from './Controls'
 import { Chat } from './Chat'
 import { DevMapPanButtons } from './DevMapPanButtons'
+import { Armies } from './Armies'
 
 type Tab = {
   title: string
@@ -111,7 +112,7 @@ export const TabsComponent = () => {
         ))}
       </StyledLinkList>
       {activeTabIndex === 0 && <Controls />}
-      {activeTabIndex === 1 && <div>Army Cards! With Order Markers!</div>}
+      {activeTabIndex === 1 && <Armies />}
       {activeTabIndex === 2 && <Chat />}
       {activeTabIndex === 3 && <DevMapPanButtons />}
     </StyledTabsComponent>
