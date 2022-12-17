@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import toast, { useToaster } from 'react-hot-toast/headless'
 import { useBgioG } from 'bgio-contexts'
 import { useEffect } from 'react'
-import { useUIContext } from 'hexed-meadow-ui/contexts'
+import { useUIContext } from 'hexopolis-ui/contexts'
 import { decodeGameLogMessage } from 'game/gamelog'
 import { uniqBy } from 'lodash'
 

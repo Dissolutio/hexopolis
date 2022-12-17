@@ -6,6 +6,7 @@ import {
   MapOptions,
   StartZones,
 } from '../types'
+import giantsTable from './giantsTable.json'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -16,7 +17,27 @@ function generateUID() {
   secondPart = ('000' + secondPart.toString(36)).slice(-3)
   return firstPart + secondPart
 }
-
+export function makeGiantsTableMap(gameUnits?: GameUnits): GameMap {
+  const boardHexes = giantsTable.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('giantsTable.boardHexes is not defined')
+  }
+  for (const hex in boardHexes) {
+    if (Object.prototype.hasOwnProperty.call(boardHexes, hex)) {
+      const element = boardHexes[hex]
+      if (element.terrain === 'void') {
+        delete boardHexes[hex]
+      }
+    }
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  transformBoardHexesWithPrePlacedUnits(boardHexes, startZones, gameUnits ?? {})
+  return {
+    boardHexes: giantsTable.boardHexes as unknown as BoardHexes,
+    hexMap: giantsTable.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false
@@ -55,7 +76,7 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
 }
 function transformBoardHexesWithPrePlacedUnits(
   boardHexes: BoardHexes,
-  zones: StartZones,
+  startZones: StartZones,
   gameUnits: GameUnits
 ): BoardHexes {
   const copy = { ...boardHexes }
@@ -68,10 +89,10 @@ function transformBoardHexesWithPrePlacedUnits(
       const { playerID } = unit
       let randomHexID: string = ''
       if (playerID === '0') {
-        randomHexID = zones?.[unit.playerID][k++] ?? ''
+        randomHexID = startZones?.[unit.playerID][k++] ?? ''
       }
       if (playerID === '1') {
-        randomHexID = zones?.[unit.playerID][j++] ?? ''
+        randomHexID = startZones?.[unit.playerID][j++] ?? ''
       }
       // update boardHex
       copy[randomHexID].occupyingUnitID = unit.unitID

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexed-meadow-ui/unit-icons'
+import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexopolis-ui/unit-icons'
 import React from 'react'
 import { GameArmyCard, PlayerOrderMarkers } from 'game/types'
 import { OMButtonList } from '../PlaceOrderMarkersControls'

@@ -9,11 +9,11 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { generateBlankMoveRange } from 'game/constants'
 import { selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
+  calcOrderMarkerHexClassNames,
   calcPlacementHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
@@ -34,22 +34,23 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
-  const { ctx } = useBgioCtx()
+  const {
+    isMyTurn,
+    isPlacementPhase,
+    isOrderMarkerPhase,
+    isRoundOfPlayPhase,
+    isAttackingStage,
+  } = useBgioCtx()
   const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
   const {
+    selectedUnitMoveRange,
     onClickTurnHex,
-    selectedUnit,
     revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
   } = usePlayContext()
 
-  const { isMyTurn, isPlacementPhase, isRoundOfPlayPhase, isAttackingStage } =
-    ctx
-
   // computed
-  const selectedUnitMoveRange =
-    selectedUnit?.moveRange ?? generateBlankMoveRange()
 
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
@@ -71,6 +72,12 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         startZones,
         playerID,
         editingBoardHexes,
+      })
+    }
+    if (isOrderMarkerPhase) {
+      return calcOrderMarkerHexClassNames({
+        selectedMapHex,
+        hex,
       })
     }
     if (isRoundOfPlayPhase) {
@@ -132,16 +139,11 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                 </motion.g>
               )}
             </AnimatePresence>
-            {isPlacementPhase && (
-              <HexIDText
-                hexSize={hexSize}
-                text={`${hex.altitude}`}
-                textLine2={`${unitName}`}
-              />
-            )}
-            {!isPlacementPhase && !!unitName && (
-              <HexIDText hexSize={hexSize} text={unitName} />
-            )}
+            <HexIDText
+              hexSize={hexSize}
+              text={`${hex.id}`}
+              textLine2={`${unitName}`}
+            />
           </g>
         </Hexagon>
       )

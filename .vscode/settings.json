@@ -30,5 +30,9 @@
         "Rechets",
         "Syvarris",
         "ullar"
-    ]
+    ],
+    "editor.snippetSuggestions": "top",
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "typescript.suggest.enabled": true,
+    "snippets.triggerKey": ""
 }

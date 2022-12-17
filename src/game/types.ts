@@ -59,6 +59,12 @@ export type HexMap = {
   mapId: string
   hexSize: number
 }
+export enum MapShapes {
+  hexagon = 'hexagon',
+  orientedRectangle = 'orientedRectangle', // rectangle tilted 45 degrees
+  rectangle = 'rectangle',
+}
+
 export type BoardHex = {
   id: string
   q: number
@@ -75,7 +81,44 @@ export type BoardHexes = {
 export type StartZones = {
   [playerID: string]: string[] // boardHex IDs
 }
+export interface ICoreHeroscapeCard {
+  name: string
+  singleName: string
+  armyCardID: string
+  race: string
+  life: string
+  move: string
+  range: string
+  attack: string
+  defense: string
+  height: string
+  heightClass: string
+  points: string
+  figures: string
+  hexes: string
+  image: string
+  portraitPattern: string
+  general:
+    | 'jandar'
+    | 'utgar'
+    | 'ullar'
+    | 'vydar'
+    | 'einar'
+    | 'aquilla'
+    | 'valkrill'
+  type: string
+  cardClass: string
+  personality: string
+  setWave: string
+  abilities: CardAbility[]
+}
+export type CardAbility = {
+  name: string
+  desc: string
+  isAfterMove?: boolean
+}
 export type ArmyCard = {
+  abilities: CardAbility[]
   name: string
   singleName: string
   armyCardID: string
@@ -96,7 +139,6 @@ export type ArmyCard = {
   heightClass: string // small medium large huge
   // CURRENTLY, THESE ARE OMITTED UNTIL WE USE THEM
   // setWave: string
-  // abilities: CardAbility[]
   // image: string
   // portraitPattern: string
 }

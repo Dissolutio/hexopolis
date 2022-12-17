@@ -8,7 +8,6 @@ import {
   PlayContextProvider,
 } from './contexts'
 import { Layout, HeaderNav } from './layout'
-import { Controls } from './controls'
 import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from './theme'
 import {
@@ -22,6 +21,7 @@ import {
 import { ChatMessage } from 'boardgame.io'
 import { GameState } from 'game/types'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/App'
+import { TabsComponent } from './controls/TabsComponent'
 
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
@@ -54,7 +54,7 @@ export const Board = ({
 }: MyGameProps) => {
   const isLocalOrDemoGame =
     matchID === specialMatchIdToTellHeaderNavThisMatchIsLocal
-
+  const mapWrapperRef = React.useRef<HTMLDivElement>(null)
   return (
     <>
       <ThemeProvider theme={theme(playerID ?? '')}>
@@ -76,17 +76,19 @@ export const Board = ({
                     chatMessages={chatMessages}
                     sendChatMessage={sendChatMessage}
                   >
-                    <MapContextProvider>
+                    {/* // pass mapSize to MapContextProvider so it does not need to consume bgio-G ctx */}
+                    <MapContextProvider mapSize={G.hexMap.mapSize}>
                       {/* UI Context is consumed by PlacementContext and PlayContext */}
                       <UIContextProvider>
                         <PlacementContextProvider>
                           <PlayContextProvider>
-                            <Layout>
+                            <Layout mapWrapperRef={mapWrapperRef}>
                               <HeaderNav
                                 isLocalOrDemoGame={isLocalOrDemoGame}
                               />
-                              <MapDisplay />
-                              <Controls />
+
+                              <MapDisplay mapWrapperRef={mapWrapperRef} />
+                              <TabsComponent />
                             </Layout>
                           </PlayContextProvider>
                         </PlacementContextProvider>

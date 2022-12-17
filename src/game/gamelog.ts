@@ -1,4 +1,3 @@
-import { capitalize } from 'lodash'
 import { Roll } from './rollInitiative'
 
 export type GameLogMessage = {

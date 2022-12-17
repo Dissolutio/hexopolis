@@ -1,4 +1,4 @@
-import { GreenButton, RedButton } from 'hexed-meadow-ui/layout/buttons'
+import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import styled from 'styled-components'
 
 type ConfirmOrResetButtonsProps = {

@@ -2,7 +2,6 @@ import * as React from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import { useBgioClientInfo } from './useBgioClientInfo'
 import { phaseNames, stageNames } from 'game/constants'
-import { Stage } from 'boardgame.io/core'
 
 type BgioCtxProviderProps = {
   children: React.ReactNode
@@ -10,19 +9,18 @@ type BgioCtxProviderProps = {
 }
 
 // add two handy properties
-type BgioCtxValue = {
-  ctx: BoardProps['ctx'] & {
-    isMyTurn: boolean
-    isOrderMarkerPhase: boolean
-    isPlacementPhase: boolean
-    isRoundOfPlayPhase: boolean
-    isIdleStage: boolean
-    isMovementStage: boolean
-    isWaitingForDisengagementSwipeStage: boolean
-    isDisengagementSwipeStage: boolean
-    isAttackingStage: boolean
-    isGameover: boolean
-  }
+type BgioCtxValue = BoardProps['ctx'] & {
+  isMyTurn: boolean
+  isOrderMarkerPhase: boolean
+  isPlacementPhase: boolean
+  isRoundOfPlayPhase: boolean
+  isIdleStage: boolean
+  isMovementStage: boolean
+  isWaitingForDisengagementSwipeStage: boolean
+  isDisengagementSwipeStage: boolean
+  isWaterCloneStage: boolean
+  isAttackingStage: boolean
+  isGameover: boolean
 }
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
 
@@ -38,6 +36,9 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === undefined
   const isAttackingStage: boolean =
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
+  const isWaterCloneStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.waterClone
   const isWaitingForDisengagementSwipeStage: boolean =
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.waitingForDisengageSwipe
@@ -48,19 +49,18 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   return (
     <BgioCtxContext.Provider
       value={{
-        ctx: {
-          ...ctx,
-          isMyTurn,
-          isOrderMarkerPhase,
-          isPlacementPhase,
-          isRoundOfPlayPhase,
-          isIdleStage,
-          isMovementStage,
-          isWaitingForDisengagementSwipeStage,
-          isDisengagementSwipeStage,
-          isAttackingStage,
-          isGameover,
-        },
+        ...ctx,
+        isMyTurn,
+        isOrderMarkerPhase,
+        isPlacementPhase,
+        isRoundOfPlayPhase,
+        isIdleStage,
+        isMovementStage,
+        isWaitingForDisengagementSwipeStage,
+        isDisengagementSwipeStage,
+        isWaterCloneStage,
+        isAttackingStage,
+        isGameover,
       }}
     >
       {children}

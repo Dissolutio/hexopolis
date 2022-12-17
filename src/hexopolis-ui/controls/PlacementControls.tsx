@@ -10,13 +10,13 @@ import { PlacementUnit } from 'game/types'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
-} from 'hexed-meadow-ui/layout/Typography'
-import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
+} from 'hexopolis-ui/layout/Typography'
+import { selectedTileStyle } from 'hexopolis-ui/layout/styles'
 import {
   ConfirmOrResetButtons,
   StyledButtonWrapper,
 } from './ConfirmOrResetButtons'
-import { RedButton } from 'hexed-meadow-ui/layout/buttons'
+import { RedButton } from 'hexopolis-ui/layout/buttons'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()

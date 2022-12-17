@@ -3,19 +3,19 @@ import { useBgioClientInfo, useBgioG, useBgioMoves } from 'bgio-contexts'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
-} from 'hexed-meadow-ui/layout/Typography'
+} from 'hexopolis-ui/layout/Typography'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { OrderMarkerArmyCards } from './order-markers/OrderMarkerArmyCards'
 import { omToString } from 'app/utilities'
-import { selectedTileStyle } from 'hexed-meadow-ui/layout/styles'
+import { selectedTileStyle } from 'hexopolis-ui/layout/styles'
 import {
   ConfirmOrResetButtons,
   StyledButtonWrapper,
 } from './ConfirmOrResetButtons'
 import { motion, AnimatePresence } from 'framer-motion'
 
-import { RedButton } from 'hexed-meadow-ui/layout/buttons'
+import { RedButton } from 'hexopolis-ui/layout/buttons'
 import {
   generateBlankOrderMarkers,
   generateBlankPlayersOrderMarkers,
