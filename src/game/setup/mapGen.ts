@@ -6,7 +6,7 @@ import {
   MapOptions,
   StartZones,
 } from '../types'
-import giantsTable from './giantsTable.json'
+import { giantsTable } from './giantsTable'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -17,7 +17,10 @@ function generateUID() {
   secondPart = ('000' + secondPart.toString(36)).slice(-3)
   return firstPart + secondPart
 }
-export function makeGiantsTableMap(gameUnits?: GameUnits): GameMap {
+export function makeGiantsTableMap(
+  isDevOverrideState: boolean,
+  gameUnits?: GameUnits
+): GameMap {
   const boardHexes = giantsTable.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
     throw new Error('giantsTable.boardHexes is not defined')
@@ -31,7 +34,13 @@ export function makeGiantsTableMap(gameUnits?: GameUnits): GameMap {
     }
   }
   const startZones = getStartZonesFromBoardHexes(boardHexes)
-  transformBoardHexesWithPrePlacedUnits(boardHexes, startZones, gameUnits ?? {})
+  if (isDevOverrideState) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
   return {
     boardHexes: giantsTable.boardHexes as unknown as BoardHexes,
     hexMap: giantsTable.hexMap,
