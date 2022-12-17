@@ -8,7 +8,6 @@ import {
   PlayContextProvider,
 } from './contexts'
 import { Layout, HeaderNav } from './layout'
-import { Controls } from './controls'
 import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from './theme'
 import {

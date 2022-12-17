@@ -1,6 +1,7 @@
 import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
 import React from 'react'
-import { PlacementControls, PlaceOrderMarkersControls } from './'
+import { PlacementControls } from './PlacementControls'
+import { PlaceOrderMarkersControls } from './PlaceOrderMarkersControls'
 import { RoundOfPlayControls } from './RoundOfPlayControls'
 export const Controls = () => {
   const { playerID } = useBgioClientInfo()
