@@ -64,12 +64,13 @@ export enum MapShapes {
   orientedRectangle = 'orientedRectangle', // rectangle tilted 45 degrees
   rectangle = 'rectangle',
 }
-
-export type BoardHex = {
-  id: string
+export type HexCoordinates = {
   q: number
   r: number
   s: number
+}
+export type BoardHex = HexCoordinates & {
+  id: string
   occupyingUnitID: string
   altitude: number
   startzonePlayerIDs: string[]

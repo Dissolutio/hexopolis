@@ -80,6 +80,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
+  // effect: update moverange when selected unit changes
   useEffect(() => {
     if (selectedUnitID)
       setSelectedUnitMoveRange(() =>
@@ -88,7 +89,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   }, [armyCards, boardHexes, gameUnits, selectedUnitID])
 
   const showDisengageConfirm = disengageAttempt !== undefined
-  // const isDisengageConfirm = disengageConfirm !== undefined
   const confirmDisengageAttempt = () => {
     attemptDisengage(disengageAttempt)
     setDisengageAttempt(undefined)

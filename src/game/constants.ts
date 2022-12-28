@@ -1,5 +1,5 @@
-import { Hex } from 'react-hexgrid'
 import {
+  HexCoordinates,
   MoveRange,
   OrderMarker,
   OrderMarkers,
@@ -54,7 +54,7 @@ export function generateBlankPlayersOrderMarkers(): PlayerOrderMarkers {
   }
 }
 
-export function generateHexID(hex: Hex) {
+export function generateHexID(hex: HexCoordinates) {
   return `${hex.q},${hex.r},${hex.s}`
 }
 export function generateBlankMoveRange(): MoveRange {

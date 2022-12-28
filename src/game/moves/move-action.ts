@@ -1,6 +1,6 @@
 import { Move } from 'boardgame.io'
+import { hexUtilsDistance } from 'game/hex-utils'
 import { uniq } from 'lodash'
-import { Hex, HexUtils } from 'react-hexgrid'
 import { encodeGameLogMessage } from '../gamelog'
 import {
   selectGameCardByID,
@@ -13,6 +13,7 @@ import {
   GameState,
   GameUnit,
   GameUnits,
+  HexCoordinates,
   MoveRange,
 } from '../types'
 
@@ -33,7 +34,7 @@ export const moveAction: Move<GameState> = {
       ...currentMoveRange.engage,
       ...currentMoveRange.safe,
     ].includes(endHexID)
-    const moveCost = HexUtils.distance(startHex as Hex, endHex)
+    const moveCost = hexUtilsDistance(startHex as HexCoordinates, endHex)
     const revealedGameCard = selectRevealedGameCard(
       G.orderMarkers,
       G.gameArmyCards,
