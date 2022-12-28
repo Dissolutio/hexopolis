@@ -1,7 +1,7 @@
 import * as React from 'react'
 import classNames from 'classnames'
 import { Hex, HexUtils } from 'react-hexgrid'
-import { useLayoutContext } from './Layout'
+import { useLayoutContext } from './HexgridLayout'
 
 type HexagonProps = {
   q: number

@@ -99,7 +99,7 @@ export type LayoutProps = {
 /**
  * Provides LayoutContext for all descendants and renders child elements inside a <g> (Group) element
  */
-export function Layout({
+export function HexgridLayout({
   size = defaultSize,
   flat = true,
   spacing = defaultSpacing,

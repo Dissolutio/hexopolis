@@ -2,8 +2,8 @@ import { useBgioG } from 'bgio-contexts'
 import { MapShapes } from 'game/types'
 import { useMapContext } from 'hexopolis-ui/contexts'
 import { Notifications } from 'hexopolis-ui/controls/Notifications'
-import React, { useEffect, useRef } from 'react'
-import { Layout } from './Layout'
+import React, { useEffect } from 'react'
+import { HexgridLayout } from './HexgridLayout'
 import { MapHexes } from './MapHexes'
 import { MapHexStyles } from './MapHexStyles'
 import { TurnCounter } from './TurnCounter'
@@ -109,14 +109,14 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <Layout
+        <HexgridLayout
           size={{ x: hexSize, y: hexSize }}
           flat={flat}
           spacing={spacing}
           className="hexgrid-layout"
         >
           <MapHexes hexSize={hexSize} />
-        </Layout>
+        </HexgridLayout>
       </svg>
     </MapHexStyles>
   )
