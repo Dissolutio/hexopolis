@@ -37,6 +37,8 @@ export function MapContextProvider({
 }: MapContextProviderProps) {
   const [selectedMapHex, setSelectedMapHex] = React.useState('')
   // Map Display
+  // TODO these initial viewBox values should be calculated much better: something that grasps the map's size, draws a rectangle around it, and then scales it to fit the screen
+  // -100 0 3000 1000 this is good default for giants table on 500x500 screen
   const [viewBoxLength, setViewBoxLength] = React.useState(mapSize * 100)
   const [viewBoxHeight, setViewBoxHeight] = React.useState(mapSize * 100)
   const [viewBoxX, setViewBoxX] = React.useState(mapSize * -40)
