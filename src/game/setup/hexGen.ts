@@ -1,29 +1,31 @@
-import { GridGenerator, Hex } from 'react-hexgrid'
-import { BoardHexes } from '../types'
+import { BoardHexes, HexCoordinates } from '../types'
 import { generateHexID } from '../constants'
+import { GridGenerator } from 'game/hex-utils'
 
-// REACT-HEXGRID GENERATORS
 export const generateHexagon = (mapSize: number): BoardHexes => {
   const hexgridHexes = GridGenerator.hexagon(mapSize)
   const boardHexes = hexesToBoardHexes(hexgridHexes)
   return boardHexes
 }
 
-function hexesToBoardHexes(hexgridHexes: Hex[]): BoardHexes {
-  return hexgridHexes.reduce((prev: BoardHexes, curr: Hex): BoardHexes => {
-    const boardHex = {
-      ...curr,
-      id: generateHexID(curr),
-      occupyingUnitID: '',
-      altitude: 1,
-      terrain: 'grass',
-      startzonePlayerIDs: [],
-    }
-    return {
-      ...prev,
-      [boardHex.id]: boardHex,
-    }
-  }, {})
+function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
+  return hexgridHexes.reduce(
+    (prev: BoardHexes, curr: HexCoordinates): BoardHexes => {
+      const boardHex = {
+        ...curr,
+        id: generateHexID(curr),
+        occupyingUnitID: '',
+        altitude: 1,
+        terrain: 'grass',
+        startzonePlayerIDs: [],
+      }
+      return {
+        ...prev,
+        [boardHex.id]: boardHex,
+      }
+    },
+    {}
+  )
 }
 
 //TODO -- generate other maps -- WIP

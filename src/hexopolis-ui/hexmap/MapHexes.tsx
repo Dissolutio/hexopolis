@@ -1,6 +1,5 @@
 import React, { SyntheticEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Text } from 'react-hexgrid'
 
 import {
   useUIContext,
@@ -18,6 +17,7 @@ import {
   calcRopHexClassNames,
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
+import { HexText } from './HexText'
 
 type MapHexesProps = {
   hexSize: number
@@ -162,13 +162,13 @@ const HexIDText = ({
 }) => {
   return (
     <>
-      <Text className="maphex_altitude-text" y={hexSize * 0.6}>
+      <HexText className="maphex_altitude-text" y={hexSize * 0.6}>
         {text.toString()}
-      </Text>
+      </HexText>
       {textLine2 && (
-        <Text className="maphex_altitude-text" y={hexSize * 0.8}>
+        <HexText className="maphex_altitude-text" y={hexSize * 0.8}>
           {textLine2.toString()}
-        </Text>
+        </HexText>
       )}
     </>
   )

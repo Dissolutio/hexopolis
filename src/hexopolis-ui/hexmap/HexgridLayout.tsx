@@ -1,6 +1,5 @@
+import { Orientation, Point } from 'game/types'
 import * as React from 'react'
-import Orientation from 'react-hexgrid/lib/models/Orientation'
-import Point from 'react-hexgrid/lib/models/Point'
 
 export type Size = { x: number; y: number }
 
@@ -15,30 +14,30 @@ export type LayoutContextProps = {
   points: string
 }
 
-const LAYOUT_FLAT = new Orientation(
-  3.0 / 2.0,
-  0.0,
-  Math.sqrt(3.0) / 2.0,
-  Math.sqrt(3.0),
-  2.0 / 3.0,
-  0.0,
-  -1.0 / 3.0,
-  Math.sqrt(3.0) / 3.0,
-  0.0
-)
-const LAYOUT_POINTY = new Orientation(
-  Math.sqrt(3.0),
-  Math.sqrt(3.0) / 2.0,
-  0.0,
-  3.0 / 2.0,
-  Math.sqrt(3.0) / 3.0,
-  -1.0 / 3.0,
-  0.0,
-  2.0 / 3.0,
-  0.5
-)
-const defaultSize = new Point(10, 10)
-const defaultOrigin = new Point(0, 0)
+const LAYOUT_FLAT: Orientation = {
+  f0: 3.0 / 2.0,
+  f1: 0.0,
+  f2: Math.sqrt(3.0) / 2.0,
+  f3: Math.sqrt(3.0),
+  b0: 2.0 / 3.0,
+  b1: 0.0,
+  b2: -1.0 / 3.0,
+  b3: Math.sqrt(3.0) / 3.0,
+  startAngle: 0.0,
+}
+const LAYOUT_POINTY = {
+  f0: Math.sqrt(3.0),
+  f1: Math.sqrt(3.0) / 2.0,
+  f2: 0.0,
+  f3: 3.0 / 2.0,
+  b0: Math.sqrt(3.0) / 3.0,
+  b1: -1.0 / 3.0,
+  b2: 0.0,
+  b3: 2.0 / 3.0,
+  startAngle: 0.5,
+}
+const defaultSize = { x: 10, y: 10 }
+const defaultOrigin = { x: 0, y: 0 }
 const defaultSpacing = 1.0
 
 const Context = React.createContext<LayoutContextProps>({
@@ -67,14 +66,14 @@ export function useLayoutContext() {
 function calculateCoordinates(
   radius: number,
   angle: number = 0,
-  center: Point = new Point(0, 0)
+  center = { x: 0, y: 0 }
 ) {
   const corners: Point[] = []
 
   for (let i = 0; i < 6; i++) {
     const x = radius * Math.cos((2 * Math.PI * i) / 6 + angle)
     const y = radius * Math.sin((2 * Math.PI * i) / 6 + angle)
-    const point = new Point(center.x + x, center.y + y)
+    const point = { x: center.x + x, y: center.y + y }
     corners.push(point)
   }
 

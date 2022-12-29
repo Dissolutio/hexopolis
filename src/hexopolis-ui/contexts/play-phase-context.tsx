@@ -6,9 +6,14 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { Hex, HexUtils } from 'react-hexgrid'
 
-import { BoardHex, GameArmyCard, GameUnit, MoveRange } from 'game/types'
+import {
+  BoardHex,
+  GameArmyCard,
+  GameUnit,
+  HexCoordinates,
+  MoveRange,
+} from 'game/types'
 import {
   selectHexForUnit,
   selectRevealedGameCard,
@@ -23,6 +28,7 @@ import {
   useBgioMoves,
 } from 'bgio-contexts'
 import { calcUnitMoveRange } from 'game/calcUnitMoveRange'
+import { hexUtilsDistance } from 'game/hex-utils'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -165,8 +171,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
           if (isEndHexEnemyOccupied) {
             // TODO isInRange: a place where we may consider engagements requiring adjacent attacks / terrain blocking range-1 attacks etc.
             const isInRange =
-              HexUtils.distance(attackerHex as Hex, iteratedHex as Hex) <=
-              (revealedGameCard?.range ?? 0)
+              hexUtilsDistance(
+                attackerHex as HexCoordinates,
+                iteratedHex as HexCoordinates
+              ) <= (revealedGameCard?.range ?? 0)
             // ... and is in range
             if (isInRange) {
               return [...resultHexIDs, iteratedHex.id]
@@ -272,8 +280,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             armyCard?.gameCardID === currentTurnGameCardID
         )
         const isInRange =
-          HexUtils.distance(startHex as BoardHex, boardHex) <=
-            gameCard?.range ?? false
+          hexUtilsDistance(startHex as BoardHex, boardHex) <= gameCard?.range ??
+          false
         if (isInRange) {
           // TODO: shall we mark this attack as unique, so react does not run it twice?
           attackAction(selectedUnit, boardHexes[sourceHex.id])

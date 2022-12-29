@@ -1,3 +1,4 @@
+import { hexUtilsDistance } from 'game/hex-utils'
 import { selectHexForUnit } from 'game/selectors'
 import {
   BoardHex,
@@ -5,11 +6,11 @@ import {
   GameArmyCard,
   GameUnit,
   GameUnits,
+  HexCoordinates,
   MoveRange,
   StartZones,
 } from 'game/types'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
-import { Hex, HexUtils } from 'react-hexgrid'
 
 export function calcPlacementHexClassNames({
   selectedMapHex,
@@ -170,7 +171,7 @@ export function calcRopHexClassNames({
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)
       const isInRange =
-        HexUtils.distance(startHex as Hex, hex) <=
+        hexUtilsDistance(startHex as HexCoordinates, hex) <=
         (revealedGameCard?.range ?? 0)
       // ... and is in range
       if (isInRange) {

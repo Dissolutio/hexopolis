@@ -1,5 +1,3 @@
-import { HexUtils } from 'react-hexgrid'
-
 import {
   BoardHexes,
   BoardHex,
@@ -11,6 +9,7 @@ import {
   PlayerOrderMarkers,
 } from './types'
 import { generateHexID } from './constants'
+import { hexUtilsNeighbors } from './hex-utils'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID)
@@ -71,7 +70,7 @@ export function selectHexNeighbors(
 ): BoardHex[] {
   const startHex = boardHexes?.[startHexID]
   if (!startHex) return []
-  return HexUtils.neighbors(startHex)
+  return hexUtilsNeighbors(startHex)
     .map((hex) => {
       const id = generateHexID(hex)
       const exists = Object.keys(boardHexes).includes(id)
