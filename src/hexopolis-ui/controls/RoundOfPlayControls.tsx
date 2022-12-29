@@ -96,7 +96,8 @@ export const RopIdleControls = () => {
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
-  const { revealedGameCard, revealedGameCardUnitIDs } = usePlayContext()
+  const { selectedUnit, revealedGameCard, revealedGameCardUnitIDs } =
+    usePlayContext()
   const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
@@ -119,6 +120,11 @@ export const RopMoveControls = () => {
           2: '3',
         }[currentOrderMarker]
       }: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
+      {selectedUnit && (
+        <StyledControlsP>
+          {selectedUnit.movePoints} Move points left
+        </StyledControlsP>
+      )}
       <StyledControlsP>
         You have used {movedUnitsCount} / {allowedMoveCount} moves
       </StyledControlsP>
@@ -190,19 +196,19 @@ const RopWaitingForDisengageControls = () => {
   return (
     <>
       <StyledControlsHeaderH2>Attempting disengage</StyledControlsHeaderH2>
-      <ul>
-        {playersWithSwipingUnits.map((playerID) => {
-          return (
-            <li key={playerID}>
-              {`Player ${playerID} gets to swipe your ${unitSingleName} as it attempts to disengage their ${
-                swipingPlayerIdsToUnitsMap[playerID].length
-              } unit${
-                swipingPlayerIdsToUnitsMap[playerID].length !== 1 ? 's' : ''
-              }`}
-            </li>
-          )
-        })}
-      </ul>
+      {playersWithSwipingUnits.map((playerID) => {
+        return (
+          <StyledControlsP key={playerID}>
+            {`${playerIDDisplay(
+              playerID
+            )} gets to swipe your ${unitSingleName} as it attempts to disengage their ${
+              swipingPlayerIdsToUnitsMap[playerID].length
+            } unit${
+              swipingPlayerIdsToUnitsMap[playerID].length !== 1 ? 's' : ''
+            }`}
+          </StyledControlsP>
+        )
+      })}
     </>
   )
 }

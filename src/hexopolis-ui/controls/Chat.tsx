@@ -1,6 +1,8 @@
 import React from 'react'
 import { uniqBy } from 'lodash'
 import { useBgioChat, useBgioClientInfo } from 'bgio-contexts'
+import { playerIDDisplay } from 'game/transformers'
+import { playerColors } from 'hexopolis-ui/theme'
 
 function generateChatID() {
   return Math.random()
@@ -60,10 +62,18 @@ const ChatList = () => {
         const actualChat = chat.payload
         const { id, sender, payload } = actualChat
         return (
-          <li key={id}>
+          <li
+            style={{
+              color: playerColors[sender],
+            }}
+            key={id}
+          >
             <span
-              style={{ fontSize: '0.8em', fontWeight: 700 }}
-            >{`Player ${sender}: `}</span>
+              style={{
+                fontSize: '0.8em',
+                fontWeight: 700,
+              }}
+            >{`${playerIDDisplay(sender)}: `}</span>
             {payload}
           </li>
         )

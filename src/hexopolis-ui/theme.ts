@@ -26,7 +26,7 @@ const playerColorsUrlEncoded: StringKeyedObj = {
   '5': colors.humansGoldenrodUrlEncoded,
 }
 
-const playerColors: StringKeyedObj = {
+export const playerColors: StringKeyedObj = {
   '0': colors.beeYellow,
   '1': colors.butterflyPurple,
 }
