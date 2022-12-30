@@ -181,7 +181,7 @@ export function calcRopHexClassNames({
   }
 
   // phase: ROP-move
-  if (!isAttackingStage) {
+  if (!isAttackingStage && isMyTurn) {
     const { safe, engage, disengage } = selectedUnitMoveRange
     const isInSafeMoveRange = safe.includes(hex.id)
     const isInEngageMoveRange = engage.includes(hex.id)
