@@ -19,7 +19,16 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
   } = useBgioG()
   const { viewBox } = useMapContext()
   const spacing = 1.15
-
+  const mapWrapperHeight = mapWrapperRef.current?.clientHeight ?? 0
+  console.log(
+    '🚀 ~ file: MapDisplay.tsx:23 ~ MapDisplay ~ mapWrapperHeight',
+    mapWrapperHeight
+  )
+  const mapWrapperWidth = mapWrapperRef.current?.clientWidth ?? 0
+  console.log(
+    '🚀 ~ file: MapDisplay.tsx:25 ~ MapDisplay ~ mapWrapperWidth',
+    mapWrapperWidth
+  )
   //! MAP SETUP/LAYOUT CONFIG
   const isHexagonShapedMap = mapShape === MapShapes.hexagon
   const isRectangleShapedMap = mapShape === MapShapes.rectangle
