@@ -33,7 +33,6 @@ export function calcUnitMoveRange(
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
 ): MoveRange {
-  const timeA = performance.now()
   // 1. return blank move-range if no necessary ingredients
   const initialMoveRange = generateBlankMoveRange()
   const unit = gameUnits[unitID]
@@ -67,9 +66,6 @@ export function calcUnitMoveRange(
     playerID,
     hexesVisited: {},
   })
-  const timeB = performance.now()
-  console.log(`TOOK: ${timeA - timeB} ms`)
-
   return moveRange
 }
 
@@ -177,14 +173,6 @@ function computeWalkMoveRange({
           (!hexesVisited[endHexID] ||
             hexesVisited[endHexID] < movePointsLeftAfterMove)
         ) {
-          console.log('calling recurse on endHexID: ', {
-            endHexID,
-            movePointsLeftAfterMove,
-            movePoints,
-            moveCost,
-            hexesVisitedScore: hexesVisited[endHexID],
-            hexesVisited,
-          })
           console.count(endHexID)
           const recursiveMoveRange = computeWalkMoveRange({
             startHex: end,
