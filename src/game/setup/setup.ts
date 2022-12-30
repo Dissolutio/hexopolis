@@ -15,7 +15,7 @@ import { makeGiantsTableMap, makeHexagonShapedMap } from './mapGen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { MS1Cards } from '../coreHeroscapeCards'
 
-const isDevOverrideState = true
+const isDevOverrideState = false
 // const isDevOverrideState = false
 const devPlayer1orderMarkers = 'p0_hs1012'
 const devPlayer2orderMarkers = 'p1_hs1002'
@@ -107,7 +107,10 @@ function makeTestScenario(): GameState {
   //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
   //   flat: false,
   // })
-  const map = makeGiantsTableMap(isDevOverrideState, gameUnits)
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
   return {
     ...frequentlyChangedDevState,
     currentRound: 1,

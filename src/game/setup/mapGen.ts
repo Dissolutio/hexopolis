@@ -17,10 +17,13 @@ function generateUID() {
   secondPart = ('000' + secondPart.toString(36)).slice(-3)
   return firstPart + secondPart
 }
-export function makeGiantsTableMap(
-  isDevOverrideState: boolean,
-  gameUnits?: GameUnits
-): GameMap {
+export function makeGiantsTableMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
   const boardHexes = giantsTable.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
     throw new Error('giantsTable.boardHexes is not defined')
@@ -34,7 +37,7 @@ export function makeGiantsTableMap(
     }
   }
   const startZones = getStartZonesFromBoardHexes(boardHexes)
-  if (isDevOverrideState) {
+  if (withPrePlacedUnits) {
     transformBoardHexesWithPrePlacedUnits(
       boardHexes,
       startZones,
