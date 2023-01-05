@@ -162,11 +162,19 @@ const HexIDText = ({
 }) => {
   return (
     <>
-      <HexText className="maphex_altitude-text" y={hexSize * 0.6}>
+      <HexText
+        hexSize={hexSize}
+        className="maphex_altitude-text"
+        y={hexSize * 0.6}
+      >
         {text.toString()}
       </HexText>
       {textLine2 && (
-        <HexText className="maphex_altitude-text" y={hexSize * 0.8}>
+        <HexText
+          hexSize={hexSize}
+          className="maphex_altitude-text"
+          y={hexSize * 0.8}
+        >
           {textLine2.toString()}
         </HexText>
       )}
