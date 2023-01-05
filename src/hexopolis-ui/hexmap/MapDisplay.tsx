@@ -18,17 +18,6 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
     hexMap: { hexSize, flat, mapShape, mapId, mapSize },
   } = useBgioG()
   const { viewBox } = useMapContext()
-  const spacing = 1.15
-  const mapWrapperHeight = mapWrapperRef.current?.clientHeight ?? 0
-  console.log(
-    '🚀 ~ file: MapDisplay.tsx:23 ~ MapDisplay ~ mapWrapperHeight',
-    mapWrapperHeight
-  )
-  const mapWrapperWidth = mapWrapperRef.current?.clientWidth ?? 0
-  console.log(
-    '🚀 ~ file: MapDisplay.tsx:25 ~ MapDisplay ~ mapWrapperWidth',
-    mapWrapperWidth
-  )
   //! MAP SETUP/LAYOUT CONFIG
   const isHexagonShapedMap = mapShape === MapShapes.hexagon
   const isRectangleShapedMap = mapShape === MapShapes.rectangle
@@ -111,22 +100,19 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       />
       <Notifications />
       <TurnCounter />
-      <svg
-        width={`${mapState.width}%`}
-        height={`${mapState.height}%`}
-        viewBox={viewBox}
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <HexgridLayout
-          size={{ x: hexSize, y: hexSize }}
-          flat={flat}
-          spacing={spacing}
-          className="hexgrid-layout"
+      <HexgridLayout size={{ x: hexSize, y: hexSize }} flat={flat} spacing={1}>
+        <svg
+          width={`${mapState.width}%`}
+          height={`${mapState.height}%`}
+          viewBox={viewBox}
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <MapHexes hexSize={hexSize} />
-        </HexgridLayout>
-      </svg>
+          <g className="hexgrid-layout">
+            <MapHexes hexSize={hexSize} />
+          </g>
+        </svg>
+      </HexgridLayout>
     </MapHexStyles>
   )
 }

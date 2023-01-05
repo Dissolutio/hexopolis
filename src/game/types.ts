@@ -50,14 +50,14 @@ export type GameMap = {
   hexMap: HexMap
 }
 export type HexMap = {
-  mapShape: string
-  mapSize: number
-  hexHeight: number
-  hexWidth: number
+  mapShape: string // 'hexagon' | 'rectangle'
+  mapSize: number // for hexagon shaped maps
+  mapHeight: number // for rectangle shaped maps
+  mapWidth: number // for rectangle shaped maps
+  hexSize: number
   flat: boolean
   // from hexxaform below: mapId so when we have multiple maps we can switch between them, hexSize so we can scale the map
   mapId: string
-  hexSize: number
 }
 export enum MapShapes {
   hexagon = 'hexagon',
