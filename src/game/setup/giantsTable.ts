@@ -3382,7 +3382,7 @@ export const giantsTable = {
     hexHeight: 2,
     hexWidth: 1.73,
     hexSize: 50,
-    mapShape: 'orientedRectangle',
+    mapShape: 'rectangle',
     mapSize: 25,
     mapLength: 25,
     mapWidth: 15,
