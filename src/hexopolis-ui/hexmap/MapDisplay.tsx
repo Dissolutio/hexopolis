@@ -3,6 +3,7 @@ import { MapShapes } from 'game/types'
 import { useMapContext } from 'hexopolis-ui/contexts'
 import { Notifications } from 'hexopolis-ui/controls/Notifications'
 import React, { useEffect } from 'react'
+import styled from 'styled-components'
 import { HexgridLayout } from './HexgridLayout'
 import { MapHexes } from './MapHexes'
 import { MapHexStyles } from './MapHexStyles'
@@ -17,7 +18,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
   const {
     hexMap: { hexSize, flat, mapShape, mapId, mapSize },
   } = useBgioG()
-  const { viewBox } = useMapContext()
+  const { viewBox, matrixString } = useMapContext()
   //! MAP SETUP/LAYOUT CONFIG
   const isHexagonShapedMap = mapShape === MapShapes.hexagon
   const isRectangleShapedMap = mapShape === MapShapes.rectangle
@@ -102,15 +103,16 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       <TurnCounter />
       <HexgridLayout size={{ x: hexSize, y: hexSize }} flat={flat} spacing={1}>
         <svg
-          width={`${mapState.width}%`}
-          height={`${mapState.height}%`}
+          width={`100%`}
+          height={`100%`}
           viewBox={viewBox}
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g className="hexgrid-layout">
+          <g className="hexgrid-layout" transform={`matrix(${matrixString})`}>
             <MapHexes hexSize={hexSize} />
           </g>
+          {/* <SvgButtons /> */}
         </svg>
       </HexgridLayout>
     </MapHexStyles>

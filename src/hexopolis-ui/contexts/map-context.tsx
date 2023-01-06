@@ -26,6 +26,9 @@ const MapContext = React.createContext<
       onDecreaseHeight: () => void
       onIncrementScale: () => void
       onDecrementScale: () => void
+      panMap: (x: number, y: number) => void
+      zoomMap: (scale: number) => void
+      matrixString: string
       // altitudeViewer: number
       // goUpAltitudeViewer: () => void
       // goDownAltitudeViewer: () => void
@@ -53,6 +56,27 @@ export function MapContextProvider({
   const [viewBoxHeight, setViewBoxHeight] = React.useState(viewbox.height)
   const [viewBoxX, setViewBoxX] = React.useState(viewbox.minX)
   const [viewBoxY, setViewBoxY] = React.useState(viewbox.minY)
+  const [matrixTransform, setMatrixTransform] = React.useState<number[]>([
+    1, 0, 0, 1, 0, 0,
+  ])
+  const matrixString = matrixTransform.join(' ')
+  const panMap = (x: number, y: number) => {
+    const newMatrix = [...matrixTransform]
+    newMatrix[4] += x
+    newMatrix[5] += y
+    setMatrixTransform(newMatrix)
+  }
+  const centerX = viewbox.width / 2
+  const centerY = viewbox.height / 2
+  const zoomMap = (scale: number) => {
+    const newMatrix = [...matrixTransform]
+    for (var i = 0; i < 6; i++) {
+      newMatrix[i] *= scale
+    }
+    newMatrix[4] += (1 - scale) * centerX
+    newMatrix[5] += (1 - scale) * centerY
+    setMatrixTransform(newMatrix)
+  }
   const [scale, setScale] = React.useState(10)
   const viewBox = `${viewBoxX} ${viewBoxY} ${viewBoxLength} ${viewBoxHeight}`
   const incrementor = mapSize * scale
@@ -121,6 +145,9 @@ export function MapContextProvider({
         onDecreaseHeight,
         onIncrementScale,
         onDecrementScale,
+        panMap,
+        zoomMap,
+        matrixString,
         // altitudeViewer,
         // goUpAltitudeViewer,
         // goDownAltitudeViewer,
