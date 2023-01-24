@@ -100,7 +100,7 @@ function computeWalkMoveRange({
   }
   // mark this hex as visited
   hexesVisited[startHex.id] = movePoints
-  // recursive reduce over neighbors
+  // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
     (result: MoveRange, end: BoardHex): MoveRange => {
       if (hexesVisited[end.id] >= movePoints) {
@@ -125,6 +125,7 @@ function computeWalkMoveRange({
       const endHexUnitPlayerID = endHexUnit.playerID
       const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
       const movePointsLeftAfterMove = movePoints - moveCost
+      const isMovePointsLeftAfterMove = movePointsLeftAfterMove > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID)
       const isTooCostly = movePointsLeftAfterMove < 0
       const isEndHexEnemyOccupied =
@@ -143,10 +144,11 @@ function computeWalkMoveRange({
       // )
       const isUnpassable =
         isTooCostly || isEndHexEnemyOccupied || isEndHexUnitEngaged
+      // 1. The hex is unpassable
       if (isUnpassable) {
         return result
       }
-      // Last Block: Passable: We can move there, but we only continue the recursion if it's a SAFE
+      // 2. Passable: We can move there, but we only continue the recursion if it's a SAFE
       // order matters for if/else here, disengagement overrides engagement, not the other way around
       if (isCausingDisengagement) {
         // the space causes disengagements, so no recursion, and we can only stop there if it's not occupied
@@ -162,14 +164,16 @@ function computeWalkMoveRange({
         }
         // we do not continue recursion past engagement hexes
         return { ...result }
-      } else {
+      }
+      // else: is safe
+      else {
         // the space is safe to pass thru, continue to neighbors but we can only stop there if it's not occupied (or, i.e. if we are a squad and hex has a treasure glyph, then we cannot stop there)
         if (isEndHexUnoccupied) {
           result.safe.push(endHexID)
         }
         // only continue to neighbors if we have move points left
         if (
-          movePointsLeftAfterMove > 0 &&
+          isMovePointsLeftAfterMove &&
           (!hexesVisited[endHexID] ||
             hexesVisited[endHexID] < movePointsLeftAfterMove)
         ) {
