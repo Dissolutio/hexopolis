@@ -11,7 +11,6 @@ import { uniq } from 'lodash'
 import {
   calcMoveCostBetweenNeighbors,
   selectEngagementsForHex,
-  selectEngagementsForUnit,
   selectIsMoveCausingDisengagements,
   selectHexForUnit,
   selectHexNeighbors,
@@ -36,62 +35,51 @@ export function calcUnitMoveRange(
   // 1. return blank move-range if no necessary ingredients
   const initialMoveRange = generateBlankMoveRange()
   const unit = gameUnits[unitID]
-  //*early out
-  if (!unit) {
-    return initialMoveRange
-  }
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
-  //*early out again?
-  if (!startHex || !initialMovePoints) {
+  //*early out
+  if (!unit || !startHex || !initialMovePoints) {
     return initialMoveRange
   }
-  const initialEngagements: string[] = selectEngagementsForUnit({
-    unitID: unit?.unitID ?? '',
-    boardHexes,
-    gameUnits,
-    armyCards,
-  })
   // 2. recursively add hexes to move-range
   const moveRange = computeWalkMoveRange({
-    startHex: startHex as BoardHex,
+    unmutatedContext: {
+      playerID,
+      unit,
+      boardHexes,
+      armyCards,
+      gameUnits,
+    },
+    startHex: startHex,
     movePoints: initialMovePoints,
-    unit,
-    boardHexes,
-    gameUnits,
-    armyCards,
     initialMoveRange,
-    initialEngagements,
-    playerID,
     hexesVisited: {},
   })
   return moveRange
 }
 
 function computeWalkMoveRange({
+  unmutatedContext,
   startHex,
   movePoints,
-  unit,
-  boardHexes,
-  gameUnits,
-  armyCards,
-  initialMoveRange,
-  initialEngagements,
-  playerID,
   hexesVisited,
+  initialMoveRange,
 }: {
+  unmutatedContext: {
+    playerID: string
+    unit: GameUnit
+    boardHexes: BoardHexes
+    armyCards: GameArmyCard[]
+    gameUnits: GameUnits
+  }
+  // !! these inputs below get mutated in the recursion
   startHex: BoardHex
   movePoints: number
-  playerID: string
-  initialMoveRange: MoveRange
-  initialEngagements: string[]
   hexesVisited: { [hexID: string]: number }
-  unit: GameUnit
-  boardHexes: BoardHexes
-  gameUnits: GameUnits
-  armyCards: GameArmyCard[]
+  initialMoveRange: MoveRange
 }): MoveRange {
+  const { playerID, unit, boardHexes, gameUnits, armyCards } = unmutatedContext
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   const isVisitedAlready = hexesVisited?.[startHex.id] >= movePoints
   //*early out
@@ -127,6 +115,10 @@ function computeWalkMoveRange({
       const movePointsLeftAfterMove = movePoints - moveCost
       const isMovePointsLeftAfterMove = movePointsLeftAfterMove > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID)
+      const isNotAlreadyVisited =
+        !hexesVisited[endHexID] ||
+        hexesVisited[endHexID] < movePointsLeftAfterMove
+
       const isTooCostly = movePointsLeftAfterMove < 0
       const isEndHexEnemyOccupied =
         !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
@@ -171,24 +163,16 @@ function computeWalkMoveRange({
         if (isEndHexUnoccupied) {
           result.safe.push(endHexID)
         }
-        // only continue to neighbors if we have move points left
-        if (
-          isMovePointsLeftAfterMove &&
-          (!hexesVisited[endHexID] ||
-            hexesVisited[endHexID] < movePointsLeftAfterMove)
-        ) {
-          console.count(endHexID)
+        // only continue to neighbors if we have move points left and we haven't visited this hex before with more move points
+        if (isMovePointsLeftAfterMove && isNotAlreadyVisited) {
+          // this console.count will show you the number of times we visit a hex
+          // console.count(endHexID)
           const recursiveMoveRange = computeWalkMoveRange({
+            unmutatedContext,
             startHex: end,
             movePoints: movePointsLeftAfterMove,
-            unit,
-            boardHexes,
             initialMoveRange: result,
-            initialEngagements,
-            gameUnits,
-            playerID,
             hexesVisited,
-            armyCards,
           })
           return {
             ...result,
@@ -202,5 +186,6 @@ function computeWalkMoveRange({
     // accumulator for reduce fn
     initialMoveRange
   )
-  return deduplicateMoveRange(nextResults)
+  const result = deduplicateMoveRange(nextResults)
+  return result
 }
