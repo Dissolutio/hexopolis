@@ -34,6 +34,7 @@ export const moveAction: Move<GameState> = {
       ...currentMoveRange.engage,
       ...currentMoveRange.safe,
     ].includes(endHexID)
+    // TODO: MoveRange Move Cost
     const moveCost = hexUtilsDistance(startHex as HexCoordinates, endHex)
     const revealedGameCard = selectRevealedGameCard(
       G.orderMarkers,
