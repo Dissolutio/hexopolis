@@ -58,5 +58,22 @@ export function generateHexID(hex: HexCoordinates) {
   return `${hex.q},${hex.r},${hex.s}`
 }
 export function generateBlankMoveRange(): MoveRange {
-  return { safe: [], engage: [], disengage: [], denied: [] }
+  return {}
+}
+export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
+  safeMoves: string[]
+  engageMoves: string[]
+  disengageMoves: string[]
+} {
+  return {
+    safeMoves: Object.keys(moveRange).filter(
+      (hexID) => moveRange[hexID].isSafe
+    ),
+    engageMoves: Object.keys(moveRange).filter(
+      (hexID) => moveRange[hexID].isEngage
+    ),
+    disengageMoves: Object.keys(moveRange).filter(
+      (hexID) => moveRange[hexID].isDisengage
+    ),
+  }
 }
