@@ -1,3 +1,5 @@
+import { transformMoveRangeToArraysOfIds } from 'game/constants'
+import { hexUtilsDistance } from 'game/hex-utils'
 import { selectHexForUnit } from 'game/selectors'
 import {
   BoardHex,
@@ -5,11 +7,11 @@ import {
   GameArmyCard,
   GameUnit,
   GameUnits,
+  HexCoordinates,
   MoveRange,
   StartZones,
 } from 'game/types'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
-import { Hex, HexUtils } from 'react-hexgrid'
 
 export function calcPlacementHexClassNames({
   selectedMapHex,
@@ -170,7 +172,7 @@ export function calcRopHexClassNames({
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)
       const isInRange =
-        HexUtils.distance(startHex as Hex, hex) <=
+        hexUtilsDistance(startHex as HexCoordinates, hex) <=
         (revealedGameCard?.range ?? 0)
       // ... and is in range
       if (isInRange) {
@@ -180,12 +182,13 @@ export function calcRopHexClassNames({
   }
 
   // phase: ROP-move
-  if (!isAttackingStage) {
-    const { safe, engage, disengage } = selectedUnitMoveRange
-    const isInSafeMoveRange = safe.includes(hex.id)
-    const isInEngageMoveRange = engage.includes(hex.id)
+  if (!isAttackingStage && isMyTurn) {
+    const { safeMoves, engageMoves, disengageMoves } =
+      transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
+    const isInSafeMoveRange = safeMoves.includes(hex.id)
+    const isInEngageMoveRange = engageMoves.includes(hex.id)
     const hasUnitOnHexMoved = unitsMoved.includes(hexUnitID)
-    const isInDisengageMoveRange = disengage.includes(hex.id)
+    const isInDisengageMoveRange = disengageMoves.includes(hex.id)
     const isUnitMovePartiallyExpended =
       hasUnitOnHexMoved && hexUnit.movePoints > 0
     const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0

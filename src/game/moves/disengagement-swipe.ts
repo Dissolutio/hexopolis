@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { HexUtils } from 'react-hexgrid'
+import { hexUtilsDistance } from 'game/hex-utils'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
@@ -142,7 +142,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           newBoardHexes[endHexID].occupyingUnitID =
             unitAttemptingToDisengage.unitID
           // update unit move-points
-          const moveCost = HexUtils.distance(
+          const moveCost = hexUtilsDistance(
             {
               q: unitAttemptingToDisengageHex.q,
               r: unitAttemptingToDisengageHex.r,
@@ -193,7 +193,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
         newBoardHexes[endHexID].occupyingUnitID =
           unitAttemptingToDisengage.unitID
         // update unit move-points
-        const moveCost = HexUtils.distance(
+        const moveCost = hexUtilsDistance(
           {
             q: unitAttemptingToDisengageHex.q,
             r: unitAttemptingToDisengageHex.r,

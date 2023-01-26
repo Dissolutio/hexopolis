@@ -1,10 +1,10 @@
 import type { Move } from 'boardgame.io'
-import { Hex, HexUtils } from 'react-hexgrid'
 
 import { selectHexForUnit, selectGameCardByID } from '../selectors'
-import { GameState, BoardHex, GameUnit } from '../types'
+import { GameState, BoardHex, GameUnit, HexCoordinates } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
+import { hexUtilsDistance } from 'game/hex-utils'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -83,7 +83,7 @@ export const attackAction: Move<GameState> = {
     }
     // DISALLOW - defender is out of range
     const isInRange =
-      HexUtils.distance(attackerHex as Hex, defenderHex) <= unitRange
+      hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
     if (!isInRange) {
       console.error(`Attack action denied:defender is out of range`)
       return

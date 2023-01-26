@@ -12,8 +12,7 @@ import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 
 export const RopAttackControls = () => {
-  const { uniqUnitsMoved, unitsAttacked, currentOrderMarker, myCards } =
-    useBgioG()
+  const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
   const { events } = useBgioEvents()
   const { endCurrentPlayerTurn } = moves

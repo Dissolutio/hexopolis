@@ -68,12 +68,13 @@ export const PlacementControls = () => {
           exit={{ opacity: 0 }}
         >
           <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-          {!isShowingConfirm ? (
-            <StyledControlsP>
-              Select your units and place them within your start zone. Once all
-              players are ready, the game will begin!
-            </StyledControlsP>
-          ) : (
+          <StyledControlsP>
+            Your units have been placed in your start zone. You can select your
+            units and move them to empty hexes, or replace other units. Players
+            cannot see each others' units at this time. Once all players are
+            ready, the game will begin!
+          </StyledControlsP>
+          {isShowingConfirm && (
             <ConfirmReady
               makeReady={makeReady}
               isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}

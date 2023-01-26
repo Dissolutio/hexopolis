@@ -7,110 +7,91 @@ import {
   GameArmyCard,
 } from './types'
 import { generateBlankMoveRange } from './constants'
-import { uniq } from 'lodash'
 import {
   calcMoveCostBetweenNeighbors,
   selectEngagementsForHex,
-  selectEngagementsForUnit,
   selectIsMoveCausingDisengagements,
   selectHexForUnit,
   selectHexNeighbors,
   selectIsMoveCausingEngagements,
 } from './selectors'
 
-const deduplicateMoveRange = (result: MoveRange): MoveRange => {
-  return {
-    safe: uniq(result.safe),
-    engage: uniq(result.engage),
-    disengage: uniq(result.disengage),
-    denied: uniq(result.denied),
-  }
-}
-
+// This function splits on flying/walking/ghostwalking/disengage/stealth-flying
 export function calcUnitMoveRange(
   unitID: string,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
 ): MoveRange {
-  const timeA = performance.now()
-  // 1. return blank move-range if no necessary ingredients
+  // 1. return blank move-range if we can't find the unit, its move points, or its start hex
   const initialMoveRange = generateBlankMoveRange()
   const unit = gameUnits[unitID]
-  //*early out
-  if (!unit) {
-    return initialMoveRange
-  }
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
-  //*early out again?
-  if (!startHex || !initialMovePoints) {
+  //*early out
+  if (!unit || !startHex || !initialMovePoints) {
     return initialMoveRange
   }
-  const initialEngagements: string[] = selectEngagementsForUnit({
-    unitID: unit?.unitID ?? '',
-    boardHexes,
-    gameUnits,
-    armyCards,
-  })
+  // ?? 1.5. 2-spacer or 1? => Walking, flying, ghost/disengage, stealth-flying, water-tunneling, glacier traverse, etc
+
   // 2. recursively add hexes to move-range
   const moveRange = computeWalkMoveRange({
-    startHex: startHex as BoardHex,
+    unmutatedContext: {
+      playerID,
+      unit,
+      boardHexes,
+      armyCards,
+      gameUnits,
+    },
+    startHex: startHex,
     movePoints: initialMovePoints,
-    unit,
-    boardHexes,
-    gameUnits,
-    armyCards,
     initialMoveRange,
-    initialEngagements,
-    playerID,
     hexesVisited: {},
   })
-  const timeB = performance.now()
-  console.log(`TOOK: ${timeA - timeB} ms`)
-
   return moveRange
 }
 
 function computeWalkMoveRange({
+  unmutatedContext,
   startHex,
   movePoints,
-  unit,
-  boardHexes,
-  gameUnits,
-  armyCards,
-  initialMoveRange,
-  initialEngagements,
-  playerID,
   hexesVisited,
+  initialMoveRange,
 }: {
+  unmutatedContext: {
+    playerID: string
+    unit: GameUnit
+    boardHexes: BoardHexes
+    armyCards: GameArmyCard[]
+    gameUnits: GameUnits
+  }
+  // !! these inputs below get mutated in the recursion
   startHex: BoardHex
   movePoints: number
-  playerID: string
-  initialMoveRange: MoveRange
-  initialEngagements: string[]
   hexesVisited: { [hexID: string]: number }
-  unit: GameUnit
-  boardHexes: BoardHexes
-  gameUnits: GameUnits
-  armyCards: GameArmyCard[]
+  initialMoveRange: MoveRange
 }): MoveRange {
+  const { playerID, unit, boardHexes, gameUnits, armyCards } = unmutatedContext
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
-  const isVisitedAlready = hexesVisited?.[startHex.id] >= movePoints
+  const isVisitedAlready =
+    (initialMoveRange?.[startHex.id]?.movePointsLeft ?? 0) > movePoints
+
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
   }
   // mark this hex as visited
   hexesVisited[startHex.id] = movePoints
-  // recursive reduce over neighbors
+  // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
-    (result: MoveRange, end: BoardHex): MoveRange => {
-      if (hexesVisited[end.id] >= movePoints) {
+    (result: MoveRange, neighbor: BoardHex): MoveRange => {
+      const fromCost = calcMoveCostBetweenNeighbors(startHex, neighbor)
+      const movePointsLeft = movePoints - fromCost
+      if (initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft) {
         return result
       }
-      const { id: endHexID, occupyingUnitID: endHexUnitID } = end
+      const { id: endHexID, occupyingUnitID: endHexUnitID } = neighbor
       const isCausingEngagement = selectIsMoveCausingEngagements({
         unit,
         endHexID,
@@ -127,16 +108,18 @@ function computeWalkMoveRange({
       })
       const endHexUnit = { ...gameUnits[endHexUnitID] }
       const endHexUnitPlayerID = endHexUnit.playerID
-      const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
-      const movePointsLeftAfterMove = movePoints - moveCost
+      const isMovePointsLeftAfterMove = movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID)
-      const isTooCostly = movePointsLeftAfterMove < 0
+      const isTooCostly = movePointsLeft < 0
+      const isNotAlreadyVisited =
+        !hexesVisited[endHexID] || hexesVisited[endHexID] < movePointsLeft
+
       const isEndHexEnemyOccupied =
         !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
       // TODO: Ability: isEndHexUnitEngaged : ghost walk, or phantom walk
       const isEndHexUnitEngaged =
         selectEngagementsForHex({
-          hexID: end.id,
+          hexID: neighbor.id,
           playerID,
           boardHexes,
           gameUnits,
@@ -147,56 +130,59 @@ function computeWalkMoveRange({
       // )
       const isUnpassable =
         isTooCostly || isEndHexEnemyOccupied || isEndHexUnitEngaged
+      const moveRangeData = {
+        fromHexID: startHex.id,
+        fromCost,
+        movePointsLeft,
+      }
+      // 1. The hex is unpassable
       if (isUnpassable) {
         return result
       }
-      // Last Block: Passable: We can move there, but we only continue the recursion if it's a SAFE
+      // 2. Passable: We can move there, but we only continue the recursion if it's a SAFE
       // order matters for if/else here, disengagement overrides engagement, not the other way around
       if (isCausingDisengagement) {
         // the space causes disengagements, so no recursion, and we can only stop there if it's not occupied
         if (isEndHexUnoccupied) {
-          result.disengage.push(endHexID)
+          result[endHexID] = {
+            ...moveRangeData,
+            isDisengage: true,
+          }
         }
         // we do not continue recursion past disengagement hexes
+        // TODO:  Is the object spread below necessary?
         return { ...result }
       } else if (isCausingEngagement) {
         // the space causes engagements, so no recursion, and we can only stop there if it's not occupied
         if (isEndHexUnoccupied) {
-          result.engage.push(endHexID)
+          result[endHexID] = {
+            ...moveRangeData,
+            isEngage: true,
+          }
         }
         // we do not continue recursion past engagement hexes
         return { ...result }
-      } else {
-        // the space is safe to pass thru, continue to neighbors but we can only stop there if it's not occupied (or, i.e. if we are a squad and hex has a treasure glyph, then we cannot stop there)
+      }
+      // else: the space is safe, so maybe we can stop here, and maybe we can continue looking at neighbors from here
+      else {
+        // IF: we can only stop there if it's not occupied
+        // (or, i.e. if we are a squad and hex has a treasure glyph, then we cannot stop there)
         if (isEndHexUnoccupied) {
-          result.safe.push(endHexID)
+          result[endHexID] = {
+            ...moveRangeData,
+            isSafe: true,
+          }
         }
-        // only continue to neighbors if we have move points left
-        if (
-          movePointsLeftAfterMove > 0 &&
-          (!hexesVisited[endHexID] ||
-            hexesVisited[endHexID] < movePointsLeftAfterMove)
-        ) {
-          console.log('calling recurse on endHexID: ', {
-            endHexID,
-            movePointsLeftAfterMove,
-            movePoints,
-            moveCost,
-            hexesVisitedScore: hexesVisited[endHexID],
-            hexesVisited,
-          })
-          console.count(endHexID)
+        // only continue to neighbors if we have move points left and we haven't visited this hex before with more move points
+        if (isMovePointsLeftAfterMove && isNotAlreadyVisited) {
+          // this console.count will show you the number of times we visit a hex
+          // console.count(endHexID)
           const recursiveMoveRange = computeWalkMoveRange({
-            startHex: end,
-            movePoints: movePointsLeftAfterMove,
-            unit,
-            boardHexes,
+            unmutatedContext,
+            startHex: neighbor,
+            movePoints: movePointsLeft,
             initialMoveRange: result,
-            initialEngagements,
-            gameUnits,
-            playerID,
             hexesVisited,
-            armyCards,
           })
           return {
             ...result,
@@ -210,5 +196,6 @@ function computeWalkMoveRange({
     // accumulator for reduce fn
     initialMoveRange
   )
-  return deduplicateMoveRange(nextResults)
+  const result = nextResults
+  return result
 }

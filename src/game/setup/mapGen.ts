@@ -7,6 +7,7 @@ import {
   StartZones,
 } from '../types'
 import { giantsTable } from './giantsTable'
+import { devHexagon } from './devHexagon'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -17,10 +18,13 @@ function generateUID() {
   secondPart = ('000' + secondPart.toString(36)).slice(-3)
   return firstPart + secondPart
 }
-export function makeGiantsTableMap(
-  isDevOverrideState: boolean,
-  gameUnits?: GameUnits
-): GameMap {
+export function makeGiantsTableMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
   const boardHexes = giantsTable.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
     throw new Error('giantsTable.boardHexes is not defined')
@@ -34,7 +38,7 @@ export function makeGiantsTableMap(
     }
   }
   const startZones = getStartZonesFromBoardHexes(boardHexes)
-  if (isDevOverrideState) {
+  if (withPrePlacedUnits) {
     transformBoardHexesWithPrePlacedUnits(
       boardHexes,
       startZones,
@@ -47,21 +51,36 @@ export function makeGiantsTableMap(
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }
+export function makeDevHexagonMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = devHexagon.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('devHexagon.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: devHexagon.boardHexes as unknown as BoardHexes,
+    hexMap: devHexagon.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false
   const gameUnits = mapOptions?.gameUnits ?? {}
   const flat = mapOptions?.flat ?? false
-
-  const flatDimensions = {
-    hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
-    hexWidth: 2,
-  }
-  const pointyDimensions = {
-    hexHeight: 2,
-    hexWidth: Math.sqrt(3),
-  }
-  const mapDimensions = flat ? flatDimensions : pointyDimensions
 
   const boardHexes: BoardHexes = transformBoardHexesToHaveStartZones(
     generateHexagon(mapSize),
@@ -74,12 +93,13 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     boardHexes: withPrePlacedUnits ? boardHexesWithPrePlacedUnits : boardHexes,
     startZones,
     hexMap: {
-      ...mapDimensions,
+      mapId: generateUID(),
       mapShape: 'hexagon',
       flat,
       mapSize,
-      hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
-      mapId: generateUID(),
+      mapHeight: mapSize,
+      mapWidth: mapSize,
+      hexSize: 10,
     },
   }
 }

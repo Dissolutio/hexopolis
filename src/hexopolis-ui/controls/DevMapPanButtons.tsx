@@ -23,58 +23,75 @@ export const DevMapPanButtons = () => {
   return (
     <StyledSection>
       <h4>Adjust the map:</h4>
-      <StyledMapButton aria-label="- X" onClick={onDecrementX}>
-        <ImMinus color="var(--white)" />
-        <span>X</span>
-      </StyledMapButton>
-      <span>X: {viewBoxX}</span>
-      <StyledMapButton aria-label="+ X" onClick={onIncrementX}>
-        <ImPlus color="var(--white)" />
-        <span>X</span>
-      </StyledMapButton>
-      <StyledMapButton aria-label="- Y" onClick={onDecrementY}>
-        <ImMinus color="var(--white)" />
-        <span>Y</span>
-      </StyledMapButton>
-      <span>Y: {viewBoxY}</span>
-      <StyledMapButton aria-label="+ Y" onClick={onIncrementY}>
-        <ImPlus color="var(--white)" />
-        <span>Y</span>
-      </StyledMapButton>
-      <StyledMapButton aria-label="- length" onClick={onDecreaseLength}>
-        <ImMinus color="var(--white)" />
-        <span>Length</span>
-      </StyledMapButton>
-      <span>Length: {viewBoxLength}</span>
-      <StyledMapButton aria-label="+ length" onClick={onIncreaseLength}>
-        <ImPlus color="var(--white)" />
-        <span>Length</span>
-      </StyledMapButton>
-      <StyledMapButton aria-label="- height" onClick={onDecreaseHeight}>
-        <ImMinus color="var(--white)" />
-        <span>Height</span>
-      </StyledMapButton>
-      <span>Height: {viewBoxHeight}</span>
-      <StyledMapButton aria-label="+ height" onClick={onIncreaseHeight}>
-        <ImPlus color="var(--white)" />
-        <span>Height</span>
-      </StyledMapButton>
-      <StyledMapButton aria-label="- scale" onClick={onDecrementScale}>
-        <ImMinus color="var(--white)" />
-        <span>Scale</span>
-      </StyledMapButton>
-      <span>Scale (the multiplier for all the other buttons): {scale}</span>
-      <StyledMapButton aria-label="+ scale" onClick={onIncrementScale}>
-        <ImPlus color="var(--white)" />
-        <span>Scale</span>
-      </StyledMapButton>
+      <StyledDiv>
+        <StyledMapButton aria-label="- X" onClick={onDecrementX}>
+          <ImMinus color="var(--white)" />
+          <span>X</span>
+        </StyledMapButton>
+        <span>X: {viewBoxX}</span>
+        <StyledMapButton aria-label="+ X" onClick={onIncrementX}>
+          <ImPlus color="var(--white)" />
+          <span>X</span>
+        </StyledMapButton>
+      </StyledDiv>
+
+      <StyledDiv>
+        <StyledMapButton aria-label="- Y" onClick={onDecrementY}>
+          <ImMinus color="var(--white)" />
+          <span>Y</span>
+        </StyledMapButton>
+        <span>Y: {viewBoxY}</span>
+        <StyledMapButton aria-label="+ Y" onClick={onIncrementY}>
+          <ImPlus color="var(--white)" />
+          <span>Y</span>
+        </StyledMapButton>
+      </StyledDiv>
+
+      <StyledDiv>
+        <StyledMapButton aria-label="- length" onClick={onDecreaseLength}>
+          <ImMinus color="var(--white)" />
+          <span>Length</span>
+        </StyledMapButton>
+        <span>Length: {viewBoxLength}</span>
+        <StyledMapButton aria-label="+ length" onClick={onIncreaseLength}>
+          <ImPlus color="var(--white)" />
+          <span>Length</span>
+        </StyledMapButton>
+      </StyledDiv>
+      <StyledDiv>
+        <StyledMapButton aria-label="- height" onClick={onDecreaseHeight}>
+          <ImMinus color="var(--white)" />
+          <span>Height</span>
+        </StyledMapButton>
+        <span>Height: {viewBoxHeight}</span>
+        <StyledMapButton aria-label="+ height" onClick={onIncreaseHeight}>
+          <ImPlus color="var(--white)" />
+          <span>Height</span>
+        </StyledMapButton>
+      </StyledDiv>
+      <StyledDiv>
+        <StyledMapButton aria-label="- scale" onClick={onDecrementScale}>
+          <ImMinus color="var(--white)" />
+          <span>Scale</span>
+        </StyledMapButton>
+        <span>Scale (the multiplier for all the other buttons): {scale}</span>
+        <StyledMapButton aria-label="+ scale" onClick={onIncrementScale}>
+          <ImPlus color="var(--white)" />
+          <span>Scale</span>
+        </StyledMapButton>
+      </StyledDiv>
     </StyledSection>
   )
 }
-const StyledSection = styled.section`
+const StyledDiv = styled.div`
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+`
+const StyledSection = styled.section`
+  /* display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; */
   padding: 1em 0;
   h4 {
     padding: 5px;

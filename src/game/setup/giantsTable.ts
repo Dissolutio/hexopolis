@@ -3378,13 +3378,11 @@ export const giantsTable = {
   },
   hexMap: {
     mapId: 'giantsTable',
+    mapShape: 'rectangle',
     flat: false,
-    hexHeight: 2,
-    hexWidth: 1.73,
-    hexSize: 50,
-    mapShape: 'orientedRectangle',
     mapSize: 25,
-    mapLength: 25,
-    mapWidth: 15,
+    hexSize: 10,
+    mapWidth: 25,
+    mapHeight: 15,
   },
 }

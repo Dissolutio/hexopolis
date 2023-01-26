@@ -11,7 +11,11 @@ import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
 } from '../constants'
-import { makeGiantsTableMap, makeHexagonShapedMap } from './mapGen'
+import {
+  makeDevHexagonMap,
+  makeGiantsTableMap,
+  makeHexagonShapedMap,
+} from './mapGen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { MS1Cards } from '../coreHeroscapeCards'
 
@@ -58,17 +62,6 @@ function playersStateWithPrePlacedOMs(): PlayersState {
   }
 }
 
-const isEven = (numberToCheck: number) => {
-  //check if the number is even
-  if (numberToCheck % 2 === 0) {
-    return true
-  }
-  // if the number is odd
-  else {
-    return false
-  }
-}
-
 const frequentlyChangedDevState = isDevOverrideState
   ? {
       placementReady: {
@@ -101,13 +94,20 @@ function makeTestScenario(): GameState {
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  // const hexagonMap = makeHexagonShapedMap({
+  // const map = makeHexagonShapedMap({
   //   mapSize: 3,
   //   withPrePlacedUnits: isDevOverrideState,
   //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
   //   flat: false,
   // })
-  const map = makeGiantsTableMap(isDevOverrideState, gameUnits)
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState,
     currentRound: 1,
@@ -155,51 +155,49 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
 
 //! TEST SCENARIO GAMEARMYCARDS
 function armyCardsToGameArmyCardsForTest() {
-  return (
-    hsCardsToArmyCards(MS1Cards)
-      // .filter(
-      //   (c) =>
-      //     c.armyCardID === 'hs1000' ||
-      //     c.armyCardID === 'hs1002' ||
-      //     c.armyCardID === 'hs1003' ||
-      //     // c.armyCardID === 'hs1008' ||
-      //     c.armyCardID === 'hs1014'
-      // )
-      .map((card) => {
-        const player1Ids = [
-          'hs1000',
-          'hs1001',
-          'hs1003',
-          'hs1004',
-          'hs1008',
-          'hs1009',
-          'hs1010',
-          'hs1012',
-        ]
-        const player2Ids = [
-          'hs1002',
-          'hs1005',
-          'hs1006',
-          'hs1007',
-          'hs1011',
-          'hs1013',
-          'hs1014',
-          'hs1015',
-        ]
-        const isCardForPlayer1 = player1Ids.includes(card.armyCardID)
-        const playerID = isCardForPlayer1 ? '0' : '1'
-        // id factory ...
-        function makeGameCardID() {
-          return `p${playerID}_${card.armyCardID}`
-        }
+  return hsCardsToArmyCards(MS1Cards)
+    .filter(
+      (c) =>
+        // c.armyCardID === 'hs1000' ||
+        c.armyCardID === 'hs1002' ||
+        // c.armyCardID === 'hs1003' ||
+        // c.armyCardID === 'hs1008' ||
+        c.armyCardID === 'hs1012'
+    )
+    .map((card) => {
+      const player1Ids = [
+        'hs1000',
+        'hs1001',
+        'hs1003',
+        'hs1004',
+        'hs1008',
+        'hs1009',
+        'hs1010',
+        'hs1012',
+      ]
+      const player2Ids = [
+        'hs1002',
+        'hs1005',
+        'hs1006',
+        'hs1007',
+        'hs1011',
+        'hs1013',
+        'hs1014',
+        'hs1015',
+      ]
+      const isCardForPlayer1 = player1Ids.includes(card.armyCardID)
+      const playerID = isCardForPlayer1 ? '0' : '1'
+      // id factory ...
+      function makeGameCardID() {
+        return `p${playerID}_${card.armyCardID}`
+      }
 
-        return {
-          ...card,
-          playerID,
-          // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
-          cardQuantity: 1,
-          gameCardID: makeGameCardID(),
-        }
-      })
-  )
+      return {
+        ...card,
+        playerID,
+        // cardQuantity: isCardMezzodemonWarmongers ? 2 : 1,
+        cardQuantity: 1,
+        gameCardID: makeGameCardID(),
+      }
+    })
 }

@@ -50,26 +50,45 @@ export type GameMap = {
   hexMap: HexMap
 }
 export type HexMap = {
-  mapShape: string
-  mapSize: number
-  hexHeight: number
-  hexWidth: number
+  mapShape: string // 'hexagon' | 'rectangle'
+  mapSize: number // for hexagon shaped maps
+  mapHeight: number // for rectangle shaped maps
+  mapWidth: number // for rectangle shaped maps
+  hexSize: number
   flat: boolean
   // from hexxaform below: mapId so when we have multiple maps we can switch between them, hexSize so we can scale the map
   mapId: string
-  hexSize: number
 }
 export enum MapShapes {
   hexagon = 'hexagon',
   orientedRectangle = 'orientedRectangle', // rectangle tilted 45 degrees
   rectangle = 'rectangle',
 }
-
-export type BoardHex = {
-  id: string
+export type Point = {
+  x: number
+  y: number
+}
+export type HexCoordinates = {
   q: number
   r: number
   s: number
+}
+export type Orientation = {
+  f0: number
+  f1: number
+  f2: number
+  f3: number
+  b0: number
+  b1: number
+  b2: number
+  b3: number
+  startAngle: number
+}
+
+export default Orientation
+
+export type BoardHex = HexCoordinates & {
+  id: string
   occupyingUnitID: string
   altitude: number
   startzonePlayerIDs: string[]
@@ -174,10 +193,14 @@ export type PlayerStateToggle = {
 }
 
 export type MoveRange = {
-  safe: string[]
-  engage: string[]
-  disengage: string[]
-  denied: string[]
+  [hexID: string]: {
+    isSafe?: boolean
+    isEngage?: boolean
+    isDisengage?: boolean
+    fromHexID: string
+    fromCost: number
+    movePointsLeft: number
+  }
 }
 export type PlayerOrderMarkers = { [order: string]: string }
 
