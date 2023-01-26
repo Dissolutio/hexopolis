@@ -74,7 +74,9 @@ function computeWalkMoveRange({
 }): MoveRange {
   const { playerID, unit, boardHexes, gameUnits, armyCards } = unmutatedContext
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
-  const isVisitedAlready = hexesVisited?.[startHex.id] >= movePoints
+  const isVisitedAlready =
+    (initialMoveRange?.[startHex.id]?.movePointsLeft ?? 0) > movePoints
+
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
@@ -84,7 +86,9 @@ function computeWalkMoveRange({
   // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
-      if (hexesVisited[neighbor.id] >= movePoints) {
+      const fromCost = calcMoveCostBetweenNeighbors(startHex, neighbor)
+      const movePointsLeft = movePoints - fromCost
+      if (initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft) {
         return result
       }
       const { id: endHexID, occupyingUnitID: endHexUnitID } = neighbor
@@ -104,8 +108,6 @@ function computeWalkMoveRange({
       })
       const endHexUnit = { ...gameUnits[endHexUnitID] }
       const endHexUnitPlayerID = endHexUnit.playerID
-      const fromCost = calcMoveCostBetweenNeighbors(startHex, neighbor)
-      const movePointsLeft = movePoints - fromCost
       const isMovePointsLeftAfterMove = movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID)
       const isTooCostly = movePointsLeft < 0
