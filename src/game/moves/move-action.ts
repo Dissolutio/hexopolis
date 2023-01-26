@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io'
-import { hexUtilsDistance } from 'game/hex-utils'
+import { transformMoveRangeToArraysOfIds } from 'game/constants'
 import { uniq } from 'lodash'
 import { encodeGameLogMessage } from '../gamelog'
 import {
@@ -13,7 +13,6 @@ import {
   GameState,
   GameUnit,
   GameUnits,
-  HexCoordinates,
   MoveRange,
 } from '../types'
 
@@ -25,17 +24,18 @@ export const moveAction: Move<GameState> = {
     endHex: BoardHex,
     currentMoveRange: MoveRange
   ) => {
-    const { unitID, movePoints } = unit
+    const { unitID } = unit
     const endHexID = endHex.id
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
-    const isEndHexOutOfRange = ![
-      ...currentMoveRange.engage,
-      ...currentMoveRange.safe,
-    ].includes(endHexID)
+    const { safeMoves, engageMoves, disengageMoves } =
+      transformMoveRangeToArraysOfIds(currentMoveRange)
+    const isEndHexOutOfRange = ![...safeMoves, ...engageMoves].includes(
+      endHexID
+    )
     // TODO: MoveRange Move Cost
-    const moveCost = hexUtilsDistance(startHex as HexCoordinates, endHex)
+    const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
     const revealedGameCard = selectRevealedGameCard(
       G.orderMarkers,
       G.gameArmyCards,
@@ -76,8 +76,7 @@ export const moveAction: Move<GameState> = {
     newBoardHexes[startHexID].occupyingUnitID = ''
     newBoardHexes[endHexID].occupyingUnitID = unitID
     // update unit move-points
-    const newMovePoints = movePoints - moveCost
-    newGameUnits[unitID].movePoints = newMovePoints
+    newGameUnits[unitID].movePoints = movePointsLeft
 
     // update game log
     const indexOfThisMove = G.unitsMoved.length

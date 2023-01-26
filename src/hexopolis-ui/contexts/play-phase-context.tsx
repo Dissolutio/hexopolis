@@ -19,7 +19,10 @@ import {
   selectRevealedGameCard,
   selectEngagementsForHex,
 } from '../../game/selectors'
-import { generateBlankMoveRange } from 'game/constants'
+import {
+  generateBlankMoveRange,
+  transformMoveRangeToArraysOfIds,
+} from 'game/constants'
 import { useUIContext } from '../contexts'
 import {
   useBgioClientInfo,
@@ -86,6 +89,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
+  const { safeMoves, engageMoves, disengageMoves } =
+    transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
+
   // effect: update moverange when selected unit changes
   useEffect(() => {
     if (selectedUnitID)
@@ -227,15 +233,13 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
 
     // MOVE STAGE
     if (isMovementStage) {
-      const isInSafeMoveRangeOfSelectedUnit =
-        selectedUnitMoveRange.safe.includes(sourceHex.id)
-      const isInEngageMoveRangeOfSelectedUnit =
-        selectedUnitMoveRange.engage.includes(sourceHex.id)
-      const isAbleToMakeMove =
-        isInSafeMoveRangeOfSelectedUnit || isInEngageMoveRangeOfSelectedUnit
-      const isInDisengageRange = selectedUnitMoveRange.disengage.includes(
+      const isInSafeMoveRangeOfSelectedUnit = safeMoves.includes(sourceHex.id)
+      const isInEngageMoveRangeOfSelectedUnit = engageMoves.includes(
         sourceHex.id
       )
+      const isAbleToMakeMove =
+        isInSafeMoveRangeOfSelectedUnit || isInEngageMoveRangeOfSelectedUnit
+      const isInDisengageRange = disengageMoves.includes(sourceHex.id)
       // move selected unit if possible...
       if (selectedUnitID && isAbleToMakeMove) {
         moveAction(
