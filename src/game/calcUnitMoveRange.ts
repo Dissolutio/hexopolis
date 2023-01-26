@@ -84,10 +84,10 @@ function computeWalkMoveRange({
   // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
-      if (hexesVisited[end.id] >= movePoints) {
+      if (hexesVisited[neighbor.id] >= movePoints) {
         return result
       }
-      const { id: endHexID, occupyingUnitID: endHexUnitID } = end
+      const { id: endHexID, occupyingUnitID: endHexUnitID } = neighbor
       const isCausingEngagement = selectIsMoveCausingEngagements({
         unit,
         endHexID,
@@ -109,10 +109,9 @@ function computeWalkMoveRange({
       const isMovePointsLeftAfterMove = movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID)
       const isTooCostly = movePointsLeft < 0
-        !hexesVisited[endHexID] ||
-        hexesVisited[endHexID] < movePointsLeftAfterMove
+      const isNotAlreadyVisited =
+        !hexesVisited[endHexID] || hexesVisited[endHexID] < movePointsLeft
 
-      const isTooCostly = movePointsLeftAfterMove < 0
       const isEndHexEnemyOccupied =
         !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
       // TODO: Ability: isEndHexUnitEngaged : ghost walk, or phantom walk
@@ -143,7 +142,6 @@ function computeWalkMoveRange({
       if (isCausingDisengagement) {
         // the space causes disengagements, so no recursion, and we can only stop there if it's not occupied
         if (isEndHexUnoccupied) {
-          // result.disengage.push(endHexID)
           result[endHexID] = {
             ...moveRangeData,
             isDisengage: true,
@@ -155,7 +153,6 @@ function computeWalkMoveRange({
       } else if (isCausingEngagement) {
         // the space causes engagements, so no recursion, and we can only stop there if it's not occupied
         if (isEndHexUnoccupied) {
-          // result.engage.push(endHexID)
           result[endHexID] = {
             ...moveRangeData,
             isEngage: true,
@@ -173,6 +170,7 @@ function computeWalkMoveRange({
             ...moveRangeData,
             isSafe: true,
           }
+        }
         // only continue to neighbors if we have move points left and we haven't visited this hex before with more move points
         if (isMovePointsLeftAfterMove && isNotAlreadyVisited) {
           // this console.count will show you the number of times we visit a hex
