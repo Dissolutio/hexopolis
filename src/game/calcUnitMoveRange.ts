@@ -7,7 +7,6 @@ import {
   GameArmyCard,
 } from './types'
 import { generateBlankMoveRange } from './constants'
-import { uniq } from 'lodash'
 import {
   calcMoveCostBetweenNeighbors,
   selectEngagementsForHex,
@@ -17,22 +16,14 @@ import {
   selectIsMoveCausingEngagements,
 } from './selectors'
 
-const deduplicateMoveRange = (result: MoveRange): MoveRange => {
-  return {
-    safe: uniq(result.safe),
-    engage: uniq(result.engage),
-    disengage: uniq(result.disengage),
-    denied: uniq(result.denied),
-  }
-}
-
+// This function splits on flying/walking/ghostwalking/disengage/stealth-flying
 export function calcUnitMoveRange(
   unitID: string,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
 ): MoveRange {
-  // 1. return blank move-range if no necessary ingredients
+  // 1. return blank move-range if we can't find the unit, its move points, or its start hex
   const initialMoveRange = generateBlankMoveRange()
   const unit = gameUnits[unitID]
   const playerID = unit?.playerID
@@ -42,6 +33,8 @@ export function calcUnitMoveRange(
   if (!unit || !startHex || !initialMovePoints) {
     return initialMoveRange
   }
+  // ?? 1.5. 2-spacer or 1? => Walking, flying, ghost/disengage, stealth-flying, water-tunneling, glacier traverse, etc
+
   // 2. recursively add hexes to move-range
   const moveRange = computeWalkMoveRange({
     unmutatedContext: {
