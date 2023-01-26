@@ -141,10 +141,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              text={`${hex.id}`}
-              textLine2={`${hex.altitude}`}
-              // text={`${hex.altitude}`}
-              // textLine2={`${unitName}`}
+              // text={`${hex.id}`}
+              // textLine2={`${hex.altitude}`}
+              text={`${hex.altitude}`}
+              textLine2={`${unitName}`}
             />
           </g>
         </Hexagon>
