@@ -11,7 +11,7 @@ export const LayoutContainer = styled.div<LayoutContainerProps>`
   --player-color: ${(props) => props.theme.playerColor};
   --player-bg: ${(props) => playerIdsTContourBackgroundFile[props.playerID]};
   --navbar-height: 30px;
-
+  --muted-text: ${(props) => props.theme.colors.gray};
   position: relative;
   display: flex;
   flex-direction: column;

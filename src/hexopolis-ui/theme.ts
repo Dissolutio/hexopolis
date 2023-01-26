@@ -1,7 +1,7 @@
 import { StringKeyedObj } from 'game/types'
 
 export const colors = {
-  gray: '#5d576b',
+  gray: '#A09AAC',
   grayUrlEncoded: '%235d576b',
   // player colors
   beeYellow: '#E0BB00',

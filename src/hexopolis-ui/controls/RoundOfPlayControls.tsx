@@ -84,7 +84,7 @@ export const RopIdleControls = () => {
   const { revealedGameCard } = usePlayContext()
   return (
     <>
-      <StyledControlsHeaderH2>
+      <StyledControlsHeaderH2 style={{ color: 'var(--muted-text)' }}>
         {`Opponent's #${currentOrderMarker + 1} is ${
           revealedGameCard?.name ?? '...'
         }`}
