@@ -14,11 +14,13 @@ import {
   selectHexForUnit,
   selectHexNeighbors,
   selectIsMoveCausingEngagements,
+  selectIfGameArmyCardHasFlying,
 } from './selectors'
 
 // This function splits on flying/walking/ghostwalking/disengage/stealth-flying
 export function calcUnitMoveRange(
   unitID: string,
+  isWalkingFlyer: boolean,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
@@ -26,6 +28,11 @@ export function calcUnitMoveRange(
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
   const initialMoveRange = generateBlankMoveRange()
   const unit = gameUnits[unitID]
+  const unitGameCard = armyCards.find(
+    (card) => card.gameCardID === unit?.gameCardID
+  )
+  const { hasFlying, hasStealth } = selectIfGameArmyCardHasFlying(unitGameCard)
+  const isFlying = isWalkingFlyer ? false : hasFlying
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
@@ -88,7 +95,9 @@ function computeWalkMoveRange({
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
       const fromCost = calcMoveCostBetweenNeighbors(startHex, neighbor)
       const movePointsLeft = movePoints - fromCost
-      if (initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft) {
+      const isVisitedAlready =
+        initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
+      if (isVisitedAlready) {
         return result
       }
       const { id: endHexID, occupyingUnitID: endHexUnitID } = neighbor
@@ -174,9 +183,10 @@ function computeWalkMoveRange({
           }
         }
         // only continue to neighbors if we have move points left and we haven't visited this hex before with more move points
-        if (isMovePointsLeftAfterMove && isNotAlreadyVisited) {
+        if (isMovePointsLeftAfterMove && !isVisitedAlready) {
           // this console.count will show you the number of times we visit a hex
           // console.count(endHexID)
+          console.count('total')
           const recursiveMoveRange = computeWalkMoveRange({
             unmutatedContext,
             startHex: neighbor,
@@ -198,4 +208,28 @@ function computeWalkMoveRange({
   )
   const result = nextResults
   return result
+}
+
+function computeFlyMoveRange({
+  unmutatedContext,
+  startHex,
+  movePoints,
+  hexesVisited,
+  initialMoveRange,
+}: {
+  unmutatedContext: {
+    playerID: string
+    unit: GameUnit
+    hasStealth: boolean
+    boardHexes: BoardHexes
+    armyCards: GameArmyCard[]
+    gameUnits: GameUnits
+  }
+  // !! these inputs below get mutated in the recursion
+  startHex: BoardHex
+  movePoints: number
+  hexesVisited: { [hexID: string]: number }
+  initialMoveRange: MoveRange
+}): MoveRange {
+  return initialMoveRange
 }

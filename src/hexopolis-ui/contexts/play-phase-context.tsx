@@ -43,6 +43,7 @@ type PlayContextValue = {
   // state
   selectedUnitMoveRange: MoveRange
   showDisengageConfirm: boolean
+  isWalkingFlyer: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
   toggleDisengageConfirm: (endHexID: string) => void
@@ -59,6 +60,7 @@ type PlayContextValue = {
   isFreeAttackAvailable: boolean
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
+  toggleIsWalkingFlyer: () => void
 }
 
 export const PlayContextProvider = ({ children }: PropsWithChildren) => {
@@ -86,6 +88,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     | { unit: GameUnit; endHexID: string; defendersToDisengage: GameUnit[] }
   >(undefined)
   // client-side moverange
+  const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
+  const toggleIsWalkingFlyer = () => {
+    setIsWalkingFlyer((s) => !s)
+  }
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
@@ -96,9 +102,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (selectedUnitID)
       setSelectedUnitMoveRange(() =>
-        calcUnitMoveRange(selectedUnitID, boardHexes, gameUnits, armyCards)
+        calcUnitMoveRange(
+          selectedUnitID,
+          isWalkingFlyer,
+          boardHexes,
+          gameUnits,
+          armyCards
+        )
       )
-  }, [armyCards, boardHexes, gameUnits, selectedUnitID])
+  }, [armyCards, isWalkingFlyer, boardHexes, gameUnits, selectedUnitID])
 
   const showDisengageConfirm = disengageAttempt !== undefined
   const confirmDisengageAttempt = () => {
@@ -300,6 +312,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         selectedUnitMoveRange,
         // disengage confirm
         showDisengageConfirm,
+        isWalkingFlyer,
         confirmDisengageAttempt,
         cancelDisengageAttempt,
         toggleDisengageConfirm: onClickDisengageHex,
@@ -316,6 +329,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         isFreeAttackAvailable,
         // HANDLERS
         onClickTurnHex,
+        toggleIsWalkingFlyer,
       }}
     >
       {children}

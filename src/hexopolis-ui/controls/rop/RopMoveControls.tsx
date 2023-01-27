@@ -12,6 +12,7 @@ import { uniq } from 'lodash'
 import { selectIfGameArmyCardHasFlying } from 'game/selectors'
 import { omToString } from 'app/utilities'
 import styled from 'styled-components'
+import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -55,6 +56,11 @@ export const RopMoveControls = () => {
       <StyledControlsP style={{ color: 'var(--text-muted)' }}>
         {`${unitsAliveCount} unit${unitsAliveCount !== 1 ? 's' : ''}`}
       </StyledControlsP>
+      <FlyingUnitTextAndToggle
+        hasFlying={hasFlying}
+        hasStealth={hasStealth}
+        revealedGameCardName={revealedGameCardName}
+      />
       <StyledControlsP>
         Selected unit move points remaining: {selectedUnit?.movePoints ?? '-'}
       </StyledControlsP>
