@@ -257,6 +257,23 @@ export function selectIsMoveCausingEngagements({
   })
   return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
 }
+type HasFlyingReport = {
+  hasFlying: boolean
+  hasStealth: boolean
+}
+export function selectIfGameArmyCardHasFlying(
+  gameArmyCard?: GameArmyCard
+): HasFlyingReport {
+  const hasFlying = gameArmyCard
+    ? gameArmyCard.abilities.some(
+        (a) => a.name === 'Flying' || a.name === 'Stealth Flying'
+      )
+    : false
+  const hasStealth = gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Stealth Flying')
+    : false
+  return { hasFlying, hasStealth }
+}
 
 // for after move abilities (water clone)
 // export function selectCardsWithAfterMoveAbilities({
