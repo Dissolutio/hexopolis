@@ -274,6 +274,17 @@ export function selectIfGameArmyCardHasFlying(
     : false
   return { hasFlying, hasStealth }
 }
+export function selectIsClimbable(
+  unit: GameUnit,
+  armyCards: GameArmyCard[],
+  startHex: BoardHex,
+  endHex: BoardHex
+) {
+  const unitCard = selectGameCardByID(armyCards, unit.gameCardID)
+  const unitHeight = unitCard?.height ?? 0
+  const altitudeDelta = endHex.altitude - startHex.altitude
+  return altitudeDelta < unitHeight
+}
 
 // for after move abilities (water clone)
 // export function selectCardsWithAfterMoveAbilities({
