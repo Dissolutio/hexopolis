@@ -10,6 +10,21 @@ import {
 import { ConfirmOrResetButtons } from '../ConfirmOrResetButtons'
 import { uniq } from 'lodash'
 import { selectIfGameArmyCardHasFlying } from 'game/selectors'
+import { omToString } from 'app/utilities'
+import styled from 'styled-components'
+
+export const RopAttackMoveHeader = ({
+  currentOrderMarker,
+  revealedGameCardName,
+}: {
+  currentOrderMarker: number
+  revealedGameCardName: string
+}) => {
+  const currentOrderText = omToString(currentOrderMarker.toString())
+  return (
+    <StyledControlsHeaderH2>{`Your #${currentOrderText}: ${revealedGameCardName}`}</StyledControlsHeaderH2>
+  )
+}
 
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
@@ -31,31 +46,24 @@ export const RopMoveControls = () => {
     setSelectedUnitID('')
     endCurrentMoveStage()
   }
-  const currentOrderText = `${
-    {
-      0: '1',
-      1: '2',
-      2: '3',
-    }[currentOrderMarker]
-  }`
   return (
     <div>
-      <StyledControlsHeaderH2>{`Your #${currentOrderText}: ${revealedGameCardName}`}</StyledControlsHeaderH2>
-      {selectedUnit && (
-        <StyledControlsP>
-          {selectedUnit.movePoints} Move points left
-        </StyledControlsP>
-      )}
-      <StyledControlsP>
-        You have used {movedUnitsCount} / {allowedMoveCount} moves
+      <RopAttackMoveHeader
+        currentOrderMarker={currentOrderMarker}
+        revealedGameCardName={revealedGameCardName}
+      />
+      <StyledControlsP style={{ color: 'var(--text-muted)' }}>
+        {`${unitsAliveCount} unit${unitsAliveCount !== 1 ? 's' : ''}`}
       </StyledControlsP>
-      {unitsAliveCount < allowedMoveCount && (
-        <StyledControlsP>
-          {`You only have ${unitsAliveCount} ${revealedGameCardName} left`}
-        </StyledControlsP>
-      )}
+      <StyledControlsP>
+        Selected unit move points remaining: {selectedUnit?.movePoints ?? '-'}
+      </StyledControlsP>
+      <StyledControlsP>
+        {movedUnitsCount} / {allowedMoveCount} units moved
+      </StyledControlsP>
 
       <UndoRedoButtons />
+
       {isAllMovesUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndMovementClick}

@@ -16,11 +16,8 @@ export const WaterCloneControls = () => {
   const { moves } = useBgioMoves()
   const { events } = useBgioEvents()
   const { endCurrentPlayerTurn } = moves
-  const {
-    revealedGameCard,
-    countOfRevealedGameCardUnitsWithTargetsInRange,
-    freeAttacksAvailable,
-  } = usePlayContext()
+  const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
+    usePlayContext()
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
     (ability) => !!ability.isAfterMove
   )

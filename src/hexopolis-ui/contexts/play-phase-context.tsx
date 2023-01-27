@@ -53,7 +53,7 @@ type PlayContextValue = {
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
   revealedGameCardTargetsInRange: TargetsInRange
-  countOfRevealedGameCardUnitsWithTargetsInRange: number
+  unitsWithTargets: number
   selectedGameCardUnits: GameUnit[]
   freeAttacksAvailable: number
   isFreeAttackAvailable: boolean
@@ -202,7 +202,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const revealedGameCardUnitIDs = (revealedGameCardUnits ?? []).map(
     (u) => u.unitID
   )
-  const countOfRevealedGameCardUnitsWithTargetsInRange = Object.entries(
+  const unitsWithTargets = Object.entries(
     revealedGameCardTargetsInRange
   ).filter((e) => e[1].length > 0).length
   const attacksAllowed = revealedGameCard?.figures ?? 0
@@ -311,7 +311,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         revealedGameCardTargetsInRange,
-        countOfRevealedGameCardUnitsWithTargetsInRange,
+        unitsWithTargets,
         freeAttacksAvailable,
         isFreeAttackAvailable,
         // HANDLERS
