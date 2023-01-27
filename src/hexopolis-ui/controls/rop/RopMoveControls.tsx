@@ -43,7 +43,7 @@ export const RopMoveControls = () => {
   const isAllMovesUsed = movesAvailable <= 0
   const { endCurrentMoveStage } = moves
   const handleEndMovementClick = () => {
-    setSelectedUnitID('')
+    // setSelectedUnitID('')
     endCurrentMoveStage()
   }
   return (
