@@ -115,13 +115,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       const unitName = gameUnitCard?.singleName ?? ''
       return (
         <Hexagon
+          fill={'kitten'}
           key={i}
           q={hex.q}
           r={hex.r}
           s={hex.s}
           data={hex}
           onClick={onClickHex}
-          className={hexClassNames(hex)}
+          // className={hexClassNames(hex)}
         >
           <g>
             <AnimatePresence initial={false}>
@@ -141,10 +142,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              // text={`${hex.id}`}
-              // textLine2={`${hex.altitude}`}
-              text={`${hex.altitude}`}
-              textLine2={`${unitName}`}
+              // text={`${hex.altitude}`}
+              // textLine2={`${unitName}`}
+              text={`${hex.id}`}
+              textLine2={`${hex.altitude}`}
             />
           </g>
         </Hexagon>

@@ -4,17 +4,18 @@ import { useLayoutContext } from './HexgridLayout'
 import { hexUtilsHexToPixel } from 'game/hex-utils'
 import { HexCoordinates } from 'game/types'
 
-type HexagonProps = {
+type Props = {
   q: number
   r: number
   s: number
+  fill?: string
   data?: any
   onClick?: HexagonMouseEventHandler
   className?: string
   children?: React.ReactNode | React.ReactNode[]
 }
 
-type H = { data?: any; state: { hex: HexCoordinates }; props: HexagonProps }
+type H = { data?: any; state: { hex: HexCoordinates }; props: Props }
 
 export type HexagonMouseEventHandler = (
   event: React.MouseEvent<SVGGElement, MouseEvent>,
@@ -24,12 +25,20 @@ export type HexagonMouseEventHandler = (
 /**
  * Renders a Hexagon cell at the given rqs-based coordinates.
  */
-export function Hexagon(props: HexagonProps) {
-  const { q, r, s, data, onClick, className, children } = props
+export function Hexagon(props: Props) {
+  const { q, r, s, fill, data, onClick, className, children } = props
+  const fillId = fill ? `url(#${fill})` : undefined
   const { layout, points } = useLayoutContext()
   const { hex, pixel } = React.useMemo(() => {
     const hex = { q, r, s }
+    const idToCheck = '0,4,-4'
     const pixel = hexUtilsHexToPixel(hex, layout)
+    if (`${hex.q},${hex.r},${hex.s}` === idToCheck) {
+      console.log(
+        '🚀 ~ file: Hexagon.tsx:34 ~ const{hex,pixel}=React.useMemo ~ pixel',
+        pixel
+      )
+    }
     return {
       hex,
       pixel,
@@ -49,7 +58,7 @@ export function Hexagon(props: HexagonProps) {
       }}
     >
       <g className="hexagon">
-        <polygon points={points} />
+        <polygon points={points} fill={fillId} />
         {children}
       </g>
     </g>

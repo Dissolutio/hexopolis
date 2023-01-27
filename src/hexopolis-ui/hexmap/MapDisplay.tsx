@@ -84,9 +84,35 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <circle
+            cx="34.64"
+            cy="60"
+            r="20"
+            // stroke="red"
+            // strokeWidth="3"
+            fill="kitten"
+          />
           <g className="hexgrid-layout">
             <MapHexes hexSize={hexSize} />
           </g>
+          <defs>
+            <pattern
+              id={'kitten'}
+              patternUnits="objectBoundingBox"
+              x={0}
+              y={0}
+              width={10}
+              height={10}
+            >
+              <image
+                xlinkHref={'http://placekitten.com/200/200'}
+                x={0}
+                y={0}
+                width={20}
+                height={20}
+              />
+            </pattern>
+          </defs>
         </svg>
       </HexgridLayout>
     </MapHexStyles>
