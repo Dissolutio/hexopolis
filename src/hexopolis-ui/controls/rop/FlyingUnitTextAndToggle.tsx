@@ -53,6 +53,8 @@ const StyledToggleWrapper = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   .switch {
     display: inline-flex;
     margin: 0 10px;
