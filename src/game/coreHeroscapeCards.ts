@@ -409,6 +409,19 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         name: 'Flying',
         desc: "When counting spaces for Raelin's movement, ignore elevations. Raelin may fly over water without stopping, pass over figures without becoming engaged, and fly over obstacles such as ruins. When Raelin starts to fly, if she is engaged she will take any leaving engagement attacks.",
       },
+      // DEV NOTE: These 3 abilities are not actually Raelin's
+      // {
+      //   name: 'Stealth Flying',
+      //   desc: 'When counting spaces for Raelin’s movement, ignore elevations. Raelin may fly over water without stopping, pass over figures without becoming engaged, and fly over obstacles such as ruins. When Raelin starts to fly, if he is engaged he will not take any leaving engagement attacks.',
+      // },
+      // {
+      //   name: 'Ghost Walk',
+      //   desc: 'Raelin can move through all figures.',
+      // },
+      // {
+      //   name: 'Disengage',
+      //   desc: 'Raelin is never attacked when leaving an engagement.',
+      // },
     ],
   },
   {

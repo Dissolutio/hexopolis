@@ -274,6 +274,25 @@ export function selectIfGameArmyCardHasFlying(
     : false
   return { hasFlying, hasStealth }
 }
+type HasStealthReport = {
+  hasDisengage: boolean
+  hasGhostWalk: boolean
+}
+export function selectIfGameArmyCardHasDisengage(
+  gameArmyCard?: GameArmyCard
+): HasStealthReport {
+  const hasGhostWalk = gameArmyCard
+    ? gameArmyCard.abilities.some(
+        (a) => a.name === 'Ghost Walk' || a.name === 'Phantom Walk'
+      )
+    : false
+  const hasDisengage = gameArmyCard
+    ? gameArmyCard.abilities.some(
+        (a) => a.name === 'Disengage' || a.name === 'Phantom Walk'
+      )
+    : false
+  return { hasDisengage, hasGhostWalk }
+}
 export function selectIsClimbable(
   unit: GameUnit,
   armyCards: GameArmyCard[],
