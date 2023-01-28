@@ -30,6 +30,12 @@ export function Hexagon(props: HexagonProps) {
   const { hex, pixel } = React.useMemo(() => {
     const hex = { q, r, s }
     const pixel = hexUtilsHexToPixel(hex, layout)
+    if (`${hex.q},${hex.r},${hex.s}` === '-2,6,-4') {
+      console.log(
+        '🚀 ~ file: Hexagon.tsx:33 ~ const{hex,pixel}=React.useMemo ~ pixel',
+        pixel
+      )
+    }
     return {
       hex,
       pixel,
