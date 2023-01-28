@@ -68,10 +68,6 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
         top: currentScrollTop - zoomInterval,
       })
   }
-  const myShapeStyle = {
-    fill: 'rgba(214, 247, 197, 0.492)',
-    strokeWidth: 0.264583,
-  }
   return (
     <MapHexStyles hexSize={hexSize}>
       <ZoomControls
@@ -91,30 +87,8 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
           <g className="hexgrid-layout">
             <MapHexes hexSize={hexSize} />
           </g>
-          {/* -2,5,-3 -- x: 8.6 y: 75 */}
-          {/* -2,6,-4 -- x: 17.3 y: 90 */}
-          <g style={{ zIndex: 10, pointerEvents: 'none' }}>
-            <line
-              x1="8.6"
-              y1="75"
-              x2="17.3"
-              y2="90"
-              style={{ stroke: 'rgb(255,0,0)', strokeWidth: 2 }}
-            />
-            <circle style={myShapeStyle} cx="17.3" cy="90" r="7" />
-          </g>
         </svg>
       </HexgridLayout>
     </MapHexStyles>
   )
-}
-type Point = {
-  x: number
-  y: number
-}
-const midpointFormula = (p1: Point, p2: Point): Point => {
-  return {
-    x: (p1.x + p2.x) / 2,
-    y: (p1.y + p2.y) / 2,
-  }
 }

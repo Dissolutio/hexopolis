@@ -102,11 +102,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     onClickBoardHex(e, boardHex)
   }
 
-  const myShapeStyle = {
-    fill: 'rgba(214, 247, 197, 0.492)',
-    strokeWidth: 0.264583,
-  }
-
   const hexJSX = () => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       // During placement phase, player is overwriting units on hexes, in local state, but we wish to show that state for units
@@ -128,16 +123,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           onClick={onClickHex}
           className={hexClassNames(hex)}
         >
-          <g style={{ zIndex: 10, pointerEvents: 'none' }}>
-            <line
-              x1="0"
-              y1="0"
-              x2="5"
-              y2="5"
-              style={{ stroke: 'rgb(255,0,0)', strokeWidth: 2 }}
-            />
-            <circle style={myShapeStyle} cx="0" cy="0" r="7" />
-          </g>
           <g>
             <AnimatePresence initial={false}>
               {gameUnit && isShowableUnit && (
@@ -154,14 +139,12 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                 </motion.g>
               )}
             </AnimatePresence>
-            {/* -2,5,-3 -- x: 8.6 y: 75 */}
-            {/* -2,6,-4 -- x: 17.3 y: 90 */}
             <HexIDText
               hexSize={hexSize}
-              text={`${hex.id}`}
-              textLine2={`${hex.altitude}`}
-              // text={`${hex.altitude}`}
-              // textLine2={`${unitName}`}
+              // text={`${hex.id}`}
+              // textLine2={`${hex.altitude}`}
+              text={`${hex.altitude}`}
+              textLine2={`${unitName}`}
             />
           </g>
         </Hexagon>
