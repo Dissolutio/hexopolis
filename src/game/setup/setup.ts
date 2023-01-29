@@ -19,8 +19,8 @@ import {
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { MS1Cards } from '../coreHeroscapeCards'
 
-const isDevOverrideState = true
-// const isDevOverrideState = false
+// const isDevOverrideState = true
+const isDevOverrideState = false
 const devPlayer1orderMarkers = 'p0_hs1013'
 const devPlayer2orderMarkers = 'p1_hs1002'
 
