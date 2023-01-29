@@ -18,6 +18,7 @@ import {
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
 import { HexText } from './HexText'
+import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 
 type MapHexesProps = {
   hexSize: number
@@ -114,6 +115,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
       const unitName = gameUnitCard?.singleName ?? ''
+      const isUnitTail = hex.isUnitTail
+      const unitHeadHex = boardHexes[hex.unitHeadHexID]
       return (
         <Hexagon
           key={i}
@@ -132,11 +135,15 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <UnitIcon
-                    hexSize={hexSize}
-                    armyCardID={gameUnit.armyCardID}
-                    iconPlayerID={gameUnit.playerID}
-                  />
+                  {(isUnitTail && hex.unitHeadHexID && (
+                    <UnitTail hexSize={hexSize} hex={hex} />
+                  )) || (
+                    <UnitIcon
+                      hexSize={hexSize}
+                      armyCardID={gameUnit.armyCardID}
+                      iconPlayerID={gameUnit.playerID}
+                    />
+                  )}
                 </motion.g>
               )}
             </AnimatePresence>
