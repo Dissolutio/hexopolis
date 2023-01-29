@@ -90,6 +90,8 @@ export default Orientation
 export type BoardHex = HexCoordinates & {
   id: string
   occupyingUnitID: string
+  isUnitTail: boolean
+  unitHeadHexID: string
   altitude: number
   startzonePlayerIDs: string[]
   terrain: string
@@ -178,6 +180,7 @@ export type GameUnit = {
   wounds: number
   movePoints: number
   moveRange: MoveRange
+  is2Hex: boolean
 }
 
 export type GameUnits = {
