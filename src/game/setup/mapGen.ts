@@ -117,14 +117,29 @@ function transformBoardHexesWithPrePlacedUnits(
     try {
       const { playerID } = unit
       let randomHexID: string = ''
+      let randomTailHexID: string = ''
       if (playerID === '0') {
         randomHexID = startZones?.[unit.playerID][k++] ?? ''
+        if (unit.is2Hex) {
+          randomTailHexID = startZones?.[unit.playerID][k++] ?? ''
+        }
       }
       if (playerID === '1') {
         randomHexID = startZones?.[unit.playerID][j++] ?? ''
+        if (unit.is2Hex) {
+          randomTailHexID = startZones?.[unit.playerID][j++] ?? ''
+        }
       }
       // update boardHex
-      copy[randomHexID].occupyingUnitID = unit.unitID
+      if (unit.is2Hex) {
+        // update boardHex
+        copy[randomHexID].occupyingUnitID = unit.unitID
+        copy[randomTailHexID].occupyingUnitID = unit.unitID
+        copy[randomTailHexID].isUnitTail = true
+        copy[randomTailHexID].unitHeadHexID = randomHexID
+      } else {
+        copy[randomHexID].occupyingUnitID = unit.unitID
+      }
     } catch (error) {
       console.error(
         '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
