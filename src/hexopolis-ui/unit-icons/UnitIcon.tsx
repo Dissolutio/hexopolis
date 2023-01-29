@@ -16,7 +16,7 @@ import {
   GiSverdIFjell,
   GiVikingShield,
   GiAngelOutfit,
-  GiDragonBreath,
+  GiSpikedDragonHead,
   GiDinosaurRex,
 } from 'react-icons/gi'
 
@@ -99,7 +99,7 @@ export const UnitIcon = ({
       return <GiAngelOutfit {...gameIconProps} />
     case 'hs1013':
       // mimring
-      return <GiDragonBreath {...gameIconProps} />
+      return <GiSpikedDragonHead {...gameIconProps} />
     case 'hs1014':
       // negoksa
       return <GiAlienStare {...gameIconProps} />
