@@ -109,6 +109,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         ? editingBoardHexes?.[hex.id] ?? ''
         : hex.occupyingUnitID
       const gameUnit = gameUnits?.[unitIdToShowOnHex]
+      // we only show players their own units during placement phase
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
