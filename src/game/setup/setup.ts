@@ -21,7 +21,7 @@ import { MS1Cards } from '../coreHeroscapeCards'
 
 const isDevOverrideState = true
 // const isDevOverrideState = false
-const devPlayer1orderMarkers = 'p0_hs1012'
+const devPlayer1orderMarkers = 'p0_hs1013'
 const devPlayer2orderMarkers = 'p1_hs1002'
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {
@@ -162,7 +162,7 @@ function armyCardsToGameArmyCardsForTest() {
         c.armyCardID === 'hs1002' ||
         // c.armyCardID === 'hs1003' ||
         // c.armyCardID === 'hs1008' ||
-        c.armyCardID === 'hs1012'
+        c.armyCardID === 'hs1013'
     )
     .map((card) => {
       const player1Ids = [
@@ -172,8 +172,8 @@ function armyCardsToGameArmyCardsForTest() {
         'hs1004',
         'hs1008',
         'hs1009',
-        'hs1010',
         'hs1012',
+        'hs1013',
       ]
       const player2Ids = [
         'hs1002',
@@ -181,7 +181,7 @@ function armyCardsToGameArmyCardsForTest() {
         'hs1006',
         'hs1007',
         'hs1011',
-        'hs1013',
+        'hs1010',
         'hs1014',
         'hs1015',
       ]
