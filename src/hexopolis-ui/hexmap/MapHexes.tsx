@@ -107,7 +107,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       // During placement phase, player is overwriting units on hexes, in local state, but we wish to show that state for units
       const unitIdToShowOnHex = isPlacementPhase
-        ? editingBoardHexes?.[hex.id] ?? ''
+        ? editingBoardHexes?.[hex.id]?.unitID ?? ''
         : hex.occupyingUnitID
       const gameUnit = gameUnits?.[unitIdToShowOnHex]
       // we only show players their own units during placement phase

@@ -38,7 +38,7 @@ export function calcPlacementHexClassNames({
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
   //phase: Placement
-  const occupyingPlacementUnitId = editingBoardHexes[hex.id]
+  const occupyingPlacementUnitId = editingBoardHexes?.[hex.id]?.unitID ?? ''
   // paint all player startzones
   // TODO: make this work for however many players
   if (startZones?.['0'].includes(hex.id)) {

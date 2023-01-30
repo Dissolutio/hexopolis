@@ -10,7 +10,7 @@ export const ActiveHexReadout = () => {
   const { selectedMapHex } = useMapContext()
   const activeHex = boardHexes?.[selectedMapHex]
   const unitOnHex = isPlacementPhase
-    ? gameUnits?.[editingBoardHexes[selectedMapHex]]
+    ? gameUnits?.[editingBoardHexes[selectedMapHex].unitID]
     : gameUnits?.[activeHex?.occupyingUnitID]
   const cardForUnit = armyCards.find(
     (c) => c.gameCardID === unitOnHex?.gameCardID

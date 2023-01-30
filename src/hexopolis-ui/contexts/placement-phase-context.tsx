@@ -24,7 +24,12 @@ type PlacementContextValue = {
   onResetPlacementState: () => void
 }
 
-export type DeploymentProposition = { [boardHexId: string]: string }
+export type DeploymentProposition = {
+  [boardHexId: string]: {
+    unitID: string
+    isUnitTail: boolean
+  }
+}
 
 const PlacementContextProvider = ({
   children,
@@ -51,9 +56,10 @@ const PlacementContextProvider = ({
     .reduce((result, bh) => {
       return {
         ...result,
-        [bh.id]: bh.occupyingUnitID,
+        [bh.id]: { unitID: bh.occupyingUnitID, isUnitTail: bh.isUnitTail },
       }
     }, {})
+          [bh.id]: { unitID: bh.occupyingUnitID, isUnitTail: bh.isUnitTail },
   const intialEditingBoardHexesIfTotallyReset = {}
   // we honor this now for the sake of pre-placement
   const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
