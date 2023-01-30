@@ -28,7 +28,8 @@ export const UnitTail = ({ hexSize, hex }: Props) => {
         y1="0"
         x2={mapDirectionsToHeadCoordinates[exampleHeadDirection].x}
         y2={mapDirectionsToHeadCoordinates[exampleHeadDirection].y}
-        style={{ stroke: 'var(--player-color)', strokeWidth: 2 }}
+        // style={{ stroke: 'var(--player-color)', strokeWidth: 2 }}
+        style={{ stroke: 'url(#e)', strokeWidth: 2 }}
       />
     </g>
   )

@@ -87,6 +87,20 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
           <g className="hexgrid-layout">
             <MapHexes hexSize={hexSize} />
           </g>
+          <defs>
+            <linearGradient
+              // gradientTransform="rotate(-50)"
+              id="e"
+              x1="0"
+              y1="0"
+              x2="-8.66"
+              y2="-15"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="transparent" offset="0.1" />
+              <stop stopColor="var(--player-color)" offset="1" />
+            </linearGradient>
+          </defs>
         </svg>
       </HexgridLayout>
     </MapHexStyles>
