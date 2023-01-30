@@ -51,35 +51,42 @@ const PlacementContextProvider = ({
   // STATE
   const myUnitIds = myUnits.map((u) => u.unitID)
   // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty -- all for sake of pre-placed units
-  const initialEditingBoardHexes = Object.values(boardHexes)
-    .filter((i) => !!i.occupyingUnitID && myUnitIds.includes(i.occupyingUnitID))
-    .reduce((result, bh) => {
-      return {
-        ...result,
-        [bh.id]: { unitID: bh.occupyingUnitID, isUnitTail: bh.isUnitTail },
-      }
-    }, {})
+  const initialEditingBoardHexes = () =>
+    Object.values(boardHexes)
+      .filter(
+        (i) => !!i.occupyingUnitID && myUnitIds.includes(i.occupyingUnitID)
+      )
+      .reduce((result, bh) => {
+        return {
+          ...result,
           [bh.id]: { unitID: bh.occupyingUnitID, isUnitTail: bh.isUnitTail },
+        }
+      }, {})
   const intialEditingBoardHexesIfTotallyReset = {}
-  // we honor this now for the sake of pre-placement
-  const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
-    .map((bH: BoardHex) => bH.occupyingUnitID)
-    .filter((id) => {
-      return id && gameUnits[id].playerID === playerID
-    })
+  const myUnitIdsAlreadyOnMap = () =>
+    Object.values(boardHexes)
+      .map((bH: BoardHex) => bH.occupyingUnitID)
+      .filter((id) => {
+        return id && gameUnits[id].playerID === playerID
+      })
   const initialPlacementUnitsIfTotallyReset = myUnits.map((unit) => {
     return unit.unitID
   })
-  const initialPlacementUnits = myUnits
-    .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
-    .map((unit) => {
-      return unit.unitID
-    })
+  const initialPlacementUnits = () =>
+    myUnits
+      .filter(
+        (unit: GameUnit) => !myUnitIdsAlreadyOnMap().includes(unit.unitID)
+      )
+      .map((unit) => {
+        return unit.unitID
+      })
   const [editingBoardHexes, setEditingBoardHexes] =
-    useState<DeploymentProposition>(initialEditingBoardHexes)
-  const [placementUnits, setPlacementUnits] = useState(
-    (): string[] => initialPlacementUnits
+    useState<DeploymentProposition>(initialEditingBoardHexes())
+  const [placementUnits, setPlacementUnits] = useState((): string[] =>
+    initialPlacementUnits()
   )
+  const [activeTailPlacementUnitID, setActiveTailPlacementUnitID] =
+    useState<string>('')
   const inflatedPlacementUnits: PlacementUnit[] = placementUnits.reduce(
     (result, unitId) => {
       const gameUnit = myUnits.find((unit) => unit.unitID === unitId)
@@ -120,21 +127,31 @@ const PlacementContextProvider = ({
     event.stopPropagation()
     const clickedHexId = sourceHex.id
     const isInStartZone = myStartZone.includes(clickedHexId)
-    const unitIdAlreadyOnHex = editingBoardHexes?.[clickedHexId]
-    //  -- 1A. No current unit, but there is a unit on the hex, select that unit -- 1B. No current unit, so since we're not placing on the hex, select the hex
-    if (!selectedUnitID) {
+    const unitIdAlreadyOnHex = editingBoardHexes?.[clickedHexId]?.unitID ?? ''
+    // 1. no unit selected (or tail to place)
+    if (!selectedUnitID && !activeTailPlacementUnitID) {
+      // 1A. select the unit
       if (unitIdAlreadyOnHex && !isConfirmedReady) {
         onClickPlacementUnit(unitIdAlreadyOnHex)
-      } else {
+      }
+      // 1B. select the hex
+      else {
         selectMapHex(clickedHexId)
       }
       return
     }
-
-    const oldHexIdOfSelectedUnit = editingBoardHexes
+    const is2HexUnit = gameUnits[selectedUnitID].is2Hex
+    const oldHexID = editingBoardHexes
       ? Object.entries(editingBoardHexes).find(
-          (entry) => entry[1] === selectedUnitID
+          (entry) => entry[1].unitID === selectedUnitID && !entry[1].isUnitTail
         )?.[0]
+      : ''
+    let oldTailHexID = is2HexUnit
+      ? editingBoardHexes
+        ? Object.entries(editingBoardHexes).find(
+            (entry) => entry[1].unitID === selectedUnitID && entry[1].isUnitTail
+          )?.[0]
+        : ''
       : ''
     const isSelectedUnitHexThatWasClicked =
       unitIdAlreadyOnHex === selectedUnitID
@@ -146,19 +163,27 @@ const PlacementContextProvider = ({
         setSelectedUnitID('')
         return
       } else {
-        // 2B. or place our selected unit on clicked hex
+        // 2B. place our selected unit on clicked hex
         // update board hexes
         setEditingBoardHexes((oldState) => {
           const newState = {
             ...oldState,
-            // place selected unit on clicked hex
-            [clickedHexId]: selectedUnitID,
+            // place selected unit('s head) on clicked hex
+            [clickedHexId]: {
+              unitID: selectedUnitID,
+              isUnitTail: false,
+            },
           }
-          // remove unit from old hex, if applicable
-          delete newState[oldHexIdOfSelectedUnit ?? '']
+          // remove unit from old hex, head and tail
+          delete newState[oldHexID ?? '']
+          delete newState[oldTailHexID ?? '']
           return newState
         })
-        // update placement units
+        /* 
+          2C. if 2-spacer, switch ui to tail-placement mode
+        */
+        setActiveTailPlacementUnitID(selectedUnitID)
+        // // update placement units (may not have changed)
         setPlacementUnits([
           // ...displaced pieces go to front of placement tray, so user can see it appear...
           ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
@@ -171,14 +196,6 @@ const PlacementContextProvider = ({
         selectMapHex(clickedHexId)
         return
       }
-    }
-    // TODO: Error toasts?
-    // have unit, clicked hex outside start zone, error
-    if (selectedUnitID && !isInStartZone) {
-      console.error(
-        'Invalid hex selected. You must place units inside your start zone.'
-      )
-      return
     }
   }
 
