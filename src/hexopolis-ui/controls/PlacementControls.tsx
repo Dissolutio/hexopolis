@@ -76,7 +76,8 @@ export const PlacementControls = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
+          {/* <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2> */}
+          {/* Keeping the UI bare here so the user does not get trapped by the limited interaction available in tail-placement */}
           <StyledControlsHeaderH2>
             Place the tail of your {tailUnitName} unit.
           </StyledControlsHeaderH2>

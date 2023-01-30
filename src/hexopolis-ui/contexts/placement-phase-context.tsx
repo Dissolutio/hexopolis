@@ -88,10 +88,6 @@ const PlacementContextProvider = ({
   const [placementUnits, setPlacementUnits] = useState((): string[] =>
     initialPlacementUnits()
   )
-  console.log(
-    '🚀 ~ file: placement-phase-context.tsx:87 ~ editingBoardHexes',
-    editingBoardHexes
-  )
   const [activeTailPlacementUnitID, setActiveTailPlacementUnitID] =
     useState<string>('')
   const [tailPlaceables, setTailPlaceables] = useState<string[]>([])
