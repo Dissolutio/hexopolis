@@ -157,12 +157,9 @@ const PlacementContextProvider = ({
           // ...displaced pieces go to front of placement tray, so user can see it appear...
           ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
           // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
-          // TODO: is this kind of efficiency silly? (below, early out for the filter)
-          ...(oldHexIdOfSelectedUnit
-            ? placementUnits
-            : placementUnits.filter((u) => {
-                return !(u === selectedUnitID)
-              })),
+          ...placementUnits.filter((u) => {
+            return !(u === selectedUnitID)
+          }),
         ])
         setSelectedUnitID('')
         selectMapHex(clickedHexId)
