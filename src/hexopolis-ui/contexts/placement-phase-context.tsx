@@ -21,7 +21,6 @@ type PlacementContextValue = {
     sourceHex: BoardHex
   ) => void
   editingBoardHexes: DeploymentProposition
-  updatePlacementEditingBoardHexes: (updated: DeploymentProposition) => void
   onResetPlacementState: () => void
 }
 
@@ -72,9 +71,6 @@ const PlacementContextProvider = ({
     })
   const [editingBoardHexes, setEditingBoardHexes] =
     useState<DeploymentProposition>(initialEditingBoardHexes)
-  const updatePlacementEditingBoardHexes = (updated: DeploymentProposition) => {
-    setEditingBoardHexes(updated)
-  }
   const [placementUnits, setPlacementUnits] = useState(
     (): string[] => initialPlacementUnits
   )
@@ -136,14 +132,16 @@ const PlacementContextProvider = ({
       : ''
     const isSelectedUnitHexThatWasClicked =
       unitIdAlreadyOnHex === selectedUnitID
-    // 2. if we have a unit and we clicked in start zone...
+    // 2. unit selected and we clicked in start zone
     if (selectedUnitID && isInStartZone) {
+      // 2A. deselect unit if we clicked it again
       if (isSelectedUnitHexThatWasClicked) {
         // ... 2A. then we either clicked our selected unit so deselect it...
         setSelectedUnitID('')
         return
       } else {
-        // ...2B. or place our selected unit on clicked hex
+        // 2B. or place our selected unit on clicked hex
+        // update board hexes
         setEditingBoardHexes((oldState) => {
           const newState = {
             ...oldState,
@@ -154,7 +152,7 @@ const PlacementContextProvider = ({
           delete newState[oldHexIdOfSelectedUnit ?? '']
           return newState
         })
-        // update placement tray...
+        // update placement units
         setPlacementUnits([
           // ...displaced pieces go to front of placement tray, so user can see it appear...
           ...(unitIdAlreadyOnHex ? [unitIdAlreadyOnHex] : []),
@@ -170,7 +168,6 @@ const PlacementContextProvider = ({
         selectMapHex(clickedHexId)
         return
       }
-      // finally, deselect the unit
     }
     // TODO: Error toasts?
     // have unit, clicked hex outside start zone, error
@@ -190,7 +187,6 @@ const PlacementContextProvider = ({
         onClickPlacementUnit,
         onClickPlacementHex,
         editingBoardHexes,
-        updatePlacementEditingBoardHexes,
         onResetPlacementState,
       }}
     >
