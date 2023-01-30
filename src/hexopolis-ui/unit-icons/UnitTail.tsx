@@ -12,23 +12,12 @@ export const UnitTail = ({ hex }: Props) => {
   const { editingBoardHexes } = usePlacementContext()
   const headHexID =
     Object.entries(editingBoardHexes).find(
-      (e) => e[1].unitID === hex.occupyingUnitID && !e[1].isUnitTail
+      (e) =>
+        e[1]?.unitID === editingBoardHexes?.[hex.id]?.unitID && !e[1].isUnitTail
     )?.[0] ?? ''
   const headHex = boardHexes?.[headHexID]
-  const headCoordinates = hexUtilsGetTailCoordinates(hex, headHex)
-  console.log(
-    '🚀 ~ file: UnitTail.tsx:20 ~ UnitTail ~ headCoordinates',
-    headCoordinates
-  )
-  const mapDirectionToHeadCoordinates = {
-    // This is assuming (0,0) is the center of the tail's hexagon, and remember its using <svg>'s x,y coordinate system
-    NE: { x: 8.66, y: -15 },
-    E: { x: 17.32, y: 0 },
-    SE: { x: 8.66, y: 15 },
-    SW: { x: -8.66, y: 15 },
-    W: { x: -17.32, y: 0 },
-    NW: { x: -8.66, y: -15 },
-  }
+  const headCoordinates = (headHex &&
+    hexUtilsGetTailCoordinates(hex, headHex)) || { x: 0, y: 0 }
   return (
     <g>
       <line
@@ -36,7 +25,7 @@ export const UnitTail = ({ hex }: Props) => {
         y1="0"
         x2={headCoordinates.x}
         y2={headCoordinates.y}
-        // style={{ stroke: 'var(--player-color)', strokeWidth: 2 }}
+        style={{ stroke: 'var(--player-color)', strokeWidth: 2 }}
       />
     </g>
   )

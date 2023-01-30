@@ -125,10 +125,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       const isUnitTail = isPlacementPhase
         ? editingBoardHexes?.[hex.id]?.isUnitTail
         : hex.isUnitTail
-      console.log(
-        '🚀 ~ file: MapHexes.tsx:126 ~ returnObject.values ~ isUnitTail',
-        isUnitTail
-      )
       return (
         <Hexagon
           key={i}
