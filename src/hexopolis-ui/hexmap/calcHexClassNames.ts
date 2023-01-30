@@ -16,8 +16,10 @@ import { DeploymentProposition } from 'hexopolis-ui/contexts'
 export function calcPlacementHexClassNames({
   selectedMapHex,
   selectedUnitID,
+  selectedUnitIs2Hex,
   hex,
   startZones,
+  startZoneForMy2HexUnits,
   playerID,
   editingBoardHexes,
   activeTailPlacementUnitID,
@@ -25,8 +27,10 @@ export function calcPlacementHexClassNames({
 }: {
   selectedMapHex: string
   selectedUnitID: string
+  selectedUnitIs2Hex: boolean
   hex: BoardHex
   startZones: StartZones
+  startZoneForMy2HexUnits: string[]
   playerID: string
   editingBoardHexes: DeploymentProposition
   activeTailPlacementUnitID: string
@@ -38,7 +42,8 @@ export function calcPlacementHexClassNames({
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
   //phase: Placement
-  const occupyingPlacementUnitId = editingBoardHexes?.[hex.id]?.unitID ?? ''
+  const occupyingPlacementUnitId =
+    editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
 
   // highlight all player startzones
   if (startZones?.['0'].includes(hex.id)) {
@@ -57,8 +62,18 @@ export function calcPlacementHexClassNames({
       )
     }
     // highlight empty, placeable hexes
-    if (isMyStartZoneHex && !occupyingPlacementUnitId) {
-      classNames = classNames.concat(` maphex__start-zone--placement `)
+    if (selectedUnitIs2Hex) {
+      if (
+        isMyStartZoneHex &&
+        !occupyingPlacementUnitId &&
+        startZoneForMy2HexUnits.includes(hex.id)
+      ) {
+        classNames = classNames.concat(` maphex__start-zone--placement `)
+      }
+    } else {
+      if (isMyStartZoneHex && !occupyingPlacementUnitId) {
+        classNames = classNames.concat(` maphex__start-zone--placement `)
+      }
     }
     // highlight occupied placeable hexes
     if (
@@ -82,16 +97,17 @@ export function calcPlacementHexClassNames({
     }
     // highlight empty, placeable hexes
     if (isMyStartZoneHex && !occupyingPlacementUnitId && isTailPlaceable) {
-      classNames = classNames.concat(` maphex__start-zone--placement `)
+      classNames = classNames.concat(` maphex__start-zone--placement `) // reused className
     }
     // highlight occupied placeable hexes
     if (
       isMyStartZoneHex &&
       occupyingPlacementUnitId &&
-      occupyingPlacementUnitId !== selectedUnitID
+      occupyingPlacementUnitId !== selectedUnitID &&
+      isTailPlaceable
     ) {
       classNames = classNames.concat(
-        ` maphex__start-zone--placement--occupied `
+        ` maphex__start-zone--placement--occupied ` // reused className
       )
     }
   }

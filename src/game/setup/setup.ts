@@ -162,7 +162,8 @@ function armyCardsToGameArmyCardsForTest() {
         c.armyCardID === 'hs1002' ||
         // c.armyCardID === 'hs1003' ||
         // c.armyCardID === 'hs1008' ||
-        c.armyCardID === 'hs1013'
+        c.armyCardID === 'hs1013' ||
+        c.armyCardID === 'hs1015'
     )
     .map((card) => {
       const player1Ids = [

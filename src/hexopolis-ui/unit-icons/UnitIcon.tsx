@@ -20,7 +20,7 @@ import {
   GiDinosaurRex,
 } from 'react-icons/gi'
 
-const playerIconColors: { [key: string]: string } = {
+export const playerIconColors: { [key: string]: string } = {
   '0': 'var(--bee-yellow)',
   '1': 'var(--butterfly-purple)',
 }

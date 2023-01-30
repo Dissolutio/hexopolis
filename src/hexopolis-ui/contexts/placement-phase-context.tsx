@@ -29,7 +29,7 @@ type PlacementContextValue = {
 
 export type DeploymentProposition = {
   [boardHexId: string]: {
-    unitID: string
+    occupyingUnitID: string
     isUnitTail: boolean
   }
 }
@@ -62,7 +62,10 @@ const PlacementContextProvider = ({
       .reduce((result, bh) => {
         return {
           ...result,
-          [bh.id]: { unitID: bh.occupyingUnitID, isUnitTail: bh.isUnitTail },
+          [bh.id]: {
+            occupyingUnitID: bh.occupyingUnitID,
+            isUnitTail: bh.isUnitTail,
+          },
         }
       }, {})
   const intialEditingBoardHexesIfTotallyReset = {}
@@ -132,12 +135,13 @@ const PlacementContextProvider = ({
     event.stopPropagation()
     const clickedHexId = sourceHex.id
     const isInStartZone = myStartZone.includes(clickedHexId)
-    const displacedUnitID = editingBoardHexes?.[clickedHexId]?.unitID ?? ''
+    const displacedUnitID =
+      editingBoardHexes?.[clickedHexId]?.occupyingUnitID ?? ''
     const isTailHex = editingBoardHexes?.[clickedHexId]?.isUnitTail ?? false
     const displacedUnitsOtherHex =
       Object.entries(editingBoardHexes).find(
         (entry) =>
-          entry[1].unitID === displacedUnitID &&
+          entry[1].occupyingUnitID === displacedUnitID &&
           (isTailHex ? !entry[1].isUnitTail : entry[1].isUnitTail)
       )?.[0] ?? ''
     // 1. no unit selected (or tail to place)
@@ -148,20 +152,23 @@ const PlacementContextProvider = ({
       }
       // 1B. select the hex
       else {
-        selectMapHex(clickedHexId)
+        // disabled until we know why we are selecting hexes
+        // selectMapHex(clickedHexId)
       }
       return
     }
     const is2HexUnit = gameUnits[selectedUnitID]?.is2Hex
     const selectedUnitOldHex = editingBoardHexes
       ? Object.entries(editingBoardHexes).find(
-          (entry) => entry[1].unitID === selectedUnitID && !entry[1].isUnitTail
+          (entry) =>
+            entry[1].occupyingUnitID === selectedUnitID && !entry[1].isUnitTail
         )?.[0]
       : ''
     let selectedUnitOldTail = is2HexUnit
       ? editingBoardHexes
         ? Object.entries(editingBoardHexes).find(
-            (entry) => entry[1].unitID === selectedUnitID && entry[1].isUnitTail
+            (entry) =>
+              entry[1].occupyingUnitID === selectedUnitID && entry[1].isUnitTail
           )?.[0]
         : ''
       : ''
@@ -179,6 +186,7 @@ const PlacementContextProvider = ({
         if (is2HexUnit) {
           const validTailHexes = selectValidTailHexes(clickedHexId, boardHexes)
           if (validTailHexes.length > 0) {
+            // switch ui to tail-placement mode, set active tail and tail placeables
             setActiveTailPlacementUnitID(selectedUnitID)
             setTailPlaceables(validTailHexes.map((bh) => bh.id))
             // update board hexes
@@ -187,7 +195,7 @@ const PlacementContextProvider = ({
                 ...oldState,
                 // place selected unit('s head) on clicked hex
                 [clickedHexId]: {
-                  unitID: selectedUnitID,
+                  occupyingUnitID: selectedUnitID,
                   isUnitTail: false,
                 },
               }
@@ -214,7 +222,7 @@ const PlacementContextProvider = ({
               ...oldState,
               // place selected unit('s head) on clicked hex
               [clickedHexId]: {
-                unitID: selectedUnitID,
+                occupyingUnitID: selectedUnitID,
                 isUnitTail: false,
               },
             }
@@ -235,7 +243,9 @@ const PlacementContextProvider = ({
           ])
         }
         setSelectedUnitID('')
-        selectMapHex(clickedHexId)
+        // disabled until we know why we are selecting hexes
+        // selectMapHex(clickedHexId)
+
         // // 2C. if 2-spacer, switch ui to tail-placement mode
         // if (is2HexUnit) {
         //   setActiveTailPlacementUnitID(selectedUnitID)
@@ -251,7 +261,7 @@ const PlacementContextProvider = ({
       setEditingBoardHexes((s) => ({
         ...s,
         [clickedHexId]: {
-          unitID: activeTailPlacementUnitID,
+          occupyingUnitID: activeTailPlacementUnitID,
           isUnitTail: true,
         },
       }))

@@ -8,7 +8,7 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { selectGameCardByID } from 'game/selectors'
+import { selectGameCardByID, selectValidTailHexes } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
@@ -34,6 +34,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     unitsMoved,
   } = useBgioG()
   const { selectedUnitID } = useUIContext()
+  const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
   const {
     isMyTurn,
@@ -57,7 +58,9 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   } = usePlayContext()
 
   // computed
-
+  const startZoneForMy2HexUnits = startZones[playerID].filter((sz) => {
+    return selectValidTailHexes(sz, boardHexes).length > 0
+  })
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
@@ -74,8 +77,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       return calcPlacementHexClassNames({
         selectedMapHex,
         selectedUnitID,
+        selectedUnitIs2Hex,
         hex,
         startZones,
+        startZoneForMy2HexUnits,
         playerID,
         editingBoardHexes,
         activeTailPlacementUnitID,
@@ -114,7 +119,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       // During placement phase, player is overwriting units on hexes, in local state, but we wish to show that state for units
       const unitIdToShowOnHex = isPlacementPhase
-        ? editingBoardHexes?.[hex.id]?.unitID ?? ''
+        ? editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
         : hex.occupyingUnitID
       const gameUnit = gameUnits?.[unitIdToShowOnHex]
       // we only show players their own units during placement phase
@@ -143,7 +148,9 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {(isUnitTail && <UnitTail hex={hex} />) || (
+                  {(isUnitTail && (
+                    <UnitTail hex={hex} iconPlayerID={gameUnit.playerID} />
+                  )) || (
                     <UnitIcon
                       hexSize={hexSize}
                       armyCardID={gameUnit.armyCardID}

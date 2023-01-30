@@ -30,7 +30,7 @@ export const PlacementControls = () => {
 
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
-    deployUnits(editingBoardHexes)
+    deployUnits(editingBoardHexes, playerID)
     confirmPlacementReady({ playerID })
   }
   const filledHexesCount = Object.keys(editingBoardHexes).length
