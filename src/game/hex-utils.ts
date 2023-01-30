@@ -1,13 +1,32 @@
 import { LayoutDimension } from 'hexopolis-ui/hexmap/HexgridLayout'
-import { HexCoordinates } from './types'
-const DIRECTIONS = [
-  { q: 1, r: 0, s: -1 },
-  { q: 1, r: -1, s: 0 },
-  { q: 0, r: -1, s: 1 },
-  { q: -1, r: 0, s: 1 },
-  { q: -1, r: 1, s: 0 },
-  { q: 0, r: 1, s: -1 },
+import { HexCoordinates, Point } from './types'
+
+const DIRECTIONS: HexCoordinates[] = [
+  { q: 1, r: -1, s: 0 }, // NE +q -r
+  { q: 1, r: 0, s: -1 }, // E +q -s
+  { q: 0, r: 1, s: -1 }, // SE +r -s
+  { q: -1, r: 1, s: 0 }, // SW -q +r
+  { q: -1, r: 0, s: 1 }, // W -q +s
+  { q: 0, r: -1, s: 1 }, // NW -r +s
 ]
+export const hexUtilsGetTailCoordinates = (
+  hex: HexCoordinates,
+  neighbor: HexCoordinates
+): Point => {
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 0), neighbor))
+    return { x: 8.66, y: -15 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 1), neighbor))
+    return { x: 17.32, y: 0 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 2), neighbor))
+    return { x: 8.66, y: 15 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 3), neighbor))
+    return { x: -8.66, y: 15 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 4), neighbor))
+    return { x: -17.32, y: 0 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 5), neighbor))
+    return { x: -8.66, y: -15 }
+  return { x: 0, y: 0 }
+}
 export const hexUtilsEquals = (
   a: HexCoordinates,
   b: HexCoordinates

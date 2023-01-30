@@ -78,6 +78,18 @@ export function selectHexNeighbors(
     })
     .filter((item) => Boolean(item)) as BoardHex[]
 }
+export function selectValidTailHexes(
+  hexID: string,
+  boardHexes: BoardHexes
+): BoardHex[] {
+  return selectHexNeighbors(hexID, boardHexes).filter(
+    (bh) =>
+      bh.altitude === boardHexes[hexID].altitude ||
+      (boardHexes[hexID].terrain === 'water' &&
+        bh.altitude === boardHexes[hexID].altitude + 1) ||
+      (bh.terrain === 'water' && bh.altitude === boardHexes[hexID].altitude - 1)
+  )
+}
 
 export function calcMoveCostBetweenNeighbors(
   startHex: BoardHex,

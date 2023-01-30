@@ -136,7 +136,6 @@ function transformBoardHexesWithPrePlacedUnits(
         copy[randomHexID].occupyingUnitID = unit.unitID
         copy[randomTailHexID].occupyingUnitID = unit.unitID
         copy[randomTailHexID].isUnitTail = true
-        copy[randomTailHexID].unitHeadHexID = randomHexID
       } else {
         copy[randomHexID].occupyingUnitID = unit.unitID
       }

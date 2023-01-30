@@ -91,7 +91,6 @@ export type BoardHex = HexCoordinates & {
   id: string
   occupyingUnitID: string
   isUnitTail: boolean
-  unitHeadHexID: string
   altitude: number
   startzonePlayerIDs: string[]
   terrain: string

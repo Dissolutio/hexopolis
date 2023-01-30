@@ -20,6 +20,8 @@ export function calcPlacementHexClassNames({
   startZones,
   playerID,
   editingBoardHexes,
+  activeTailPlacementUnitID,
+  tailPlaceables,
 }: {
   selectedMapHex: string
   selectedUnitID: string
@@ -27,20 +29,18 @@ export function calcPlacementHexClassNames({
   startZones: StartZones
   playerID: string
   editingBoardHexes: DeploymentProposition
+  activeTailPlacementUnitID: string
+  tailPlaceables: string[]
 }) {
-  const isMyStartZoneHex = (hex: BoardHex) => {
-    const myStartZone = startZones[playerID]
-    return Boolean(myStartZone.includes(hex.id))
-  }
-  const isSelectedHex = (hex: BoardHex) => {
-    return hex.id === selectedMapHex
-  }
+  const isMyStartZoneHex = Boolean(startZones[playerID].includes(hex.id))
+  const isTailPlaceable = tailPlaceables.includes(hex.id)
+  const isSelectedHex = hex.id === selectedMapHex
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
   //phase: Placement
   const occupyingPlacementUnitId = editingBoardHexes?.[hex.id]?.unitID ?? ''
-  // paint all player startzones
-  // TODO: make this work for however many players
+
+  // highlight all player startzones
   if (startZones?.['0'].includes(hex.id)) {
     classNames = classNames.concat(` maphex__startzone--player0 `)
   }
@@ -48,35 +48,55 @@ export function calcPlacementHexClassNames({
     classNames = classNames.concat(` maphex__startzone--player1 `)
   }
 
-  // highlight placeable hexes that DO NOT have units
-  if (selectedUnitID && isMyStartZoneHex(hex) && !occupyingPlacementUnitId) {
-    classNames = classNames.concat(` maphex__start-zone--placement `)
+  // if we have a unit selected, highlight the unit and placeable hexes
+  if (selectedUnitID) {
+    // highlight hex (and tail hex) of currently selected unit
+    if (isMyStartZoneHex && occupyingPlacementUnitId === selectedUnitID) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--selected-unit `
+      )
+    }
+    // highlight empty, placeable hexes
+    if (isMyStartZoneHex && !occupyingPlacementUnitId) {
+      classNames = classNames.concat(` maphex__start-zone--placement `)
+    }
+    // highlight occupied placeable hexes
+    if (
+      isMyStartZoneHex &&
+      occupyingPlacementUnitId &&
+      occupyingPlacementUnitId !== selectedUnitID
+    ) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--occupied `
+      )
+    }
   }
 
-  // highlight placeable hexes that DO have units, but the one with the currently selected unit will be styled separately, below
-  if (
-    selectedUnitID &&
-    isMyStartZoneHex(hex) &&
-    occupyingPlacementUnitId &&
-    occupyingPlacementUnitId !== selectedUnitID
-  ) {
-    classNames = classNames.concat(` maphex__start-zone--placement--occupied `)
+  // if we have a unit-tail selected, highlight the unit and placeable hexes
+  if (activeTailPlacementUnitID) {
+    // highlight head hex of currently placing tail
+    if (occupyingPlacementUnitId === activeTailPlacementUnitID) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--selected-unit ` // reused className
+      )
+    }
+    // highlight empty, placeable hexes
+    if (isMyStartZoneHex && !occupyingPlacementUnitId && isTailPlaceable) {
+      classNames = classNames.concat(` maphex__start-zone--placement `)
+    }
+    // highlight occupied placeable hexes
+    if (
+      isMyStartZoneHex &&
+      occupyingPlacementUnitId &&
+      occupyingPlacementUnitId !== selectedUnitID
+    ) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--occupied `
+      )
+    }
   }
-
-  // highlight hex with currently selected unit
-  if (
-    selectedUnitID &&
-    isMyStartZoneHex(hex) &&
-    occupyingPlacementUnitId &&
-    occupyingPlacementUnitId === selectedUnitID
-  ) {
-    classNames = classNames.concat(
-      ` maphex__start-zone--placement--selected-unit `
-    )
-  }
-
-  // highlight active hex
-  if (isSelectedHex(hex)) {
+  // highlight selected hex
+  if (isSelectedHex) {
     classNames = classNames.concat(' maphex__selected--active ')
   }
   return classNames
@@ -89,14 +109,12 @@ export function calcOrderMarkerHexClassNames({
   selectedMapHex: string
   hex: BoardHex
 }) {
-  const isSelectedHex = (hex: BoardHex) => {
-    return hex.id === selectedMapHex
-  }
+  const isSelectedHex = hex.id === selectedMapHex
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
 
   // highlight active hex
-  if (isSelectedHex(hex)) {
+  if (isSelectedHex) {
     classNames = classNames.concat(' maphex__selected--active ')
   }
   return classNames

@@ -42,7 +42,12 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isRoundOfPlayPhase,
     isAttackingStage,
   } = useBgioCtx()
-  const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
+  const {
+    onClickPlacementHex,
+    editingBoardHexes,
+    activeTailPlacementUnitID,
+    tailPlaceables,
+  } = usePlacementContext()
   const {
     selectedUnitMoveRange,
     onClickTurnHex,
@@ -73,6 +78,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         startZones,
         playerID,
         editingBoardHexes,
+        activeTailPlacementUnitID,
+        tailPlaceables,
       })
     }
     if (isOrderMarkerPhase) {
@@ -115,8 +122,13 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
       const unitName = gameUnitCard?.singleName ?? ''
-      const isUnitTail = hex.isUnitTail
-      const unitHeadHex = boardHexes[hex.unitHeadHexID]
+      const isUnitTail = isPlacementPhase
+        ? editingBoardHexes?.[hex.id]?.isUnitTail
+        : hex.isUnitTail
+      console.log(
+        '🚀 ~ file: MapHexes.tsx:126 ~ returnObject.values ~ isUnitTail',
+        isUnitTail
+      )
       return (
         <Hexagon
           key={i}
@@ -135,9 +147,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {(isUnitTail && hex.unitHeadHexID && (
-                    <UnitTail hexSize={hexSize} hex={hex} />
-                  )) || (
+                  {(isUnitTail && <UnitTail hex={hex} />) || (
                     <UnitIcon
                       hexSize={hexSize}
                       armyCardID={gameUnit.armyCardID}
@@ -149,10 +159,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              // text={`${hex.id}`}
-              // textLine2={`${hex.altitude}`}
-              text={`${hex.altitude}`}
-              textLine2={`${unitName}`}
+              text={`${hex.id}`}
+              textLine2={`${hex.altitude}`}
+              // text={`${hex.altitude}`}
+              // textLine2={`${unitName}`}
             />
           </g>
         </Hexagon>
