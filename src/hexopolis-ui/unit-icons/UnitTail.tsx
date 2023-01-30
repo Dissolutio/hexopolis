@@ -37,7 +37,6 @@ export const UnitTail = ({ hex }: Props) => {
         x2={headCoordinates.x}
         y2={headCoordinates.y}
         // style={{ stroke: 'var(--player-color)', strokeWidth: 2 }}
-        style={{ stroke: 'url(#e)', strokeWidth: 2 }}
       />
     </g>
   )
