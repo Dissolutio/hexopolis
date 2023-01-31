@@ -101,48 +101,6 @@ export function calcMoveCostBetweenNeighbors(
   const totalCost = heightCost + distanceCost
   return totalCost
 }
-export function selectEngagementsForUnit({
-  unitID,
-  boardHexes,
-  gameUnits,
-  armyCards,
-}: {
-  unitID: string
-  boardHexes: BoardHexes
-  gameUnits: GameUnits
-  armyCards: GameArmyCard[]
-}) {
-  const hex = selectHexForUnit(unitID, boardHexes)
-  // either use hex unit, or override unit
-  const unitOnHex = gameUnits[unitID]
-  const armyCardForUnitOnHex = selectGameCardByID(
-    armyCards,
-    unitOnHex?.gameCardID
-  )
-  const playerID = unitOnHex?.playerID
-
-  // if no unit, then no engagements
-  if (!unitOnHex) {
-    return []
-  }
-  const adjacentUnitIDs = selectHexNeighbors(hex?.id ?? '', boardHexes)
-    .filter((h) => h.occupyingUnitID)
-    .map((h) => h.occupyingUnitID)
-  const engagedUnitIDs = adjacentUnitIDs.filter(
-    (id) => gameUnits[id].playerID !== playerID
-  )
-  return engagedUnitIDs.filter((unitBID) => {
-    const unitB = gameUnits[unitBID]
-    const hexB = selectHexForUnit(unitBID, boardHexes)
-    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
-    return selectAreTwoUnitsEngaged({
-      aHeight: armyCardForUnitOnHex?.height ?? 0,
-      aAltitude: hex?.altitude ?? 0,
-      bHeight: unitBCard?.height ?? 0,
-      bAltitude: hexB?.altitude ?? 0,
-    })
-  })
-}
 export function selectAreTwoUnitsEngaged({
   aHeight,
   aAltitude,
@@ -194,6 +152,49 @@ export function selectEngagementsForHex({
     .filter((h) => h.occupyingUnitID && h.occupyingUnitID !== overrideUnitID)
     .map((h) => h.occupyingUnitID)
   // TODO: account for team play here, where adjacent units may be friendly
+  const engagedUnitIDs = adjacentUnitIDs.filter(
+    (id) => gameUnits[id].playerID !== playerID
+  )
+  return engagedUnitIDs.filter((unitBID) => {
+    const unitB = gameUnits[unitBID]
+    const hexB = selectHexForUnit(unitBID, boardHexes)
+    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
+    return selectAreTwoUnitsEngaged({
+      aHeight: armyCardForUnitOnHex?.height ?? 0,
+      aAltitude: hex?.altitude ?? 0,
+      bHeight: unitBCard?.height ?? 0,
+      bAltitude: hexB?.altitude ?? 0,
+    })
+  })
+}
+// this, unlike the above, returns just based off the current state
+export function selectEngagementsForUnit({
+  unitID,
+  boardHexes,
+  gameUnits,
+  armyCards,
+}: {
+  unitID: string
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
+}) {
+  const hex = selectHexForUnit(unitID, boardHexes)
+  // either use hex unit, or override unit
+  const unitOnHex = gameUnits[unitID]
+  const armyCardForUnitOnHex = selectGameCardByID(
+    armyCards,
+    unitOnHex?.gameCardID
+  )
+  const playerID = unitOnHex?.playerID
+
+  // if no unit, then no engagements
+  if (!unitOnHex) {
+    return []
+  }
+  const adjacentUnitIDs = selectHexNeighbors(hex?.id ?? '', boardHexes)
+    .filter((h) => h.occupyingUnitID)
+    .map((h) => h.occupyingUnitID)
   const engagedUnitIDs = adjacentUnitIDs.filter(
     (id) => gameUnits[id].playerID !== playerID
   )
