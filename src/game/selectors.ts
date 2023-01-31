@@ -120,14 +120,12 @@ export function selectAreTwoUnitsEngaged({
 // this function will lookup the unit on the hex, OR you can pass an override unit to place on the hex to predict engagements
 export function selectEngagementsForHex({
   hexID,
-  playerID,
   boardHexes,
   gameUnits,
   armyCards,
   overrideUnitID,
 }: {
   hexID: string
-  playerID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
@@ -139,6 +137,7 @@ export function selectEngagementsForHex({
   const unitOnHex = overrideUnitID
     ? gameUnits?.[overrideUnitID]
     : gameUnits?.[hex?.occupyingUnitID]
+  const playerID = unitOnHex?.playerID
   const armyCardForUnitOnHex = selectGameCardByID(
     armyCards,
     unitOnHex?.gameCardID
@@ -184,7 +183,6 @@ export function selectIsMoveCausingDisengagements({
   const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
   const initialEngagements: string[] = selectEngagementsForHex({
     hexID: hexForUnit?.id ?? '',
-    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -192,7 +190,6 @@ export function selectIsMoveCausingDisengagements({
   const engagementsForCurrentHex = selectEngagementsForHex({
     overrideUnitID: unit.unitID,
     hexID: endHexID,
-    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -216,7 +213,6 @@ export function selectIsMoveCausingEngagements({
   const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
   const initialEngagements: string[] = selectEngagementsForHex({
     hexID: hexForUnit?.id ?? '',
-    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -224,7 +220,6 @@ export function selectIsMoveCausingEngagements({
   const engagementsForCurrentHex = selectEngagementsForHex({
     overrideUnitID: unit.unitID,
     hexID: endHexID,
-    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -298,7 +293,6 @@ export function selectIsClimbable(
 //   const engagementsForCurrentHex = selectEngagementsForHex({
 //     overrideUnitID: unit.unitID,
 //     hexID: endHexID,
-//     playerID: unit.playerID,
 //     boardHexes,
 //     gameUnits,
 //     armyCards,

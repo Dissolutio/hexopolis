@@ -152,7 +152,6 @@ function computeWalkMoveRange({
       const isEndHexUnitEngaged =
         selectEngagementsForHex({
           hexID: neighbor.id,
-          playerID,
           boardHexes,
           gameUnits,
           armyCards,

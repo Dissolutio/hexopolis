@@ -124,14 +124,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const selectedUnitHexID = selectedUnitHex?.id ?? ''
     const currentEngagements = selectEngagementsForHex({
       hexID: selectedUnitHexID,
-      playerID,
       boardHexes,
       gameUnits,
       armyCards,
     })
     const predictedEngagements = selectEngagementsForHex({
       hexID: endHexID,
-      playerID,
       boardHexes,
       gameUnits,
       armyCards,
