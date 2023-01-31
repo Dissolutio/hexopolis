@@ -94,7 +94,10 @@ const PlacementContextProvider = ({
   const [activeTailPlacementUnitID, setActiveTailPlacementUnitID] =
     useState<string>('')
   const [tailPlaceables, setTailPlaceables] = useState<string[]>([])
-
+  const exitTailPlacementMode = () => {
+    setActiveTailPlacementUnitID('')
+    setTailPlaceables([])
+  }
   const inflatedPlacementUnits: PlacementUnit[] = placementUnits.reduce(
     (result, unitId) => {
       const gameUnit = myUnits.find((unit) => unit.unitID === unitId)
@@ -129,7 +132,6 @@ const PlacementContextProvider = ({
       selectMapHex('')
     }
   }
-
   function onClickPlacementHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to background onClick
     event.stopPropagation()
@@ -174,17 +176,18 @@ const PlacementContextProvider = ({
       : ''
     const isSelectedUnitHexThatWasClicked = displacedUnitID === selectedUnitID
     // const displacedUnit
-    // 2. unit selected and we clicked in start zone
+    // 2. unit selected and we clicked in start zone (we clicked the selected unit or a hex)
     if (selectedUnitID && isInStartZone) {
       // 2A. deselect unit if we clicked it again
       if (isSelectedUnitHexThatWasClicked) {
         setSelectedUnitID('')
         return
       }
-      // 2B. place our selected unit on clicked hex: 1-spacer or 2-spacer head (tail is placed later)
+      // 2B. place our selected unit on clicked hex: 2-spacer or 1-spacer
       else {
         if (is2HexUnit) {
           const validTailHexes = selectValidTailHexes(clickedHexId, boardHexes)
+          // place unit if there's room for the tail next to the head
           if (validTailHexes.length > 0) {
             // switch ui to tail-placement mode, set active tail and tail placeables
             setActiveTailPlacementUnitID(selectedUnitID)
@@ -214,8 +217,16 @@ const PlacementContextProvider = ({
                 return !(u === selectedUnitID)
               }),
             ])
+            // deselect unit after placing it
+            setSelectedUnitID('')
+            return
+          } else {
+            // ignore clicks on hexes that don't have room for the tail
+            return
           }
-        } else {
+        }
+        // 1-spacer
+        else {
           // update board hexes
           setEditingBoardHexes((oldState) => {
             const newState = {
@@ -232,32 +243,16 @@ const PlacementContextProvider = ({
             delete newState[displacedUnitsOtherHex ?? '']
             return newState
           })
-          // // update placement units (may not have changed)
-          setPlacementUnits([
-            // ...displaced pieces go to front of placement tray, so user can see it appear...
-            ...(displacedUnitID ? [displacedUnitID] : []),
-            // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
-            ...placementUnits.filter((u) => {
-              return !(u === selectedUnitID)
-            }),
-          ])
+          updatePlacementUnits(displacedUnitID, selectedUnitID)
+          // deselect unit after placing it
+          setSelectedUnitID('')
+          return
         }
-        setSelectedUnitID('')
-        // disabled until we know why we are selecting hexes
-        // selectMapHex(clickedHexId)
-
-        // // 2C. if 2-spacer, switch ui to tail-placement mode
-        // if (is2HexUnit) {
-        //   setActiveTailPlacementUnitID(selectedUnitID)
-        //   setTailPlaceables(
-        //     selectValidTailHexes(clickedHexId, boardHexes).map((bh) => bh.id)
-        //   )
-        // }
-        return
       }
     }
-    // 3. tail selected, and we clicked a tail-placeable hex
+    // 3. tail-selected, and we clicked a tail-placeable hex (otherwise, tail-selected means clicking any other hex does nothing)
     if (activeTailPlacementUnitID && tailPlaceables.includes(clickedHexId)) {
+      // add tail to boardHexes
       setEditingBoardHexes((s) => ({
         ...s,
         [clickedHexId]: {
@@ -265,20 +260,23 @@ const PlacementContextProvider = ({
           isUnitTail: true,
         },
       }))
-      // put the displaced unit in placement tray: copied from 2B^^
-      setPlacementUnits([
-        // ...displaced pieces go to front of placement tray, so user can see it appear...
-        ...(displacedUnitID ? [displacedUnitID] : []),
-        // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
-        ...placementUnits.filter((u) => {
-          return !(u === selectedUnitID)
-        }),
-      ])
-      setActiveTailPlacementUnitID('')
-      setTailPlaceables([])
+      updatePlacementUnits(displacedUnitID, activeTailPlacementUnitID)
+      exitTailPlacementMode()
     }
   }
-
+  const updatePlacementUnits = (
+    displacedUnitID: string,
+    placedUnitID: string
+  ) => {
+    setPlacementUnits([
+      // ...displaced pieces go to front of placement tray, so user can see it appear...
+      ...(displacedUnitID ? [displacedUnitID] : []),
+      // ... filter out the unit we're placing on hex, unless it came from a hex, then skip
+      ...placementUnits.filter((u) => {
+        return !(u === placedUnitID)
+      }),
+    ])
+  }
   return (
     <PlacementContext.Provider
       value={{

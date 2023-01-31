@@ -19,10 +19,11 @@ import {
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { MS1Cards } from '../coreHeroscapeCards'
 
-// const isDevOverrideState = true
-const isDevOverrideState = false
+const isDevOverrideState = true
+// const isDevOverrideState = false
 const devPlayer1orderMarkers = 'p0_hs1013'
-const devPlayer2orderMarkers = 'p1_hs1002'
+const devPlayer2orderMarkersUnit1 = 'p1_hs1002'
+const devPlayer2orderMarkersUnit2 = 'p1_hs1015'
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {
   const orderMarkers: OrderMarkers = {
@@ -33,10 +34,10 @@ export function generatePreplacedOrderMarkers(): OrderMarkers {
       { order: 'X', gameCardID: devPlayer1orderMarkers },
     ],
     '1': [
-      { order: '0', gameCardID: devPlayer2orderMarkers },
-      { order: '1', gameCardID: devPlayer2orderMarkers },
-      { order: '2', gameCardID: devPlayer2orderMarkers },
-      { order: 'X', gameCardID: devPlayer2orderMarkers },
+      { order: '0', gameCardID: devPlayer2orderMarkersUnit2 },
+      { order: '1', gameCardID: devPlayer2orderMarkersUnit1 },
+      { order: '2', gameCardID: devPlayer2orderMarkersUnit1 },
+      { order: 'X', gameCardID: devPlayer2orderMarkersUnit2 },
     ],
   }
   return orderMarkers
@@ -53,10 +54,10 @@ function playersStateWithPrePlacedOMs(): PlayersState {
     },
     '1': {
       orderMarkers: {
-        '0': devPlayer2orderMarkers,
-        '1': devPlayer2orderMarkers,
-        '2': devPlayer2orderMarkers,
-        X: devPlayer2orderMarkers,
+        '0': devPlayer2orderMarkersUnit2,
+        '1': devPlayer2orderMarkersUnit1,
+        '2': devPlayer2orderMarkersUnit1,
+        X: devPlayer2orderMarkersUnit2,
       },
     },
   }
