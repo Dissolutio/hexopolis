@@ -167,49 +167,6 @@ export function selectEngagementsForHex({
     })
   })
 }
-// this, unlike the above, returns just based off the current state
-export function selectEngagementsForUnit({
-  unitID,
-  boardHexes,
-  gameUnits,
-  armyCards,
-}: {
-  unitID: string
-  boardHexes: BoardHexes
-  gameUnits: GameUnits
-  armyCards: GameArmyCard[]
-}) {
-  const hex = selectHexForUnit(unitID, boardHexes)
-  // either use hex unit, or override unit
-  const unitOnHex = gameUnits[unitID]
-  const armyCardForUnitOnHex = selectGameCardByID(
-    armyCards,
-    unitOnHex?.gameCardID
-  )
-  const playerID = unitOnHex?.playerID
-
-  // if no unit, then no engagements
-  if (!unitOnHex) {
-    return []
-  }
-  const adjacentUnitIDs = selectHexNeighbors(hex?.id ?? '', boardHexes)
-    .filter((h) => h.occupyingUnitID)
-    .map((h) => h.occupyingUnitID)
-  const engagedUnitIDs = adjacentUnitIDs.filter(
-    (id) => gameUnits[id].playerID !== playerID
-  )
-  return engagedUnitIDs.filter((unitBID) => {
-    const unitB = gameUnits[unitBID]
-    const hexB = selectHexForUnit(unitBID, boardHexes)
-    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
-    return selectAreTwoUnitsEngaged({
-      aHeight: armyCardForUnitOnHex?.height ?? 0,
-      aAltitude: hex?.altitude ?? 0,
-      bHeight: unitBCard?.height ?? 0,
-      bAltitude: hexB?.altitude ?? 0,
-    })
-  })
-}
 // take a unit and an end hex, and return true if the move will cause disengagements
 export function selectIsMoveCausingDisengagements({
   unit,
@@ -224,8 +181,10 @@ export function selectIsMoveCausingDisengagements({
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
 }) {
-  const initialEngagements: string[] = selectEngagementsForUnit({
-    unitID: unit.unitID,
+  const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: hexForUnit?.id ?? '',
+    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -254,8 +213,10 @@ export function selectIsMoveCausingEngagements({
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
 }) {
-  const initialEngagements: string[] = selectEngagementsForUnit({
-    unitID: unit.unitID,
+  const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: hexForUnit?.id ?? '',
+    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,

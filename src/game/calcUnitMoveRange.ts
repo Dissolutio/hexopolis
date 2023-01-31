@@ -15,7 +15,6 @@ import {
   selectHexNeighbors,
   selectIsMoveCausingEngagements,
   selectIfGameArmyCardHasFlying,
-  selectEngagementsForUnit,
   selectIsClimbable,
   selectIfGameArmyCardHasDisengage,
 } from './selectors'
@@ -291,8 +290,9 @@ function computeFlyMoveRange({
         armyCards,
       })
       // FLY DIFFERENCE: as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
-      const initialEngagements: string[] = selectEngagementsForUnit({
-        unitID: unit.unitID,
+      const initialEngagements: string[] = selectEngagementsForHex({
+        hexID: startHex.id,
+        overrideUnitID: unit.unitID,
         boardHexes,
         gameUnits,
         armyCards,
