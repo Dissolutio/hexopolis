@@ -3,6 +3,7 @@ import { hexUtilsDistance } from 'game/hex-utils'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
+  calcMoveCostBetweenNeighbors,
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
@@ -142,17 +143,9 @@ export const takeDisengagementSwipe: Move<GameState> = {
           newBoardHexes[endHexID].occupyingUnitID =
             unitAttemptingToDisengage.unitID
           // update unit move-points
-          const moveCost = hexUtilsDistance(
-            {
-              q: unitAttemptingToDisengageHex.q,
-              r: unitAttemptingToDisengageHex.r,
-              s: unitAttemptingToDisengageHex.s,
-            },
-            {
-              q: endHex.q,
-              r: endHex.r,
-              s: endHex.s,
-            }
+          const moveCost = calcMoveCostBetweenNeighbors(
+            unitAttemptingToDisengageHex,
+            endHex
           )
           const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
           newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
@@ -193,17 +186,9 @@ export const takeDisengagementSwipe: Move<GameState> = {
         newBoardHexes[endHexID].occupyingUnitID =
           unitAttemptingToDisengage.unitID
         // update unit move-points
-        const moveCost = hexUtilsDistance(
-          {
-            q: unitAttemptingToDisengageHex.q,
-            r: unitAttemptingToDisengageHex.r,
-            s: unitAttemptingToDisengageHex.s,
-          },
-          {
-            q: endHex.q,
-            r: endHex.r,
-            s: endHex.s,
-          }
+        const moveCost = calcMoveCostBetweenNeighbors(
+          unitAttemptingToDisengageHex,
+          endHex
         )
         const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
         newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
