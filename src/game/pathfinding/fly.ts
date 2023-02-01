@@ -60,7 +60,6 @@ export function computeFlyMoveRange({
         gameUnits,
         armyCards,
       })
-      // FLY DIFFERENCE: as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
       const initialEngagements: string[] = selectEngagementsForHex({
         hexID: startHex.id,
         overrideUnitID: unit.unitID,
@@ -68,6 +67,7 @@ export function computeFlyMoveRange({
         gameUnits,
         armyCards,
       })
+      // FLY DIFFERENCE: as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
       const isCausingDisengagement =
         initialEngagements.length > 0 && !hasStealth
       const isMovePointsLeftAfterMove = movePointsLeft > 0
