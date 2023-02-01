@@ -76,7 +76,11 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       />
       <Notifications />
       <TurnCounter />
-      <HexgridLayout size={{ x: hexSize, y: hexSize }} flat={flat} spacing={1}>
+      <HexgridLayout
+        size={{ x: hexSize, y: hexSize }}
+        flat={flat}
+        spacing={1.05}
+      >
         <svg
           width={`${mapState.width}%`}
           height={`${mapState.height}%`}
