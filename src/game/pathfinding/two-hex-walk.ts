@@ -6,9 +6,15 @@ import {
   MoveRange,
   GameArmyCard,
 } from '../types'
-import { calcMoveCostBetweenNeighbors, selectHexNeighbors } from '../selectors'
+import {
+  calcMoveCostBetweenNeighbors,
+  selectEngagementsForHex,
+  selectHexNeighbors,
+  selectIsClimbable,
+  selectIsMoveCausingDisengagements,
+  selectIsMoveCausingEngagements,
+} from '../selectors'
 import { computeWalkMoveRange } from './walk'
-import { extractMoveInfo } from './extractMoveInfo'
 
 export function compute2HexWalkMoveRange({
   unmutatedContext,
@@ -57,24 +63,49 @@ export function compute2HexWalkMoveRange({
       if (isVisitedAlready) {
         return result
       }
-      const { id: endHexID } = neighbor
-      const {
-        isCausingEngagement,
-        isCausingDisengagement,
-        isEndHexUnoccupied,
-        isUnpassable,
-      } = extractMoveInfo({
-        startHex,
-        endHex: neighbor,
-        movePointsLeft,
-        playerID,
+      const { id: endHexID, occupyingUnitID: endHexUnitID } = neighbor
+      const isCausingEngagement = selectIsMoveCausingEngagements({
         unit,
-        hasDisengage,
-        hasGhostWalk,
+        endHexID,
         boardHexes,
-        armyCards,
         gameUnits,
+        armyCards,
       })
+      const isCausingDisengagement = hasDisengage
+        ? false
+        : selectIsMoveCausingDisengagements({
+            unit,
+            endHexID,
+            boardHexes,
+            gameUnits,
+            armyCards,
+          })
+      const endHexUnit = { ...gameUnits[endHexUnitID] }
+      const endHexUnitPlayerID = endHexUnit.playerID
+      const isEndHexUnoccupied = !Boolean(endHexUnitID)
+      const isTooCostly = movePointsLeft < 0
+
+      const isEndHexEnemyOccupied =
+        !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
+      const isEndHexUnitEngaged =
+        selectEngagementsForHex({
+          hexID: neighbor.id,
+          boardHexes,
+          gameUnits,
+          armyCards,
+        }).length > 0
+      const isTooTallOfClimb = !selectIsClimbable(
+        unit,
+        armyCards,
+        startHex,
+        neighbor
+      )
+      const isUnpassable =
+        isTooCostly ||
+        // ghost walk can move through enemy occupied hexes, or hexes with engaged units
+        (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
+        (hasGhostWalk ? false : isEndHexUnitEngaged) ||
+        isTooTallOfClimb
       const moveRangeData = {
         fromHexID: startHex.id,
         fromCost,
