@@ -110,9 +110,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       })
     }
   }
-  const onClickHex = (e: React.SyntheticEvent, source: any) => {
-    const boardHex = source.data as BoardHex
-    onClickBoardHex(e, boardHex)
+  const onClickHex = (e: React.SyntheticEvent, hex: BoardHex) => {
+    onClickBoardHex(e, hex)
   }
 
   const hexJSX = () => {
@@ -133,10 +132,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       return (
         <Hexagon
           key={i}
-          q={hex.q}
-          r={hex.r}
-          s={hex.s}
-          data={hex}
+          hex={hex}
           onClick={onClickHex}
           className={hexClassNames(hex)}
         >

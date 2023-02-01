@@ -230,6 +230,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   )
   // HANDLERS
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
+    // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
     const sourceHexID = sourceHex.id
     const boardHex = boardHexes[sourceHex.id]

@@ -133,7 +133,7 @@ const PlacementContextProvider = ({
     }
   }
   function onClickPlacementHex(event: SyntheticEvent, sourceHex: BoardHex) {
-    // Do not propagate to background onClick
+    // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
     const clickedHexId = sourceHex.id
     const isInStartZone = myStartZone.includes(clickedHexId)
