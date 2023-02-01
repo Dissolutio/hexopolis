@@ -30,8 +30,8 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { calcUnitMoveRange } from 'game/calcUnitMoveRange'
 import { hexUtilsDistance } from 'game/hex-utils'
+import { computeUnitMoveRange } from 'game/pathfinding/computeUnitMoveRange'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -102,7 +102,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (selectedUnitID)
       setSelectedUnitMoveRange(() =>
-        calcUnitMoveRange(
+        computeUnitMoveRange(
           selectedUnitID,
           isWalkingFlyer,
           boardHexes,
@@ -124,14 +124,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const selectedUnitHexID = selectedUnitHex?.id ?? ''
     const currentEngagements = selectEngagementsForHex({
       hexID: selectedUnitHexID,
-      playerID,
       boardHexes,
       gameUnits,
       armyCards,
     })
     const predictedEngagements = selectEngagementsForHex({
       hexID: endHexID,
-      playerID,
       boardHexes,
       gameUnits,
       armyCards,

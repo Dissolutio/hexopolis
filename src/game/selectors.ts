@@ -120,14 +120,12 @@ export function selectAreTwoUnitsEngaged({
 // this function will lookup the unit on the hex, OR you can pass an override unit to place on the hex to predict engagements
 export function selectEngagementsForHex({
   hexID,
-  playerID,
   boardHexes,
   gameUnits,
   armyCards,
   overrideUnitID,
 }: {
   hexID: string
-  playerID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
@@ -139,6 +137,7 @@ export function selectEngagementsForHex({
   const unitOnHex = overrideUnitID
     ? gameUnits?.[overrideUnitID]
     : gameUnits?.[hex?.occupyingUnitID]
+  const playerID = unitOnHex?.playerID
   const armyCardForUnitOnHex = selectGameCardByID(
     armyCards,
     unitOnHex?.gameCardID
@@ -152,49 +151,6 @@ export function selectEngagementsForHex({
     .filter((h) => h.occupyingUnitID && h.occupyingUnitID !== overrideUnitID)
     .map((h) => h.occupyingUnitID)
   // TODO: account for team play here, where adjacent units may be friendly
-  const engagedUnitIDs = adjacentUnitIDs.filter(
-    (id) => gameUnits[id].playerID !== playerID
-  )
-  return engagedUnitIDs.filter((unitBID) => {
-    const unitB = gameUnits[unitBID]
-    const hexB = selectHexForUnit(unitBID, boardHexes)
-    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
-    return selectAreTwoUnitsEngaged({
-      aHeight: armyCardForUnitOnHex?.height ?? 0,
-      aAltitude: hex?.altitude ?? 0,
-      bHeight: unitBCard?.height ?? 0,
-      bAltitude: hexB?.altitude ?? 0,
-    })
-  })
-}
-// this, unlike the above, returns just based off the current state
-export function selectEngagementsForUnit({
-  unitID,
-  boardHexes,
-  gameUnits,
-  armyCards,
-}: {
-  unitID: string
-  boardHexes: BoardHexes
-  gameUnits: GameUnits
-  armyCards: GameArmyCard[]
-}) {
-  const hex = selectHexForUnit(unitID, boardHexes)
-  // either use hex unit, or override unit
-  const unitOnHex = gameUnits[unitID]
-  const armyCardForUnitOnHex = selectGameCardByID(
-    armyCards,
-    unitOnHex?.gameCardID
-  )
-  const playerID = unitOnHex?.playerID
-
-  // if no unit, then no engagements
-  if (!unitOnHex) {
-    return []
-  }
-  const adjacentUnitIDs = selectHexNeighbors(hex?.id ?? '', boardHexes)
-    .filter((h) => h.occupyingUnitID)
-    .map((h) => h.occupyingUnitID)
   const engagedUnitIDs = adjacentUnitIDs.filter(
     (id) => gameUnits[id].playerID !== playerID
   )
@@ -224,8 +180,9 @@ export function selectIsMoveCausingDisengagements({
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
 }) {
-  const initialEngagements: string[] = selectEngagementsForUnit({
-    unitID: unit.unitID,
+  const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: hexForUnit?.id ?? '',
     boardHexes,
     gameUnits,
     armyCards,
@@ -233,7 +190,6 @@ export function selectIsMoveCausingDisengagements({
   const engagementsForCurrentHex = selectEngagementsForHex({
     overrideUnitID: unit.unitID,
     hexID: endHexID,
-    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -254,8 +210,9 @@ export function selectIsMoveCausingEngagements({
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
 }) {
-  const initialEngagements: string[] = selectEngagementsForUnit({
-    unitID: unit.unitID,
+  const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: hexForUnit?.id ?? '',
     boardHexes,
     gameUnits,
     armyCards,
@@ -263,7 +220,6 @@ export function selectIsMoveCausingEngagements({
   const engagementsForCurrentHex = selectEngagementsForHex({
     overrideUnitID: unit.unitID,
     hexID: endHexID,
-    playerID: unit.playerID,
     boardHexes,
     gameUnits,
     armyCards,
@@ -337,7 +293,6 @@ export function selectIsClimbable(
 //   const engagementsForCurrentHex = selectEngagementsForHex({
 //     overrideUnitID: unit.unitID,
 //     hexID: endHexID,
-//     playerID: unit.playerID,
 //     boardHexes,
 //     gameUnits,
 //     armyCards,
