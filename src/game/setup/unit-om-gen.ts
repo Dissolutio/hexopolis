@@ -24,14 +24,14 @@ const negoksaID = 'hs1014'
 const grimnakID = 'hs1015'
 
 const player1Ids = [
-  // marroID,
-  // deathwalker9000ID,
   // drake1ID,
   // syvarrisID,
   // zettianID,
   // airbornID,
-  raelinID,
-  // mimringID,
+  // raelinID,
+  // marroID,
+  mimringID,
+  deathwalker9000ID,
 ]
 const player2Ids = [
   izumiID,

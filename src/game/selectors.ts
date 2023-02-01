@@ -83,14 +83,17 @@ export function selectValidTailHexes(
   boardHexes: BoardHexes
 ): BoardHex[] {
   return selectHexNeighbors(hexID, boardHexes).filter(
-    (bh) =>
-      bh.altitude === boardHexes[hexID].altitude ||
+    (bh) => bh.altitude === boardHexes[hexID].altitude
+    /* 
+      This allows 2-space figures to stop on 2 different levels of terrain if the lower one has water. I believe I confused this with the rule that they don't have to stop
+      until they walk into 2 spaces of water. AKA, the rule below is NOT in the game.
+      ||
       (boardHexes[hexID].terrain === 'water' &&
-        bh.altitude === boardHexes[hexID].altitude + 1) ||
+      bh.altitude === boardHexes[hexID].altitude + 1) ||
       (bh.terrain === 'water' && bh.altitude === boardHexes[hexID].altitude - 1)
+      */
   )
 }
-
 export function calcMoveCostBetweenNeighbors(
   startHex: BoardHex,
   endHex: BoardHex
