@@ -9,7 +9,7 @@ import {
   armyCardsToGameArmyCardsForTest,
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
-} from './unit-om-gen'
+} from './unitGen'
 
 const isDevOverrideState = true
 // const isDevOverrideState = false

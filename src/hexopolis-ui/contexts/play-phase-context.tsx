@@ -32,7 +32,7 @@ import {
   useBgioMoves,
 } from 'bgio-contexts'
 import { hexUtilsDistance } from 'game/hex-utils'
-import { computeUnitMoveRange } from 'game/pathfinding/computeUnitMoveRange'
+import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
