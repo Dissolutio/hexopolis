@@ -12,8 +12,16 @@ import { generateHexID } from './constants'
 import { hexUtilsNeighbors } from './hex-utils'
 import { uniq } from 'lodash'
 
+// returns the hex for 1-hex units, and the head-hex for multi-hex units
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
-  return Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID)
+  return Object.values(boardHexes).find(
+    (hex) => hex.occupyingUnitID === unitID && Boolean(hex.isUnitTail) === false
+  )
+}
+export function selectTailHexForUnit(unitID: string, boardHexes: BoardHexes) {
+  return Object.values(boardHexes).find(
+    (hex) => hex.occupyingUnitID === unitID && Boolean(hex.isUnitTail) === true
+  )
 }
 export function selectUnitForHex(
   hexID: string,
