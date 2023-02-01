@@ -13,6 +13,7 @@ import {
   selectHexNeighbors,
   selectIsMoveCausingEngagements,
   selectIsClimbable,
+  selectValidTailHexes,
 } from '../selectors'
 
 export function computeWalkMoveRange({
@@ -50,11 +51,10 @@ export function computeWalkMoveRange({
     gameUnits,
     armyCards,
   } = unmutatedContext
-  const is2Hex = unit?.is2Hex
+  const isUnit2Hex = unit?.is2Hex
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   const isVisitedAlready =
     (initialMoveRange?.[startHex.id]?.movePointsLeft ?? 0) > movePoints
-
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
@@ -65,6 +65,11 @@ export function computeWalkMoveRange({
       const fromCost = isFlying
         ? 1
         : calcMoveCostBetweenNeighbors(startHex, neighbor)
+      const isFromOccupied = Boolean(startHex.occupyingUnitID)
+      const validTailSpotsForNeighbor = selectValidTailHexes(
+        neighbor.id,
+        boardHexes
+      )
       const movePointsLeft = movePoints - fromCost
       const isVisitedAlready =
         initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
@@ -98,7 +103,6 @@ export function computeWalkMoveRange({
       const isMovePointsLeftAfterMove = movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID)
       const isTooCostly = movePointsLeft < 0
-
       const isEndHexEnemyOccupied =
         !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
       const isEndHexUnitEngaged =
@@ -121,9 +125,16 @@ export function computeWalkMoveRange({
           (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
           (hasGhostWalk ? false : isEndHexUnitEngaged) ||
           isTooTallOfClimb
+      const can1HexUnitStopHere = isEndHexUnoccupied
+      const can2HexUnitStopHere =
+        isEndHexUnoccupied &&
+        !isFromOccupied &&
+        validTailSpotsForNeighbor.map((h) => h.id).includes(startHex.id)
+      const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
       const moveRangeData = {
         fromHexID: startHex.id,
         fromCost,
+        isFromOccupied,
         movePointsLeft,
       }
       // 1. unpassable
@@ -133,7 +144,7 @@ export function computeWalkMoveRange({
       // 2. passable: we can get here, maybe stop, maybe pass thru
       // order matters for if/else-if here, disengagement overrides engagement
       if (isCausingDisengagement) {
-        if (isEndHexUnoccupied) {
+        if (canStopHere) {
           result[endHexID] = {
             ...moveRangeData,
             isDisengage: true,
@@ -153,7 +164,7 @@ export function computeWalkMoveRange({
           : result
       } else if (isCausingEngagement) {
         // we can stop there
-        if (isEndHexUnoccupied) {
+        if (canStopHere) {
           result[endHexID] = {
             ...moveRangeData,
             isEngage: true,
@@ -175,13 +186,13 @@ export function computeWalkMoveRange({
       // safe hexes
       else {
         // we can stop there if it's not occupied
-        if (isEndHexUnoccupied) {
+        if (canStopHere) {
           result[endHexID] = {
             ...moveRangeData,
             isSafe: true,
           }
         }
-        // walking and flying both pass thru safe hexes
+        // walking and flying both recurse past safe hexes
         return isMovePointsLeftAfterMove
           ? {
               ...result,
