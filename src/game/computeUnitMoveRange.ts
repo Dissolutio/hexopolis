@@ -164,14 +164,15 @@ function recurseThroughMoves({
     gameUnits,
     armyCards,
   } = unmutatedContext
+  const startHexID = startHex.id
   const isVisitedAlready =
-    (initialMoveRange?.[startHex.id]?.movePointsLeft ?? 0) > movePoints
+    (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
   }
   const isUnit2Hex = unit?.is2Hex
-  const neighbors = selectHexNeighbors(startHex.id, boardHexes)
+  const neighbors = selectHexNeighbors(startHexID, boardHexes)
   // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
@@ -189,10 +190,11 @@ function recurseThroughMoves({
       if (isVisitedAlready) {
         return result
       }
-      const { id: endHexID, occupyingUnitID: endHexUnitID } = neighbor
+      const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
       const isCausingEngagement = selectIsMoveCausingEngagements({
         unit,
-        endHexID,
+        startHexID,
+        neighborHexID,
         boardHexes,
         gameUnits,
         armyCards,
@@ -203,7 +205,8 @@ function recurseThroughMoves({
         ? false
         : selectIsMoveCausingDisengagements({
             unit,
-            endHexID,
+            startHexID: startHexID,
+            neighborHexID,
             boardHexes,
             gameUnits,
             armyCards,
@@ -211,10 +214,10 @@ function recurseThroughMoves({
       const isCausingDisengagement = isFlying
         ? isCausingDisengagementIfFlying
         : isCausingDisengagementIfWalking
-      const endHexUnit = { ...gameUnits[endHexUnitID] }
+      const endHexUnit = { ...gameUnits[neighborUnitID] }
       const endHexUnitPlayerID = endHexUnit.playerID
       const isMovePointsLeftAfterMove = movePointsLeft > 0
-      const isEndHexUnoccupied = !Boolean(endHexUnitID)
+      const isEndHexUnoccupied = !Boolean(neighborUnitID)
       const isTooCostly = movePointsLeft < 0
       const isEndHexEnemyOccupied =
         !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
@@ -242,10 +245,10 @@ function recurseThroughMoves({
       const can2HexUnitStopHere =
         isEndHexUnoccupied &&
         !isFromOccupied &&
-        validTailSpotsForNeighbor.includes(startHex.id)
+        validTailSpotsForNeighbor.includes(startHexID)
       const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
       const moveRangeData = {
-        fromHexID: startHex.id,
+        fromHexID: startHexID,
         fromCost,
         isFromOccupied,
         movePointsLeft,
@@ -258,7 +261,7 @@ function recurseThroughMoves({
       // order matters for if/else-if here, disengagement overrides engagement
       if (isCausingDisengagement) {
         if (canStopHere) {
-          result[endHexID] = {
+          result[neighborHexID] = {
             ...moveRangeData,
             isDisengage: true,
           }
@@ -278,7 +281,7 @@ function recurseThroughMoves({
       } else if (isCausingEngagement) {
         // we can stop there
         if (canStopHere) {
-          result[endHexID] = {
+          result[neighborHexID] = {
             ...moveRangeData,
             isEngage: true,
           }
@@ -300,7 +303,7 @@ function recurseThroughMoves({
       else {
         // we can stop there if it's not occupied
         if (canStopHere) {
-          result[endHexID] = {
+          result[neighborHexID] = {
             ...moveRangeData,
             isSafe: true,
           }

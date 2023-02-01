@@ -135,31 +135,49 @@ export function selectEngagementsForHex({
   boardHexes,
   gameUnits,
   armyCards,
-  overrideUnitID,
+  override,
 }: {
   hexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
-  overrideUnitID?: string
+  override?: {
+    overrideUnitID: string
+    // probably a problem that this is optional
+    overrideTailHexID?: string
+  }
 }) {
+  const overrideUnitID = override?.overrideUnitID ?? ''
+  const overrideTailHexID = override?.overrideTailHexID ?? ''
   const hex = boardHexes[hexID]
-
   // either use hex unit, or override unit
   const unitOnHex = overrideUnitID
     ? gameUnits?.[overrideUnitID]
     : gameUnits?.[hex?.occupyingUnitID]
+  // if no unit, then no engagements
+  if (!unitOnHex) {
+    return []
+  }
+  const tailHexID = overrideUnitID
+    ? overrideTailHexID || ''
+    : selectTailHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? '' // we could auto select a tail spot too?
+  const isUnit2Hex = unitOnHex.is2Hex
+  // mutate/expand tailNeighbors if unit is 2 hex
+  let tailNeighbors: BoardHex[] = []
+  if (isUnit2Hex) {
+    tailNeighbors = selectHexNeighbors(tailHexID, boardHexes)
+  }
   const playerID = unitOnHex?.playerID
   const armyCardForUnitOnHex = selectGameCardByID(
     armyCards,
     unitOnHex?.gameCardID
   )
-  // if no unit, then no engagements
-  if (!unitOnHex) {
-    return []
-  }
+  const allNeighborsToUnitOnHex = [
+    ...selectHexNeighbors(hexID, boardHexes),
+    ...tailNeighbors,
+  ]
   const engagedUnitIDs = uniq(
-    selectHexNeighbors(hexID, boardHexes)
+    allNeighborsToUnitOnHex
       .filter(
         (h) =>
           // filter for hexes with units, but not our override unit
@@ -184,16 +202,18 @@ export function selectEngagementsForHex({
   )
   return engagedUnitIDs
 }
-// take a unit and an end hex, and return true if the move will cause disengagements
+// presumed start hex and end hex are adjacent, this determines if engagements will be left
 export function selectIsMoveCausingDisengagements({
   unit,
-  endHexID,
+  startHexID,
+  neighborHexID,
   boardHexes,
   gameUnits,
   armyCards,
 }: {
   unit: GameUnit
-  endHexID: string
+  startHexID: string
+  neighborHexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
@@ -206,24 +226,29 @@ export function selectIsMoveCausingDisengagements({
     armyCards,
   })
   const engagementsForCurrentHex = selectEngagementsForHex({
-    overrideUnitID: unit.unitID,
-    hexID: endHexID,
+    override: {
+      overrideUnitID: unit.unitID,
+      overrideTailHexID: startHexID,
+    },
+    hexID: neighborHexID,
     boardHexes,
     gameUnits,
     armyCards,
   })
   return initialEngagements.some((id) => !engagementsForCurrentHex.includes(id))
 }
-// take a unit and an end hex, and return true if the move will cause engagements
+// presumed start hex and end hex are adjacent, this determines if engagements will be entered
 export function selectIsMoveCausingEngagements({
   unit,
-  endHexID,
+  startHexID,
+  neighborHexID,
   boardHexes,
   gameUnits,
   armyCards,
 }: {
   unit: GameUnit
-  endHexID: string
+  startHexID: string
+  neighborHexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
@@ -236,8 +261,10 @@ export function selectIsMoveCausingEngagements({
     armyCards,
   })
   const engagementsForCurrentHex = selectEngagementsForHex({
-    overrideUnitID: unit.unitID,
-    hexID: endHexID,
+    override: {
+      overrideUnitID: unit.unitID,
+    },
+    hexID: neighborHexID,
     boardHexes,
     gameUnits,
     armyCards,

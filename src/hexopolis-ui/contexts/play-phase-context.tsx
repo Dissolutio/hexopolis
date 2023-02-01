@@ -128,6 +128,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   }
   const onClickDisengageHex = (endHexID: string) => {
     const selectedUnitHexID = selectedUnitHex?.id ?? ''
+    const tailHex = selectedUnitMoveRange[endHexID]?.fromHexID
     const currentEngagements = selectEngagementsForHex({
       hexID: selectedUnitHexID,
       boardHexes,
@@ -139,8 +140,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       boardHexes,
       gameUnits,
       armyCards,
-      overrideUnitID: selectedUnitID,
+      override: {
+        overrideUnitID: selectedUnitID,
+        overrideTailHexID: tailHex,
+      },
     })
+    // flyers disengage everybody once they start flying, but walkers might stay engaged to some units
     const defendersToDisengage = currentEngagements
       .filter((id) => (isFlying ? true : !predictedEngagements.includes(id)))
       .map((id) => gameUnits[id])
