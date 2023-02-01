@@ -18,6 +18,7 @@ import {
   selectHexForUnit,
   selectRevealedGameCard,
   selectEngagementsForHex,
+  selectIfGameArmyCardHasFlying,
 } from '../../game/selectors'
 import {
   generateBlankMoveRange,
@@ -80,6 +81,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { moves } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
+  const selectedUnitGameCard = armyCards.find(
+    (card) => card.gameCardID === selectedUnit?.gameCardID
+  )
   const selectedUnitHex = selectHexForUnit(selectedUnitID, boardHexes)
   const { moveAction, attackAction, attemptDisengage } = moves
   // disengage confirm
@@ -89,6 +93,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   >(undefined)
   // client-side moverange
   const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
+  const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
+  const isFlying = isWalkingFlyer ? false : hasFlying
   const toggleIsWalkingFlyer = () => {
     setIsWalkingFlyer((s) => !s)
   }
@@ -104,13 +110,13 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       setSelectedUnitMoveRange(() =>
         computeUnitMoveRange(
           selectedUnitID,
-          isWalkingFlyer,
+          isFlying,
           boardHexes,
           gameUnits,
           armyCards
         )
       )
-  }, [armyCards, isWalkingFlyer, boardHexes, gameUnits, selectedUnitID])
+  }, [armyCards, isFlying, boardHexes, gameUnits, selectedUnitID])
 
   const showDisengageConfirm = disengageAttempt !== undefined
   const confirmDisengageAttempt = () => {
@@ -136,7 +142,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       overrideUnitID: selectedUnitID,
     })
     const defendersToDisengage = currentEngagements
-      .filter((id) => !predictedEngagements.includes(id))
+      .filter((id) => (isFlying ? true : !predictedEngagements.includes(id)))
       .map((id) => gameUnits[id])
     setDisengageAttempt({
       unit: selectedUnit,
