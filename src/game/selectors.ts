@@ -10,6 +10,7 @@ import {
 } from './types'
 import { generateHexID } from './constants'
 import { hexUtilsNeighbors } from './hex-utils'
+import { uniq } from 'lodash'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID)
@@ -149,28 +150,30 @@ export function selectEngagementsForHex({
   if (!unitOnHex) {
     return []
   }
-  const engagedUnitIDs = selectHexNeighbors(hexID, boardHexes)
-    .filter(
-      (h) =>
-        // filter for hexes with units, but not our override unit
-        h.occupyingUnitID &&
-        h.occupyingUnitID !== overrideUnitID &&
-        // filter for enemy units
-        // TODO: account for team play here, where adjacent units may be friendly
-        gameUnits[h.occupyingUnitID].playerID !== playerID &&
-        // filter for engaged units
-        selectAreTwoUnitsEngaged({
-          aHeight: armyCardForUnitOnHex?.height ?? 0,
-          aAltitude: hex?.altitude ?? 0,
-          bHeight:
-            selectGameCardByID(
-              armyCards,
-              gameUnits[h.occupyingUnitID]?.gameCardID
-            )?.height ?? 0,
-          bAltitude: h?.altitude ?? 0,
-        })
-    )
-    .map((h) => h.occupyingUnitID)
+  const engagedUnitIDs = uniq(
+    selectHexNeighbors(hexID, boardHexes)
+      .filter(
+        (h) =>
+          // filter for hexes with units, but not our override unit
+          h.occupyingUnitID &&
+          h.occupyingUnitID !== overrideUnitID &&
+          // filter for enemy units
+          // TODO: account for team play here, where adjacent units may be friendly
+          gameUnits[h.occupyingUnitID].playerID !== playerID &&
+          // filter for engaged units
+          selectAreTwoUnitsEngaged({
+            aHeight: armyCardForUnitOnHex?.height ?? 0,
+            aAltitude: hex?.altitude ?? 0,
+            bHeight:
+              selectGameCardByID(
+                armyCards,
+                gameUnits[h.occupyingUnitID]?.gameCardID
+              )?.height ?? 0,
+            bAltitude: h?.altitude ?? 0,
+          })
+      )
+      .map((h) => h.occupyingUnitID)
+  )
   return engagedUnitIDs
 }
 // take a unit and an end hex, and return true if the move will cause disengagements
