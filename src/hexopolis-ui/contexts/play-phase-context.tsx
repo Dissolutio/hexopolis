@@ -109,14 +109,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     if (selectedUnitID)
       setSelectedUnitMoveRange(() =>
         computeUnitMoveRange(
-          selectedUnitID,
+          selectedUnit,
           isFlying,
           boardHexes,
           gameUnits,
           armyCards
         )
       )
-  }, [armyCards, isFlying, boardHexes, gameUnits, selectedUnitID])
+  }, [armyCards, isFlying, boardHexes, gameUnits, selectedUnit, selectedUnitID])
 
   const showDisengageConfirm = disengageAttempt !== undefined
   const confirmDisengageAttempt = () => {

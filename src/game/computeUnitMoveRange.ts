@@ -18,11 +18,23 @@ import {
   selectIsMoveCausingEngagements,
   selectIsMoveCausingDisengagements,
   selectIsClimbable,
+  selectTailHexForUnit,
 } from './selectors'
+
+const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
+  // returns a new object with the highest movePointsLeft for each hex
+  const mergedMoveRange: MoveRange = { ...a }
+  for (const key in b) {
+    if (b[key].movePointsLeft > (a?.[key]?.movePointsLeft ?? -1)) {
+      mergedMoveRange[key] = b[key]
+    }
+  }
+  return mergedMoveRange
+}
 
 // This function splits on flying/walking/ghostwalking/disengage/stealth-flying
 export function computeUnitMoveRange(
-  unitID: string,
+  unit: GameUnit,
   isFlying: boolean,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
@@ -30,7 +42,7 @@ export function computeUnitMoveRange(
 ): MoveRange {
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
   const initialMoveRange = generateBlankMoveRange()
-  const unit = gameUnits[unitID]
+  const unitUid = unit.unitID
   const unitGameCard = armyCards.find(
     (card) => card.gameCardID === unit?.gameCardID
   )
@@ -40,6 +52,12 @@ export function computeUnitMoveRange(
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
+  // mutate tailHex if unit is 2-space
+  let tailHex
+  const isTwoSpace = unit.is2Hex
+  if (isTwoSpace) {
+    tailHex = selectTailHexForUnit(unitUid, boardHexes)
+  }
   const initialEngagements: string[] = selectEngagementsForHex({
     hexID: startHex?.id ?? '',
     boardHexes,
@@ -48,26 +66,66 @@ export function computeUnitMoveRange(
   })
   const isUnitEngaged = initialEngagements.length > 0
   //*early out
-  if (!unit || !startHex || !initialMovePoints) {
+  if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
     return initialMoveRange
   }
-  const moveRange = recurseThroughMoves({
-    unmutatedContext: {
-      playerID,
-      unit,
-      isUnitEngaged,
-      isFlying,
-      hasStealth,
-      hasDisengage,
-      hasGhostWalk,
-      boardHexes,
-      armyCards,
-      gameUnits,
-    },
-    startHex: startHex,
-    movePoints: initialMovePoints,
-    initialMoveRange,
-  })
+  let moveRange: MoveRange = {}
+  if (isTwoSpace && tailHex) {
+    moveRange = mergeTwoMoveRanges(
+      recurseThroughMoves({
+        unmutatedContext: {
+          playerID,
+          unit,
+          isUnitEngaged,
+          isFlying,
+          hasStealth,
+          hasDisengage,
+          hasGhostWalk,
+          boardHexes,
+          armyCards,
+          gameUnits,
+        },
+        startHex: startHex,
+        movePoints: initialMovePoints,
+        initialMoveRange,
+      }),
+      recurseThroughMoves({
+        unmutatedContext: {
+          playerID,
+          unit,
+          isUnitEngaged,
+          isFlying,
+          hasStealth,
+          hasDisengage,
+          hasGhostWalk,
+          boardHexes,
+          armyCards,
+          gameUnits,
+        },
+        startHex: tailHex,
+        movePoints: initialMovePoints,
+        initialMoveRange,
+      })
+    )
+  } else {
+    moveRange = recurseThroughMoves({
+      unmutatedContext: {
+        playerID,
+        unit,
+        isUnitEngaged,
+        isFlying,
+        hasStealth,
+        hasDisengage,
+        hasGhostWalk,
+        boardHexes,
+        armyCards,
+        gameUnits,
+      },
+      startHex: startHex,
+      movePoints: initialMovePoints,
+      initialMoveRange,
+    })
+  }
   return moveRange
 }
 
@@ -106,14 +164,14 @@ function recurseThroughMoves({
     gameUnits,
     armyCards,
   } = unmutatedContext
-  const isUnit2Hex = unit?.is2Hex
-  const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   const isVisitedAlready =
     (initialMoveRange?.[startHex.id]?.movePointsLeft ?? 0) > movePoints
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
   }
+  const isUnit2Hex = unit?.is2Hex
+  const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
@@ -124,7 +182,7 @@ function recurseThroughMoves({
       const validTailSpotsForNeighbor = selectValidTailHexes(
         neighbor.id,
         boardHexes
-      )
+      ).map((hex) => hex.id)
       const movePointsLeft = movePoints - fromCost
       const isVisitedAlready =
         initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
@@ -184,7 +242,7 @@ function recurseThroughMoves({
       const can2HexUnitStopHere =
         isEndHexUnoccupied &&
         !isFromOccupied &&
-        validTailSpotsForNeighbor.map((h) => h.id).includes(startHex.id)
+        validTailSpotsForNeighbor.includes(startHex.id)
       const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
       const moveRangeData = {
         fromHexID: startHex.id,
