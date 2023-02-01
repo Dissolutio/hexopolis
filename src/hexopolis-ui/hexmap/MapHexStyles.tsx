@@ -34,6 +34,15 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   &::-webkit-scrollbar-corner {
     background: var(--black);
   }
+  // Attempting some 3d effects
+  svg {
+    perspective: 1000px;
+    .hexgrid-layout {
+      /* transform-style: preserve-3d; */
+      transform: rotateZ(0deg) rotateX(45deg) rotateY(0deg);
+      /* transform-origin: center 65%; */
+    }
+  }
   // Style Hex Text
   .maphex_altitude-text {
     fill: var(--sub-white);

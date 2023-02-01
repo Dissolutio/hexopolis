@@ -25,10 +25,13 @@ export function Hexagon(props: HexagonProps) {
   }, [hex, layout])
 
   const hexAltitude = hex.altitude
+  const style = {
+    transform: `rotateZ(0deg) rotateX(${hexAltitude}deg) rotateY(0deg) translate3d(${pixel.x}px, ${pixel.y}px, ${hexAltitude}px)`,
+  }
   return (
     <g
       className={classNames('hexagon-group', className)}
-      transform={`translate(${pixel.x}, ${pixel.y})`}
+      style={style}
       onClick={(e) => {
         if (onClick) {
           onClick(e, hex)
