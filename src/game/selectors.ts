@@ -149,25 +149,29 @@ export function selectEngagementsForHex({
   if (!unitOnHex) {
     return []
   }
-  const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
-    // unit cannot engage/be-adjacent-to itself
-    .filter((h) => h.occupyingUnitID && h.occupyingUnitID !== overrideUnitID)
+  const engagedUnitIDs = selectHexNeighbors(hexID, boardHexes)
+    .filter(
+      (h) =>
+        // filter for hexes with units, but not our override unit
+        h.occupyingUnitID &&
+        h.occupyingUnitID !== overrideUnitID &&
+        // filter for enemy units
+        // TODO: account for team play here, where adjacent units may be friendly
+        gameUnits[h.occupyingUnitID].playerID !== playerID &&
+        // filter for engaged units
+        selectAreTwoUnitsEngaged({
+          aHeight: armyCardForUnitOnHex?.height ?? 0,
+          aAltitude: hex?.altitude ?? 0,
+          bHeight:
+            selectGameCardByID(
+              armyCards,
+              gameUnits[h.occupyingUnitID]?.gameCardID
+            )?.height ?? 0,
+          bAltitude: h?.altitude ?? 0,
+        })
+    )
     .map((h) => h.occupyingUnitID)
-  // TODO: account for team play here, where adjacent units may be friendly
-  const engagedUnitIDs = adjacentUnitIDs.filter(
-    (id) => gameUnits[id].playerID !== playerID
-  )
-  return engagedUnitIDs.filter((unitBID) => {
-    const unitB = gameUnits[unitBID]
-    const hexB = selectHexForUnit(unitBID, boardHexes)
-    const unitBCard = selectGameCardByID(armyCards, unitB?.gameCardID)
-    return selectAreTwoUnitsEngaged({
-      aHeight: armyCardForUnitOnHex?.height ?? 0,
-      aAltitude: hex?.altitude ?? 0,
-      bHeight: unitBCard?.height ?? 0,
-      bAltitude: hexB?.altitude ?? 0,
-    })
-  })
+  return engagedUnitIDs
 }
 // take a unit and an end hex, and return true if the move will cause disengagements
 export function selectIsMoveCausingDisengagements({
