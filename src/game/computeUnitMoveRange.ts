@@ -15,8 +15,8 @@ import {
   selectHexNeighbors,
   calcMoveCostBetweenNeighbors,
   selectValidTailHexes,
-  selectIsMoveCausingEngagements,
-  selectIsMoveCausingDisengagements,
+  selectMoveEngagedUnitIDs,
+  selectMoveDisengagedUnitIDs,
   selectIsClimbable,
   selectTailHexForUnit,
 } from './selectors'
@@ -191,26 +191,28 @@ function recurseThroughMoves({
         return result
       }
       const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
-      const isCausingEngagement = selectIsMoveCausingEngagements({
-        unit,
-        startHexID,
-        neighborHexID,
-        boardHexes,
-        gameUnits,
-        armyCards,
-      })
+      // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
+      const isCausingEngagement =
+        selectMoveEngagedUnitIDs({
+          unit,
+          startHexID,
+          neighborHexID,
+          boardHexes,
+          gameUnits,
+          armyCards,
+        }).length > 0
       // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
       const isCausingDisengagementIfFlying = isUnitEngaged && !hasStealth
       const isCausingDisengagementIfWalking = hasDisengage
         ? false
-        : selectIsMoveCausingDisengagements({
+        : selectMoveDisengagedUnitIDs({
             unit,
             startHexID: startHexID,
             neighborHexID,
             boardHexes,
             gameUnits,
             armyCards,
-          })
+          }).length > 0
       const isCausingDisengagement = isFlying
         ? isCausingDisengagementIfFlying
         : isCausingDisengagementIfWalking

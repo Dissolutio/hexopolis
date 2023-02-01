@@ -202,8 +202,8 @@ export function selectEngagementsForHex({
   )
   return engagedUnitIDs
 }
-// presumed start hex and end hex are adjacent, this determines if engagements will be left
-export function selectIsMoveCausingDisengagements({
+// presumed start hex and end hex are adjacent, returns unit IDs that are disengaged
+export function selectMoveDisengagedUnitIDs({
   unit,
   startHexID,
   neighborHexID,
@@ -235,10 +235,12 @@ export function selectIsMoveCausingDisengagements({
     gameUnits,
     armyCards,
   })
-  return initialEngagements.some((id) => !engagementsForCurrentHex.includes(id))
+  return initialEngagements.filter(
+    (id) => !engagementsForCurrentHex.includes(id)
+  )
 }
 // presumed start hex and end hex are adjacent, this determines if engagements will be entered
-export function selectIsMoveCausingEngagements({
+export function selectMoveEngagedUnitIDs({
   unit,
   startHexID,
   neighborHexID,
@@ -260,7 +262,7 @@ export function selectIsMoveCausingEngagements({
     gameUnits,
     armyCards,
   })
-  const engagementsForCurrentHex = selectEngagementsForHex({
+  const newEngagements = selectEngagementsForHex({
     override: {
       overrideUnitID: unit.unitID,
     },
@@ -269,7 +271,7 @@ export function selectIsMoveCausingEngagements({
     gameUnits,
     armyCards,
   })
-  return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
+  return newEngagements.filter((id) => !initialEngagements.includes(id))
 }
 type HasFlyingReport = {
   hasFlying: boolean
