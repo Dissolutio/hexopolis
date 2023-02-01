@@ -8,6 +8,7 @@ import {
 } from '../types'
 import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
+import { selectValidTailHexes } from 'game/selectors'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -110,34 +111,35 @@ function transformBoardHexesWithPrePlacedUnits(
 ): BoardHexes {
   const copy = { ...boardHexes }
   const gameUnitsArr = Object.values(gameUnits)
-  // k, j are just increment values for uniqueness of hex
-  let k = 0
-  let j = 0
   gameUnitsArr.forEach((unit) => {
+    const is2Hex = unit.is2Hex
     try {
       const { playerID } = unit
-      let randomHexID: string = ''
-      let randomTailHexID: string = ''
-      if (playerID === '0') {
-        randomHexID = startZones?.[unit.playerID][k++] ?? ''
-        if (unit.is2Hex) {
-          randomTailHexID = startZones?.[unit.playerID][k++] ?? ''
-        }
-      }
-      if (playerID === '1') {
-        randomHexID = startZones?.[unit.playerID][j++] ?? ''
-        if (unit.is2Hex) {
-          randomTailHexID = startZones?.[unit.playerID][j++] ?? ''
-        }
-      }
+      const sz = startZones?.[playerID].filter(
+        (sz) => copy[sz].occupyingUnitID === ''
+      )
+      const validHex =
+        sz?.find((hexID) => {
+          if (is2Hex) {
+            const validTails = selectValidTailHexes(hexID, copy).filter(
+              (t) => t.occupyingUnitID === ''
+            )
+            return copy[hexID].occupyingUnitID === '' && validTails.length > 0
+          } else {
+            return copy[hexID].occupyingUnitID === ''
+          }
+        }) ?? ''
+      const validTail = selectValidTailHexes(validHex ?? '', copy)
+        .filter((t) => t.occupyingUnitID === '')
+        .map((h) => h.id)[0]
       // update boardHex
       if (unit.is2Hex) {
         // update boardHex
-        copy[randomHexID].occupyingUnitID = unit.unitID
-        copy[randomTailHexID].occupyingUnitID = unit.unitID
-        copy[randomTailHexID].isUnitTail = true
+        copy[validHex].occupyingUnitID = unit.unitID
+        copy[validTail].occupyingUnitID = unit.unitID
+        copy[validTail].isUnitTail = true
       } else {
-        copy[randomHexID].occupyingUnitID = unit.unitID
+        copy[validHex].occupyingUnitID = unit.unitID
       }
     } catch (error) {
       console.error(
