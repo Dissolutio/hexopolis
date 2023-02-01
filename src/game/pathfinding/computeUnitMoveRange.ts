@@ -4,6 +4,7 @@ import {
   selectHexForUnit,
   selectIfGameArmyCardHasFlying,
   selectIfGameArmyCardHasDisengage,
+  selectEngagementsForHex,
 } from '../selectors'
 import { computeWalkMoveRange } from './walk'
 import { computeFlyMoveRange } from './fly'
@@ -31,6 +32,13 @@ export function computeUnitMoveRange(
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: startHex?.id ?? '',
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  const isUnitEngaged = initialEngagements.length > 0
   //*early out
   if (!unit || !startHex || !initialMovePoints) {
     return initialMoveRange
@@ -41,6 +49,7 @@ export function computeUnitMoveRange(
         unmutatedContext: {
           playerID,
           unit,
+          isUnitEngaged,
           hasStealth,
           boardHexes,
           armyCards,

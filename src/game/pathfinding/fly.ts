@@ -21,6 +21,7 @@ export function computeFlyMoveRange({
   unmutatedContext: {
     playerID: string
     unit: GameUnit
+    isUnitEngaged: boolean
     hasStealth: boolean
     boardHexes: BoardHexes
     armyCards: GameArmyCard[]
@@ -31,7 +32,7 @@ export function computeFlyMoveRange({
   movePoints: number
   initialMoveRange: MoveRange
 }): MoveRange {
-  const { unit, hasStealth, boardHexes, gameUnits, armyCards } =
+  const { unit, isUnitEngaged, hasStealth, boardHexes, gameUnits, armyCards } =
     unmutatedContext
   const neighbors = selectHexNeighbors(startHex.id, boardHexes)
   const isVisitedAlready =
@@ -60,16 +61,8 @@ export function computeFlyMoveRange({
         gameUnits,
         armyCards,
       })
-      const initialEngagements: string[] = selectEngagementsForHex({
-        hexID: startHex.id,
-        overrideUnitID: unit.unitID,
-        boardHexes,
-        gameUnits,
-        armyCards,
-      })
       // FLY DIFFERENCE: as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
-      const isCausingDisengagement =
-        initialEngagements.length > 0 && !hasStealth
+      const isCausingDisengagement = isUnitEngaged && !hasStealth
       const isMovePointsLeftAfterMove = movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(endHexUnitID) // (or, i.e. if we are a squad and hex has a treasure glyph, then we cannot stop there)
       const isTooCostly = movePointsLeft < 0
