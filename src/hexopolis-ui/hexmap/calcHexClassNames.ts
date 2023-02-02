@@ -1,6 +1,10 @@
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
 import { hexUtilsDistance } from 'game/hex-utils'
-import { selectHexForUnit } from 'game/selectors'
+import {
+  selectGameCardByID,
+  selectHexForUnit,
+  selectTailHexForUnit,
+} from 'game/selectors'
 import {
   BoardHex,
   BoardHexes,
@@ -147,6 +151,7 @@ export function calcRopHexClassNames({
   revealedGameCard,
   boardHexes,
   gameUnits,
+  gameArmyCards,
   unitsMoved,
   selectedUnitMoveRange,
 }: {
@@ -160,12 +165,15 @@ export function calcRopHexClassNames({
   revealedGameCard: GameArmyCard | undefined
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
   const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
+  const selectedUnit = gameUnits[selectedUnitID]
+  const is2HexSelectedUnit = selectedUnit?.is2Hex
   const isSelectedCard = (hex: BoardHex) => {
     return revealedGameCardUnitIDs.includes(hexUnitID)
   }
@@ -205,9 +213,15 @@ export function calcRopHexClassNames({
     // If unit selected, hex is enemy occupied...
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)
+      const tailHex = selectTailHexForUnit(selectedUnitID, boardHexes)
+      const isInTailRange = is2HexSelectedUnit
+        ? hexUtilsDistance(tailHex as HexCoordinates, hex) <=
+          (revealedGameCard?.range ?? 0)
+        : false
       const isInRange =
+        isInTailRange ||
         hexUtilsDistance(startHex as HexCoordinates, hex) <=
-        (revealedGameCard?.range ?? 0)
+          (revealedGameCard?.range ?? 0)
       // ... and is in range
       if (isInRange) {
         classNames = classNames.concat(' maphex__targetable-enemy ')
