@@ -26,13 +26,8 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = useBgioClientInfo()
-  const {
-    boardHexes,
-    gameArmyCards: armyCards,
-    startZones,
-    gameUnits,
-    unitsMoved,
-  } = useBgioG()
+  const { boardHexes, gameArmyCards, startZones, gameUnits, unitsMoved } =
+    useBgioG()
   const { selectedUnitID } = useUIContext()
   const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
@@ -105,6 +100,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         isAttackingStage,
         boardHexes,
         gameUnits,
+        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
       })
@@ -124,7 +120,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       // we only show players their own units during placement phase
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
-      const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
+      const gameUnitCard = selectGameCardByID(
+        gameArmyCards,
+        gameUnit?.gameCardID
+      )
       const unitName = gameUnitCard?.singleName ?? ''
       const isUnitTail = isPlacementPhase
         ? editingBoardHexes?.[hex.id]?.isUnitTail
