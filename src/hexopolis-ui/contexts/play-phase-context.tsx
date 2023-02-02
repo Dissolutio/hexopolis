@@ -107,7 +107,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
   // effect: update moverange when selected unit changes
   useEffect(() => {
-    if (selectedUnitID)
+    if (selectedUnitID && selectedUnit)
       setSelectedUnitMoveRange(() =>
         computeUnitMoveRange(
           selectedUnit,
@@ -293,7 +293,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
           hexUtilsDistance(startHex as BoardHex, boardHex) <= gameCard?.range ??
           false
         if (isInRange) {
-          // TODO: shall we mark this attack as unique, so react does not run it twice?
           attackAction(selectedUnit, boardHexes[sourceHex.id])
         }
       }
