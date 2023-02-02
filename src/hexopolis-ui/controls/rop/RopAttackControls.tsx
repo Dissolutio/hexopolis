@@ -4,7 +4,10 @@ import { usePlayContext } from '../../contexts'
 import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from '../rop/UndoRedoButtons'
 import { StyledControlsP } from 'hexopolis-ui/layout/Typography'
-import { ConfirmOrResetButtons } from '../ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from '../ConfirmOrResetButtons'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
@@ -76,9 +79,11 @@ export const RopAttackControls = () => {
       )}
 
       {isNoAttacksUsed && hasWaterClone && (
-        <GreenButton onClick={onClickUseWaterClone}>
-          Use Water Clone
-        </GreenButton>
+        <StyledButtonWrapper>
+          <GreenButton onClick={onClickUseWaterClone}>
+            Use Water Clone
+          </GreenButton>
+        </StyledButtonWrapper>
       )}
 
       {isAllAttacksUsed ? (
