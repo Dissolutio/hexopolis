@@ -148,6 +148,9 @@ export const attackAction: Move<GameState> = {
         ...G.unitsKilled,
         [unitID]: [...(G.unitsKilled?.[unitID] ?? []), defenderGameUnit.unitID],
       }
+      G.killedUnits[defenderGameUnit.unitID] = {
+        ...G.gameUnits[defenderGameUnit.unitID],
+      }
       delete G.gameUnits[defenderGameUnit.unitID]
       G.boardHexes[defenderHexID].occupyingUnitID = ''
     }

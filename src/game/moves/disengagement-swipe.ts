@@ -94,12 +94,21 @@ export const takeDisengagementSwipe: Move<GameState> = {
 
     // ALLOWED
     if (isTaking) {
-      // if fatal...
       if (isFatal) {
-        // ...kill unit, clear hex
-        // CUJO 2 hex kill CUJO?
+        // remove  killed unit from hex
+        if (is2Hex) {
+          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+          newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
+            ''
+          newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
+        } else {
+          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+        }
+        // kill unit
+        G.killedUnits[unitAttemptingToDisengage.unitID] = {
+          ...G.gameUnits[unitAttemptingToDisengage.unitID],
+        }
         delete newGameUnits[unitAttemptingToDisengage.unitID]
-        newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
         G.unitsKilled = {
           ...G.unitsKilled,
           [unitID]: [

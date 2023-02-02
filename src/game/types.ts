@@ -2,6 +2,9 @@ export interface GameState {
   initialArmyCards: GameArmyCard[]
   gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
+  killedUnits: GameUnits
+  // annihilatedUnits would be units that were never killed, because they were never placed on the map (in placement, no room in start zone)
+  // annihilatedUnits: GameUnits
   players: PlayersState
   hexMap: HexMap
   boardHexes: BoardHexes
