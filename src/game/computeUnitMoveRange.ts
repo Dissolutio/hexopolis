@@ -179,7 +179,8 @@ function recurseThroughMoves({
       const fromCost = isFlying
         ? 1
         : calcMoveCostBetweenNeighbors(startHex, neighbor)
-      const isFromOccupied = Boolean(startHex.occupyingUnitID)
+      const isFromOccupied =
+        startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
       const validTailSpotsForNeighbor = selectValidTailHexes(
         neighbor.id,
         boardHexes

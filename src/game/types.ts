@@ -25,9 +25,7 @@ export interface GameState {
     to
     2. the bgio-move `disengagementSwipe`
    */
-  disengagesAttempting:
-    | undefined
-    | { unit: GameUnit; defendersToDisengage: GameUnit[]; endHexID: string }
+  disengagesAttempting: undefined | DisengageAttempt
   /* END */
 
   /* 
@@ -210,6 +208,7 @@ export type MoveRange = {
 export type DisengageAttempt = {
   unit: GameUnit
   endHexID: string
+  endFromHexID: string
   defendersToDisengage: GameUnit[]
 }
 
