@@ -36,6 +36,9 @@ export const RopAttackControls = () => {
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
   }
+  const goBackToMoveStage = () => {
+    events?.setStage?.(stageNames.movement)
+  }
   return (
     <>
       <RopAttackMoveHeader
@@ -75,7 +78,11 @@ export const RopAttackControls = () => {
       </StyledControlsP>
 
       {isNoAttacksUsed && (
-        <UndoRedoButtons undoText="Go back to movement stage" noRedo />
+        <StyledButtonWrapper>
+          <GreenButton onClick={goBackToMoveStage}>
+            Go back to movement stage
+          </GreenButton>
+        </StyledButtonWrapper>
       )}
 
       {isNoAttacksUsed && hasWaterClone && (
