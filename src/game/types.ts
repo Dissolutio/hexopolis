@@ -204,6 +204,13 @@ export type MoveRange = {
     movePointsLeft: number
   }
 }
+
+export type DisengageAttempt = {
+  unit: GameUnit
+  endHexID: string
+  defendersToDisengage: GameUnit[]
+}
+
 export type PlayerOrderMarkers = { [order: string]: string }
 
 export type OrderMarker = {

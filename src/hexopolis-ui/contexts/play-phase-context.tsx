@@ -9,6 +9,7 @@ import React, {
 
 import {
   BoardHex,
+  DisengageAttempt,
   GameArmyCard,
   GameUnit,
   HexCoordinates,
@@ -44,6 +45,7 @@ type PlayContextValue = {
   // state
   selectedUnitMoveRange: MoveRange
   showDisengageConfirm: boolean
+  disengageAttempt: DisengageAttempt | undefined
   isWalkingFlyer: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
@@ -88,8 +90,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { moveAction, attackAction, attemptDisengage } = moves
   // disengage confirm
   const [disengageAttempt, setDisengageAttempt] = useState<
-    | undefined
-    | { unit: GameUnit; endHexID: string; defendersToDisengage: GameUnit[] }
+    undefined | DisengageAttempt
   >(undefined)
   // client-side moverange
   const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)

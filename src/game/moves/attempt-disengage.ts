@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { GameState, GameUnit } from '../types'
+import { DisengageAttempt, GameState, GameUnit } from '../types'
 import { stageNames } from '../constants'
 import { selectGameCardByID } from '../selectors'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
@@ -8,15 +8,7 @@ export const attemptDisengage: Move<GameState> = {
   undoable: false,
   move: (
     { G, events },
-    {
-      unit,
-      endHexID,
-      defendersToDisengage,
-    }: {
-      unit: GameUnit
-      endHexID: string
-      defendersToDisengage: GameUnit[]
-    }
+    { unit, endHexID, defendersToDisengage }: DisengageAttempt
   ) => {
     const { unitID } = unit
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
