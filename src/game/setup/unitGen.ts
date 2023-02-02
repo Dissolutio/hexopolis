@@ -34,8 +34,8 @@ const player1Ids = [
   // deathwalker9000ID,
 ]
 const player2Ids = [
-  izumiID,
-  // kravMagaID,
+  // izumiID,
+  kravMagaID,
   // tarnID,
   // carrID,
   // finnID,

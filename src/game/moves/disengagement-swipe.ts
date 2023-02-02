@@ -116,7 +116,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
             unitAttemptingToDisengage.unitID,
           ],
         }
-        // ...and reset disengagement state and...
+        // and reset disengagement state
         G.disengagesAttempting = undefined
         G.disengagedUnitIds = []
         // update G
