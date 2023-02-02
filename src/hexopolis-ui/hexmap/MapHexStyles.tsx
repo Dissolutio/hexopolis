@@ -111,13 +111,13 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--player-color);
     stroke-width: 0.6;
     fill: var(--player-color);
-    fill-opacity: 0.1;
+    fill-opacity: 0.4;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.8;
     }
   }
-  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
+  // highlight selected unit
   .maphex__start-zone--placement--selected-unit > g polygon {
     stroke: var(--success-green);
     /* stroke: var(--neon-green); */

@@ -3,9 +3,11 @@ import { hexUtilsDistance } from 'game/hex-utils'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
+  selectMoveCostBetweenNeighbors,
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
+  selectTailHexForUnit,
 } from '../selectors'
 import { BoardHexes, GameState, GameUnits } from '../types'
 import { rollHeroscapeDice } from './attack-action'
@@ -24,6 +26,10 @@ export const takeDisengagementSwipe: Move<GameState> = {
       unitAttemptingToDisengage?.unitID ?? '',
       G.boardHexes
     )
+    const unitAttemptingToDisengageTailHex = selectTailHexForUnit(
+      unitAttemptingToDisengage?.unitID ?? '',
+      G.boardHexes
+    )
     const unitAttemptingCard = selectGameCardByID(
       G.gameArmyCards,
       unitAttemptingToDisengage?.gameCardID ?? ''
@@ -34,7 +40,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
       G.gameArmyCards,
       unitSwiping?.gameCardID ?? ''
     )
-    const unitSwipingHex = selectHexForUnit(unitSwiping.unitID, G.boardHexes)
 
     // DISALLOWED
     // state is wrong
@@ -44,8 +49,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
       !unitAttemptingToDisengageHex ||
       !unitAttemptingCard ||
       !unitSwiping ||
-      !unitSwipingCard ||
-      !unitSwipingHex
+      !unitSwipingCard
     ) {
       events.setActivePlayers({
         currentPlayer: stageNames.movement,
@@ -65,6 +69,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
     }
 
     const endHexID = disengagesAttempting.endHexID
+    const endTailHexID = disengagesAttempting.endFromHexID
     const endHex = G.boardHexes[disengagesAttempting.endHexID]
     const isAllEngagementsSettled =
       G.disengagedUnitIds.length ===
@@ -84,12 +89,15 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     const newUnitsMoved = [...G.unitsMoved]
+    const is2Hex =
+      unitAttemptingToDisengage.is2Hex && unitAttemptingToDisengageTailHex
 
     // ALLOWED
     if (isTaking) {
       // if fatal...
       if (isFatal) {
         // ...kill unit, clear hex
+        // CUJO 2 hex kill CUJO?
         delete newGameUnits[unitAttemptingToDisengage.unitID]
         newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
         G.unitsKilled = {
@@ -119,6 +127,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
         })
         events.endStage()
       } else if (!isFatal) {
+        // assign wounds
         newGameUnits[unitAttemptingToDisengage.unitID].wounds += numberOfWounds
         // update game log for non-fatal disengagement
         const indexOfThisDisengage = G.disengagedUnitIds.length
@@ -133,26 +142,35 @@ export const takeDisengagementSwipe: Move<GameState> = {
           id,
         })
         G.gameLog.push(gameLogForThisMove)
-        // move the unit if all disengagements are settled
+        // if this is the last disengagement, actually move the unit
         if (isAllEngagementsSettled) {
           /* START MOVE */
           newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-          // update unit position
-          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-          newBoardHexes[endHexID].occupyingUnitID =
-            unitAttemptingToDisengage.unitID
-          // update unit move-points
-          const moveCost = hexUtilsDistance(
-            {
-              q: unitAttemptingToDisengageHex.q,
-              r: unitAttemptingToDisengageHex.r,
-              s: unitAttemptingToDisengageHex.s,
-            },
-            {
-              q: endHex.q,
-              r: endHex.r,
-              s: endHex.s,
-            }
+          // update unit position, 2-hex or 1-hex
+          if (is2Hex) {
+            // remove from old
+            newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+            newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
+              ''
+            newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail =
+              false
+            // add to new
+            newBoardHexes[endHexID].occupyingUnitID =
+              unitAttemptingToDisengage.unitID
+            newBoardHexes[endTailHexID].occupyingUnitID =
+              unitAttemptingToDisengage.unitID
+            newBoardHexes[endTailHexID].isUnitTail = true
+          } else {
+            // remove from old
+            newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+            // add to new
+            newBoardHexes[endHexID].occupyingUnitID =
+              unitAttemptingToDisengage.unitID
+          }
+          // update unit move-points: this moveCost assumes adjacency and non-recursion on engagement/disengagement hexes
+          const moveCost = selectMoveCostBetweenNeighbors(
+            unitAttemptingToDisengageHex,
+            endHex
           )
           const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
           newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
@@ -188,22 +206,30 @@ export const takeDisengagementSwipe: Move<GameState> = {
       if (isAllEngagementsSettled) {
         /* START MOVE */
         newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-        // update unit position
-        newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-        newBoardHexes[endHexID].occupyingUnitID =
-          unitAttemptingToDisengage.unitID
+        if (is2Hex) {
+          // remove from old
+          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+          newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
+            ''
+          newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
+          // add to new
+          newBoardHexes[endHexID].occupyingUnitID =
+            unitAttemptingToDisengage.unitID
+          newBoardHexes[endTailHexID].occupyingUnitID =
+            unitAttemptingToDisengage.unitID
+          newBoardHexes[endTailHexID].isUnitTail = true
+        } else {
+          // remove from old
+          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+          // add to new
+          newBoardHexes[endHexID].occupyingUnitID =
+            unitAttemptingToDisengage.unitID
+        }
+        /* START MOVE */
         // update unit move-points
-        const moveCost = hexUtilsDistance(
-          {
-            q: unitAttemptingToDisengageHex.q,
-            r: unitAttemptingToDisengageHex.r,
-            s: unitAttemptingToDisengageHex.s,
-          },
-          {
-            q: endHex.q,
-            r: endHex.r,
-            s: endHex.s,
-          }
+        const moveCost = selectMoveCostBetweenNeighbors(
+          unitAttemptingToDisengageHex,
+          endHex
         )
         const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
         newGameUnits[unitAttemptingToDisengage.unitID].movePoints =

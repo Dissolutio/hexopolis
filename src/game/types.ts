@@ -25,9 +25,7 @@ export interface GameState {
     to
     2. the bgio-move `disengagementSwipe`
    */
-  disengagesAttempting:
-    | undefined
-    | { unit: GameUnit; defendersToDisengage: GameUnit[]; endHexID: string }
+  disengagesAttempting: undefined | DisengageAttempt
   /* END */
 
   /* 
@@ -90,6 +88,7 @@ export default Orientation
 export type BoardHex = HexCoordinates & {
   id: string
   occupyingUnitID: string
+  isUnitTail: boolean
   altitude: number
   startzonePlayerIDs: string[]
   terrain: string
@@ -178,6 +177,7 @@ export type GameUnit = {
   wounds: number
   movePoints: number
   moveRange: MoveRange
+  is2Hex: boolean
 }
 
 export type GameUnits = {
@@ -194,14 +194,24 @@ export type PlayerStateToggle = {
 
 export type MoveRange = {
   [hexID: string]: {
-    isSafe?: boolean
-    isEngage?: boolean
-    isDisengage?: boolean
     fromHexID: string
     fromCost: number
     movePointsLeft: number
+    disengagedUnitIDs: string[]
+    engagedUnitIDs: string[]
+    isSafe?: boolean
+    isEngage?: boolean
+    isDisengage?: boolean
   }
 }
+
+export type DisengageAttempt = {
+  unit: GameUnit
+  endHexID: string
+  endFromHexID: string
+  defendersToDisengage: GameUnit[]
+}
+
 export type PlayerOrderMarkers = { [order: string]: string }
 
 export type OrderMarker = {

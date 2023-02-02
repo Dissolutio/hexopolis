@@ -1,6 +1,10 @@
 import type { Move } from 'boardgame.io'
 
-import { selectHexForUnit, selectGameCardByID } from '../selectors'
+import {
+  selectHexForUnit,
+  selectGameCardByID,
+  selectTailHexForUnit,
+} from '../selectors'
 import { GameState, BoardHex, GameUnit, HexCoordinates } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
@@ -40,6 +44,7 @@ export const attackAction: Move<GameState> = {
   undoable: false,
   move: ({ G, random }, unit: GameUnit, defenderHex: BoardHex) => {
     const { unitID } = unit
+    const isUnit2Hex = unit.is2Hex
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const { currentRound, currentOrderMarker } = G
     const unitName = unitGameCard?.name ?? ''
@@ -50,6 +55,7 @@ export const attackAction: Move<GameState> = {
     const attacksAllowed = unitGameCard?.figures ?? 0
     const attacksLeft = attacksAllowed - unitsAttacked.length
     const attackerHex = selectHexForUnit(unitID, G.boardHexes)
+    const attackerTailHex = selectTailHexForUnit(unitID, G.boardHexes)
     const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } =
       defenderHex
     //! EARLY OUTS
@@ -82,7 +88,13 @@ export const attackAction: Move<GameState> = {
       return
     }
     // DISALLOW - defender is out of range
+    const isInTailRange =
+      isUnit2Hex && attackerTailHex
+        ? hexUtilsDistance(attackerTailHex as HexCoordinates, defenderHex) <=
+          unitRange
+        : false
     const isInRange =
+      isInTailRange ||
       hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
     if (!isInRange) {
       console.error(`Attack action denied:defender is out of range`)

@@ -17,18 +17,20 @@ import {
   StyledButtonWrapper,
 } from './ConfirmOrResetButtons'
 import { RedButton } from 'hexopolis-ui/layout/buttons'
+import { selectGameCardByID } from 'game/selectors'
 
 export const PlacementControls = () => {
   const { playerID } = useBgioClientInfo()
-  const { placementReady, myStartZone } = useBgioG()
+  const { placementReady, myStartZone, gameUnits, gameArmyCards } = useBgioG()
   const {
     moves: { confirmPlacementReady, deployUnits, deconfirmPlacementReady },
   } = useBgioMoves()
-  const { placementUnits, editingBoardHexes } = usePlacementContext()
+  const { placementUnits, editingBoardHexes, activeTailPlacementUnitID } =
+    usePlacementContext()
 
   const isReady = placementReady[playerID] === true
   const makeReady = () => {
-    deployUnits(editingBoardHexes)
+    deployUnits(editingBoardHexes, playerID)
     confirmPlacementReady({ playerID })
   }
   const filledHexesCount = Object.keys(editingBoardHexes).length
@@ -36,8 +38,14 @@ export const PlacementControls = () => {
   const isNoMoreEmptyStartZoneHexes = filledHexesCount === startZoneHexesCount
   const isAllPlacementUnitsPlaced = placementUnits?.length === 0
   const isShowingConfirm =
-    (isAllPlacementUnitsPlaced || isNoMoreEmptyStartZoneHexes) && !isReady
-
+    (isAllPlacementUnitsPlaced || isNoMoreEmptyStartZoneHexes) &&
+    !activeTailPlacementUnitID &&
+    !isReady
+  const tailUnit = gameUnits[activeTailPlacementUnitID]
+  const tailUnitName = selectGameCardByID(
+    gameArmyCards,
+    tailUnit?.gameCardID
+  )?.name
   // once player has placed and confirmed, show waiting
   if (isReady) {
     return (
@@ -58,8 +66,9 @@ export const PlacementControls = () => {
         </motion.div>
       </AnimatePresence>
     )
-  } else {
-    // return UI
+  }
+  // if player has placed a unit that is a 2-spacer, then we show UI for tail-placement
+  if (activeTailPlacementUnitID) {
     return (
       <AnimatePresence>
         <motion.div
@@ -67,25 +76,42 @@ export const PlacementControls = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
-          <StyledControlsP>
-            Your units have been placed in your start zone. You can select your
-            units and move them to empty hexes, or replace other units. Players
-            cannot see each others' units at this time. Once all players are
-            ready, the game will begin!
-          </StyledControlsP>
-          {isShowingConfirm && (
-            <ConfirmReady
-              makeReady={makeReady}
-              isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
-              isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
-            />
-          )}
-          <PlacementUnitTiles />
+          {/* <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2> */}
+          {/* Keeping the UI bare here so the user does not get trapped by the limited interaction available in tail-placement */}
+          <StyledControlsHeaderH2>
+            Place the tail of your {tailUnitName} unit.
+          </StyledControlsHeaderH2>
+          {/* <PlacementUnitTiles /> */}
         </motion.div>
       </AnimatePresence>
     )
   }
+  // return UI
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <StyledControlsHeaderH2>Phase: Placement</StyledControlsHeaderH2>
+        <StyledControlsP>
+          Your units have been placed in your start zone. You can select your
+          units and move them to empty hexes, or replace other units. Players
+          cannot see each others' units at this time. Once all players are
+          ready, the game will begin!
+        </StyledControlsP>
+        {isShowingConfirm && (
+          <ConfirmReady
+            makeReady={makeReady}
+            isNoMoreEmptyStartZoneHexes={isNoMoreEmptyStartZoneHexes}
+            isAllPlacementUnitsPlaced={isAllPlacementUnitsPlaced}
+          />
+        )}
+        <PlacementUnitTiles />
+      </motion.div>
+    </AnimatePresence>
+  )
 }
 
 // CONFIRM READY

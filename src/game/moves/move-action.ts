@@ -6,6 +6,7 @@ import {
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
+  selectTailHexForUnit,
 } from '../selectors'
 import {
   BoardHex,
@@ -26,9 +27,12 @@ export const moveAction: Move<GameState> = {
   ) => {
     const { unitID } = unit
     const endHexID = endHex.id
+    const endTailHexID = currentMoveRange[endHexID].fromHexID
     const startHex = selectHexForUnit(unitID, G.boardHexes)
+    const startTailHex = selectTailHexForUnit(unitID, G.boardHexes)
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
+    const startTailHexID = startTailHex?.id ?? ''
     const { safeMoves, engageMoves, disengageMoves } =
       transformMoveRangeToArraysOfIds(currentMoveRange)
     const isEndHexOutOfRange = ![...safeMoves, ...engageMoves].includes(
@@ -73,8 +77,21 @@ export const moveAction: Move<GameState> = {
     const newUnitsMoved = [...G.unitsMoved, unitID]
 
     // update unit position
-    newBoardHexes[startHexID].occupyingUnitID = ''
-    newBoardHexes[endHexID].occupyingUnitID = unitID
+    if (unit.is2Hex && startTailHexID) {
+      // remove from old
+      newBoardHexes[startHexID].occupyingUnitID = ''
+      newBoardHexes[startTailHexID].occupyingUnitID = ''
+      newBoardHexes[startTailHexID].isUnitTail = false
+      // add to new
+      newBoardHexes[endHexID].occupyingUnitID = unitID
+      newBoardHexes[endTailHexID].occupyingUnitID = unitID
+      newBoardHexes[endTailHexID].isUnitTail = true
+    } else {
+      // remove from old
+      newBoardHexes[startHexID].occupyingUnitID = ''
+      // add to new
+      newBoardHexes[endHexID].occupyingUnitID = unitID
+    }
     // update unit move-points
     newGameUnits[unitID].movePoints = movePointsLeft
 

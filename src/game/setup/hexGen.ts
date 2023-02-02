@@ -1,9 +1,14 @@
 import { BoardHexes, HexCoordinates } from '../types'
 import { generateHexID } from '../constants'
-import { GridGenerator } from 'game/hex-utils'
+import {
+  generateHexagonHexas,
+  generateOrientedRectangleHexas,
+  generateParalellogramHexas,
+  generateRectangleHexas,
+} from 'game/hex-utils'
 
 export const generateHexagon = (mapSize: number): BoardHexes => {
-  const hexgridHexes = GridGenerator.hexagon(mapSize)
+  const hexgridHexes = generateHexagonHexas(mapSize)
   const boardHexes = hexesToBoardHexes(hexgridHexes)
   return boardHexes
 }
@@ -15,6 +20,7 @@ function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
         ...curr,
         id: generateHexID(curr),
         occupyingUnitID: '',
+        isUnitTail: false,
         altitude: 1,
         terrain: 'grass',
         startzonePlayerIDs: [],
@@ -30,17 +36,17 @@ function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
 
 //TODO -- generate other maps -- WIP
 // function generateOrientedRectangle(mapSize: number): BoardHexes {
-//   const hexgridHexes = GridGenerator.orientedRectangle(mapSize, mapSize)
+//   const hexgridHexes = generateOrientedRectangleHexas(mapSize, mapSize)
 //   const boardHexes = hexesToBoardHexes(hexgridHexes)
 //   return boardHexes
 // }
 // function generateRectangle(mapSize: number): BoardHexes {
-//   const hexgridHexes = GridGenerator.rectangle(mapSize + 1, mapSize + 1)
+//   const hexgridHexes = generateRectangleHexas(mapSize + 1, mapSize + 1)
 //   const boardHexes = hexesToBoardHexes(hexgridHexes)
 //   return boardHexes
 // }
 // function generateParallelogram(mapSize: number): BoardHexes {
-//   const hexgridHexes = GridGenerator.parallelogram(
+//   const hexgridHexes = generateParalellogramHexas(
 //     -mapSize - 2,
 //     mapSize + 2,
 //     -mapSize,
