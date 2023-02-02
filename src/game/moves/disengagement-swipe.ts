@@ -40,7 +40,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
       G.gameArmyCards,
       unitSwiping?.gameCardID ?? ''
     )
-    const unitSwipingHex = selectHexForUnit(unitSwiping.unitID, G.boardHexes)
 
     // DISALLOWED
     // state is wrong
@@ -50,8 +49,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
       !unitAttemptingToDisengageHex ||
       !unitAttemptingCard ||
       !unitSwiping ||
-      !unitSwipingCard ||
-      !unitSwipingHex
+      !unitSwipingCard
     ) {
       events.setActivePlayers({
         currentPlayer: stageNames.movement,
