@@ -3,7 +3,7 @@ import { hexUtilsDistance } from 'game/hex-utils'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
-  calcMoveCostBetweenNeighbors,
+  selectMoveCostBetweenNeighbors,
   selectGameCardByID,
   selectHexForUnit,
   selectRevealedGameCard,
@@ -97,6 +97,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
       // if fatal...
       if (isFatal) {
         // ...kill unit, clear hex
+        // CUJO 2 hex kill CUJO?
         delete newGameUnits[unitAttemptingToDisengage.unitID]
         newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
         G.unitsKilled = {
@@ -126,6 +127,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
         })
         events.endStage()
       } else if (!isFatal) {
+        // assign wounds
         newGameUnits[unitAttemptingToDisengage.unitID].wounds += numberOfWounds
         // update game log for non-fatal disengagement
         const indexOfThisDisengage = G.disengagedUnitIds.length
@@ -140,12 +142,13 @@ export const takeDisengagementSwipe: Move<GameState> = {
           id,
         })
         G.gameLog.push(gameLogForThisMove)
-        // move the unit if all disengagements are settled
+        // if this is the last disengagement, actually move the unit
         if (isAllEngagementsSettled) {
           /* START MOVE */
           newUnitsMoved.push(unitAttemptingToDisengage.unitID)
           // update unit position
           if (
+            // if unit is 2 hex
             unitAttemptingToDisengage.is2Hex &&
             unitAttemptingToDisengageTailHex
           ) {
@@ -162,14 +165,15 @@ export const takeDisengagementSwipe: Move<GameState> = {
               unitAttemptingToDisengage.unitID
             newBoardHexes[endTailHexID].isUnitTail = true
           } else {
+            // its a 1 hex
             // remove from old
             newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
             // add to new
             newBoardHexes[endHexID].occupyingUnitID =
               unitAttemptingToDisengage.unitID
           }
-          // update unit move-points
-          const moveCost = calcMoveCostBetweenNeighbors(
+          // update unit move-points: this assumes adjacency and non-recursion on engagement/disengagement hexes
+          const moveCost = selectMoveCostBetweenNeighbors(
             unitAttemptingToDisengageHex,
             endHex
           )
@@ -212,7 +216,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
         newBoardHexes[endHexID].occupyingUnitID =
           unitAttemptingToDisengage.unitID
         // update unit move-points
-        const moveCost = calcMoveCostBetweenNeighbors(
+        const moveCost = selectMoveCostBetweenNeighbors(
           unitAttemptingToDisengageHex,
           endHex
         )

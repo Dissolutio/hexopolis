@@ -72,7 +72,6 @@ export function selectUnrevealedGameCard(
   const id = playerOrderMarkers[currentOrderMarker.toString()]
   return selectGameCardByID(armyCards, id)
 }
-
 export function selectHexNeighbors(
   startHexID: string,
   boardHexes: BoardHexes
@@ -103,7 +102,7 @@ export function selectValidTailHexes(
       */
   )
 }
-export function calcMoveCostBetweenNeighbors(
+export function selectMoveCostBetweenNeighbors(
   startHex: BoardHex,
   endHex: BoardHex
 ): number {

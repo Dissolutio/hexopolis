@@ -13,7 +13,7 @@ import {
   selectIfGameArmyCardHasDisengage,
   selectEngagementsForHex,
   selectHexNeighbors,
-  calcMoveCostBetweenNeighbors,
+  selectMoveCostBetweenNeighbors,
   selectValidTailHexes,
   selectMoveEngagedUnitIDs,
   selectMoveDisengagedUnitIDs,
@@ -178,7 +178,7 @@ function recurseThroughMoves({
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
       const fromCost = isFlying
         ? 1
-        : calcMoveCostBetweenNeighbors(startHex, neighbor)
+        : selectMoveCostBetweenNeighbors(startHex, neighbor)
       const isFromOccupied =
         startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
       const validTailSpotsForNeighbor = selectValidTailHexes(
