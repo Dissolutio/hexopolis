@@ -192,27 +192,29 @@ function recurseThroughMoves({
       }
       const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
       // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
-      const isCausingEngagement =
-        selectMoveEngagedUnitIDs({
-          unit,
-          startHexID,
-          neighborHexID,
-          boardHexes,
-          gameUnits,
-          armyCards,
-        }).length > 0
+      const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
+        unit,
+        isFlying,
+        startHexID: startHexID,
+        neighborHexID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+      })
+      const engagedUnitIDs = selectMoveEngagedUnitIDs({
+        unit,
+        startHexID,
+        neighborHexID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+      })
+      const isCausingEngagement = engagedUnitIDs.length > 0
       // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
       const isCausingDisengagementIfFlying = isUnitEngaged && !hasStealth
       const isCausingDisengagementIfWalking = hasDisengage
         ? false
-        : selectMoveDisengagedUnitIDs({
-            unit,
-            startHexID: startHexID,
-            neighborHexID,
-            boardHexes,
-            gameUnits,
-            armyCards,
-          }).length > 0
+        : disengagedUnitIDs.length > 0
       const isCausingDisengagement = isFlying
         ? isCausingDisengagementIfFlying
         : isCausingDisengagementIfWalking
@@ -254,6 +256,8 @@ function recurseThroughMoves({
         fromCost,
         isFromOccupied,
         movePointsLeft,
+        disengagedUnitIDs,
+        engagedUnitIDs,
       }
       // 1. unpassable
       if (isUnpassable) {

@@ -196,12 +196,14 @@ export type PlayerStateToggle = {
 
 export type MoveRange = {
   [hexID: string]: {
-    isSafe?: boolean
-    isEngage?: boolean
-    isDisengage?: boolean
     fromHexID: string
     fromCost: number
     movePointsLeft: number
+    disengagedUnitIDs: string[]
+    engagedUnitIDs: string[]
+    isSafe?: boolean
+    isEngage?: boolean
+    isDisengage?: boolean
   }
 }
 

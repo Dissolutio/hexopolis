@@ -18,7 +18,6 @@ import {
 import {
   selectHexForUnit,
   selectRevealedGameCard,
-  selectEngagementsForHex,
   selectIfGameArmyCardHasFlying,
 } from '../../game/selectors'
 import {
@@ -86,25 +85,26 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const selectedUnitGameCard = armyCards.find(
     (card) => card.gameCardID === selectedUnit?.gameCardID
   )
-  const selectedUnitHex = selectHexForUnit(selectedUnitID, boardHexes)
   const { moveAction, attackAction, attemptDisengage } = moves
   // disengage confirm
   const [disengageAttempt, setDisengageAttempt] = useState<
     undefined | DisengageAttempt
   >(undefined)
-  // client-side moverange
+
+  // toggle flying/walking for flying units
   const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
   const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
   const isFlying = isWalkingFlyer ? false : hasFlying
   const toggleIsWalkingFlyer = () => {
     setIsWalkingFlyer((s) => !s)
   }
+
+  // move range of selected unit, when it's your move
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
   const { safeMoves, engageMoves, disengageMoves } =
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
-
   // effect: update moverange when selected unit changes
   useEffect(() => {
     if (selectedUnitID)
@@ -128,28 +128,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     setDisengageAttempt(undefined)
   }
   const onClickDisengageHex = (endHexID: string) => {
-    const selectedUnitHexID = selectedUnitHex?.id ?? ''
-    const tailHex = selectedUnitMoveRange[endHexID]?.fromHexID
-    const currentEngagements = selectEngagementsForHex({
-      hexID: selectedUnitHexID,
-      boardHexes,
-      gameUnits,
-      armyCards,
-    })
-    const predictedEngagements = selectEngagementsForHex({
-      hexID: endHexID,
-      boardHexes,
-      gameUnits,
-      armyCards,
-      override: {
-        overrideUnitID: selectedUnitID,
-        overrideTailHexID: tailHex,
-      },
-    })
-    // flyers disengage everybody once they start flying, but walkers might stay engaged to some units
-    const defendersToDisengage = currentEngagements
-      .filter((id) => (isFlying ? true : !predictedEngagements.includes(id)))
-      .map((id) => gameUnits[id])
+    const disengagementUnitIDs =
+      selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
+    const defendersToDisengage = disengagementUnitIDs.map((id) => gameUnits[id])
     setDisengageAttempt({
       unit: selectedUnit,
       endHexID,
@@ -323,6 +304,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         selectedUnitMoveRange,
         // disengage confirm
         showDisengageConfirm,
+        disengageAttempt,
         isWalkingFlyer,
         confirmDisengageAttempt,
         cancelDisengageAttempt,

@@ -205,6 +205,7 @@ export function selectEngagementsForHex({
 // presumed start hex and end hex are adjacent, returns unit IDs that are disengaged
 export function selectMoveDisengagedUnitIDs({
   unit,
+  isFlying,
   startHexID,
   neighborHexID,
   boardHexes,
@@ -212,6 +213,7 @@ export function selectMoveDisengagedUnitIDs({
   armyCards,
 }: {
   unit: GameUnit
+  isFlying: boolean
   startHexID: string
   neighborHexID: string
   boardHexes: BoardHexes
@@ -235,9 +237,10 @@ export function selectMoveDisengagedUnitIDs({
     gameUnits,
     armyCards,
   })
-  return initialEngagements.filter(
-    (id) => !engagementsForCurrentHex.includes(id)
-  )
+  const defendersToDisengage = initialEngagements
+    // flyers disengage everybody once they start flying, but walkers might stay engaged to some units
+    .filter((id) => (isFlying ? true : !engagementsForCurrentHex.includes(id)))
+  return defendersToDisengage
 }
 // presumed start hex and end hex are adjacent, this determines if engagements will be entered
 export function selectMoveEngagedUnitIDs({
