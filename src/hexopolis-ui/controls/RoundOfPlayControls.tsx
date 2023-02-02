@@ -93,11 +93,26 @@ const RopIdleControls = () => {
 }
 
 const RopConfirmDisengageAttemptControls = () => {
-  const { confirmDisengageAttempt, cancelDisengageAttempt } = usePlayContext()
+  const { confirmDisengageAttempt, cancelDisengageAttempt, disengageAttempt } =
+    usePlayContext()
+  const { gameArmyCards } = useBgioG()
+  if (!disengageAttempt) return null
+  const { unit, defendersToDisengage } = disengageAttempt
+  const myUnitCard = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+  const myUnitName = myUnitCard?.name ?? ''
+  const unitsThatGetASwipe = defendersToDisengage.map((u) => {
+    const card = selectGameCardByID(gameArmyCards, u.gameCardID)
+    return {
+      ...u,
+      singleName: card?.singleName ?? '',
+    }
+  })
   return (
     <>
       <StyledControlsHeaderH2>
-        Confirm you want to disengage:
+        {`Confirm you want ${myUnitName} to disengage ${
+          unitsThatGetASwipe.length
+        } units? (${unitsThatGetASwipe.map((u) => u.singleName).join(', ')})`}
       </StyledControlsHeaderH2>
       <ConfirmOrResetButtons
         confirm={confirmDisengageAttempt}
