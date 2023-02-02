@@ -89,6 +89,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     const newUnitsMoved = [...G.unitsMoved]
+    const is2Hex =
+      unitAttemptingToDisengage.is2Hex && unitAttemptingToDisengageTailHex
 
     // ALLOWED
     if (isTaking) {
@@ -144,12 +146,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
         if (isAllEngagementsSettled) {
           /* START MOVE */
           newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-          // update unit position
-          if (
-            // if unit is 2 hex
-            unitAttemptingToDisengage.is2Hex &&
-            unitAttemptingToDisengageTailHex
-          ) {
+          // update unit position, 2-hex or 1-hex
+          if (is2Hex) {
             // remove from old
             newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
             newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
@@ -163,14 +161,13 @@ export const takeDisengagementSwipe: Move<GameState> = {
               unitAttemptingToDisengage.unitID
             newBoardHexes[endTailHexID].isUnitTail = true
           } else {
-            // its a 1 hex
             // remove from old
             newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
             // add to new
             newBoardHexes[endHexID].occupyingUnitID =
               unitAttemptingToDisengage.unitID
           }
-          // update unit move-points: this assumes adjacency and non-recursion on engagement/disengagement hexes
+          // update unit move-points: this moveCost assumes adjacency and non-recursion on engagement/disengagement hexes
           const moveCost = selectMoveCostBetweenNeighbors(
             unitAttemptingToDisengageHex,
             endHex
@@ -209,10 +206,26 @@ export const takeDisengagementSwipe: Move<GameState> = {
       if (isAllEngagementsSettled) {
         /* START MOVE */
         newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-        // update unit position
-        newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-        newBoardHexes[endHexID].occupyingUnitID =
-          unitAttemptingToDisengage.unitID
+        if (is2Hex) {
+          // remove from old
+          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+          newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
+            ''
+          newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
+          // add to new
+          newBoardHexes[endHexID].occupyingUnitID =
+            unitAttemptingToDisengage.unitID
+          newBoardHexes[endTailHexID].occupyingUnitID =
+            unitAttemptingToDisengage.unitID
+          newBoardHexes[endTailHexID].isUnitTail = true
+        } else {
+          // remove from old
+          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+          // add to new
+          newBoardHexes[endHexID].occupyingUnitID =
+            unitAttemptingToDisengage.unitID
+        }
+        /* START MOVE */
         // update unit move-points
         const moveCost = selectMoveCostBetweenNeighbors(
           unitAttemptingToDisengageHex,
