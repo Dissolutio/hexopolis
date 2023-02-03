@@ -19,6 +19,7 @@ import {
 import Hexagon from './Hexagon'
 import { HexText } from './HexText'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
+import { HexIDText } from './HexIDText'
 
 type MapHexesProps = {
   hexSize: number
@@ -168,34 +169,4 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     })
   }
   return <>{hexJSX()}</>
-}
-const HexIDText = ({
-  hexSize,
-  text,
-  textLine2,
-}: {
-  hexSize: number
-  text: string
-  textLine2?: string
-}) => {
-  return (
-    <>
-      <HexText
-        hexSize={hexSize}
-        className="maphex_altitude-text"
-        y={hexSize * 0.6}
-      >
-        {text.toString()}
-      </HexText>
-      {textLine2 && (
-        <HexText
-          hexSize={hexSize}
-          className="maphex_altitude-text"
-          y={hexSize * 0.8}
-        >
-          {textLine2.toString()}
-        </HexText>
-      )}
-    </>
-  )
 }
