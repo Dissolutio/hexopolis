@@ -173,7 +173,6 @@ export function calcRopHexClassNames({
   const hexUnit = gameUnits[hexUnitID]
   const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
   const selectedUnit = gameUnits[selectedUnitID]
-  const is2HexSelectedUnit = selectedUnit?.is2Hex
   const isSelectedCard = (hex: BoardHex) => {
     return revealedGameCardUnitIDs.includes(hexUnitID)
   }
@@ -214,10 +213,12 @@ export function calcRopHexClassNames({
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)
       const tailHex = selectTailHexForUnit(selectedUnitID, boardHexes)
-      const isInTailRange = is2HexSelectedUnit
-        ? hexUtilsDistance(tailHex as HexCoordinates, hex) <=
-          (revealedGameCard?.range ?? 0)
-        : false
+      const is2HexSelectedUnit = selectedUnit?.is2Hex && tailHex
+      const isInTailRange =
+        is2HexSelectedUnit && tailHex
+          ? hexUtilsDistance(tailHex as HexCoordinates, hex) <=
+            (revealedGameCard?.range ?? 0)
+          : false
       const isInRange =
         isInTailRange ||
         hexUtilsDistance(startHex as HexCoordinates, hex) <=
