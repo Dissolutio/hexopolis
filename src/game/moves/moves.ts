@@ -1,19 +1,10 @@
 import type { Move, MoveMap } from 'boardgame.io'
-import { selectHexForUnit } from '../selectors'
 import { GameState, PlayerOrderMarkers } from '../types'
-import { stageNames } from '../constants'
-
-//phase:___RoundOfPlay
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
-
-//phase:___RoundOfPlay
-const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
-  events.endTurn()
-}
 
 //phase:___Placement
 const deployUnits: Move<GameState> = (
@@ -80,17 +71,23 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 ) => {
   G.orderMarkersReady[playerID] = false
 }
+const waterClone: Move<GameState> = (
+  { G },
+  { playerID }: { playerID: string }
+) => {
+  G.orderMarkersReady[playerID] = false
+}
 
 export const moves: MoveMap<GameState> = {
-  endCurrentPlayerTurn,
-  moveAction,
-  attemptDisengage,
-  takeDisengagementSwipe,
-  attackAction,
   deployUnits,
   confirmPlacementReady,
   deconfirmPlacementReady,
   placeOrderMarkers,
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,
+  moveAction,
+  attemptDisengage,
+  takeDisengagementSwipe,
+  waterClone,
+  attackAction,
 }

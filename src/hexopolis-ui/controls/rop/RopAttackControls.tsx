@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { usePlayContext } from '../../contexts'
-import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
-import { UndoRedoButtons } from '../rop/UndoRedoButtons'
+import { useBgioEvents, useBgioG } from 'bgio-contexts'
 import { StyledControlsP } from 'hexopolis-ui/layout/Typography'
 import {
   ConfirmOrResetButtons,
@@ -14,9 +13,7 @@ import { RopAttackMoveHeader } from './RopMoveControls'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
-  const { moves } = useBgioMoves()
   const { events } = useBgioEvents()
-  const { endCurrentPlayerTurn } = moves
   const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
     usePlayContext()
   const revealedGameCardName = revealedGameCard?.name ?? ''
@@ -24,11 +21,9 @@ export const RopAttackControls = () => {
     (ability) => !!ability.isAfterMove
   )
   const attacksAllowed = revealedGameCard?.figures ?? 0
-  const isLessUnitsWithTargetsThanNumberOfAttacks =
-    unitsWithTargets < attacksAllowed
   const attacksUsed = unitsAttacked.length
   const handleEndTurnButtonClick = () => {
-    endCurrentPlayerTurn()
+    events?.endTurn?.()
   }
   const attacksAvailable = attacksAllowed - attacksUsed
   const isAllAttacksUsed = attacksAvailable <= 0
@@ -59,13 +54,6 @@ export const RopAttackControls = () => {
         {attacksUsed} / {attacksAllowed} attacks used
       </StyledControlsP>
 
-      {/* <StyledControlsP>
-        {`You moved ${uniqUnitsMoved.length} unit${
-          uniqUnitsMoved.length !== 1 ? 's' : ''
-        }, and have ${freeAttacksAvailable} attack${
-          freeAttacksAvailable !== 1 ? 's' : ''
-        } available for unmoved units`}
-      </StyledControlsP> */}
       <StyledControlsP>
         {`${uniqUnitsMoved.length} unit${
           uniqUnitsMoved.length !== 1 ? 's' : ''
