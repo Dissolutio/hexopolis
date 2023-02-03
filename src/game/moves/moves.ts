@@ -11,9 +11,6 @@ import { attackAction } from './attack-action'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
 //phase:___RoundOfPlay
-const endCurrentMoveStage: Move<GameState> = ({ events }) => {
-  events.setStage(stageNames.attacking)
-}
 const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
   events.endTurn()
 }
@@ -85,7 +82,6 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 }
 
 export const moves: MoveMap<GameState> = {
-  endCurrentMoveStage,
   endCurrentPlayerTurn,
   moveAction,
   attemptDisengage,
