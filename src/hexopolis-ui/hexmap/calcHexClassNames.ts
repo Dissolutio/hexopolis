@@ -273,7 +273,7 @@ export function calcRopHexClassNames({
     }
   }
   if (isWaterCloneStage) {
-    if (true) {
+    if (Math.random() > 0.95) {
       classNames = classNames.concat(' maphex__cloner-hexes ')
     }
     if (false) {
