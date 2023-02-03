@@ -108,7 +108,11 @@ const waterClone: Move<GameState> = (
         placements: {
           ...result.placements,
           [current.unit.unitID]: isSuccess
-            ? { unitHexID: current.unitHexID, tails: current.tails }
+            ? {
+                clonerID: current.unit.unitID,
+                unitHexID: current.unitHexID,
+                tails: current.tails,
+              }
             : undefined,
         },
       }
@@ -123,8 +127,25 @@ const waterClone: Move<GameState> = (
 const finishWaterCloningAndEndTurn: Move<GameState> = ({ G, events }) => {
   // reset water clone stuff
   G.waterCloneRoll = undefined
-  // G.waterClonesPlaced = [] // not needed
+  G.waterClonesPlaced = []
   events.endTurn()
+}
+const placeWaterClone: Move<GameState> = (
+  { G },
+  { clonerID, clonedID, hexID }
+) => {
+  G.waterClonesPlaced = [
+    ...(G?.waterClonesPlaced ?? []),
+    { clonerID, clonedID, hexID },
+  ]
+  // unkill the unit (choosing to leave G.unitsKilled, and the same unit might get killed many times, could even be a post-game stat)
+  G.gameUnits[clonedID] = {
+    ...G.killedUnits[clonedID],
+    movePoints: 0, // TODO: over time, there may be many properties that need resetting upon death/resurrection
+  }
+  delete G.killedUnits[clonedID]
+  // place the unit
+  G.boardHexes[hexID].occupyingUnitID = ''
 }
 
 export const moves: MoveMap<GameState> = {

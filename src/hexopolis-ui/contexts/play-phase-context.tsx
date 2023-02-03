@@ -76,9 +76,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     currentOrderMarker,
     players,
     uniqUnitsMoved,
+    waterCloneRoll,
+    waterClonesPlaced,
   } = useBgioG()
-  const { currentPlayer, isMyTurn, isMovementStage, isAttackingStage } =
-    useBgioCtx()
+  const {
+    currentPlayer,
+    isMovementStage,
+    isAttackingStage,
+    isWaterCloneStage,
+  } = useBgioCtx()
   const { moves } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
@@ -223,6 +229,34 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const selectedGameCardUnits = Object.values(gameUnits).filter(
     (unit: GameUnit) => unit.gameCardID === currentTurnGameCardID
   )
+  const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
+    (p) => p.unitHexID
+  )
+  const { clonePlaceables, cloneRePlaceables } = Object.values(
+    waterCloneRoll?.placements ?? {}
+  ).reduce(
+    (
+      result: { clonePlaceables: string[]; cloneRePlaceables: string[] },
+      placement
+    ) => {
+      // if the unit has been placed, then the hex is not placeable, it's re-placeable
+      const cloneForThisHexWasPlacedAlready = waterClonesPlaced
+        ?.map((placed) => placed.clonerID)
+        .includes(placement.clonerID)
+      if (!cloneForThisHexWasPlacedAlready) {
+        return {
+          ...result,
+          clonePlaceables: [...result.clonePlaceables, ...placement.tails],
+        }
+      } else {
+        return {
+          ...result,
+          cloneRePlaceables: [...result.cloneRePlaceables, ...placement.tails],
+        }
+      }
+    },
+    { clonePlaceables: [], cloneRePlaceables: [] }
+  )
   // HANDLERS
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to map-background onClick (if ever one is added)
@@ -295,6 +329,19 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         if (isInRange) {
           attackAction(selectedUnit, boardHexes[sourceHex.id])
         }
+      }
+    }
+    // WATER CLONE STAGE
+    if (isWaterCloneStage) {
+      const isHexInClonePlaceables = clonePlaceables.includes(sourceHexID)
+      const isHexInCloneRePlaceables = cloneRePlaceables.includes(sourceHexID)
+      // place unit
+      if (isHexInClonePlaceables) {
+        setSelectedUnitID(unitOnHex.unitID)
+      }
+      // re-place unit
+      if (isHexInCloneRePlaceables) {
+        setSelectedUnitID('')
       }
     }
   }

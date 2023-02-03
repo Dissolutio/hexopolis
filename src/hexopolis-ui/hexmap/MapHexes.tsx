@@ -26,15 +26,8 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = useBgioClientInfo()
-  const {
-    boardHexes,
-    gameArmyCards,
-    startZones,
-    gameUnits,
-    unitsMoved,
-    waterCloneRoll,
-    waterClonesPlaced,
-  } = useBgioG()
+  const { boardHexes, gameArmyCards, startZones, gameUnits, unitsMoved } =
+    useBgioG()
   const { selectedUnitID } = useUIContext()
   const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
@@ -59,6 +52,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
+    // clonerHexes,
+    // clonePlaceableHexes,
   } = usePlayContext()
 
   // computed
@@ -74,7 +69,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       onClickTurnHex?.(event, sourceHex)
     }
   }
-
   // classnames
   const hexClassNames = (hex: BoardHex) => {
     if (isPlacementPhase) {
@@ -111,10 +105,10 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         isWaterCloneStage,
         boardHexes,
         gameUnits,
-        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
-        waterCloneRoll,
+        // clonerHexes,
+        // clonePlaceableHexes,
       })
     }
   }

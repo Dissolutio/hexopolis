@@ -38,7 +38,7 @@ export interface GameState {
   disengagedUnitIds: string[]
   /* END */
   waterCloneRoll?: WaterCloneRoll
-  waterClonesPlaced?: { unitID: string; hexID: string }[]
+  waterClonesPlaced?: WaterClonesPlaced
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
@@ -229,11 +229,17 @@ export type WaterCloneRoll = {
   placements: {
     // placements tell us where the clones are cloning "from" and the tails are where they could be placed
     [gameUnitID: string]: {
+      clonerID: string
       unitHexID: string
       tails: string[]
     }
   }
 }
+export type WaterClonesPlaced = {
+  clonerID: string
+  clonedID: string
+  hexID: string
+}[]
 export type PlayerOrderMarkers = { [order: string]: string }
 
 export type OrderMarker = {
