@@ -1,5 +1,10 @@
 import type { Move, MoveMap } from 'boardgame.io'
-import { GameState, PlayerOrderMarkers, UnitsCloning } from '../types'
+import {
+  GameState,
+  PlayerOrderMarkers,
+  UnitsCloning,
+  WaterCloneRoll,
+} from '../types'
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
@@ -76,32 +81,49 @@ const waterClone: Move<GameState> = (
   { G, random },
   { unitsCloning }: { unitsCloning: UnitsCloning }
 ) => {
-  const numberOfDiceToRoll = unitsCloning.length
-  const threshholds = unitsCloning.map((uC) => {
-    // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
-    const isOnWater = G.boardHexes[uC.unitHexID].terrain === 'water'
-    if (isOnWater) {
-      return 10
-    } else {
-      return 15
-    }
-  })
-  const diceRolls = random.D20(numberOfDiceToRoll)
-  const cloneCount = diceRolls.filter(
-    (roll, i) => roll >= threshholds[i]
-  ).length
-  G.waterCloneRoll = {
-    diceRolls,
-    threshholds,
-    cloneCount,
+  const blankWaterCloneRoll = {
+    diceRolls: {},
+    threshholds: {},
+    cloneCount: 0,
+    placements: {},
   }
+  const waterCloneRoll: WaterCloneRoll = unitsCloning.reduce(
+    (result, current) => {
+      const isOnWater = G.boardHexes[current.unitHexID].terrain === 'water'
+      const threshhold = isOnWater ? 10 : 15
+      // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
+      const dieRoll = random.Die(20)
+      const isSuccess = dieRoll >= threshhold
+      return {
+        ...result,
+        threshholds: {
+          ...result.threshholds,
+          [current.unit.unitID]: threshhold,
+        },
+        diceRolls: {
+          ...result.diceRolls,
+          [current.unit.unitID]: dieRoll,
+        },
+        cloneCount: isSuccess ? result.cloneCount + 1 : result.cloneCount,
+        placements: {
+          ...result.placements,
+          [current.unit.unitID]: isSuccess
+            ? { unitHexID: current.unitHexID, tails: current.tails }
+            : undefined,
+        },
+      }
+    },
+    blankWaterCloneRoll
+  )
+
+  G.waterCloneRoll = waterCloneRoll
   G.waterClonesPlaced = []
   //
 }
 const finishWaterCloningAndEndTurn: Move<GameState> = ({ G, events }) => {
   // reset water clone stuff
   G.waterCloneRoll = undefined
-  G.waterClonesPlaced = []
+  // G.waterClonesPlaced = [] // not needed
   events.endTurn()
 }
 

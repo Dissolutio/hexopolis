@@ -50,19 +50,20 @@ export const WaterCloneControls = () => {
   }
   const clonesTotal = waterCloneRoll?.cloneCount ?? 0
   const clonesPlacedIDs = waterClonesPlaced ?? []
-  const clonesPlaced = clonesPlacedIDs.length
-  const clonesLeft = clonesTotal - clonesPlaced
+  const clonesPlacedCount = clonesPlacedIDs.length
+  const clonesLeft = clonesTotal - clonesPlacedCount
   // 1. You rolled no clones, end your turn
   // 2. You rolled some clones, place them
   // 3. You haven't rolled yet, roll
   if (waterCloneRoll?.cloneCount === 0) {
+    // 1. You rolled no clones, end your turn
     return (
       <>
         <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
         <StyledControlsP>{`None of your clones were successful.`}</StyledControlsP>
-        <StyledControlsP>{`You rolled: ${waterCloneRoll.diceRolls.join(
-          ','
-        )}`}</StyledControlsP>
+        <StyledControlsP>{`You rolled: ${Object.values(
+          waterCloneRoll.diceRolls
+        ).join(',')}`}</StyledControlsP>
         <StyledButtonWrapper>
           <GreenButton onClick={finishWaterCloningAndEndTurn}>
             OK, end turn
@@ -72,15 +73,19 @@ export const WaterCloneControls = () => {
     )
   }
   if (waterCloneRoll) {
+    // 2. You rolled some clones, place them
     return (
       <>
-        <StyledControlsHeaderH2>
-          Water Clone: place {clonesTotal} clones, {clonesLeft} remaining
-        </StyledControlsHeaderH2>
+        <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
         <StyledControlsP>{`${clonesTotal} of your clones were successful.`}</StyledControlsP>
+        <StyledControlsP>{`You rolled: ${Object.values(
+          waterCloneRoll.diceRolls
+        ).join(',')}`}</StyledControlsP>
+        <StyledControlsP>{`Select where to place them.`}</StyledControlsP>
       </>
     )
   }
+  // 3. You haven't rolled yet, roll
   return (
     <>
       <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>

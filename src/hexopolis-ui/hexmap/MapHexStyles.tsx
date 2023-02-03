@@ -202,4 +202,15 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       drop-shadow(5px -5px 4px var(--neon-red))
       drop-shadow(-5px 5px 4px var(--neon-red));
   }
+  //PHASE: ROP-water-clone
+  // paint places where water clone can be placed
+  .maphex__valid_selectable > g polygon {
+    // THIS COULD BE USED ELSEWHERE TO HIGHLIGHT WHITE HEXES
+    fill: var(--sub-white);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(--sub-white))
+      drop-shadow(-2.5px -2.5px 2px var(--sub-white))
+      drop-shadow(2.5px -2.5px 2px var(--sub-white))
+      drop-shadow(-2.5px 2.5px 2px var(--sub-white));
+  }
 `

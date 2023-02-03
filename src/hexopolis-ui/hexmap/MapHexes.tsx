@@ -17,7 +17,6 @@ import {
   calcRopHexClassNames,
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
-import { HexText } from './HexText'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { HexIDText } from './HexIDText'
 
@@ -27,8 +26,15 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameArmyCards, startZones, gameUnits, unitsMoved } =
-    useBgioG()
+  const {
+    boardHexes,
+    gameArmyCards,
+    startZones,
+    gameUnits,
+    unitsMoved,
+    waterCloneRoll,
+    waterClonesPlaced,
+  } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
@@ -38,6 +44,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isOrderMarkerPhase,
     isRoundOfPlayPhase,
     isAttackingStage,
+    isMovementStage,
+    isWaterCloneStage,
   } = useBgioCtx()
   const {
     onClickPlacementHex,
@@ -99,11 +107,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
+        isMovementStage,
+        isWaterCloneStage,
         boardHexes,
         gameUnits,
         gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
+        waterCloneRoll,
       })
     }
   }

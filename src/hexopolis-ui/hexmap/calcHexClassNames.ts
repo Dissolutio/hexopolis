@@ -14,6 +14,7 @@ import {
   HexCoordinates,
   MoveRange,
   StartZones,
+  WaterCloneRoll,
 } from 'game/types'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
@@ -143,6 +144,8 @@ export function calcOrderMarkerHexClassNames({
 export function calcRopHexClassNames({
   isMyTurn,
   isAttackingStage,
+  isMovementStage,
+  isWaterCloneStage,
   selectedUnitID,
   hex,
   playerID,
@@ -154,9 +157,12 @@ export function calcRopHexClassNames({
   gameArmyCards,
   unitsMoved,
   selectedUnitMoveRange,
+  waterCloneRoll,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
+  isMovementStage: boolean
+  isWaterCloneStage: boolean
   selectedUnitID: string
   hex: BoardHex
   playerID: string
@@ -168,6 +174,7 @@ export function calcRopHexClassNames({
   gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
+  waterCloneRoll?: WaterCloneRoll
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -231,7 +238,7 @@ export function calcRopHexClassNames({
   }
 
   // phase: ROP-move
-  if (!isAttackingStage && isMyTurn) {
+  if (isMovementStage) {
     const { safeMoves, engageMoves, disengageMoves } =
       transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
     const isInSafeMoveRange = safeMoves.includes(hex.id)
@@ -265,5 +272,10 @@ export function calcRopHexClassNames({
       }
     }
   }
+  // if (isWaterCloneStage){
+  //   if(isAbleToTakeAUnitRightNow){
+
+  //   }
+  // }
   return classNames
 }
