@@ -38,7 +38,6 @@ export interface GameState {
   disengagedUnitIds: string[]
   /* END */
   waterCloneRoll?: WaterCloneRoll
-  waterClonesPlaced?: WaterClonesPlaced
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
@@ -235,7 +234,7 @@ export type WaterCloneRoll = {
     }
   }
 }
-export type WaterClonesPlaced = {
+export type WaterCloneProposition = {
   clonerID: string
   clonedID: string
   hexID: string

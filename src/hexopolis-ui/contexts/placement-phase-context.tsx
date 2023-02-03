@@ -251,7 +251,7 @@ const PlacementContextProvider = ({
         }
       }
     }
-    // 3. tail-selected, and we clicked a tail-placeable hex (otherwise, tail-selected means clicking any other hex does nothing)
+    // 3. tail-selected, and we clicked a tail-placeable hex (otherwise, having a tail-selected means clicking any other hex does nothing)
     if (activeTailPlacementUnitID && tailPlaceables.includes(clickedHexId)) {
       // add tail to boardHexes
       setEditingBoardHexes((s) => ({

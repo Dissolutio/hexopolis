@@ -14,6 +14,7 @@ import {
   GameUnit,
   HexCoordinates,
   MoveRange,
+  WaterCloneProposition,
 } from 'game/types'
 import {
   selectHexForUnit,
@@ -49,6 +50,8 @@ type PlayContextValue = {
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
   toggleDisengageConfirm: (endHexID: string) => void
+  waterClonePlacement: WaterCloneProposition
+
   // computed
   currentTurnGameCardID: string
   selectedUnit: GameUnit
@@ -60,6 +63,9 @@ type PlayContextValue = {
   selectedGameCardUnits: GameUnit[]
   freeAttacksAvailable: number
   isFreeAttackAvailable: boolean
+  clonerHexIDs: string[]
+  clonePlaceableHexIDs: string[]
+  cloneRePlaceableHexIDs: string[]
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
   toggleIsWalkingFlyer: () => void
@@ -77,7 +83,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     players,
     uniqUnitsMoved,
     waterCloneRoll,
-    waterClonesPlaced,
   } = useBgioG()
   const {
     currentPlayer,
@@ -92,10 +97,30 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     (card) => card.gameCardID === selectedUnit?.gameCardID
   )
   const { moveAction, attackAction, attemptDisengage } = moves
-  // disengage confirm
+  // disengage confirm and disengage related
   const [disengageAttempt, setDisengageAttempt] = useState<
     undefined | DisengageAttempt
   >(undefined)
+  const showDisengageConfirm = disengageAttempt !== undefined
+  const confirmDisengageAttempt = () => {
+    attemptDisengage(disengageAttempt)
+    setDisengageAttempt(undefined)
+  }
+  const cancelDisengageAttempt = () => {
+    setDisengageAttempt(undefined)
+  }
+  const onClickDisengageHex = (endHexID: string) => {
+    const disengagementUnitIDs =
+      selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
+    const endFromHexID = selectedUnitMoveRange[endHexID]?.fromHexID
+    const defendersToDisengage = disengagementUnitIDs.map((id) => gameUnits[id])
+    setDisengageAttempt({
+      unit: selectedUnit,
+      endHexID,
+      endFromHexID,
+      defendersToDisengage,
+    })
+  }
 
   // toggle flying/walking for flying units
   const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
@@ -125,25 +150,65 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       )
   }, [armyCards, isFlying, boardHexes, gameUnits, selectedUnit, selectedUnitID])
 
-  const showDisengageConfirm = disengageAttempt !== undefined
-  const confirmDisengageAttempt = () => {
-    attemptDisengage(disengageAttempt)
-    setDisengageAttempt(undefined)
+  // water clone
+
+  const [waterCloneProposition, setWaterCloneProposition] =
+    useState<WaterCloneProposition>([])
+  const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
+    (p) => p.unitHexID
+  )
+  const { clonePlaceables, cloneRePlaceables } = Object.values(
+    waterCloneRoll?.placements ?? {}
+  ).reduce(
+    (
+      result: { clonePlaceables: string[]; cloneRePlaceables: string[] },
+      placement
+    ) => {
+      // if the unit has been placed, then the hex is not placeable, it's re-placeable
+      const cloneForThisHexWasPlacedAlready = waterCloneProposition
+        ?.map((placed) => placed.clonerID)
+        .includes(placement.clonerID)
+      if (!cloneForThisHexWasPlacedAlready) {
+        return {
+          ...result,
+          clonePlaceables: [...result.clonePlaceables, ...placement.tails],
+        }
+      } else {
+        return {
+          ...result,
+          cloneRePlaceables: [...result.cloneRePlaceables, ...placement.tails],
+        }
+      }
+    },
+    { clonePlaceables: [], cloneRePlaceables: [] }
+  )
+  const onClickClonePlaceableHex = (hex: BoardHex) => {
+    const placedClonerIDs = waterCloneProposition.map((p) => p.clonerID)
+    const placements = Object.values(waterCloneRoll?.placements ?? {})
+    const relevantPlacementFirstChoice = placements.find(
+      (p) => p.tails.includes(hex.id) && !placedClonerIDs.includes(p.clonerID)
+    )
+    const relevantPlacement =
+      relevantPlacementFirstChoice ||
+      placements.find((p) => p.tails.includes(hex.id))
+    // if (!relevantPlacement) {
+    //   return
+    // } else {
+    //   setWaterCloneProposition((s) => [
+    //     ...s,
+    //     {
+    //       clonerID: relevantPlacement.clonerID,
+    //       clonedID: relevantPlacement.clonedID,
+    //       hexID: hex.id,
+    //     },
+    //   ])
+    // }
   }
-  const cancelDisengageAttempt = () => {
-    setDisengageAttempt(undefined)
-  }
-  const onClickDisengageHex = (endHexID: string) => {
-    const disengagementUnitIDs =
-      selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
-    const endFromHexID = selectedUnitMoveRange[endHexID]?.fromHexID
-    const defendersToDisengage = disengagementUnitIDs.map((id) => gameUnits[id])
-    setDisengageAttempt({
-      unit: selectedUnit,
-      endHexID,
-      endFromHexID,
-      defendersToDisengage,
-    })
+  const onClickCloneRePlaceableHex = (hex: BoardHex) => {
+    console.log(
+      '🚀 ~ file: play-phase-context.tsx:186 ~ onClickCloneRePlaceableHex ~ onClickCloneRePlaceableHex',
+      onClickCloneRePlaceableHex
+    )
   }
 
   // COMPUTED
@@ -229,35 +294,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const selectedGameCardUnits = Object.values(gameUnits).filter(
     (unit: GameUnit) => unit.gameCardID === currentTurnGameCardID
   )
-  const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
-    (p) => p.unitHexID
-  )
-  const { clonePlaceables, cloneRePlaceables } = Object.values(
-    waterCloneRoll?.placements ?? {}
-  ).reduce(
-    (
-      result: { clonePlaceables: string[]; cloneRePlaceables: string[] },
-      placement
-    ) => {
-      // if the unit has been placed, then the hex is not placeable, it's re-placeable
-      const cloneForThisHexWasPlacedAlready = waterClonesPlaced
-        ?.map((placed) => placed.clonerID)
-        .includes(placement.clonerID)
-      if (!cloneForThisHexWasPlacedAlready) {
-        return {
-          ...result,
-          clonePlaceables: [...result.clonePlaceables, ...placement.tails],
-        }
-      } else {
-        return {
-          ...result,
-          cloneRePlaceables: [...result.cloneRePlaceables, ...placement.tails],
-        }
-      }
-    },
-    { clonePlaceables: [], cloneRePlaceables: [] }
-  )
-  // HANDLERS
+
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
@@ -333,15 +370,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     }
     // WATER CLONE STAGE
     if (isWaterCloneStage) {
-      const isHexInClonePlaceables = clonePlaceables.includes(sourceHexID)
-      const isHexInCloneRePlaceables = cloneRePlaceables.includes(sourceHexID)
       // place unit
-      if (isHexInClonePlaceables) {
-        setSelectedUnitID(unitOnHex.unitID)
+      if (clonePlaceables.includes(sourceHexID)) {
+        // put the unit here, update placement
+        onClickClonePlaceableHex(sourceHex)
       }
       // re-place unit
-      if (isHexInCloneRePlaceables) {
-        setSelectedUnitID('')
+      if (cloneRePlaceables.includes(sourceHexID)) {
+        onClickCloneRePlaceableHex(sourceHex)
       }
     }
   }
@@ -357,6 +393,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         confirmDisengageAttempt,
         cancelDisengageAttempt,
         toggleDisengageConfirm: onClickDisengageHex,
+        waterClonePlacement: waterCloneProposition,
         // COMPUTED
         currentTurnGameCardID,
         selectedGameCardUnits,
@@ -368,6 +405,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         unitsWithTargets,
         freeAttacksAvailable,
         isFreeAttackAvailable,
+        clonerHexIDs: clonerHexes,
+        clonePlaceableHexIDs: clonePlaceables,
+        cloneRePlaceableHexIDs: cloneRePlaceables,
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,
@@ -377,7 +417,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     </PlayContext.Provider>
   )
 }
-
 export const usePlayContext = () => {
   const context = useContext(PlayContext)
   if (context === undefined) {
