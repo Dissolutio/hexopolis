@@ -54,7 +54,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     polygon {
       @media (hover: hover) {
         &:hover {
-          fill: var(--neon-orange);
+          fill: var(--sub-white);
         }
       }
     }
