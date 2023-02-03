@@ -156,9 +156,10 @@ export function calcRopHexClassNames({
   gameUnits,
   unitsMoved,
   selectedUnitMoveRange,
-}: // clonerHexes,
-// clonePlaceableHexes,
-{
+  clonerHexIDs,
+  clonePlaceableHexIDs,
+  cloneRePlaceableHexIDs,
+}: {
   isMyTurn: boolean
   isAttackingStage: boolean
   isMovementStage: boolean
@@ -173,8 +174,9 @@ export function calcRopHexClassNames({
   gameUnits: GameUnits
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
-  // clonerHexes: string[]
-  // clonePlaceableHexes: string[]
+  clonerHexIDs: string[]
+  clonePlaceableHexIDs: string[]
+  cloneRePlaceableHexIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -278,13 +280,13 @@ export function calcRopHexClassNames({
     }
   }
   if (isWaterCloneStage) {
-    if (Math.random() > 0.95) {
+    if (clonerHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' maphex__cloner-hexes ')
     }
-    if (false) {
+    if (clonePlaceableHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' maphex__clone-placeable ')
     }
-    if (false) {
+    if (cloneRePlaceableHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' maphex__clone-re-placeable ')
     }
   }
