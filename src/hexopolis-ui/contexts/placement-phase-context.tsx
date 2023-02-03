@@ -7,7 +7,7 @@ import React, {
 import { useUIContext, useMapContext } from '.'
 import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/types'
 import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
-import { selectHexNeighbors, selectValidTailHexes } from 'game/selectors'
+import { selectValidTailHexes } from 'game/selectors'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -68,7 +68,7 @@ const PlacementContextProvider = ({
           },
         }
       }, {})
-  const intialEditingBoardHexesIfTotallyReset = {}
+  const initialEditingBoardHexesIfTotallyReset = {}
   const myUnitIdsAlreadyOnMap = () =>
     Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
@@ -121,7 +121,7 @@ const PlacementContextProvider = ({
   // HANDLERS
   function onResetPlacementState() {
     setPlacementUnits(initialPlacementUnitsIfTotallyReset)
-    setEditingBoardHexes(intialEditingBoardHexesIfTotallyReset)
+    setEditingBoardHexes(initialEditingBoardHexesIfTotallyReset)
   }
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
