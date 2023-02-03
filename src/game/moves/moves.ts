@@ -1,10 +1,11 @@
 import type { Move, MoveMap } from 'boardgame.io'
-import { GameState, PlayerOrderMarkers } from '../types'
+import { GameState, PlayerOrderMarkers, UnitsCloning } from '../types'
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
+import { selectHexForUnit } from 'game/selectors'
 
 //phase:___Placement
 const deployUnits: Move<GameState> = (
@@ -72,10 +73,36 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
   G.orderMarkersReady[playerID] = false
 }
 const waterClone: Move<GameState> = (
-  { G },
-  { playerID }: { playerID: string }
+  { G, random },
+  { unitsCloning }: { unitsCloning: UnitsCloning }
 ) => {
-  G.orderMarkersReady[playerID] = false
+  const numberOfDiceToRoll = unitsCloning.length
+  const threshholds = unitsCloning.map((uC) => {
+    // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
+    const isOnWater = G.boardHexes[uC.unitHexID].terrain === 'water'
+    if (isOnWater) {
+      return 10
+    } else {
+      return 15
+    }
+  })
+  const diceRolls = random.D20(numberOfDiceToRoll)
+  const cloneCount = diceRolls.filter(
+    (roll, i) => roll >= threshholds[i]
+  ).length
+  G.waterCloneRoll = {
+    diceRolls,
+    threshholds,
+    cloneCount,
+  }
+  G.waterClonesPlaced = []
+  //
+}
+const finishWaterCloningAndEndTurn: Move<GameState> = ({ G, events }) => {
+  // reset water clone stuff
+  G.waterCloneRoll = undefined
+  G.waterClonesPlaced = []
+  events.endTurn()
 }
 
 export const moves: MoveMap<GameState> = {
@@ -89,5 +116,6 @@ export const moves: MoveMap<GameState> = {
   attemptDisengage,
   takeDisengagementSwipe,
   waterClone,
+  finishWaterCloningAndEndTurn,
   attackAction,
 }
