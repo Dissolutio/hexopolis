@@ -270,7 +270,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       }
     }
     // ATTACK STAGE
-    if (isMyTurn && isAttackingStage) {
+    if (isAttackingStage) {
       const isEndHexEnemyOccupied =
         isEndHexOccupied && endHexUnitPlayerID !== playerID
 

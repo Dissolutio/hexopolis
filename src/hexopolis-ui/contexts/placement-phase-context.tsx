@@ -53,7 +53,8 @@ const PlacementContextProvider = ({
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE
   const myUnitIds = myUnits.map((u) => u.unitID)
-  // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty -- all for sake of pre-placed units
+  // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty
+  // the flow is that in setup, we assign units to boardHexes if that is toggled on, then here, we copy board hexes to make our editing-state
   const initialEditingBoardHexes = () =>
     Object.values(boardHexes)
       .filter(
