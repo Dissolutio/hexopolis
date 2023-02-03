@@ -204,7 +204,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
   //PHASE: ROP-water-clone
   // paint places where water clone can be placed
-  .maphex__valid_selectable > g polygon {
+  .maphex__cloner-hexes > g polygon {
     // THIS COULD BE USED ELSEWHERE TO HIGHLIGHT WHITE HEXES
     fill: var(--sub-white);
     fill-opacity: 1;
@@ -212,5 +212,23 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       drop-shadow(-2.5px -2.5px 2px var(--sub-white))
       drop-shadow(2.5px -2.5px 2px var(--sub-white))
       drop-shadow(-2.5px 2.5px 2px var(--sub-white));
+  }
+  .maphex__clone-placeable > g polygon {
+    // THIS COULD BE USED ELSEWHERE TO HIGHLIGHT GREEN HEXES
+    fill: var(--neon-green);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-green))
+      drop-shadow(2.5px -2.5px 2px var(--neon-green))
+      drop-shadow(-2.5px 2.5px 2px var(--neon-green));
+  }
+  .maphex__clone-re-placeable > g polygon {
+    // THIS COULD BE USED ELSEWHERE TO HIGHLIGHT YELLOW HEXES
+    fill: var(neon-yellow);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(neon-yellow))
+      drop-shadow(-2.5px -2.5px 2px var(neon-yellow))
+      drop-shadow(2.5px -2.5px 2px var(neon-yellow))
+      drop-shadow(-2.5px 2.5px 2px var(neon-yellow));
   }
 `
