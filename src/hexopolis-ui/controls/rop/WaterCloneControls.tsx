@@ -52,6 +52,10 @@ export const WaterCloneControls = () => {
   const clonesPlacedIDs = waterClonesPlaced ?? []
   const clonesPlacedCount = clonesPlacedIDs.length
   const clonesLeft = clonesTotal - clonesPlacedCount
+  const threshholds = unitsCloning.map((uc) => {
+    const isOnWater = boardHexes[uc.unitHexID].terrain === 'water'
+    return isOnWater ? 10 : 15
+  })
   // 1. You rolled no clones, end your turn
   // 2. You rolled some clones, place them
   // 3. You haven't rolled yet, roll
@@ -90,7 +94,10 @@ export const WaterCloneControls = () => {
     <>
       <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
       <StyledControlsP>{`Defeated units: ${deadUnitsThatCanBeCloned.length}`}</StyledControlsP>
-      <StyledControlsP>{`Eligible to clone:${unitsCloning.length}`}</StyledControlsP>
+      <StyledControlsP>{`Eligible to clone: ${unitsCloning.length}`}</StyledControlsP>
+      <StyledControlsP>{`You need to roll: ${threshholds.join(
+        ', '
+      )}`}</StyledControlsP>
       <StyledButtonWrapper>
         <GreenButton onClick={goBackToAttack}>
           Nevermind, go back to attack
