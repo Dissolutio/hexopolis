@@ -1,16 +1,15 @@
 import type { Move, MoveMap } from 'boardgame.io'
-import {
-  GameState,
-  PlayerOrderMarkers,
-  UnitsCloning,
-  WaterCloneRoll,
-} from '../types'
+import { GameState, PlayerOrderMarkers } from '../types'
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
+import {
+  waterClone,
+  finishWaterCloningAndEndTurn,
+  placeWaterClone,
+} from './water-clone-action'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
-import { selectHexForUnit } from 'game/selectors'
 
 //phase:___Placement
 const deployUnits: Move<GameState> = (
@@ -77,76 +76,6 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 ) => {
   G.orderMarkersReady[playerID] = false
 }
-const waterClone: Move<GameState> = (
-  { G, random },
-  { unitsCloning }: { unitsCloning: UnitsCloning }
-) => {
-  const blankWaterCloneRoll = {
-    diceRolls: {},
-    threshholds: {},
-    cloneCount: 0,
-    placements: {},
-  }
-  const waterCloneRoll: WaterCloneRoll = unitsCloning.reduce(
-    (result, current) => {
-      const isOnWater = G.boardHexes[current.unitHexID].terrain === 'water'
-      const threshhold = isOnWater ? 10 : 15
-      // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
-      const dieRoll = random.Die(20)
-      const isSuccess = dieRoll >= threshhold
-      return {
-        ...result,
-        threshholds: {
-          ...result.threshholds,
-          [current.unit.unitID]: threshhold,
-        },
-        diceRolls: {
-          ...result.diceRolls,
-          [current.unit.unitID]: dieRoll,
-        },
-        cloneCount: isSuccess ? result.cloneCount + 1 : result.cloneCount,
-        placements: {
-          ...result.placements,
-          [current.unit.unitID]: isSuccess
-            ? {
-                clonerID: current.unit.unitID,
-                unitHexID: current.unitHexID,
-                tails: current.tails,
-              }
-            : undefined,
-        },
-      }
-    },
-    blankWaterCloneRoll
-  )
-
-  G.waterCloneRoll = waterCloneRoll
-  G.waterClonesPlaced = []
-  //
-}
-const finishWaterCloningAndEndTurn: Move<GameState> = ({ G, events }) => {
-  // reset water clone stuff
-  G.waterCloneRoll = undefined
-  G.waterClonesPlaced = []
-  events.endTurn()
-}
-const placeWaterClone: Move<GameState> = (
-  { G },
-  { clonerID, clonedID, hexID }
-) => {
-  G.waterClonesPlaced = [
-    ...(G?.waterClonesPlaced ?? []),
-    { clonerID, clonedID, hexID },
-  ]
-  // unkill the unit (choosing to leave G.unitsKilled, and the same unit might get killed many times, could even be a post-game stat)
-  G.gameUnits[clonedID] = {
-    ...G.killedUnits[clonedID],
-    movePoints: 0, // TODO: over time, there may be many properties that need resetting upon death/resurrection
-  }
-  delete G.killedUnits[clonedID]
-  // place the unit
-  G.boardHexes[hexID].occupyingUnitID = ''
-}
 
 export const moves: MoveMap<GameState> = {
   deployUnits,
@@ -160,5 +89,6 @@ export const moves: MoveMap<GameState> = {
   takeDisengagementSwipe,
   waterClone,
   finishWaterCloningAndEndTurn,
+  placeWaterClone,
   attackAction,
 }
