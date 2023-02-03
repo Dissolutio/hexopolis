@@ -199,10 +199,7 @@ export function calcRopHexClassNames({
   if (isSelectableUnit) {
     classNames = classNames.concat(' maphex__selected-card-unit--selectable ')
   }
-  // Highlight selected unit
-  if (selectedUnitID && isSelectedUnitHex(hex)) {
-    classNames = classNames.concat(' maphex__selected-card-unit--active ')
-  }
+
   // NOT MY TURN
   // Highlight opponents active units on their turn
   if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
@@ -216,6 +213,10 @@ export function calcRopHexClassNames({
     const endHexUnitPlayerID = hexUnit?.playerID
     const isEndHexEnemyOccupied =
       isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
     // If unit selected, hex is enemy occupied...
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)
@@ -248,6 +249,10 @@ export function calcRopHexClassNames({
     const isUnitMovePartiallyExpended =
       hasUnitOnHexMoved && hexUnit.movePoints > 0
     const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
     // only do moveRange/move-expended coloring on non-selected units/hexes
     if (hex.id !== hexOfSelectedUnit?.id) {
       // Paint safe moves
