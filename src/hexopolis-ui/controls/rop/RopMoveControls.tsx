@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { usePlayContext, useUIContext } from '../../contexts'
-import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
+import { usePlayContext } from '../../contexts'
+import { useBgioEvents, useBgioG } from 'bgio-contexts'
 import { UndoRedoButtons } from './UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
@@ -14,7 +14,6 @@ import {
 import { uniq } from 'lodash'
 import { selectIfGameArmyCardHasFlying } from 'game/selectors'
 import { omToString } from 'app/utilities'
-import styled from 'styled-components'
 import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
@@ -34,11 +33,9 @@ export const RopAttackMoveHeader = ({
 
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
-  const { moves } = useBgioMoves()
   const { events } = useBgioEvents()
   const { selectedUnit, revealedGameCard, revealedGameCardUnitIDs } =
     usePlayContext()
-  const { setSelectedUnitID } = useUIContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
   const unitsAliveCount = revealedGameCardUnitIDs.length

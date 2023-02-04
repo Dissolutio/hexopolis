@@ -115,6 +115,7 @@ export const WaterCloneControls = () => {
       <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
       <StyledControlsP>{`Defeated units: ${revealedGameCardKilledUnits.length}`}</StyledControlsP>
       <StyledControlsP>{`Eligible to clone: ${unitsCloning.length}`}</StyledControlsP>
+      {/* The threshholds below are why we use a never-updating useMemo for UnitsCloning, so the threshholds-display doesn't change after you clone units */}
       <StyledControlsP>{`You need to roll: ${threshholds.join(
         ', '
       )}`}</StyledControlsP>
