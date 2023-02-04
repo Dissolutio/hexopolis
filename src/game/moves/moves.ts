@@ -5,7 +5,7 @@ import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
 import {
-  waterClone,
+  rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
 } from './water-clone-action'
@@ -87,7 +87,7 @@ export const moves: MoveMap<GameState> = {
   moveAction,
   attemptDisengage,
   takeDisengagementSwipe,
-  waterClone,
+  rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
   attackAction,

@@ -54,7 +54,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     revealedGameCardUnitIDs,
     clonerHexIDs,
     clonePlaceableHexIDs,
-    cloneRePlaceableHexIDs,
   } = usePlayContext()
 
   // computed
@@ -110,7 +109,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         selectedUnitMoveRange,
         clonerHexIDs,
         clonePlaceableHexIDs,
-        cloneRePlaceableHexIDs,
       })
     }
   }

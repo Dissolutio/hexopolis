@@ -14,7 +14,6 @@ import {
   GameUnit,
   HexCoordinates,
   MoveRange,
-  WaterCloneProposition,
 } from 'game/types'
 import {
   selectHexForUnit,
@@ -50,7 +49,6 @@ type PlayContextValue = {
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
   toggleDisengageConfirm: (endHexID: string) => void
-  waterClonePlacement: WaterCloneProposition
 
   // computed
   currentTurnGameCardID: string
@@ -59,13 +57,13 @@ type PlayContextValue = {
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
   revealedGameCardTargetsInRange: TargetsInRange
+  revealedGameCardKilledUnits: GameUnit[]
   unitsWithTargets: number
   selectedGameCardUnits: GameUnit[]
   freeAttacksAvailable: number
   isFreeAttackAvailable: boolean
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
-  cloneRePlaceableHexIDs: string[]
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
   toggleIsWalkingFlyer: () => void
@@ -77,12 +75,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     boardHexes,
     gameArmyCards: armyCards,
     gameUnits,
+    killedUnits,
     unitsAttacked,
     orderMarkers,
     currentOrderMarker,
     players,
     uniqUnitsMoved,
     waterCloneRoll,
+    waterClonesPlaced,
   } = useBgioG()
   const {
     currentPlayer,
@@ -90,13 +90,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isAttackingStage,
     isWaterCloneStage,
   } = useBgioCtx()
-  const { moves } = useBgioMoves()
+  const {
+    moves: { moveAction, attackAction, attemptDisengage, placeWaterClone },
+  } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
   const selectedUnitGameCard = armyCards.find(
     (card) => card.gameCardID === selectedUnit?.gameCardID
   )
-  const { moveAction, attackAction, attemptDisengage } = moves
+
   // disengage confirm and disengage related
   const [disengageAttempt, setDisengageAttempt] = useState<
     undefined | DisengageAttempt
@@ -151,64 +153,66 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   }, [armyCards, isFlying, boardHexes, gameUnits, selectedUnit, selectedUnitID])
 
   // water clone
-
-  const [waterCloneProposition, setWaterCloneProposition] =
-    useState<WaterCloneProposition>([])
   const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
-    (p) => p.unitHexID
+    (p) => p.clonerHexID
   )
-  const { clonePlaceables, cloneRePlaceables } = Object.values(
-    waterCloneRoll?.placements ?? {}
-  ).reduce(
-    (
-      result: { clonePlaceables: string[]; cloneRePlaceables: string[] },
-      placement
-    ) => {
-      // if the unit has been placed, then the hex is not placeable, it's re-placeable
-      const cloneForThisHexWasPlacedAlready = waterCloneProposition
-        ?.map((placed) => placed.clonerID)
-        .includes(placement.clonerID)
-      if (!cloneForThisHexWasPlacedAlready) {
-        return {
-          ...result,
-          clonePlaceables: [...result.clonePlaceables, ...placement.tails],
-        }
-      } else {
-        return {
-          ...result,
-          cloneRePlaceables: [...result.cloneRePlaceables, ...placement.tails],
-        }
-      }
-    },
-    { clonePlaceables: [], cloneRePlaceables: [] }
+  const waterClonesPlacedClonerIDs = waterClonesPlaced.map((p) => p.clonerID)
+  const isAllClonesPlaced =
+    waterClonesPlacedClonerIDs.length ===
+    Object.values(waterCloneRoll?.placements ?? {}).length
+  console.log(
+    '🚀 ~ file: play-phase-context.tsx:161 ~ PlayContextProvider ~ isAllClonesPlaced',
+    isAllClonesPlaced
   )
+  const clonePlaceableHexIDs = isAllClonesPlaced
+    ? []
+    : Object.values(waterCloneRoll?.placements ?? {})
+        .filter(
+          (placement) =>
+            !waterClonesPlacedClonerIDs.includes(placement.clonerID)
+        )
+        .reduce((result: string[], placement) => {
+          return [...result, ...placement.tails]
+        }, [])
   const onClickClonePlaceableHex = (hex: BoardHex) => {
-    const placedClonerIDs = waterCloneProposition.map((p) => p.clonerID)
-    const placements = Object.values(waterCloneRoll?.placements ?? {})
-    const relevantPlacementFirstChoice = placements.find(
-      (p) => p.tails.includes(hex.id) && !placedClonerIDs.includes(p.clonerID)
+    // Since we know that marro warriors have 4 figures, the most that could be dead and cloned on one turn is 2 (2 dead, 2 successful clones)
+    const validPlacements = Object.values(
+      waterCloneRoll?.placements ?? {}
+    ).filter(
+      (placement) => !waterClonesPlacedClonerIDs.includes(placement.clonerID)
     )
-    const relevantPlacement =
-      relevantPlacementFirstChoice ||
-      placements.find((p) => p.tails.includes(hex.id))
-    // if (!relevantPlacement) {
-    //   return
-    // } else {
-    //   setWaterCloneProposition((s) => [
-    //     ...s,
-    //     {
-    //       clonerID: relevantPlacement.clonerID,
-    //       clonedID: relevantPlacement.clonedID,
-    //       hexID: hex.id,
-    //     },
-    //   ])
-    // }
-  }
-  const onClickCloneRePlaceableHex = (hex: BoardHex) => {
-    console.log(
-      '🚀 ~ file: play-phase-context.tsx:186 ~ onClickCloneRePlaceableHex ~ onClickCloneRePlaceableHex',
-      onClickCloneRePlaceableHex
+    const firstIndex = validPlacements.findIndex((p) =>
+      p.tails.includes(hex.id)
     )
+    const secondIndex =
+      firstIndex > -1
+        ? validPlacements
+            .slice(firstIndex)
+            .findIndex((p) => p.tails.includes(hex.id))
+        : 0
+    // the number of placements should always be >= number of killed units, so accessing the first element is safe
+    const clonedID = revealedGameCardKilledUnits.map((u) => u.unitID)[0]
+    // 1. two matching, use the most exclusive one (the one that has the least tails), place the clone
+    if (firstIndex >= 0 && secondIndex > 0) {
+      const isSecondIndexMoreExclusive =
+        validPlacements[secondIndex].tails.length <
+        validPlacements[firstIndex].tails.length
+      placeWaterClone({
+        clonedID,
+        hexID: hex.id,
+        clonerID:
+          validPlacements[isSecondIndexMoreExclusive ? secondIndex : firstIndex]
+            .clonerID,
+      })
+    }
+    // 2. only one matching, great, place the clone
+    if (firstIndex >= 0) {
+      placeWaterClone({
+        clonedID,
+        hexID: hex.id,
+        clonerID: validPlacements[firstIndex].clonerID,
+      })
+    }
   }
 
   // COMPUTED
@@ -223,6 +227,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const revealedGameCardUnits = Object.values(gameUnits).filter(
     (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
   )
+  const revealedGameCardKilledUnits: GameUnit[] = Object.values(
+    killedUnits
+  ).filter((killedUnit) => {
+    return (
+      killedUnit.playerID === playerID &&
+      killedUnit.gameCardID === revealedGameCard?.gameCardID
+    )
+  })
   const getRevealedGameCardTargetsInRange = (): TargetsInRange => {
     // first, we need to account for which units moved (if all moves were used, only those units can attack)
     const attacksAllowed = revealedGameCard?.figures ?? 0
@@ -233,44 +245,47 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       ? revealedGameCardUnits
       : revealedGameCardUnits.filter((u) => uniqUnitsMoved.includes(u.unitID))
     // for each unit, go through all hexes and count how many are in range
-    const result = unitsToConsider.reduce((resultTargetsInRange, unit) => {
-      const attackerHex = selectHexForUnit(unit.unitID, boardHexes)
-      // if (!attackerHex) {
-      //   // the unit
-      //   return resultTargetsInRange
-      // }
-      const attackerPlayerID = unit.playerID
-      const numberUnitsInRangeForThisUnit = Object.values(boardHexes).reduce(
-        (resultHexIDs: string[], iteratedHex) => {
-          const endHexUnitID = iteratedHex?.occupyingUnitID ?? ''
-          const isEndHexOccupied = Boolean(endHexUnitID)
-          const endHexUnitPlayerID = gameUnits[endHexUnitID]?.playerID
-          const isEndHexEnemyOccupied =
-            isEndHexOccupied &&
-            endHexUnitPlayerID &&
-            endHexUnitPlayerID !== attackerPlayerID // TODO: make this work for team games
-          // If hex is enemy occupied...
-          if (isEndHexEnemyOccupied) {
-            // TODO isInRange: a place where we may consider engagements requiring adjacent attacks / terrain blocking range-1 attacks etc.
-            const isInRange =
-              hexUtilsDistance(
-                attackerHex as HexCoordinates,
-                iteratedHex as HexCoordinates
-              ) <= (revealedGameCard?.range ?? 0)
-            // ... and is in range
-            if (isInRange) {
-              return [...resultHexIDs, iteratedHex.id]
+    const result: TargetsInRange = unitsToConsider.reduce(
+      (resultTargetsInRange, unit) => {
+        const attackerHex = selectHexForUnit(unit.unitID, boardHexes)
+        if (!attackerHex) {
+          // the unit
+          return resultTargetsInRange
+        }
+        const attackerPlayerID = unit.playerID
+        const numberUnitsInRangeForThisUnit = Object.values(boardHexes).reduce(
+          (resultHexIDs: string[], iteratedHex) => {
+            const endHexUnitID = iteratedHex?.occupyingUnitID ?? ''
+            const isEndHexOccupied = Boolean(endHexUnitID)
+            const endHexUnitPlayerID = gameUnits[endHexUnitID]?.playerID
+            const isEndHexEnemyOccupied =
+              isEndHexOccupied &&
+              endHexUnitPlayerID &&
+              endHexUnitPlayerID !== attackerPlayerID // TODO: make this work for team games
+            // If hex is enemy occupied...
+            if (isEndHexEnemyOccupied) {
+              // TODO isInRange: a place where we may consider engagements requiring adjacent attacks / terrain blocking range-1 attacks etc.
+              const isInRange =
+                hexUtilsDistance(
+                  attackerHex as HexCoordinates,
+                  iteratedHex as HexCoordinates
+                ) <= (revealedGameCard?.range ?? 0)
+              // ... and is in range
+              if (isInRange) {
+                return [...resultHexIDs, iteratedHex.id]
+              }
             }
-          }
-          return resultHexIDs
-        },
-        []
-      )
-      return {
-        ...resultTargetsInRange,
-        [unit.unitID]: numberUnitsInRangeForThisUnit,
-      }
-    }, {})
+            return resultHexIDs
+          },
+          []
+        )
+        return {
+          ...resultTargetsInRange,
+          [unit.unitID]: numberUnitsInRangeForThisUnit,
+        }
+      },
+      {}
+    )
     return result
   }
   const revealedGameCardTargetsInRange: TargetsInRange =
@@ -299,8 +314,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
     const sourceHexID = sourceHex.id
-    const boardHex = boardHexes[sourceHex.id]
-    const occupyingUnitID = boardHex.occupyingUnitID
+    const occupyingUnitID = sourceHex.occupyingUnitID
     const isEndHexOccupied = Boolean(occupyingUnitID)
     const unitOnHex: GameUnit = { ...gameUnits[occupyingUnitID] }
     const endHexUnitPlayerID = unitOnHex.playerID
@@ -361,8 +375,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             armyCard?.gameCardID === currentTurnGameCardID
         )
         const isInRange =
-          hexUtilsDistance(startHex as BoardHex, boardHex) <= gameCard?.range ??
-          false
+          hexUtilsDistance(startHex as BoardHex, sourceHex) <=
+            gameCard?.range ?? false
         if (isInRange) {
           attackAction(selectedUnit, boardHexes[sourceHex.id])
         }
@@ -371,13 +385,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     // WATER CLONE STAGE
     if (isWaterCloneStage) {
       // place unit
-      if (clonePlaceables.includes(sourceHexID)) {
+      if (clonePlaceableHexIDs.includes(sourceHexID)) {
         // put the unit here, update placement
         onClickClonePlaceableHex(sourceHex)
-      }
-      // re-place unit
-      if (cloneRePlaceables.includes(sourceHexID)) {
-        onClickCloneRePlaceableHex(sourceHex)
       }
     }
   }
@@ -393,7 +403,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         confirmDisengageAttempt,
         cancelDisengageAttempt,
         toggleDisengageConfirm: onClickDisengageHex,
-        waterClonePlacement: waterCloneProposition,
         // COMPUTED
         currentTurnGameCardID,
         selectedGameCardUnits,
@@ -402,12 +411,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         revealedGameCardTargetsInRange,
+        revealedGameCardKilledUnits,
         unitsWithTargets,
         freeAttacksAvailable,
         isFreeAttackAvailable,
         clonerHexIDs: clonerHexes,
-        clonePlaceableHexIDs: clonePlaceables,
-        cloneRePlaceableHexIDs: cloneRePlaceables,
+        clonePlaceableHexIDs: clonePlaceableHexIDs,
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,

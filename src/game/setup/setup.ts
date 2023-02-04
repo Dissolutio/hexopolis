@@ -75,5 +75,6 @@ function makeTestScenario(): GameState {
     hexMap: map.hexMap,
     boardHexes: map.boardHexes,
     startZones: map.startZones,
+    waterClonesPlaced: [],
   }
 }

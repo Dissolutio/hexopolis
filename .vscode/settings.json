@@ -34,7 +34,8 @@
         "Rechets",
         "Syvarris",
         "threshholds",
-        "ullar"
+        "ullar",
+        "unkill"
     ],
     "editor.snippetSuggestions": "top",
     "editor.suggest.snippetsPreventQuickSuggestions": false,

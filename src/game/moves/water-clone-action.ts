@@ -1,12 +1,7 @@
 import type { Move } from 'boardgame.io'
-import {
-  GameState,
-  UnitsCloning,
-  WaterCloneProposition,
-  WaterCloneRoll,
-} from '../types'
+import { GameState, UnitsCloning, WaterCloneRoll } from '../types'
 
-export const waterClone: Move<GameState> = (
+export const rollForWaterClone: Move<GameState> = (
   { G, random },
   { unitsCloning }: { unitsCloning: UnitsCloning }
 ) => {
@@ -16,13 +11,9 @@ export const waterClone: Move<GameState> = (
     cloneCount: 0,
     placements: {},
   }
-  console.log(
-    '🚀 ~ file: water-clone-action.ts:46 ~ unitsCloning',
-    unitsCloning
-  )
   const waterCloneRoll: WaterCloneRoll = unitsCloning.reduce(
     (result, current) => {
-      const isOnWater = G.boardHexes[current.unitHexID].terrain === 'water'
+      const isOnWater = G.boardHexes[current.clonerHexID].terrain === 'water'
       const threshhold = isOnWater ? 10 : 15
       // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
       //   const dieRoll = random.Die(20)
@@ -32,19 +23,18 @@ export const waterClone: Move<GameState> = (
         ...result,
         threshholds: {
           ...result.threshholds,
-          [current.unit.unitID]: threshhold,
+          [current.clonerID]: threshhold,
         },
         diceRolls: {
           ...result.diceRolls,
-          [current.unit.unitID]: dieRoll,
+          [current.clonerID]: dieRoll,
         },
-        cloneCount: isSuccess ? result.cloneCount + 1 : result.cloneCount,
         placements: {
           ...result.placements,
-          [current.unit.unitID]: isSuccess
+          [current.clonerID]: isSuccess
             ? {
-                clonerID: current.unit.unitID,
-                unitHexID: current.unitHexID,
+                clonerID: current.clonerID,
+                clonerHexID: current.clonerHexID,
                 tails: current.tails,
               }
             : undefined,
@@ -53,7 +43,7 @@ export const waterClone: Move<GameState> = (
     },
     blankWaterCloneRoll
   )
-  // clear out the undefined values, because they end up making the UI go: .filter(s => !!s)
+  // clear out the undefined values
   Object.keys(waterCloneRoll?.placements ?? {}).forEach((keyOfPlacements) => {
     if (!waterCloneRoll?.placements[keyOfPlacements]) {
       delete waterCloneRoll?.placements[keyOfPlacements]
@@ -62,39 +52,26 @@ export const waterClone: Move<GameState> = (
   G.waterCloneRoll = waterCloneRoll
   //
 }
-export const finishWaterCloningAndEndTurn: Move<GameState> = (
-  { G, events },
-  { waterClonePlacements }: { waterClonePlacements: WaterCloneProposition }
-) => {
-  const newBoardHexes = { ...G.boardHexes }
-  const newGameUnits = { ...G.gameUnits }
-  const newKilledUnits = { ...G.killedUnits }
-  waterClonePlacements.forEach((placement) => {
-    // unkill the unit
-    newGameUnits[placement.clonedID] = newKilledUnits[placement.clonedID]
-    delete newKilledUnits[placement.clonedID]
-    // place the unit
-    newBoardHexes[placement.hexID].occupyingUnitID = placement.clonedID
-  })
-
+export const finishWaterCloningAndEndTurn: Move<GameState> = ({
+  G,
+  events,
+}) => {
   // reset water clone stuff
   G.waterCloneRoll = undefined
+  G.waterClonesPlaced = []
   events.endTurn()
 }
 export const placeWaterClone: Move<GameState> = (
   { G },
-  { clonerID, clonedID, hexID }
+  { clonedID, hexID, clonerID }
 ) => {
-  //   G.waterClonesPlaced = [
-  //     ...(G?.waterClonesPlaced ?? []),
-  //     { clonerID, clonedID, hexID },
-  //   ]
-  // unkill the unit (choosing to leave G.unitsKilled, and the same unit might get killed many times, could even be a post-game stat)
+  // unkill the unit
   G.gameUnits[clonedID] = {
     ...G.killedUnits[clonedID],
     movePoints: 0, // TODO: over time, there may be many properties that need resetting upon death/resurrection
   }
   delete G.killedUnits[clonedID]
   // place the unit
-  G.boardHexes[hexID].occupyingUnitID = ''
+  G.boardHexes[hexID].occupyingUnitID = clonedID
+  G.waterClonesPlaced.push({ clonedID, hexID, clonerID })
 }

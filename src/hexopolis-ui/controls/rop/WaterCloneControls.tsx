@@ -1,9 +1,4 @@
-import {
-  useBgioClientInfo,
-  useBgioEvents,
-  useBgioG,
-  useBgioMoves,
-} from 'bgio-contexts'
+import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
@@ -16,29 +11,26 @@ import { GameUnit, UnitsCloning } from 'game/types'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 
 export const WaterCloneControls = () => {
-  const { killedUnits, boardHexes, waterCloneRoll } = useBgioG()
+  const { boardHexes, waterCloneRoll, waterClonesPlaced } = useBgioG()
   const {
-    moves: { waterClone, finishWaterCloningAndEndTurn },
+    moves: { rollForWaterClone, finishWaterCloningAndEndTurn },
   } = useBgioMoves()
-  const { playerID } = useBgioClientInfo()
   const { events } = useBgioEvents()
-  const { revealedGameCard, revealedGameCardUnits, waterClonePlacement } =
-    usePlayContext()
-  const deadUnitsThatCanBeCloned = Object.values(killedUnits).filter(
-    (killedUnit) =>
-      killedUnit.playerID === playerID &&
-      killedUnit.gameCardID === revealedGameCard?.gameCardID
-  )
-  const deadUnitsThatCanBeClonedCount = deadUnitsThatCanBeCloned.length
+  const {
+    revealedGameCard,
+    revealedGameCardUnits,
+    revealedGameCardKilledUnits,
+  } = usePlayContext()
+  const revealedGameCardKilledUnitsCount = revealedGameCardKilledUnits.length
   const unitsCloning = revealedGameCardUnits.reduce(
     // can clone only with units that have a "tail" hex, which is just one that is adjacent and same-altitude (see ability description)
     (acc: UnitsCloning, u: GameUnit) => {
-      const unitHexID = selectHexForUnit(u.unitID, boardHexes)?.id ?? ''
-      const tails = selectValidTailHexes(unitHexID, boardHexes)
+      const clonerHexID = selectHexForUnit(u.unitID, boardHexes)?.id ?? ''
+      const tails = selectValidTailHexes(clonerHexID, boardHexes)
         .filter((h) => !h.occupyingUnitID)
         .map((h) => h.id)
       const unitCloning =
-        tails.length > 0 ? [{ unit: u, tails, unitHexID }] : []
+        tails.length > 0 ? [{ clonerID: u.unitID, tails, clonerHexID }] : []
       return [...acc, ...unitCloning]
     },
     []
@@ -47,30 +39,40 @@ export const WaterCloneControls = () => {
     events?.setStage?.(stageNames.attacking)
   }
   const doWaterClone = () => {
-    waterClone({
+    rollForWaterClone({
       unitsCloning,
     })
   }
   const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
-  const clonesPlacedIDs = waterClonePlacement ?? []
+  const clonesPlacedIDs = waterClonesPlaced.map((p) => p.clonedID)
   const clonesPlacedCount = clonesPlacedIDs.length
   const clonesLeftToPlaceCount =
-    Math.min(cloningsWon, deadUnitsThatCanBeClonedCount) - clonesPlacedCount
+    Math.min(cloningsWon, revealedGameCardKilledUnitsCount) - clonesPlacedCount
+  console.log(
+    '🚀 ~ file: WaterCloneControls.tsx:51 ~ WaterCloneControls ~ revealedGameCardKilledUnitsCount',
+    revealedGameCardKilledUnitsCount
+  )
+  console.log(
+    '🚀 ~ file: WaterCloneControls.tsx:51 ~ WaterCloneControls ~ clonesPlacedCount',
+    clonesPlacedCount
+  )
+  console.log(
+    '🚀 ~ file: WaterCloneControls.tsx:51 ~ WaterCloneControls ~ cloningsWon',
+    cloningsWon
+  )
   const threshholds = unitsCloning.map((uc) => {
-    const isOnWater = boardHexes[uc.unitHexID].terrain === 'water'
+    const isOnWater = boardHexes[uc.clonerHexID].terrain === 'water'
     return isOnWater ? 10 : 15
   })
 
   /* RENDER
     0. You have no dead units to clone
-    1. You rolled no clones, end your turn
-    2. You rolled some clones, place them
-    3. You have placed all your clones, end your turn
-    4. You haven't rolled yet, roll
+    1. You rolled some clones, place them
+    3. You haven't rolled yet, roll
   */
 
-  if (deadUnitsThatCanBeCloned.length <= 0) {
-    // 0. You have no dead units to clone
+  // 0. You have no dead units to clone
+  if (!waterCloneRoll && revealedGameCardKilledUnits.length <= 0) {
     return (
       <>
         <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
@@ -86,25 +88,8 @@ export const WaterCloneControls = () => {
       </>
     )
   }
-  if (waterCloneRoll?.cloneCount === 0) {
-    // 1. You rolled no clones, end your turn
-    return (
-      <>
-        <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
-        <StyledControlsP>{`None of your clones were successful.`}</StyledControlsP>
-        <StyledControlsP>{`You rolled: ${Object.values(
-          waterCloneRoll.diceRolls
-        ).join(',')}`}</StyledControlsP>
-        <StyledButtonWrapper>
-          <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>
-            OK, end turn
-          </GreenButton>
-        </StyledButtonWrapper>
-      </>
-    )
-  }
+  // 1. You rolled some clones, place them
   if (waterCloneRoll) {
-    // 2. You rolled some clones, place them
     return (
       <>
         <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
@@ -116,29 +101,21 @@ export const WaterCloneControls = () => {
           ', '
         )}`}</StyledControlsP>
         <StyledControlsP>{`${clonesLeftToPlaceCount} clones remaining to be placed`}</StyledControlsP>
+        {clonesLeftToPlaceCount < 1 && (
+          <StyledButtonWrapper>
+            <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>
+              OK, all clones placed, end my turn
+            </GreenButton>
+          </StyledButtonWrapper>
+        )}
       </>
     )
   }
-  if (waterCloneRoll) {
-    // 3. You have placed all your clones, end your turn
-    return (
-      <>
-        <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
-        <StyledControlsP>All of your clones have been placed.</StyledControlsP>
-        <StyledButtonWrapper>
-          {/* TODO pass the real WaterClonePlacement */}
-          <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>
-            OK, end turn
-          </GreenButton>
-        </StyledButtonWrapper>
-      </>
-    )
-  }
-  // 4. You haven't rolled yet, roll
+  // 3. You haven't rolled yet, roll
   return (
     <>
       <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
-      <StyledControlsP>{`Defeated units: ${deadUnitsThatCanBeCloned.length}`}</StyledControlsP>
+      <StyledControlsP>{`Defeated units: ${revealedGameCardKilledUnits.length}`}</StyledControlsP>
       <StyledControlsP>{`Eligible to clone: ${unitsCloning.length}`}</StyledControlsP>
       <StyledControlsP>{`You need to roll: ${threshholds.join(
         ', '
@@ -149,11 +126,11 @@ export const WaterCloneControls = () => {
         </GreenButton>
         <RedButton onClick={doWaterClone}>
           Water clone! {unitsCloning.length} attempts to revive{' '}
-          {deadUnitsThatCanBeCloned.length} units
+          {revealedGameCardKilledUnits.length} units
         </RedButton>
       </StyledButtonWrapper>
       <StyledControlsP
-        style={{ color: 'var(--text-muted)' }}
+        style={{ color: 'var(--text-muted)', maxWidth: '800px' }}
       >{`${revealedGameCard?.abilities?.[0].name}: ${revealedGameCard?.abilities?.[0].desc}`}</StyledControlsP>
     </>
   )

@@ -158,7 +158,6 @@ export function calcRopHexClassNames({
   selectedUnitMoveRange,
   clonerHexIDs,
   clonePlaceableHexIDs,
-  cloneRePlaceableHexIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
@@ -176,7 +175,6 @@ export function calcRopHexClassNames({
   selectedUnitMoveRange: MoveRange
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
-  cloneRePlaceableHexIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -231,7 +229,7 @@ export function calcRopHexClassNames({
           : false
       const isInRange =
         isInTailRange ||
-        hexUtilsDistance(startHex as HexCoordinates, hex) <=
+        (startHex ? hexUtilsDistance(startHex as HexCoordinates, hex) : -1) <=
           (revealedGameCard?.range ?? 0)
       // ... and is in range
       if (isInRange) {
@@ -285,9 +283,6 @@ export function calcRopHexClassNames({
     }
     if (clonePlaceableHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' maphex__clone-placeable ')
-    }
-    if (cloneRePlaceableHexIDs.includes(hex.id)) {
-      classNames = classNames.concat(' maphex__clone-re-placeable ')
     }
   }
   return classNames
