@@ -7,13 +7,17 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexopolis-ui/layout/Typography'
-import { ConfirmOrResetButtons } from '../ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from '../ConfirmOrResetButtons'
 import { uniq } from 'lodash'
 import { selectIfGameArmyCardHasFlying } from 'game/selectors'
 import { omToString } from 'app/utilities'
 import styled from 'styled-components'
 import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
+import { GreenButton } from 'hexopolis-ui/layout/buttons'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -54,24 +58,39 @@ export const RopMoveControls = () => {
         currentOrderMarker={currentOrderMarker}
         revealedGameCardName={revealedGameCardName}
       />
-      <StyledControlsP style={{ color: 'var(--text-muted)' }}>
-        {`${unitsAliveCount} unit${unitsAliveCount !== 1 ? 's' : ''}`}
-      </StyledControlsP>
-      <FlyingUnitTextAndToggle
-        hasFlying={hasFlying}
-        hasStealth={hasStealth}
-        revealedGameCardName={revealedGameCardName}
-      />
-      <StyledControlsP>
-        Selected unit move points remaining: {selectedUnit?.movePoints ?? '-'}
-      </StyledControlsP>
-      <StyledControlsP>
-        {movedUnitsCount} / {allowedMoveCount} units moved
-      </StyledControlsP>
 
-      <UndoRedoButtons />
+      {unitsAliveCount === 0 ? (
+        <StyledControlsP>
+          All of your {revealedGameCardName} units have been destroyed.
+        </StyledControlsP>
+      ) : (
+        <>
+          <StyledControlsP style={{ color: 'var(--text-muted)' }}>
+            {`${unitsAliveCount} unit${unitsAliveCount !== 1 ? 's' : ''}`}
+          </StyledControlsP>
+          <FlyingUnitTextAndToggle
+            hasFlying={hasFlying}
+            hasStealth={hasStealth}
+            revealedGameCardName={revealedGameCardName}
+          />
+          <StyledControlsP>
+            Selected unit move points remaining:{' '}
+            {selectedUnit?.movePoints ?? '-'}
+          </StyledControlsP>
+          <StyledControlsP>
+            {movedUnitsCount} / {allowedMoveCount} units moved
+          </StyledControlsP>
 
-      {isAllMovesUsed ? (
+          <UndoRedoButtons />
+        </>
+      )}
+      {unitsAliveCount === 0 ? (
+        <StyledButtonWrapper>
+          <GreenButton onClick={() => events?.endTurn?.()}>
+            End Turn
+          </GreenButton>
+        </StyledButtonWrapper>
+      ) : isAllMovesUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndMovementClick}
           confirmText={'End move, begin attack'}
