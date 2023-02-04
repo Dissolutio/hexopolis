@@ -9,6 +9,8 @@ import { stageNames } from 'game/constants'
 import { selectHexForUnit, selectValidTailHexes } from 'game/selectors'
 import { GameUnit, UnitsCloning } from 'game/types'
 import { usePlayContext } from 'hexopolis-ui/contexts'
+import { UndoRedoButtons } from './UndoRedoButtons'
+import { useMemo } from 'react'
 
 export const WaterCloneControls = () => {
   const { boardHexes, waterCloneRoll, waterClonesPlaced } = useBgioG()
@@ -22,17 +24,22 @@ export const WaterCloneControls = () => {
     revealedGameCardKilledUnits,
   } = usePlayContext()
   const revealedGameCardKilledUnitsCount = revealedGameCardKilledUnits.length
-  const unitsCloning = revealedGameCardUnits.reduce(
-    // can clone only with units that have a "tail" hex, which is just one that is adjacent and same-altitude (see ability description)
-    (acc: UnitsCloning, u: GameUnit) => {
-      const clonerHexID = selectHexForUnit(u.unitID, boardHexes)?.id ?? ''
-      const tails = selectValidTailHexes(clonerHexID, boardHexes)
-        .filter((h) => !h.occupyingUnitID)
-        .map((h) => h.id)
-      const unitCloning =
-        tails.length > 0 ? [{ clonerID: u.unitID, tails, clonerHexID }] : []
-      return [...acc, ...unitCloning]
-    },
+  // we do not want unitsCloning to update, it should keep its initial value when WaterCloneControls are rendered, so we use useMemo
+  const unitsCloning = useMemo(
+    () =>
+      revealedGameCardUnits.reduce(
+        // can clone only with units that have a "tail" hex, which is just one that is adjacent and same-altitude (see ability description)
+        (acc: UnitsCloning, u: GameUnit) => {
+          const clonerHexID = selectHexForUnit(u.unitID, boardHexes)?.id ?? ''
+          const tails = selectValidTailHexes(clonerHexID, boardHexes)
+            .filter((h) => !h.occupyingUnitID)
+            .map((h) => h.id)
+          const unitCloning =
+            tails.length > 0 ? [{ clonerID: u.unitID, tails, clonerHexID }] : []
+          return [...acc, ...unitCloning]
+        },
+        []
+      ),
     []
   )
   const goBackToAttack = () => {
@@ -46,19 +53,9 @@ export const WaterCloneControls = () => {
   const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
   const clonesPlacedIDs = waterClonesPlaced.map((p) => p.clonedID)
   const clonesPlacedCount = clonesPlacedIDs.length
-  const clonesLeftToPlaceCount =
-    Math.min(cloningsWon, revealedGameCardKilledUnitsCount) - clonesPlacedCount
-  console.log(
-    '🚀 ~ file: WaterCloneControls.tsx:51 ~ WaterCloneControls ~ revealedGameCardKilledUnitsCount',
+  const clonesLeftToPlaceCount = Math.min(
+    cloningsWon - clonesPlacedCount,
     revealedGameCardKilledUnitsCount
-  )
-  console.log(
-    '🚀 ~ file: WaterCloneControls.tsx:51 ~ WaterCloneControls ~ clonesPlacedCount',
-    clonesPlacedCount
-  )
-  console.log(
-    '🚀 ~ file: WaterCloneControls.tsx:51 ~ WaterCloneControls ~ cloningsWon',
-    cloningsWon
   )
   const threshholds = unitsCloning.map((uc) => {
     const isOnWater = boardHexes[uc.clonerHexID].terrain === 'water'
@@ -101,6 +98,7 @@ export const WaterCloneControls = () => {
           ', '
         )}`}</StyledControlsP>
         <StyledControlsP>{`${clonesLeftToPlaceCount} clones remaining to be placed`}</StyledControlsP>
+        <UndoRedoButtons />
         {clonesLeftToPlaceCount < 1 && (
           <StyledButtonWrapper>
             <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>
