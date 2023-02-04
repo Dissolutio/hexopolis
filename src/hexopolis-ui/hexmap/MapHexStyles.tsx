@@ -54,7 +54,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     polygon {
       @media (hover: hover) {
         &:hover {
-          fill: var(--neon-orange);
+          fill: var(--sub-white);
         }
       }
     }
@@ -105,7 +105,6 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       stroke-width: 0.8;
     }
   }
-
   // highlight placeable hexes for selected unit, if hex is occupied
   .maphex__start-zone--placement--occupied > g polygon {
     stroke: var(--player-color);
@@ -201,5 +200,29 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       drop-shadow(-5px -5px 4px var(--neon-red))
       drop-shadow(5px -5px 4px var(--neon-red))
       drop-shadow(-5px 5px 4px var(--neon-red));
+  }
+  //PHASE: ROP-water-clone
+  // paint places where water clone can be placed
+  .maphex__cloner-hexes > g polygon {
+    stroke: var(--player-color);
+    stroke-width: 0.3;
+    // style stroke width a little thicker on mobile so you can see it
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.4;
+    }
+  }
+  .maphex__clone-placeable > g polygon {
+    fill: var(--neon-green);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-green));
+  }
+  .maphex__clone-re-placeable > g polygon {
+    fill: var(neon-yellow);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(neon-yellow))
+      drop-shadow(-2.5px -2.5px 2px var(neon-yellow))
+      drop-shadow(2.5px -2.5px 2px var(neon-yellow))
+      drop-shadow(-2.5px 2.5px 2px var(neon-yellow));
   }
 `

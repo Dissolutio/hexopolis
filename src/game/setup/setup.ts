@@ -71,8 +71,10 @@ function makeTestScenario(): GameState {
     gameArmyCards: armyCards,
     initialArmyCards: [...armyCards],
     gameUnits,
+    killedUnits: {},
     hexMap: map.hexMap,
     boardHexes: map.boardHexes,
     startZones: map.startZones,
+    waterClonesPlaced: [],
   }
 }

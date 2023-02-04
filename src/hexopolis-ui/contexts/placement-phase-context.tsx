@@ -7,7 +7,7 @@ import React, {
 import { useUIContext, useMapContext } from '.'
 import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/types'
 import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
-import { selectHexNeighbors, selectValidTailHexes } from 'game/selectors'
+import { selectValidTailHexes } from 'game/selectors'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -53,7 +53,8 @@ const PlacementContextProvider = ({
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   // STATE
   const myUnitIds = myUnits.map((u) => u.unitID)
-  // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty -- all for sake of pre-placed units
+  // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty
+  // the flow is that in setup, we assign units to boardHexes if that is toggled on, then here, we copy board hexes to make our editing-state
   const initialEditingBoardHexes = () =>
     Object.values(boardHexes)
       .filter(
@@ -68,7 +69,7 @@ const PlacementContextProvider = ({
           },
         }
       }, {})
-  const intialEditingBoardHexesIfTotallyReset = {}
+  const initialEditingBoardHexesIfTotallyReset = {}
   const myUnitIdsAlreadyOnMap = () =>
     Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
@@ -121,7 +122,7 @@ const PlacementContextProvider = ({
   // HANDLERS
   function onResetPlacementState() {
     setPlacementUnits(initialPlacementUnitsIfTotallyReset)
-    setEditingBoardHexes(intialEditingBoardHexesIfTotallyReset)
+    setEditingBoardHexes(initialEditingBoardHexesIfTotallyReset)
   }
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
@@ -250,7 +251,7 @@ const PlacementContextProvider = ({
         }
       }
     }
-    // 3. tail-selected, and we clicked a tail-placeable hex (otherwise, tail-selected means clicking any other hex does nothing)
+    // 3. tail-selected, and we clicked a tail-placeable hex (otherwise, having a tail-selected means clicking any other hex does nothing)
     if (activeTailPlacementUnitID && tailPlaceables.includes(clickedHexId)) {
       // add tail to boardHexes
       setEditingBoardHexes((s) => ({

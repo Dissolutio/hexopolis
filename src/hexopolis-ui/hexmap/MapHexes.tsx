@@ -17,8 +17,8 @@ import {
   calcRopHexClassNames,
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
-import { HexText } from './HexText'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
+import { HexIDText } from './HexIDText'
 
 type MapHexesProps = {
   hexSize: number
@@ -37,6 +37,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isOrderMarkerPhase,
     isRoundOfPlayPhase,
     isAttackingStage,
+    isMovementStage,
+    isWaterCloneStage,
   } = useBgioCtx()
   const {
     onClickPlacementHex,
@@ -50,6 +52,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
+    clonerHexIDs,
+    clonePlaceableHexIDs,
   } = usePlayContext()
 
   // computed
@@ -65,7 +69,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       onClickTurnHex?.(event, sourceHex)
     }
   }
-
   // classnames
   const hexClassNames = (hex: BoardHex) => {
     if (isPlacementPhase) {
@@ -98,11 +101,14 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
+        isMovementStage,
+        isWaterCloneStage,
         boardHexes,
         gameUnits,
-        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
+        clonerHexIDs,
+        clonePlaceableHexIDs,
       })
     }
   }
@@ -168,34 +174,4 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     })
   }
   return <>{hexJSX()}</>
-}
-const HexIDText = ({
-  hexSize,
-  text,
-  textLine2,
-}: {
-  hexSize: number
-  text: string
-  textLine2?: string
-}) => {
-  return (
-    <>
-      <HexText
-        hexSize={hexSize}
-        className="maphex_altitude-text"
-        y={hexSize * 0.6}
-      >
-        {text.toString()}
-      </HexText>
-      {textLine2 && (
-        <HexText
-          hexSize={hexSize}
-          className="maphex_altitude-text"
-          y={hexSize * 0.8}
-        >
-          {textLine2.toString()}
-        </HexText>
-      )}
-    </>
-  )
 }

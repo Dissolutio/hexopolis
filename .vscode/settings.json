@@ -33,7 +33,9 @@
         "raelin",
         "Rechets",
         "Syvarris",
-        "ullar"
+        "threshholds",
+        "ullar",
+        "unkill"
     ],
     "editor.snippetSuggestions": "top",
     "editor.suggest.snippetsPreventQuickSuggestions": false,

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { usePlayContext, useUIContext } from '../../contexts'
-import { useBgioG, useBgioMoves } from 'bgio-contexts'
+import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from './UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
@@ -13,6 +13,7 @@ import { selectIfGameArmyCardHasFlying } from 'game/selectors'
 import { omToString } from 'app/utilities'
 import styled from 'styled-components'
 import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
+import { stageNames } from 'game/constants'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -30,6 +31,7 @@ export const RopAttackMoveHeader = ({
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { moves } = useBgioMoves()
+  const { events } = useBgioEvents()
   const { selectedUnit, revealedGameCard, revealedGameCardUnitIDs } =
     usePlayContext()
   const { setSelectedUnitID } = useUIContext()
@@ -42,10 +44,9 @@ export const RopMoveControls = () => {
   const movesAvailable =
     Math.min(allowedMoveCount, unitsAliveCount) - movedUnitsCount
   const isAllMovesUsed = movesAvailable <= 0
-  const { endCurrentMoveStage } = moves
   const handleEndMovementClick = () => {
     // setSelectedUnitID('')
-    endCurrentMoveStage()
+    events?.setStage?.(stageNames.attacking)
   }
   return (
     <div>

@@ -14,6 +14,7 @@ import {
   HexCoordinates,
   MoveRange,
   StartZones,
+  WaterCloneRoll,
 } from 'game/types'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
@@ -143,6 +144,8 @@ export function calcOrderMarkerHexClassNames({
 export function calcRopHexClassNames({
   isMyTurn,
   isAttackingStage,
+  isMovementStage,
+  isWaterCloneStage,
   selectedUnitID,
   hex,
   playerID,
@@ -151,12 +154,15 @@ export function calcRopHexClassNames({
   revealedGameCard,
   boardHexes,
   gameUnits,
-  gameArmyCards,
   unitsMoved,
   selectedUnitMoveRange,
+  clonerHexIDs,
+  clonePlaceableHexIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
+  isMovementStage: boolean
+  isWaterCloneStage: boolean
   selectedUnitID: string
   hex: BoardHex
   playerID: string
@@ -165,15 +171,15 @@ export function calcRopHexClassNames({
   revealedGameCard: GameArmyCard | undefined
   boardHexes: BoardHexes
   gameUnits: GameUnits
-  gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
+  clonerHexIDs: string[]
+  clonePlaceableHexIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
   const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
   const selectedUnit = gameUnits[selectedUnitID]
-  const is2HexSelectedUnit = selectedUnit?.is2Hex
   const isSelectedCard = (hex: BoardHex) => {
     return revealedGameCardUnitIDs.includes(hexUnitID)
   }
@@ -193,10 +199,7 @@ export function calcRopHexClassNames({
   if (isSelectableUnit) {
     classNames = classNames.concat(' maphex__selected-card-unit--selectable ')
   }
-  // Highlight selected unit
-  if (selectedUnitID && isSelectedUnitHex(hex)) {
-    classNames = classNames.concat(' maphex__selected-card-unit--active ')
-  }
+
   // NOT MY TURN
   // Highlight opponents active units on their turn
   if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
@@ -210,17 +213,23 @@ export function calcRopHexClassNames({
     const endHexUnitPlayerID = hexUnit?.playerID
     const isEndHexEnemyOccupied =
       isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
     // If unit selected, hex is enemy occupied...
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const startHex = selectHexForUnit(selectedUnitID, boardHexes)
       const tailHex = selectTailHexForUnit(selectedUnitID, boardHexes)
-      const isInTailRange = is2HexSelectedUnit
-        ? hexUtilsDistance(tailHex as HexCoordinates, hex) <=
-          (revealedGameCard?.range ?? 0)
-        : false
+      const is2HexSelectedUnit = selectedUnit?.is2Hex && tailHex
+      const isInTailRange =
+        is2HexSelectedUnit && tailHex
+          ? hexUtilsDistance(tailHex as HexCoordinates, hex) <=
+            (revealedGameCard?.range ?? 0)
+          : false
       const isInRange =
         isInTailRange ||
-        hexUtilsDistance(startHex as HexCoordinates, hex) <=
+        (startHex ? hexUtilsDistance(startHex as HexCoordinates, hex) : -1) <=
           (revealedGameCard?.range ?? 0)
       // ... and is in range
       if (isInRange) {
@@ -230,7 +239,7 @@ export function calcRopHexClassNames({
   }
 
   // phase: ROP-move
-  if (!isAttackingStage && isMyTurn) {
+  if (isMovementStage) {
     const { safeMoves, engageMoves, disengageMoves } =
       transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
     const isInSafeMoveRange = safeMoves.includes(hex.id)
@@ -240,6 +249,10 @@ export function calcRopHexClassNames({
     const isUnitMovePartiallyExpended =
       hasUnitOnHexMoved && hexUnit.movePoints > 0
     const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
     // only do moveRange/move-expended coloring on non-selected units/hexes
     if (hex.id !== hexOfSelectedUnit?.id) {
       // Paint safe moves
@@ -262,6 +275,14 @@ export function calcRopHexClassNames({
       if (isUnitMoveTotallyUsed) {
         classNames = classNames.concat(' maphex__move-totally-moved-unit ')
       }
+    }
+  }
+  if (isWaterCloneStage) {
+    if (clonerHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' maphex__cloner-hexes ')
+    }
+    if (clonePlaceableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' maphex__clone-placeable ')
     }
   }
   return classNames
