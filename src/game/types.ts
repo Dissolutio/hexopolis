@@ -282,7 +282,11 @@ export type MapOptions = {
   // flat-top, or pointy-top hexes
   flat?: boolean
 }
-
+export type RangeScan = {
+  isInRange: boolean
+  isMelee: boolean
+  isRanged: boolean
+}
 export type StringKeyedObj = {
   [key: string]: string
 }

@@ -7,9 +7,11 @@ import {
   OrderMarkers,
   OrderMarker,
   PlayerOrderMarkers,
+  HexCoordinates,
+  RangeScan,
 } from './types'
 import { generateHexID } from './constants'
-import { hexUtilsNeighbors } from './hex-utils'
+import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
 import { uniq } from 'lodash'
 
 // returns the hex for 1-hex units, and the head-hex for multi-hex units
@@ -127,7 +129,70 @@ export function selectAreTwoUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
+export const selectIsInRangeOfAttack = ({
+  attacker,
+  defenderHex,
+  gameArmyCards,
+  boardHexes,
+  gameUnits,
+}: {
+  attacker: GameUnit
+  defenderHex: BoardHex
+  gameArmyCards: GameArmyCard[]
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+}): RangeScan => {
+  const { unitID } = attacker
+  const isUnit2Hex = attacker.is2Hex
+  const attackerGameCard = selectGameCardByID(
+    gameArmyCards,
+    attacker.gameCardID
+  )
+  const unitRange = attackerGameCard?.range ?? 0
+  const attackerHex = selectHexForUnit(unitID, boardHexes)
+  const attackerTailHex = selectTailHexForUnit(unitID, boardHexes)
+  const { occupyingUnitID: defenderHexUnitID } = defenderHex
 
+  const defenderGameUnit = gameUnits[defenderHexUnitID]
+  const defenderGameCard = selectGameCardByID(
+    gameArmyCards,
+    defenderGameUnit.gameCardID
+  )
+  if (!attackerHex || !attackerGameCard || !defenderGameCard) {
+    console.error(
+      "Something went wrong in the 'selectIsInRangeOfAttack' selector, necessary ingredients are missing."
+    )
+    return {
+      isInRange: false,
+      isMelee: false,
+      isRanged: false,
+    }
+  }
+  const isInMeleeRange = selectAreTwoUnitsEngaged({
+    aHeight: attackerGameCard?.height ?? 0,
+    aAltitude: attackerHex?.altitude ?? 0,
+    bHeight: defenderGameCard?.height ?? 0,
+    bAltitude: defenderHex.altitude,
+  })
+  const isInTailRange =
+    isUnit2Hex && attackerTailHex
+      ? hexUtilsDistance(attackerTailHex as HexCoordinates, defenderHex) <=
+        unitRange
+      : false
+  const isInHeadHexRange = attackerHex
+    ? hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
+    : false
+  const isInRangedRange = isInTailRange || isInHeadHexRange
+  const isInRange =
+    // range 1 attacks require units to be engaged to use them
+    unitRange === 1 ? isInMeleeRange : isInRangedRange
+  return {
+    isInRange,
+    isMelee: isInMeleeRange,
+    // a normal attack cannot be a ranged attack if the unit is engaged
+    isRanged: isInRangedRange && !isInMeleeRange,
+  }
+}
 // this function will lookup the unit on the hex, OR you can pass an override unit to place on the hex to predict engagements
 export function selectEngagementsForHex({
   hexID,

@@ -1,14 +1,9 @@
 import type { Move } from 'boardgame.io'
 
-import {
-  selectHexForUnit,
-  selectGameCardByID,
-  selectTailHexForUnit,
-} from '../selectors'
-import { GameState, BoardHex, GameUnit, HexCoordinates } from '../types'
+import { selectGameCardByID, selectIsInRangeOfAttack } from '../selectors'
+import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
-import { hexUtilsDistance } from 'game/hex-utils'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -42,20 +37,20 @@ export const rollHeroscapeDice = (
 
 export const attackAction: Move<GameState> = {
   undoable: false,
-  move: ({ G, random }, unit: GameUnit, defenderHex: BoardHex) => {
-    const { unitID } = unit
-    const isUnit2Hex = unit.is2Hex
-    const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
+  move: ({ G, random }, attacker: GameUnit, defenderHex: BoardHex) => {
+    const { unitID } = attacker
+    const isUnit2Hex = attacker.is2Hex
+    const attackerGameCard = selectGameCardByID(
+      G.gameArmyCards,
+      attacker.gameCardID
+    )
     const { currentRound, currentOrderMarker } = G
-    const unitName = unitGameCard?.name ?? ''
-    const unitRange = unitGameCard?.range ?? 0
+    const unitName = attackerGameCard?.name ?? ''
     const unitsMoved = [...G.unitsMoved]
     const unitsAttacked = [...G.unitsAttacked]
     // attacksAllowed is where we might account for Double Attack, etc.
-    const attacksAllowed = unitGameCard?.figures ?? 0
+    const attacksAllowed = attackerGameCard?.figures ?? 0
     const attacksLeft = attacksAllowed - unitsAttacked.length
-    const attackerHex = selectHexForUnit(unitID, G.boardHexes)
-    const attackerTailHex = selectTailHexForUnit(unitID, G.boardHexes)
     const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } =
       defenderHex
     //! EARLY OUTS
@@ -87,33 +82,31 @@ export const attackAction: Move<GameState> = {
       console.error(`Attack action denied:attack must be used by a moved unit`)
       return
     }
-    // DISALLOW - defender is out of range
-    const isInTailRange =
-      isUnit2Hex && attackerTailHex
-        ? hexUtilsDistance(attackerTailHex as HexCoordinates, defenderHex) <=
-          unitRange
-        : false
-    const isInRange =
-      isInTailRange ||
-      hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
-    if (!isInRange) {
-      console.error(`Attack action denied:defender is out of range`)
-      return
-    }
 
-    // ALLOW
-    const attackRolled = unitGameCard?.attack ?? 0
     const defenderGameUnit = G.gameUnits[defenderHexUnitID]
     const defenderGameCard = selectGameCardByID(
       G.gameArmyCards,
       defenderGameUnit.gameCardID
     )
+    const { isInRange, isRanged, isMelee } = selectIsInRangeOfAttack({
+      attacker,
+      defenderHex,
+      gameArmyCards: G.gameArmyCards,
+      boardHexes: G.boardHexes,
+      gameUnits: G.gameUnits,
+    })
+
+    // DISALLOW - defender is out of range
+    if (!isInRange) {
+      console.error(`Attack action denied:defender is out of range`)
+      return
+    }
+    // ALLOW
+    const attackRolled = attackerGameCard?.attack ?? 0
     const defenseRolled = defenderGameCard?.defense ?? 0
     const defenderInitialLife = defenderGameCard?.life ?? 0
-    // const attackRoll = random?.Die(6, attackRolled) ?? []
     const attackRoll = rollHeroscapeDice(attackRolled, random)
     const skulls = attackRoll.skulls
-    // const defenseRoll = random?.Die(6, defenseRolled) ?? []
     const defenseRoll = rollHeroscapeDice(defenseRolled, random)
     const shields = defenseRoll.shields
     const woundsDealt = Math.max(skulls - shields, 0)
@@ -123,20 +116,6 @@ export const attackAction: Move<GameState> = {
     const indexOfThisAttack = unitsAttacked.length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${unitID}:a${indexOfThisAttack}`
     // const gameLogHumanFriendly = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
-    const gameLogForThisAttack = encodeGameLogMessage({
-      type: 'attack',
-      id: attackId,
-      unitID: unitID,
-      unitName,
-      targetHexID: defenderHexID,
-      defenderUnitName,
-      attackRolled,
-      defenseRolled,
-      skulls,
-      shields,
-      wounds: woundsDealt,
-      isFatal,
-    })
 
     // deal damage
     if (isHit) {
@@ -158,6 +137,20 @@ export const attackAction: Move<GameState> = {
     unitsAttacked.push(unitID)
     G.unitsAttacked = unitsAttacked
     // update game log
+    const gameLogForThisAttack = encodeGameLogMessage({
+      type: 'attack',
+      id: attackId,
+      unitID: unitID,
+      unitName,
+      targetHexID: defenderHexID,
+      defenderUnitName,
+      attackRolled,
+      defenseRolled,
+      skulls,
+      shields,
+      wounds: woundsDealt,
+      isFatal,
+    })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
   },
 }
