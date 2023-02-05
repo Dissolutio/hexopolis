@@ -249,7 +249,7 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          gameUnits[h.occupyingUnitID].playerID !== playerID &&
+          unitOnHex.playerID !== playerID &&
           // filter for engaged units
           selectAreTwoUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,
