@@ -1,4 +1,3 @@
-import { Ref } from 'react'
 import styled from 'styled-components'
 
 type MapHexStylesProps = {

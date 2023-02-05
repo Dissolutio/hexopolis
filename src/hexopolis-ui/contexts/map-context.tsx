@@ -1,3 +1,4 @@
+import { HEXGRID_SPACING } from 'app/constants'
 import { HexMap } from 'game/types'
 import * as React from 'react'
 
@@ -47,8 +48,6 @@ export function MapContextProvider({
     hexSize
   )
   // Map Display
-  // TODO these initial viewBox values should be calculated much better: something that grasps the map's size, draws a rectangle around it, and then scales it to fit the screen
-  // -100 0 3000 1000 this is good default for giants table on 500x500 screen
   const [viewBoxLength, setViewBoxLength] = React.useState(viewbox.width)
   const [viewBoxHeight, setViewBoxHeight] = React.useState(viewbox.height)
   const [viewBoxX, setViewBoxX] = React.useState(viewbox.minX)
@@ -157,16 +156,16 @@ const calculateViewbox = (
   let minX: number = -50
   switch (mapShape) {
     case 'rectangle':
-      height = 2 * hexSize + (mapHeight - 1) * 1.5 * hexSize // 2r+(n-1)1.5r
+      height = (2 * hexSize + (mapHeight - 1) * 1.5 * hexSize) * HEXGRID_SPACING // 2r+(n-1)1.5r
       minY = -1 * hexSize // -r
-      width = 2 * a * mapWidth + (mapHeight > 1 ? a : 0) // 2an + odd-row shift (a second row of hexes will be shifted further right than the first row)
+      width = (2 * a * mapWidth + (mapHeight > 1 ? a : 0)) * HEXGRID_SPACING // 2an + odd-row shift (a second row of hexes will be shifted further right than the first row)
       minX = -1 * a // -a
       return { minX, minY, width, height }
     case 'hexagon':
-      height = 2 * (hexSize + 1.5 * (mapSize * hexSize)) // 2(r + 1.5nr)
+      height = 2 * (hexSize + 1.5 * (mapSize * hexSize)) * HEXGRID_SPACING // 2(r + 1.5nr) * (hexgrid spacing)
       minY = (-1 * height) / 2
-      width = 2 * a * (2 * mapSize + 1) // 2a(2n+1)
-      minX = -1 * a * (2 * mapSize + 1) // -a(1+2n)
+      width = 2 * a * (2 * mapSize + 1) * HEXGRID_SPACING // 2a(2n+1)
+      minX = -1 * a * (2 * mapSize + 1) * HEXGRID_SPACING // -a(1+2n)
       return { minX, minY, width, height }
     case 'shiftedHexagon':
       height = 2 * (hexSize + 1.5 * (mapSize * hexSize)) // 2(r + 1.5nr)
