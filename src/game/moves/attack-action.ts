@@ -217,6 +217,8 @@ export const attackAction: Move<GameState> = {
       shields,
       wounds: woundsDealt,
       isFatal,
+      counterStrikeWounds,
+      isFatalCounterStrike,
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
   },

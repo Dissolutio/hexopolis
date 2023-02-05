@@ -15,6 +15,8 @@ export type GameLogMessage = {
   shields?: number
   wounds?: number
   isFatal?: boolean
+  counterStrikeWounds?: number
+  isFatalCounterStrike?: boolean
 
   // roundBegin logs below
   initiativeRolls?: Roll[][]
@@ -68,6 +70,8 @@ export const decodeGameLogMessage = (
       shields,
       wounds,
       isFatal,
+      isFatalCounterStrike,
+      counterStrikeWounds,
       // roundBegin
       initiativeRolls,
       // moves
@@ -82,6 +86,9 @@ export const decodeGameLogMessage = (
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
+        const counterStrikeMsg = isFatalCounterStrike
+          ? `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was defeated by counter strike!`
+          : `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was hit by counter strike for ${counterStrikeWounds} wounds!`
         const attackMsgText = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
         return {
           type,
@@ -96,7 +103,7 @@ export const decodeGameLogMessage = (
           shields,
           wounds,
           isFatal,
-          msg: attackMsgText,
+          msg: isFatalCounterStrike ? counterStrikeMsg : attackMsgText,
         }
       case gameLogTypes.roundBegin:
         // TODO display initiative rolls
@@ -123,14 +130,14 @@ export const decodeGameLogMessage = (
           msg: disengageAttemptMsgText,
         }
       case gameLogTypes.disengageSwipeFatal:
-        const disengageSwipeFatalMsgText = `A unit died while disengaging!`
+        const disengageSwipeFatalMsgText = `A unit was defeated while disengaging!`
         return {
           type,
           id,
           msg: disengageSwipeFatalMsgText,
         }
       case gameLogTypes.disengageSwipeNonFatal:
-        const disengageSwipeNonFatalMsgText = `A unit was hit while disengaging!`
+        const disengageSwipeNonFatalMsgText = `A unit was wounded while disengaging!`
         return {
           type,
           id,
@@ -153,22 +160,6 @@ export const decodeGameLogMessage = (
       default:
         break
     }
-    // const gameLogHumanFriendly = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
-    // return {
-    //   type,
-    //   id,
-    //   unitID,
-    //   unitName,
-    //   targetHexID,
-    //   defenderUnitName,
-    //   attackRolled,
-    //   defenseRolled,
-    //   skulls,
-    //   shields,
-    //   wounds,
-    //   isFatal,
-    //   msg: gameLogHumanFriendly,
-    // }
   } catch (error) {
     console.error('🚀 ~ file: gamelog.ts ~ decodeGameLogMessage ~ error', error)
     return undefined
