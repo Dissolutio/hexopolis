@@ -129,6 +129,38 @@ export function selectAreTwoUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
+export function selectAreTwoUnitsEngaged2({
+  unit1,
+  unit2,
+  gameArmyCards,
+  boardHexes,
+  gameUnits,
+}: {
+  unit1: GameUnit
+  unit2: GameUnit
+  defenderHex: BoardHex
+  gameArmyCards: GameArmyCard[]
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+}) {
+  // 4 cases: the head or tail of one unit is touching the head or tail of the other
+  const unit1Hex = selectHexForUnit(unit1.unitID, boardHexes)
+  const unit1TailHex = selectTailHexForUnit(unit1.unitID, boardHexes)
+  const unit1GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
+
+  const unit2Hex = selectHexForUnit(unit1.unitID, boardHexes)
+  const unit2TailHex = selectTailHexForUnit(unit1.unitID, boardHexes)
+  const unit2GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
+
+  // const aHeight =
+  // const aAltitude =
+  // const bHeight =
+  // const bAltitude =
+
+  // this just checks if the top of one unit is above the bottom of the other
+  // TODO: account for barriers between two hexes
+  // return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
+}
 export const selectIsInRangeOfAttack = ({
   attacker,
   defenderHex,
