@@ -146,8 +146,8 @@ export const attackAction: Move<GameState> = {
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
     const hasCounterStrike =
       selectIfGameArmyCardHasCounterStrike(defenderGameCard)
-    const isCounterStrikeWounds = shields - skulls > 0
-    const counterStrikeWounds = shields - skulls
+    const counterStrikeWounds = hasCounterStrike ? shields - skulls : 0
+    const isCounterStrikeWounds = counterStrikeWounds > 0
     const isFatalCounterStrike = counterStrikeWounds >= attackerLife
     // const gameLogHumanFriendly = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
 

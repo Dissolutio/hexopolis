@@ -89,7 +89,9 @@ export const decodeGameLogMessage = (
         const counterStrikeMsg = isFatalCounterStrike
           ? `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was defeated by counter strike!`
           : `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was hit by counter strike for ${counterStrikeWounds} wounds!`
-        const attackMsgText = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
+        const attackMsgText = isFatal
+          ? `${unitName} destroyed ${defenderUnitName} with a ${wounds}-wound attack (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
+          : `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
         return {
           type,
           id,
@@ -103,7 +105,7 @@ export const decodeGameLogMessage = (
           shields,
           wounds,
           isFatal,
-          msg: isFatalCounterStrike ? counterStrikeMsg : attackMsgText,
+          msg: counterStrikeWounds > 0 ? counterStrikeMsg : attackMsgText,
         }
       case gameLogTypes.roundBegin:
         // TODO display initiative rolls
