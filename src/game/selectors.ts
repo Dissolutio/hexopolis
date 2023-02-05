@@ -357,6 +357,13 @@ export function selectIfGameArmyCardHasFlying(
     : false
   return { hasFlying, hasStealth }
 }
+export function selectIfGameArmyCardHasCounterStrike(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
+    : false
+}
 type HasStealthReport = {
   hasDisengage: boolean
   hasGhostWalk: boolean
