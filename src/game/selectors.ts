@@ -168,6 +168,7 @@ export const selectIsInRangeOfAttack = ({
       isRanged: false,
     }
   }
+  // THIS IS BROKEN BELOW, IT ASSUMES THE HEXES ARE ADJACENT
   const isInMeleeRange = selectAreTwoUnitsEngaged({
     aHeight: attackerGameCard?.height ?? 0,
     aAltitude: attackerHex?.altitude ?? 0,
@@ -182,10 +183,17 @@ export const selectIsInRangeOfAttack = ({
   const isInHeadHexRange = attackerHex
     ? hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
     : false
+  // This totally ignores line of sight
   const isInRangedRange = isInTailRange || isInHeadHexRange
-  const isInRange =
-    // range 1 attacks require units to be engaged to use them
-    unitRange === 1 ? isInMeleeRange : isInRangedRange
+  const isRangeOneWhichRequiresEngagement = unitRange === 1
+  const isThorianSpeedDefender =
+    selectIfGameArmyCardHasThorianSpeed(defenderGameCard)
+  const isAttackerRequiredToBeEngagedToDefender =
+    isRangeOneWhichRequiresEngagement || isThorianSpeedDefender
+  const isInRange = isAttackerRequiredToBeEngagedToDefender
+    ? isInMeleeRange
+    : isInRangedRange
+  console.log('🚀 ~ file: selectors.ts:203 ~ isInMeleeRange', isInMeleeRange)
   return {
     isInRange,
     isMelee: isInMeleeRange,
@@ -362,6 +370,13 @@ export function selectIfGameArmyCardHasCounterStrike(
 ): boolean {
   return gameArmyCard
     ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
+    : false
+}
+export function selectIfGameArmyCardHasThorianSpeed(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
     : false
 }
 type HasStealthReport = {
