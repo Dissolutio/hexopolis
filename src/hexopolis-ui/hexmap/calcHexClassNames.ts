@@ -222,7 +222,7 @@ export function calcRopHexClassNames({
     // Highlight targetable enemy units
     if (selectedUnitID && isEndHexEnemyOccupied) {
       const { isInRange } = selectIsInRangeOfAttack({
-        attacker: selectedUnit,
+        attackingUnit: selectedUnit,
         defenderHex: hex,
         gameArmyCards: gameArmyCards,
         boardHexes: boardHexes,

@@ -169,23 +169,23 @@ export function selectAreTwoUnitsInMelee({
     )
 }
 export const selectIsInRangeOfAttack = ({
-  attacker,
+  attackingUnit,
   defenderHex,
   gameArmyCards,
   boardHexes,
   gameUnits,
 }: {
-  attacker: GameUnit
+  attackingUnit: GameUnit
   defenderHex: BoardHex
   gameArmyCards: GameArmyCard[]
   boardHexes: BoardHexes
   gameUnits: GameUnits
 }): RangeScan => {
-  const { unitID } = attacker
-  const isUnit2Hex = attacker.is2Hex
+  const { unitID } = attackingUnit
+  const isUnit2Hex = attackingUnit.is2Hex
   const attackerGameCard = selectGameCardByID(
     gameArmyCards,
-    attacker.gameCardID
+    attackingUnit.gameCardID
   )
   const unitRange = attackerGameCard?.range ?? 0
   const attackerHex = selectHexForUnit(unitID, boardHexes)

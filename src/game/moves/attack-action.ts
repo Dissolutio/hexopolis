@@ -118,7 +118,7 @@ export const attackAction: Move<GameState> = {
     }
 
     const { isInRange, isRanged, isMelee } = selectIsInRangeOfAttack({
-      attacker: attackingUnit,
+      attackingUnit: attackingUnit,
       defenderHex,
       gameArmyCards: G.gameArmyCards,
       boardHexes: G.boardHexes,

@@ -55,7 +55,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     abilities: [
       {
         name: 'Explosion Special Attack',
-        desc: 'Range 7. Attack 3. Choose a figure to attack. Any figures adjacent to the chosen figure are also affected by Explosion Special Attack. Deathwalker only needs a clear sight shot at the chosen figure. Roll 3 attack dice once for all affected figures. Each figure rolls defense dice seperately. Deathwalker can be affected by his own Explosion Special Attack.',
+        desc: 'Range 7. Attack 3. Choose a figure to attack. Any figures adjacent to the chosen figure are also affected by Explosion Special Attack. Deathwalker only needs a clear sight shot at the chosen figure. Roll 3 attack dice once for all affected figures. Each figure rolls defense dice separately. Deathwalker can be affected by his own Explosion Special Attack.',
       },
       {
         name: 'Range Enhancement',

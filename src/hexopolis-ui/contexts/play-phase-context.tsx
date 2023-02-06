@@ -373,7 +373,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       // attack with selected unit
       if (selectedUnit && isEndHexEnemyOccupied) {
         const { isInRange } = selectIsInRangeOfAttack({
-          attacker: selectedUnit,
+          attackingUnit: selectedUnit,
           defenderHex: sourceHex,
           gameArmyCards: gameArmyCards,
           boardHexes: boardHexes,
