@@ -1,10 +1,19 @@
 import type { Move } from 'boardgame.io'
 
-import { selectHexForUnit, selectGameCardByID } from '../selectors'
-import { GameState, BoardHex, GameUnit, HexCoordinates } from '../types'
+import {
+  selectGameCardByID,
+  selectIsInRangeOfAttack,
+  selectHexForUnit,
+  selectTailHexForUnit,
+  selectAttackerHasAttacksAllowed,
+} from '../selectors'
+import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
-import { hexUtilsDistance } from 'game/hex-utils'
+import {
+  selectIfGameArmyCardHasCounterStrike,
+  selectUnitAttackDiceForAttack,
+} from 'game/selectors/card-selectors'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -38,93 +47,112 @@ export const rollHeroscapeDice = (
 
 export const attackAction: Move<GameState> = {
   undoable: false,
-  move: ({ G, random }, unit: GameUnit, defenderHex: BoardHex) => {
-    const { unitID } = unit
-    const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
+  move: ({ G, random }, attackingUnit: GameUnit, defenderHex: BoardHex) => {
+    const { unitID: attackerUnitID } = attackingUnit
+    const attackerGameCard = selectGameCardByID(
+      G.gameArmyCards,
+      attackingUnit.gameCardID
+    )
+    const unitName = attackerGameCard?.name ?? ''
+    const attackingUnitHex = selectHexForUnit(
+      attackingUnit.unitID,
+      G.boardHexes
+    )
+    const attackingUnitTailHex = selectTailHexForUnit(
+      attackingUnit.unitID,
+      G.boardHexes
+    )
     const { currentRound, currentOrderMarker } = G
-    const unitName = unitGameCard?.name ?? ''
-    const unitRange = unitGameCard?.range ?? 0
-    const unitsMoved = [...G.unitsMoved]
-    const unitsAttacked = [...G.unitsAttacked]
-    // attacksAllowed is where we might account for Double Attack, etc.
-    const attacksAllowed = unitGameCard?.figures ?? 0
-    const attacksLeft = attacksAllowed - unitsAttacked.length
-    const attackerHex = selectHexForUnit(unitID, G.boardHexes)
+    const unitsAttacked = { ...G.unitsAttacked }
     const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } =
       defenderHex
-    //! EARLY OUTS
-    // DISALLOW - no target
-    if (!defenderHexUnitID) {
-      console.error(`Attack action denied:no target`)
-      return
-    }
-    // DISALLOW - all attacks used
-    const isNoAttacksLeft = attacksLeft <= 0
-    if (isNoAttacksLeft) {
-      console.error(`Attack action denied:all attacks used`)
-      return
-    }
-    // DISALLOW - unit already attacked
-    const isUnitHasNoAttacksLeft = unitsAttacked.includes(unitID)
-    if (isUnitHasNoAttacksLeft) {
-      console.error(`Attack action denied:unit already attacked`)
-      return
-    }
-    // DISALLOW - attack must be used by a moved unit
-    const isMovedUnitAttacking = unitsMoved.includes(unitID)
-    const isAttackAvailableForUnmovedUnitToUse =
-      attacksLeft >
-      unitsMoved.filter((id) => !unitsAttacked.includes(id)).length
-    const isUsableAttack =
-      isMovedUnitAttacking || isAttackAvailableForUnmovedUnitToUse
-    if (!isUsableAttack) {
-      console.error(`Attack action denied:attack must be used by a moved unit`)
-      return
-    }
-    // DISALLOW - defender is out of range
-    const isInRange =
-      hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
-    if (!isInRange) {
-      console.error(`Attack action denied:defender is out of range`)
-      return
-    }
-
-    // ALLOW
-    const attackRolled = unitGameCard?.attack ?? 0
     const defenderGameUnit = G.gameUnits[defenderHexUnitID]
     const defenderGameCard = selectGameCardByID(
       G.gameArmyCards,
       defenderGameUnit.gameCardID
     )
-    const defenseRolled = defenderGameCard?.defense ?? 0
-    const defenderInitialLife = defenderGameCard?.life ?? 0
-    // const attackRoll = random?.Die(6, attackRolled) ?? []
+    const defenderTailHex = selectTailHexForUnit(
+      defenderGameUnit.unitID,
+      G.boardHexes
+    )
+    //! EARLY OUTS
+    // DISALLOW - missing needed ingredients
+    if (
+      !attackerGameCard ||
+      !attackingUnitHex ||
+      !defenderHexUnitID ||
+      !defenderGameCard ||
+      !defenderGameUnit
+    ) {
+      console.error(
+        `Attack action denied: missing needed ingredients to calculate attack`
+      )
+      return
+    }
+    const {
+      isNoAttacksLeftFromTotal,
+      isUnitHasNoAttacksLeft,
+      isUnmovedUnitUsableAttack,
+    } = selectAttackerHasAttacksAllowed({
+      attackingUnit,
+      gameArmyCards: G.gameArmyCards,
+      unitsAttacked: G.unitsAttacked,
+      unitsMoved: G.unitsMoved,
+    })
+    // DISALLOW - all attacks used from total
+    if (isNoAttacksLeftFromTotal) {
+      console.error(`Attack action denied:all attacks used`)
+      return
+    }
+    // DISALLOW - unit has used all their attacks
+    if (isUnitHasNoAttacksLeft) {
+      console.error(`Attack action denied:unit already used all their attacks`)
+      return
+    }
+    // DISALLOW - attack must be used by a moved unit
+    if (!isUnmovedUnitUsableAttack) {
+      console.error(`Attack action denied:attack must be used by a moved unit`)
+      return
+    }
+
+    const { isInRange, isMelee } = selectIsInRangeOfAttack({
+      attackingUnit: attackingUnit,
+      defenderHex,
+      gameArmyCards: G.gameArmyCards,
+      boardHexes: G.boardHexes,
+      gameUnits: G.gameUnits,
+    })
+    // DISALLOW - defender is out of range
+    if (!isInRange) {
+      console.error(`Attack action denied:defender is out of range`)
+      return
+    }
+    // ALLOW
+    // const attackRolled = attackerGameCard.attack
+    const attackRolled = selectUnitAttackDiceForAttack({
+      defender: defenderGameUnit,
+      attackerArmyCard: attackerGameCard,
+      unitsAttacked: G.unitsAttacked,
+      isMelee,
+    })
+    const defenseRolled = defenderGameCard.defense
+    const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
+    const attackerLife = attackerGameCard.life - attackingUnit.wounds
     const attackRoll = rollHeroscapeDice(attackRolled, random)
     const skulls = attackRoll.skulls
-    // const defenseRoll = random?.Die(6, defenseRolled) ?? []
     const defenseRoll = rollHeroscapeDice(defenseRolled, random)
     const shields = defenseRoll.shields
     const woundsDealt = Math.max(skulls - shields, 0)
     const isHit = woundsDealt > 0
-    const isFatal = woundsDealt >= defenderInitialLife - defenderGameUnit.wounds
-    const defenderUnitName = defenderGameCard?.name ?? ''
-    const indexOfThisAttack = unitsAttacked.length
-    const attackId = `r${currentRound}:om${currentOrderMarker}:${unitID}:a${indexOfThisAttack}`
-    // const gameLogHumanFriendly = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
-    const gameLogForThisAttack = encodeGameLogMessage({
-      type: 'attack',
-      id: attackId,
-      unitID: unitID,
-      unitName,
-      targetHexID: defenderHexID,
-      defenderUnitName,
-      attackRolled,
-      defenseRolled,
-      skulls,
-      shields,
-      wounds: woundsDealt,
-      isFatal,
-    })
+    const isFatal = woundsDealt >= defenderLife
+    const defenderUnitName = defenderGameCard.name
+    const indexOfThisAttack = Object.values(unitsAttacked).flat().length
+    const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
+    const hasCounterStrike =
+      selectIfGameArmyCardHasCounterStrike(defenderGameCard)
+    const counterStrikeWounds = hasCounterStrike ? shields - skulls : 0
+    const isCounterStrikeWounds = counterStrikeWounds > 0
+    const isFatalCounterStrike = counterStrikeWounds >= attackerLife
 
     // deal damage
     if (isHit) {
@@ -134,15 +162,71 @@ export const attackAction: Move<GameState> = {
     if (isFatal) {
       G.unitsKilled = {
         ...G.unitsKilled,
-        [unitID]: [...(G.unitsKilled?.[unitID] ?? []), defenderGameUnit.unitID],
+        [attackerUnitID]: [
+          ...(G.unitsKilled?.[attackerUnitID] ?? []),
+          defenderGameUnit.unitID,
+        ],
+      }
+      G.killedUnits[defenderGameUnit.unitID] = {
+        ...G.gameUnits[defenderGameUnit.unitID],
       }
       delete G.gameUnits[defenderGameUnit.unitID]
+      // remove from hex, and tail if applicable
       G.boardHexes[defenderHexID].occupyingUnitID = ''
+      if (defenderGameUnit.is2Hex && defenderTailHex) {
+        G.boardHexes[defenderTailHex.id].occupyingUnitID = ''
+        G.boardHexes[defenderTailHex.id].isUnitTail = false
+      }
+    }
+    // apply counter-strike if applicable
+    if (hasCounterStrike && isCounterStrikeWounds) {
+      if (isFatalCounterStrike) {
+        G.unitsKilled = {
+          ...G.unitsKilled,
+          [defenderHexUnitID]: [
+            ...(G.unitsKilled?.[defenderHexUnitID] ?? []),
+            attackingUnit.unitID,
+          ],
+        }
+        G.killedUnits[attackingUnit.unitID] = {
+          ...G.gameUnits[attackingUnit.unitID],
+        }
+        delete G.gameUnits[attackingUnit.unitID]
+        // remove from hex, and tail if applicable
+        G.boardHexes[attackingUnitHex.id].occupyingUnitID = ''
+        if (attackingUnit.is2Hex && attackingUnitTailHex) {
+          G.boardHexes[attackingUnitTailHex.id].occupyingUnitID = ''
+          G.boardHexes[attackingUnitTailHex.id].isUnitTail = false
+        }
+      } else {
+        G.gameUnits[attackingUnit.unitID].wounds += counterStrikeWounds
+      }
+      // TODO: add counter-strike to game log
     }
     // update units attacked
-    unitsAttacked.push(unitID)
+    unitsAttacked[attackerUnitID] = [
+      ...(unitsAttacked?.[attackerUnitID] ?? []),
+      defenderGameUnit.unitID,
+    ]
+
     G.unitsAttacked = unitsAttacked
     // update game log
+    const gameLogForThisAttack = encodeGameLogMessage({
+      type: 'attack',
+      id: attackId,
+      unitID: attackerUnitID,
+      unitName,
+      targetHexID: defenderHexID,
+      defenderUnitName,
+      attackRolled,
+      defenseRolled,
+      skulls,
+      shields,
+      wounds: woundsDealt,
+      isFatal,
+      counterStrikeWounds,
+      isFatalCounterStrike,
+    })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
   },
 }

@@ -1,6 +1,11 @@
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
 import { hexUtilsDistance } from 'game/hex-utils'
-import { selectHexForUnit } from 'game/selectors'
+import {
+  selectGameCardByID,
+  selectHexForUnit,
+  selectIsInRangeOfAttack,
+  selectTailHexForUnit,
+} from 'game/selectors'
 import {
   BoardHex,
   BoardHexes,
@@ -10,37 +15,43 @@ import {
   HexCoordinates,
   MoveRange,
   StartZones,
+  WaterCloneRoll,
 } from 'game/types'
 import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
 export function calcPlacementHexClassNames({
   selectedMapHex,
   selectedUnitID,
+  selectedUnitIs2Hex,
   hex,
   startZones,
+  startZoneForMy2HexUnits,
   playerID,
   editingBoardHexes,
+  activeTailPlacementUnitID,
+  tailPlaceables,
 }: {
   selectedMapHex: string
   selectedUnitID: string
+  selectedUnitIs2Hex: boolean
   hex: BoardHex
   startZones: StartZones
+  startZoneForMy2HexUnits: string[]
   playerID: string
   editingBoardHexes: DeploymentProposition
+  activeTailPlacementUnitID: string
+  tailPlaceables: string[]
 }) {
-  const isMyStartZoneHex = (hex: BoardHex) => {
-    const myStartZone = startZones[playerID]
-    return Boolean(myStartZone.includes(hex.id))
-  }
-  const isSelectedHex = (hex: BoardHex) => {
-    return hex.id === selectedMapHex
-  }
+  const isMyStartZoneHex = Boolean(startZones[playerID].includes(hex.id))
+  const isTailPlaceable = tailPlaceables.includes(hex.id)
+  const isSelectedHex = hex.id === selectedMapHex
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
   //phase: Placement
-  const occupyingPlacementUnitId = editingBoardHexes[hex.id]
-  // paint all player startzones
-  // TODO: make this work for however many players
+  const occupyingPlacementUnitId =
+    editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
+
+  // highlight all player startzones
   if (startZones?.['0'].includes(hex.id)) {
     classNames = classNames.concat(` maphex__startzone--player0 `)
   }
@@ -48,35 +59,66 @@ export function calcPlacementHexClassNames({
     classNames = classNames.concat(` maphex__startzone--player1 `)
   }
 
-  // highlight placeable hexes that DO NOT have units
-  if (selectedUnitID && isMyStartZoneHex(hex) && !occupyingPlacementUnitId) {
-    classNames = classNames.concat(` maphex__start-zone--placement `)
+  // if we have a unit selected, highlight the unit and placeable hexes
+  if (selectedUnitID) {
+    // highlight hex (and tail hex) of currently selected unit
+    if (isMyStartZoneHex && occupyingPlacementUnitId === selectedUnitID) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--selected-unit `
+      )
+    }
+    // highlight empty, placeable hexes
+    if (selectedUnitIs2Hex) {
+      if (
+        isMyStartZoneHex &&
+        !occupyingPlacementUnitId &&
+        startZoneForMy2HexUnits.includes(hex.id)
+      ) {
+        classNames = classNames.concat(` maphex__start-zone--placement `)
+      }
+    } else {
+      if (isMyStartZoneHex && !occupyingPlacementUnitId) {
+        classNames = classNames.concat(` maphex__start-zone--placement `)
+      }
+    }
+    // highlight occupied placeable hexes
+    if (
+      isMyStartZoneHex &&
+      occupyingPlacementUnitId &&
+      occupyingPlacementUnitId !== selectedUnitID
+    ) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--occupied `
+      )
+    }
   }
 
-  // highlight placeable hexes that DO have units, but the one with the currently selected unit will be styled separately, below
-  if (
-    selectedUnitID &&
-    isMyStartZoneHex(hex) &&
-    occupyingPlacementUnitId &&
-    occupyingPlacementUnitId !== selectedUnitID
-  ) {
-    classNames = classNames.concat(` maphex__start-zone--placement--occupied `)
+  // if we have a unit-tail selected, highlight the unit and placeable hexes
+  if (activeTailPlacementUnitID) {
+    // highlight head hex of currently placing tail
+    if (occupyingPlacementUnitId === activeTailPlacementUnitID) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--selected-unit ` // reused className
+      )
+    }
+    // highlight empty, placeable hexes
+    if (isMyStartZoneHex && !occupyingPlacementUnitId && isTailPlaceable) {
+      classNames = classNames.concat(` maphex__start-zone--placement `) // reused className
+    }
+    // highlight occupied placeable hexes
+    if (
+      isMyStartZoneHex &&
+      occupyingPlacementUnitId &&
+      occupyingPlacementUnitId !== selectedUnitID &&
+      isTailPlaceable
+    ) {
+      classNames = classNames.concat(
+        ` maphex__start-zone--placement--occupied ` // reused className
+      )
+    }
   }
-
-  // highlight hex with currently selected unit
-  if (
-    selectedUnitID &&
-    isMyStartZoneHex(hex) &&
-    occupyingPlacementUnitId &&
-    occupyingPlacementUnitId === selectedUnitID
-  ) {
-    classNames = classNames.concat(
-      ` maphex__start-zone--placement--selected-unit `
-    )
-  }
-
-  // highlight active hex
-  if (isSelectedHex(hex)) {
+  // highlight selected hex
+  if (isSelectedHex) {
     classNames = classNames.concat(' maphex__selected--active ')
   }
   return classNames
@@ -89,14 +131,12 @@ export function calcOrderMarkerHexClassNames({
   selectedMapHex: string
   hex: BoardHex
 }) {
-  const isSelectedHex = (hex: BoardHex) => {
-    return hex.id === selectedMapHex
-  }
+  const isSelectedHex = hex.id === selectedMapHex
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
 
   // highlight active hex
-  if (isSelectedHex(hex)) {
+  if (isSelectedHex) {
     classNames = classNames.concat(' maphex__selected--active ')
   }
   return classNames
@@ -105,6 +145,8 @@ export function calcOrderMarkerHexClassNames({
 export function calcRopHexClassNames({
   isMyTurn,
   isAttackingStage,
+  isMovementStage,
+  isWaterCloneStage,
   selectedUnitID,
   hex,
   playerID,
@@ -112,12 +154,18 @@ export function calcRopHexClassNames({
   revealedGameCardUnitIDs,
   revealedGameCard,
   boardHexes,
+  gameArmyCards,
   gameUnits,
   unitsMoved,
   selectedUnitMoveRange,
+  selectedUnitAttackRange,
+  clonerHexIDs,
+  clonePlaceableHexIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
+  isMovementStage: boolean
+  isWaterCloneStage: boolean
   selectedUnitID: string
   hex: BoardHex
   playerID: string
@@ -126,12 +174,17 @@ export function calcRopHexClassNames({
   revealedGameCard: GameArmyCard | undefined
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
+  selectedUnitAttackRange: string[]
+  clonerHexIDs: string[]
+  clonePlaceableHexIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
   const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
+  const selectedUnit = gameUnits[selectedUnitID]
   const isSelectedCard = (hex: BoardHex) => {
     return revealedGameCardUnitIDs.includes(hexUnitID)
   }
@@ -151,10 +204,7 @@ export function calcRopHexClassNames({
   if (isSelectableUnit) {
     classNames = classNames.concat(' maphex__selected-card-unit--selectable ')
   }
-  // Highlight selected unit
-  if (selectedUnitID && isSelectedUnitHex(hex)) {
-    classNames = classNames.concat(' maphex__selected-card-unit--active ')
-  }
+
   // NOT MY TURN
   // Highlight opponents active units on their turn
   if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
@@ -163,26 +213,22 @@ export function calcRopHexClassNames({
 
   //phase: ROP-attack
   if (isAttackingStage) {
-    // Highlight targetable enemy units
     const isEndHexOccupied = Boolean(hexUnitID)
     const endHexUnitPlayerID = hexUnit?.playerID
     const isEndHexEnemyOccupied =
       isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
-    // If unit selected, hex is enemy occupied...
-    if (selectedUnitID && isEndHexEnemyOccupied) {
-      const startHex = selectHexForUnit(selectedUnitID, boardHexes)
-      const isInRange =
-        hexUtilsDistance(startHex as HexCoordinates, hex) <=
-        (revealedGameCard?.range ?? 0)
-      // ... and is in range
-      if (isInRange) {
-        classNames = classNames.concat(' maphex__targetable-enemy ')
-      }
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
+    // Highlight targetable enemy units
+    if (selectedUnitAttackRange.includes(hex.id)) {
+      classNames = classNames.concat(' maphex__targetable-enemy ')
     }
   }
 
   // phase: ROP-move
-  if (!isAttackingStage && isMyTurn) {
+  if (isMovementStage) {
     const { safeMoves, engageMoves, disengageMoves } =
       transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
     const isInSafeMoveRange = safeMoves.includes(hex.id)
@@ -192,6 +238,10 @@ export function calcRopHexClassNames({
     const isUnitMovePartiallyExpended =
       hasUnitOnHexMoved && hexUnit.movePoints > 0
     const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
     // only do moveRange/move-expended coloring on non-selected units/hexes
     if (hex.id !== hexOfSelectedUnit?.id) {
       // Paint safe moves
@@ -214,6 +264,14 @@ export function calcRopHexClassNames({
       if (isUnitMoveTotallyUsed) {
         classNames = classNames.concat(' maphex__move-totally-moved-unit ')
       }
+    }
+  }
+  if (isWaterCloneStage) {
+    if (clonerHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' maphex__cloner-hexes ')
+    }
+    if (clonePlaceableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' maphex__clone-placeable ')
     }
   }
   return classNames

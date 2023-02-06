@@ -1,0 +1,339 @@
+import {
+  BoardHexes,
+  GameUnits,
+  MoveRange,
+  GameArmyCard,
+  GameUnit,
+  BoardHex,
+} from './types'
+import { generateBlankMoveRange } from './constants'
+import {
+  selectHexForUnit,
+  selectEngagementsForHex,
+  selectHexNeighbors,
+  selectMoveCostBetweenNeighbors,
+  selectValidTailHexes,
+  selectMoveEngagedUnitIDs,
+  selectMoveDisengagedUnitIDs,
+  selectIsClimbable,
+  selectTailHexForUnit,
+} from './selectors'
+import {
+  selectIfGameArmyCardHasDisengage,
+  selectIfGameArmyCardHasFlying,
+} from './selectors/card-selectors'
+
+const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
+  // returns a new object with the highest movePointsLeft for each hex
+  const mergedMoveRange: MoveRange = { ...a }
+  for (const key in b) {
+    if (b[key].movePointsLeft > (a?.[key]?.movePointsLeft ?? -1)) {
+      mergedMoveRange[key] = b[key]
+    }
+  }
+  return mergedMoveRange
+}
+
+// This function splits on flying/walking/ghostwalking/disengage/stealth-flying
+export function computeUnitMoveRange(
+  unit: GameUnit,
+  isFlying: boolean,
+  boardHexes: BoardHexes,
+  gameUnits: GameUnits,
+  armyCards: GameArmyCard[]
+): MoveRange {
+  // 1. return blank move-range if we can't find the unit, its move points, or its start hex
+  const initialMoveRange = generateBlankMoveRange()
+  const unitUid = unit.unitID
+  const unitGameCard = armyCards.find(
+    (card) => card.gameCardID === unit?.gameCardID
+  )
+  const { hasStealth } = selectIfGameArmyCardHasFlying(unitGameCard)
+  const { hasDisengage, hasGhostWalk } =
+    selectIfGameArmyCardHasDisengage(unitGameCard)
+  const playerID = unit?.playerID
+  const initialMovePoints = unit?.movePoints ?? 0
+  const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
+  // mutate tailHex if unit is 2-space
+  let tailHex
+  const isTwoSpace = unit.is2Hex
+  if (isTwoSpace) {
+    tailHex = selectTailHexForUnit(unitUid, boardHexes)
+  }
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: startHex?.id ?? '',
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
+  const isUnitEngaged = initialEngagements.length > 0
+  //*early out
+  if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
+    return initialMoveRange
+  }
+  let moveRange: MoveRange = {}
+  if (isTwoSpace && tailHex) {
+    moveRange = mergeTwoMoveRanges(
+      recurseThroughMoves({
+        unmutatedContext: {
+          playerID,
+          unit,
+          isUnitEngaged,
+          isFlying,
+          hasStealth,
+          hasDisengage,
+          hasGhostWalk,
+          boardHexes,
+          armyCards,
+          gameUnits,
+        },
+        startHex: startHex,
+        movePoints: initialMovePoints,
+        initialMoveRange,
+      }),
+      recurseThroughMoves({
+        unmutatedContext: {
+          playerID,
+          unit,
+          isUnitEngaged,
+          isFlying,
+          hasStealth,
+          hasDisengage,
+          hasGhostWalk,
+          boardHexes,
+          armyCards,
+          gameUnits,
+        },
+        startHex: tailHex,
+        movePoints: initialMovePoints,
+        initialMoveRange,
+      })
+    )
+  } else {
+    moveRange = recurseThroughMoves({
+      unmutatedContext: {
+        playerID,
+        unit,
+        isUnitEngaged,
+        isFlying,
+        hasStealth,
+        hasDisengage,
+        hasGhostWalk,
+        boardHexes,
+        armyCards,
+        gameUnits,
+      },
+      startHex: startHex,
+      movePoints: initialMovePoints,
+      initialMoveRange,
+    })
+  }
+  return moveRange
+}
+
+function recurseThroughMoves({
+  unmutatedContext,
+  startHex,
+  movePoints,
+  initialMoveRange,
+}: {
+  unmutatedContext: {
+    playerID: string
+    unit: GameUnit
+    isUnitEngaged: boolean
+    isFlying: boolean
+    hasDisengage: boolean
+    hasGhostWalk: boolean
+    hasStealth: boolean
+    boardHexes: BoardHexes
+    armyCards: GameArmyCard[]
+    gameUnits: GameUnits
+  }
+  // !! these inputs below get mutated in the recursion
+  startHex: BoardHex
+  movePoints: number
+  initialMoveRange: MoveRange
+}): MoveRange {
+  const {
+    playerID,
+    unit,
+    isUnitEngaged,
+    isFlying,
+    hasDisengage,
+    hasGhostWalk,
+    hasStealth,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  } = unmutatedContext
+  const startHexID = startHex.id
+  const isVisitedAlready =
+    (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
+  //*early out
+  if (movePoints <= 0 || isVisitedAlready) {
+    return initialMoveRange
+  }
+  const isUnit2Hex = unit?.is2Hex
+  const neighbors = selectHexNeighbors(startHexID, boardHexes)
+  // Neighbors are either passable or unpassable
+  let nextResults = neighbors.reduce(
+    (result: MoveRange, neighbor: BoardHex): MoveRange => {
+      const fromCost = isFlying
+        ? 1
+        : selectMoveCostBetweenNeighbors(startHex, neighbor)
+      const isFromOccupied =
+        startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
+      const validTailSpotsForNeighbor = selectValidTailHexes(
+        neighbor.id,
+        boardHexes
+      ).map((hex) => hex.id)
+      const movePointsLeft = movePoints - fromCost
+      const isVisitedAlready =
+        initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
+      if (isVisitedAlready) {
+        return result
+      }
+      const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
+      // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
+      const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
+        unit,
+        isFlying,
+        startHexID: startHexID,
+        neighborHexID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+      })
+      const engagedUnitIDs = selectMoveEngagedUnitIDs({
+        unit,
+        startHexID,
+        neighborHexID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+      })
+      const isCausingEngagement = engagedUnitIDs.length > 0
+      // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
+      const isCausingDisengagementIfFlying = isUnitEngaged && !hasStealth
+      const isCausingDisengagementIfWalking = hasDisengage
+        ? false
+        : disengagedUnitIDs.length > 0
+      const isCausingDisengagement = isFlying
+        ? isCausingDisengagementIfFlying
+        : isCausingDisengagementIfWalking
+      const endHexUnit = { ...gameUnits[neighborUnitID] }
+      const endHexUnitPlayerID = endHexUnit.playerID
+      const isMovePointsLeftAfterMove = movePointsLeft > 0
+      const isEndHexUnoccupied = !Boolean(neighborUnitID)
+      const isTooCostly = movePointsLeft < 0
+      const isEndHexEnemyOccupied =
+        !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
+      const isEndHexUnitEngaged =
+        selectEngagementsForHex({
+          hexID: neighbor.id,
+          boardHexes,
+          gameUnits,
+          armyCards,
+        }).length > 0
+      const isTooTallOfClimb = !selectIsClimbable(
+        unit,
+        armyCards,
+        startHex,
+        neighbor
+      )
+      const isUnpassable = isFlying
+        ? isTooCostly
+        : isTooCostly ||
+          // ghost walk can move through enemy occupied hexes, or hexes with engaged units
+          (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
+          (hasGhostWalk ? false : isEndHexUnitEngaged) ||
+          isTooTallOfClimb
+      const can1HexUnitStopHere = isEndHexUnoccupied
+      const can2HexUnitStopHere =
+        isEndHexUnoccupied &&
+        !isFromOccupied &&
+        validTailSpotsForNeighbor.includes(startHexID)
+      const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
+      const moveRangeData = {
+        fromHexID: startHexID,
+        fromCost,
+        isFromOccupied,
+        movePointsLeft,
+        disengagedUnitIDs,
+        engagedUnitIDs,
+      }
+      // 1. unpassable
+      if (isUnpassable) {
+        return result
+      }
+      // 2. passable: we can get here, maybe stop, maybe pass thru
+      // order matters for if/else-if here, disengagement overrides engagement
+      if (isCausingDisengagement) {
+        if (canStopHere) {
+          result[neighborHexID] = {
+            ...moveRangeData,
+            isDisengage: true,
+          }
+        }
+        // walking does not recurse past disengagement hexes
+        return isFlying
+          ? {
+              ...result,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                startHex: neighbor,
+                movePoints: movePointsLeft,
+                initialMoveRange: result,
+              }),
+            }
+          : result
+      } else if (isCausingEngagement) {
+        // we can stop there
+        if (canStopHere) {
+          result[neighborHexID] = {
+            ...moveRangeData,
+            isEngage: true,
+          }
+        }
+        // walking does not recurse past engagement hexes
+        return isFlying
+          ? {
+              ...result,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                startHex: neighbor,
+                movePoints: movePointsLeft,
+                initialMoveRange: result,
+              }),
+            }
+          : result
+      }
+      // safe hexes
+      else {
+        // we can stop there if it's not occupied
+        if (canStopHere) {
+          result[neighborHexID] = {
+            ...moveRangeData,
+            isSafe: true,
+          }
+        }
+        // walking and flying both recurse past safe hexes
+        return isMovePointsLeftAfterMove
+          ? {
+              ...result,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                startHex: neighbor,
+                movePoints: movePointsLeft,
+                initialMoveRange: result,
+              }),
+            }
+          : result
+      }
+    },
+    // accumulator for reduce fn
+    initialMoveRange
+  )
+  const result = nextResults
+  return result
+}

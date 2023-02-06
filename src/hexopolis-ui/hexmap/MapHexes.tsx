@@ -8,7 +8,7 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { selectGameCardByID } from 'game/selectors'
+import { selectGameCardByID, selectValidTailHexes } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
@@ -17,7 +17,8 @@ import {
   calcRopHexClassNames,
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
-import { HexText } from './HexText'
+import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
+import { HexIDText } from './HexIDText'
 
 type MapHexesProps = {
   hexSize: number
@@ -25,14 +26,10 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = useBgioClientInfo()
-  const {
-    boardHexes,
-    gameArmyCards: armyCards,
-    startZones,
-    gameUnits,
-    unitsMoved,
-  } = useBgioG()
+  const { boardHexes, gameArmyCards, startZones, gameUnits, unitsMoved } =
+    useBgioG()
   const { selectedUnitID } = useUIContext()
+  const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
   const {
     isMyTurn,
@@ -40,18 +37,30 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isOrderMarkerPhase,
     isRoundOfPlayPhase,
     isAttackingStage,
+    isMovementStage,
+    isWaterCloneStage,
   } = useBgioCtx()
-  const { onClickPlacementHex, editingBoardHexes } = usePlacementContext()
+  const {
+    onClickPlacementHex,
+    editingBoardHexes,
+    activeTailPlacementUnitID,
+    tailPlaceables,
+  } = usePlacementContext()
   const {
     selectedUnitMoveRange,
+    selectedUnitAttackRange,
     onClickTurnHex,
     revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
+    clonerHexIDs,
+    clonePlaceableHexIDs,
   } = usePlayContext()
 
   // computed
-
+  const startZoneForMy2HexUnits = startZones[playerID].filter((sz) => {
+    return selectValidTailHexes(sz, boardHexes).length > 0
+  })
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
@@ -61,17 +70,20 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       onClickTurnHex?.(event, sourceHex)
     }
   }
-
   // classnames
   const hexClassNames = (hex: BoardHex) => {
     if (isPlacementPhase) {
       return calcPlacementHexClassNames({
         selectedMapHex,
         selectedUnitID,
+        selectedUnitIs2Hex,
         hex,
         startZones,
+        startZoneForMy2HexUnits,
         playerID,
         editingBoardHexes,
+        activeTailPlacementUnitID,
+        tailPlaceables,
       })
     }
     if (isOrderMarkerPhase) {
@@ -90,36 +102,45 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
+        isMovementStage,
+        isWaterCloneStage,
         boardHexes,
         gameUnits,
+        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
+        selectedUnitAttackRange,
+        clonerHexIDs,
+        clonePlaceableHexIDs,
       })
     }
   }
-  const onClickHex = (e: React.SyntheticEvent, source: any) => {
-    const boardHex = source.data as BoardHex
-    onClickBoardHex(e, boardHex)
+  const onClickHex = (e: React.SyntheticEvent, hex: BoardHex) => {
+    onClickBoardHex(e, hex)
   }
 
   const hexJSX = () => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       // During placement phase, player is overwriting units on hexes, in local state, but we wish to show that state for units
       const unitIdToShowOnHex = isPlacementPhase
-        ? editingBoardHexes?.[hex.id] ?? ''
+        ? editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
         : hex.occupyingUnitID
       const gameUnit = gameUnits?.[unitIdToShowOnHex]
+      // we only show players their own units during placement phase
       const isShowableUnit =
         !isPlacementPhase || gameUnit?.playerID === playerID
-      const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
+      const gameUnitCard = selectGameCardByID(
+        gameArmyCards,
+        gameUnit?.gameCardID
+      )
       const unitName = gameUnitCard?.singleName ?? ''
+      const isUnitTail = isPlacementPhase
+        ? editingBoardHexes?.[hex.id]?.isUnitTail
+        : hex.isUnitTail
       return (
         <Hexagon
           key={i}
-          q={hex.q}
-          r={hex.r}
-          s={hex.s}
-          data={hex}
+          hex={hex}
           onClick={onClickHex}
           className={hexClassNames(hex)}
         >
@@ -131,20 +152,24 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <UnitIcon
-                    hexSize={hexSize}
-                    armyCardID={gameUnit.armyCardID}
-                    iconPlayerID={gameUnit.playerID}
-                  />
+                  {(isUnitTail && (
+                    <UnitTail hex={hex} iconPlayerID={gameUnit.playerID} />
+                  )) || (
+                    <UnitIcon
+                      hexSize={hexSize}
+                      armyCardID={gameUnit.armyCardID}
+                      iconPlayerID={gameUnit.playerID}
+                    />
+                  )}
                 </motion.g>
               )}
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              // text={`${hex.id}`}
-              // textLine2={`${hex.altitude}`}
-              text={`${hex.altitude}`}
-              textLine2={`${unitName}`}
+              text={`${hex.id}`}
+              textLine2={`${hex.altitude}`}
+              // text={`${hex.altitude}`}
+              // textLine2={`${unitName}`}
             />
           </g>
         </Hexagon>
@@ -152,34 +177,4 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     })
   }
   return <>{hexJSX()}</>
-}
-const HexIDText = ({
-  hexSize,
-  text,
-  textLine2,
-}: {
-  hexSize: number
-  text: string
-  textLine2?: string
-}) => {
-  return (
-    <>
-      <HexText
-        hexSize={hexSize}
-        className="maphex_altitude-text"
-        y={hexSize * 0.6}
-      >
-        {text.toString()}
-      </HexText>
-      {textLine2 && (
-        <HexText
-          hexSize={hexSize}
-          className="maphex_altitude-text"
-          y={hexSize * 0.8}
-        >
-          {textLine2.toString()}
-        </HexText>
-      )}
-    </>
-  )
 }

@@ -15,6 +15,7 @@ import { rollD20Initiative } from './rollInitiative'
 import { Game } from 'boardgame.io'
 import { testScenario } from './setup/setup'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
+import { nanoid } from 'nanoid'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },
@@ -35,7 +36,7 @@ export const HexedMeadow: Game<GameState> = {
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
   */
   moves,
-  seed: 'random_string',
+  seed: nanoid(),
   // The minimum and maximum number of players supported (this is only enforced when using the Lobby server component)
   minPlayers: 2,
   maxPlayers: 2,
@@ -171,7 +172,7 @@ export const HexedMeadow: Game<GameState> = {
           // finally, update state
           G.gameUnits = mutatedGameUnits
           G.unitsMoved = []
-          G.unitsAttacked = []
+          G.unitsAttacked = {}
         },
         // clear move-points,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {

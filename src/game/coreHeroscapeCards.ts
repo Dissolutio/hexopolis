@@ -27,7 +27,6 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
       {
         name: 'Water Clone',
         desc: 'Instead of attacking with all of the Marro Warriors, one at a time, roll the 20-sided die for each Marro Warrior in play. If you roll a 15 or higher, place a previously destroyed Marro Warrior on a same-level space adjacent to that Marro Warrior. Any Marro Warrior on a water space needs a 10 or higher to Water Clone. You may only Water Clone after you move.',
-        isAfterMove: true,
       },
     ],
   },
@@ -56,7 +55,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     abilities: [
       {
         name: 'Explosion Special Attack',
-        desc: 'Range 7. Attack 3. Choose a figure to attack. Any figures adjacent to the chosen figure are also affected by Explosion Special Attack. Deathwalker only needs a clear sight shot at the chosen figure. Roll 3 attack dice once for all affected figures. Each figure rolls defense dice seperately. Deathwalker can be affected by his own Explosion Special Attack.',
+        desc: 'Range 7. Attack 3. Choose a figure to attack. Any figures adjacent to the chosen figure are also affected by Explosion Special Attack. Deathwalker only needs a clear sight shot at the chosen figure. Roll 3 attack dice once for all affected figures. Each figure rolls defense dice separately. Deathwalker can be affected by his own Explosion Special Attack.',
       },
       {
         name: 'Range Enhancement',
@@ -241,7 +240,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         desc: 'Agent Carr can move through all figures.',
       },
       {
-        name: 'Sword of Reckoning 4',
+        name: 'Sword of Reckoning',
         desc: "If Agent Carr is attacking an adjacent figure, add 4 dice to Agent Carr's attack.",
       },
       {
@@ -409,6 +408,19 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         name: 'Flying',
         desc: "When counting spaces for Raelin's movement, ignore elevations. Raelin may fly over water without stopping, pass over figures without becoming engaged, and fly over obstacles such as ruins. When Raelin starts to fly, if she is engaged she will take any leaving engagement attacks.",
       },
+      // DEV NOTE: These 3 abilities are not actually Raelin's
+      // {
+      //   name: 'Stealth Flying',
+      //   desc: 'When counting spaces for Raelin’s movement, ignore elevations. Raelin may fly over water without stopping, pass over figures without becoming engaged, and fly over obstacles such as ruins. When Raelin starts to fly, if he is engaged he will not take any leaving engagement attacks.',
+      // },
+      // {
+      //   name: 'Ghost Walk',
+      //   desc: 'Raelin can move through all figures.',
+      // },
+      // {
+      //   name: 'Disengage',
+      //   desc: 'Raelin is never attacked when leaving an engagement.',
+      // },
     ],
   },
   {

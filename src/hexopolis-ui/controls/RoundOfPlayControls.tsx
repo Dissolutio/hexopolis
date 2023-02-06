@@ -1,25 +1,24 @@
 import React from 'react'
 
-import { usePlayContext, useUIContext } from '../contexts'
+import { usePlayContext } from '../contexts'
 import {
   useBgioClientInfo,
   useBgioCtx,
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexopolis-ui/layout/Typography'
 import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
-import { uniq } from 'lodash'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { selectGameCardByID } from 'game/selectors'
 import { playerIDDisplay } from 'game/transformers'
 import { PlayerIdToUnitsMap } from 'game/types'
 import { RopAttackControls } from './rop/RopAttackControls'
 import { WaterCloneControls } from './rop/WaterCloneControls'
+import { RopMoveControls } from './rop/RopMoveControls'
 
 export const RoundOfPlayControls = () => {
   const {
@@ -79,7 +78,7 @@ export const RoundOfPlayControls = () => {
   return <></>
 }
 
-export const RopIdleControls = () => {
+const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
   const { revealedGameCard } = usePlayContext()
   return (
@@ -93,75 +92,27 @@ export const RopIdleControls = () => {
   )
 }
 
-export const RopMoveControls = () => {
-  const { unitsMoved, currentOrderMarker } = useBgioG()
-  const { moves } = useBgioMoves()
-  const { selectedUnit, revealedGameCard, revealedGameCardUnitIDs } =
-    usePlayContext()
-  const { setSelectedUnitID } = useUIContext()
-  const movedUnitsCount = uniq(unitsMoved).length
-  const allowedMoveCount = revealedGameCard?.figures ?? 0
-  const unitsAliveCount = revealedGameCardUnitIDs.length
-  const movesAvailable =
-    Math.min(allowedMoveCount, unitsAliveCount) - movedUnitsCount
-  const isAllMovesUsed = movesAvailable <= 0
-  const { endCurrentMoveStage } = moves
-
-  const handleEndMovementClick = () => {
-    setSelectedUnitID('')
-    endCurrentMoveStage()
-  }
-  return (
-    <div>
-      <StyledControlsHeaderH2>{`Your #${
-        {
-          0: '1',
-          1: '2',
-          2: '3',
-        }[currentOrderMarker]
-      }: ${revealedGameCard?.name ?? ''}`}</StyledControlsHeaderH2>
-      {selectedUnit && (
-        <StyledControlsP>
-          {selectedUnit.movePoints} Move points left
-        </StyledControlsP>
-      )}
-      <StyledControlsP>
-        You have used {movedUnitsCount} / {allowedMoveCount} moves
-      </StyledControlsP>
-      {unitsAliveCount < allowedMoveCount && (
-        <StyledControlsP>
-          {`You only have ${unitsAliveCount} ${
-            revealedGameCard?.name ?? ''
-          } left`}
-        </StyledControlsP>
-      )}
-
-      <UndoRedoButtons />
-      {isAllMovesUsed ? (
-        <ConfirmOrResetButtons
-          confirm={handleEndMovementClick}
-          confirmText={'End move, begin attack'}
-          noResetButton
-        />
-      ) : (
-        <ConfirmOrResetButtons
-          reset={handleEndMovementClick}
-          resetText={`End Move, skip ${movesAvailable} available move${
-            movesAvailable > 1 ? 's' : ''
-          }, begin attack`}
-          noConfirmButton
-        />
-      )}
-    </div>
-  )
-}
-
 const RopConfirmDisengageAttemptControls = () => {
-  const { confirmDisengageAttempt, cancelDisengageAttempt } = usePlayContext()
+  const { confirmDisengageAttempt, cancelDisengageAttempt, disengageAttempt } =
+    usePlayContext()
+  const { gameArmyCards } = useBgioG()
+  if (!disengageAttempt) return null
+  const { unit, defendersToDisengage } = disengageAttempt
+  const myUnitCard = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+  const myUnitName = myUnitCard?.name ?? ''
+  const unitsThatGetASwipe = defendersToDisengage.map((u) => {
+    const card = selectGameCardByID(gameArmyCards, u.gameCardID)
+    return {
+      ...u,
+      singleName: card?.singleName ?? '',
+    }
+  })
   return (
     <>
       <StyledControlsHeaderH2>
-        Confirm you want to disengage:
+        {`Confirm you want ${myUnitName} to disengage ${
+          unitsThatGetASwipe.length
+        } units? (${unitsThatGetASwipe.map((u) => u.singleName).join(', ')})`}
       </StyledControlsHeaderH2>
       <ConfirmOrResetButtons
         confirm={confirmDisengageAttempt}

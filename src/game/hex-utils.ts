@@ -1,13 +1,32 @@
 import { LayoutDimension } from 'hexopolis-ui/hexmap/HexgridLayout'
-import { HexCoordinates } from './types'
-const DIRECTIONS = [
-  { q: 1, r: 0, s: -1 },
-  { q: 1, r: -1, s: 0 },
-  { q: 0, r: -1, s: 1 },
-  { q: -1, r: 0, s: 1 },
-  { q: -1, r: 1, s: 0 },
-  { q: 0, r: 1, s: -1 },
+import { HexCoordinates, Point } from './types'
+
+const DIRECTIONS: HexCoordinates[] = [
+  { q: 1, r: -1, s: 0 }, // NE +q -r
+  { q: 1, r: 0, s: -1 }, // E +q -s
+  { q: 0, r: 1, s: -1 }, // SE +r -s
+  { q: -1, r: 1, s: 0 }, // SW -q +r
+  { q: -1, r: 0, s: 1 }, // W -q +s
+  { q: 0, r: -1, s: 1 }, // NW -r +s
 ]
+export const hexUtilsGetTailCoordinates = (
+  hex: HexCoordinates,
+  neighbor: HexCoordinates
+): Point => {
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 0), neighbor))
+    return { x: 8.66, y: -15 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 1), neighbor))
+    return { x: 17.32, y: 0 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 2), neighbor))
+    return { x: 8.66, y: 15 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 3), neighbor))
+    return { x: -8.66, y: 15 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 4), neighbor))
+    return { x: -17.32, y: 0 }
+  if (hexUtilsEquals(hexUtilsNeighbor(hex, 5), neighbor))
+    return { x: -8.66, y: -15 }
+  return { x: 0, y: 0 }
+}
 export const hexUtilsEquals = (
   a: HexCoordinates,
   b: HexCoordinates
@@ -151,118 +170,55 @@ export const hexUtilsGetID = (hex: HexCoordinates): string => {
 }
 type Generator = (args: any) => HexCoordinates[]
 
-/** This class contains static methods for generating Hex coordinates
- * for specifically-shaped grids, such as rectangle, hexagon, and more. */
-export class GridGenerator {
-  /** This method is used to dynamically choose a type of grid to
-   * generate.
-   */
-  static getGenerator(
-    name:
-      | 'ring'
-      | 'spiral'
-      | 'parallelogram'
-      | 'triangle'
-      | 'hexagon'
-      | 'rectangle'
-      | 'orientedRectangle'
-  ): Generator {
-    const x = GridGenerator[name] as Generator
-    return x
-  }
-  /** May not be working. There are no tests for it. */
-  static ring(center: HexCoordinates, mapRadius: number): HexCoordinates[] {
-    let hexas: HexCoordinates[] = []
-    let hex = hexUtilsAdd(
-      center,
-      hexUtilsMultiply(hexUtilsDirection(4), mapRadius)
-    )
-    for (let i = 0; i < 6; i++) {
-      for (let j = 0; j < mapRadius; j++) {
-        hexas.push(hex)
-        hex = hexUtilsNeighbor(hex, i)
-      }
+export const generateHexagonHexas = (mapRadius: number): HexCoordinates[] => {
+  let hexas: HexCoordinates[] = []
+  for (let q = -mapRadius; q <= mapRadius; q++) {
+    let r1 = Math.max(-mapRadius, -q - mapRadius)
+    let r2 = Math.min(mapRadius, -q + mapRadius)
+    for (let r = r1; r <= r2; r++) {
+      hexas.push({ q, r, s: -q - r })
     }
-    return hexas
   }
-  /** May not be working. There are no tests for it. */
-  static spiral(center: HexCoordinates, mapRadius: number): HexCoordinates[] {
-    let results = [center]
-    for (let k = 1; k <= mapRadius; k++) {
-      const temp = GridGenerator.ring(center, k)
-      results = results.concat(temp)
+  return hexas
+}
+export const generateRectangleHexas = (
+  mapWidth: number,
+  mapHeight: number
+): HexCoordinates[] => {
+  let hexas: HexCoordinates[] = []
+  for (let r = 0; r < mapHeight; r++) {
+    let offset = Math.floor(r / 2) // or r>>1
+    for (let q = -offset; q < mapWidth - offset; q++) {
+      hexas.push({ q, r, s: -q - r })
     }
-    return results
   }
-  /** Returns an array of Hex coordinates needed to create a
-   * parallelogram grid */
-  static parallelogram(
-    q1: number,
-    q2: number,
-    r1: number,
-    r2: number
-  ): HexCoordinates[] {
-    let hexas: HexCoordinates[] = []
-    for (let q = q1; q <= q2; q++) {
-      for (let r = r1; r <= r2; r++) {
-        hexas.push({ q, r, s: -q - r })
-      }
+  return hexas
+}
+export const generateOrientedRectangleHexas = (
+  mapWidth: number,
+  mapHeight: number
+): HexCoordinates[] => {
+  let hexas: HexCoordinates[] = []
+  for (let q = 0; q < mapWidth; q++) {
+    let offset = Math.floor(q / 2) // or q>>1
+    for (let r = -offset; r < mapHeight - offset; r++) {
+      hexas.push({ q, r, s: -q - r })
     }
+  }
 
-    return hexas
-  }
-  /** Returns an array of Hex coordinates needed to create a
-   * triangle grid
-   */
-  static triangle(mapSize: number): HexCoordinates[] {
-    let hexas: HexCoordinates[] = []
-    for (let q = 0; q <= mapSize; q++) {
-      for (let r = 0; r <= mapSize - q; r++) {
-        hexas.push({ q, r, s: -q - r })
-      }
+  return hexas
+}
+export const generateParalellogramHexas = (
+  q1: number,
+  q2: number,
+  r1: number,
+  r2: number
+): HexCoordinates[] => {
+  let hexas: HexCoordinates[] = []
+  for (let q = q1; q <= q2; q++) {
+    for (let r = r1; r <= r2; r++) {
+      hexas.push({ q, r, s: -q - r })
     }
-    return hexas
   }
-  /** Returns an array of Hex coordinates needed to create a
-   * Hexagon grid */
-  static hexagon(mapRadius: number): HexCoordinates[] {
-    let hexas: HexCoordinates[] = []
-    for (let q = -mapRadius; q <= mapRadius; q++) {
-      let r1 = Math.max(-mapRadius, -q - mapRadius)
-      let r2 = Math.min(mapRadius, -q + mapRadius)
-      for (let r = r1; r <= r2; r++) {
-        hexas.push({ q, r, s: -q - r })
-      }
-    }
-    return hexas
-  }
-  /** Returns an array of Hex coordinates needed to create
-   * a diagonal rectangle grid */
-  static rectangle(mapWidth: number, mapHeight: number): HexCoordinates[] {
-    let hexas: HexCoordinates[] = []
-    for (let r = 0; r < mapHeight; r++) {
-      let offset = Math.floor(r / 2) // or r>>1
-      for (let q = -offset; q < mapWidth - offset; q++) {
-        hexas.push({ q, r, s: -q - r })
-      }
-    }
-    return hexas
-  }
-  /** Returns an array of Hex coordinates needed to create a vertical
-   * and horizontal rectangle.
-   */
-  static orientedRectangle(
-    mapWidth: number,
-    mapHeight: number
-  ): HexCoordinates[] {
-    let hexas: HexCoordinates[] = []
-    for (let q = 0; q < mapWidth; q++) {
-      let offset = Math.floor(q / 2) // or q>>1
-      for (let r = -offset; r < mapHeight - offset; r++) {
-        hexas.push({ q, r, s: -q - r })
-      }
-    }
-
-    return hexas
-  }
+  return hexas
 }

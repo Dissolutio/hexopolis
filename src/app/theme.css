@@ -29,7 +29,9 @@ html {
   --sand: #ab8e10;
   --rock: #475776;
   /* UTILITY */
-  --neon-green: hsla(74, 64%, 59%, 0.5);
+  --neon-green: rgba(186, 217, 84, 0.502);
+  --neon-blue: rgba(135, 199, 242, 0.5);
+  --neon-yellow: hsla(47, 81%, 56%, 0.5);
   --neon-orange: rgba(224, 150, 40, 0.5);
   --neon-red: rgba(226, 83, 40, 0.5);
   /* #62A87C shiny shamrock green, #03CEA4 is Carribean,  Carribean preferred MAYBE as success color? https://coolors.co/0c151c-ffffff-fe938c-62a87c-3590f3 */

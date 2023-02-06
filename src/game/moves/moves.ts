@@ -1,53 +1,44 @@
 import type { Move, MoveMap } from 'boardgame.io'
-import { selectHexForUnit } from '../selectors'
 import { GameState, PlayerOrderMarkers } from '../types'
-import { stageNames } from '../constants'
-
-//phase:___RoundOfPlay
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
-
-//phase:___RoundOfPlay
-const endCurrentMoveStage: Move<GameState> = ({ events }) => {
-  events.setStage(stageNames.attacking)
-}
-const endCurrentPlayerTurn: Move<GameState> = ({ events }) => {
-  events.endTurn()
-}
+import {
+  rollForWaterClone,
+  finishWaterCloningAndEndTurn,
+  placeWaterClone,
+} from './water-clone-action'
+import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
 //phase:___Placement
 const deployUnits: Move<GameState> = (
   { G },
-  deploymentProposition: {
-    [boardHexId: string]: string // occupyingUnitId
-  }
+  deploymentProposition: DeploymentProposition,
+  playerID: string
 ) => {
+  const myStartZone = G.startZones[playerID]
   const propositions = Object.entries(deploymentProposition)
-  let newG = {
-    ...G,
-    boardHexes: {
-      ...G.boardHexes,
-    },
+  let newBoardHexes = {
+    ...G.boardHexes,
   }
-
+  // clear off all units and then apply proposition
+  for (const hexID in newBoardHexes) {
+    if (
+      Object.prototype.hasOwnProperty.call(newBoardHexes, hexID) &&
+      myStartZone.includes(hexID)
+    ) {
+      newBoardHexes[hexID].occupyingUnitID = ''
+      newBoardHexes[hexID].isUnitTail = false
+    }
+  }
   propositions.forEach((proposition) => {
     const boardHexId = proposition[0]
-    const placedGameUnitId = proposition[1]
-    const oldHexId = selectHexForUnit(placedGameUnitId, G.boardHexes)?.id ?? ''
-    const latestUnitIdOnOldHexId = newG.boardHexes[oldHexId]?.occupyingUnitID
-    const shouldOverwriteOldHex =
-      !!oldHexId &&
-      !!latestUnitIdOnOldHexId &&
-      latestUnitIdOnOldHexId === placedGameUnitId
-    // don't overwrite it if another unit has already been placed on that hex; in that case, the erasure "happened" for us early, so yay
-    if (shouldOverwriteOldHex) {
-      newG.boardHexes[oldHexId].occupyingUnitID = ''
-    }
-    newG.boardHexes[boardHexId].occupyingUnitID = placedGameUnitId
+    const placedGameUnitId = proposition[1].occupyingUnitID
+    newBoardHexes[boardHexId].occupyingUnitID = placedGameUnitId
+    newBoardHexes[boardHexId].isUnitTail = proposition[1].isUnitTail
   })
-  G.boardHexes = newG.boardHexes
+  G.boardHexes = newBoardHexes
 }
 const confirmPlacementReady: Move<GameState> = (
   { G },
@@ -87,16 +78,17 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 }
 
 export const moves: MoveMap<GameState> = {
-  endCurrentMoveStage,
-  endCurrentPlayerTurn,
-  moveAction,
-  attemptDisengage,
-  takeDisengagementSwipe,
-  attackAction,
   deployUnits,
   confirmPlacementReady,
   deconfirmPlacementReady,
   placeOrderMarkers,
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,
+  moveAction,
+  attemptDisengage,
+  takeDisengagementSwipe,
+  rollForWaterClone,
+  finishWaterCloningAndEndTurn,
+  placeWaterClone,
+  attackAction,
 }

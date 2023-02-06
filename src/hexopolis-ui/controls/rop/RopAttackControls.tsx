@@ -1,75 +1,85 @@
 import React from 'react'
 
 import { usePlayContext } from '../../contexts'
-import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
-import { UndoRedoButtons } from '../rop/UndoRedoButtons'
+import { useBgioEvents, useBgioG } from 'bgio-contexts'
+import { StyledControlsP } from 'hexopolis-ui/layout/Typography'
 import {
-  StyledControlsHeaderH2,
-  StyledControlsP,
-} from 'hexopolis-ui/layout/Typography'
-import { ConfirmOrResetButtons } from '../ConfirmOrResetButtons'
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from '../ConfirmOrResetButtons'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
+import { RopAttackMoveHeader } from './RopMoveControls'
+import { selectGameArmyCardAttacksAllowed } from 'game/selectors/card-selectors'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
-  const { moves } = useBgioMoves()
   const { events } = useBgioEvents()
-  const { endCurrentPlayerTurn } = moves
-  const {
-    revealedGameCard,
-    countOfRevealedGameCardUnitsWithTargetsInRange,
-    freeAttacksAvailable,
-  } = usePlayContext()
+  const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
+    usePlayContext()
+  const revealedGameCardName = revealedGameCard?.name ?? ''
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
-    (ability) => !!ability.isAfterMove
+    (ability) => ability.name === 'Water Clone'
   )
-  const attacksAllowed = revealedGameCard?.figures ?? 0
-  const isLessUnitsWithTargetsThanNumberOfAttacks =
-    countOfRevealedGameCardUnitsWithTargetsInRange < attacksAllowed
-  const attacksUsed = unitsAttacked.length
-  const handleEndTurnButtonClick = () => {
-    endCurrentPlayerTurn()
+  // Early return if no card is revealed, this should not happen!
+  if (!revealedGameCard) {
+    return null
   }
-  const maxAttacks = isLessUnitsWithTargetsThanNumberOfAttacks
-    ? countOfRevealedGameCardUnitsWithTargetsInRange
-    : attacksAllowed
-  const attacksAvailable = maxAttacks - attacksUsed
-  const isAllAttacksUsed = attacksAvailable <= 0
+  const { totalNumberOfAttacksAllowed } =
+    selectGameArmyCardAttacksAllowed(revealedGameCard)
+
+  const attacksUsed = Object.values(unitsAttacked).flat().length
+  const handleEndTurnButtonClick = () => {
+    events?.endTurn?.()
+  }
+  const isAllAttacksUsed = totalNumberOfAttacksAllowed <= 0
   const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
   }
+  const goBackToMoveStage = () => {
+    events?.setStage?.(stageNames.movement)
+  }
   return (
     <>
-      <StyledControlsHeaderH2>{`Your #${currentOrderMarker + 1}: ${
-        revealedGameCard?.name ?? ''
-      }`}</StyledControlsHeaderH2>
-
-      {attacksAvailable <= 0 && (
-        <StyledControlsP>
-          You now have no units with targets in range
-        </StyledControlsP>
-      )}
+      <RopAttackMoveHeader
+        currentOrderMarker={currentOrderMarker}
+        revealedGameCardName={revealedGameCardName}
+      />
 
       <StyledControlsP>
-        You have used {attacksUsed} / {attacksAllowed} attacks allowed
+        Units with targets in range: {unitsWithTargets}
       </StyledControlsP>
 
       <StyledControlsP>
-        {`You moved ${uniqUnitsMoved.length} unit${
+        {attacksUsed} / {totalNumberOfAttacksAllowed} attacks used
+      </StyledControlsP>
+
+      <StyledControlsP>
+        {`${uniqUnitsMoved.length} unit${
           uniqUnitsMoved.length !== 1 ? 's' : ''
-        }, and have ${freeAttacksAvailable} attack${
+        } moved`}
+      </StyledControlsP>
+      <StyledControlsP>
+        {`${freeAttacksAvailable} attack${
           freeAttacksAvailable !== 1 ? 's' : ''
         } available for unmoved units`}
       </StyledControlsP>
+
       {isNoAttacksUsed && (
-        <UndoRedoButtons undoText="Go back to movement stage" noRedo />
+        <StyledButtonWrapper>
+          <GreenButton onClick={goBackToMoveStage}>
+            Go back to movement stage
+          </GreenButton>
+        </StyledButtonWrapper>
       )}
+
       {isNoAttacksUsed && hasWaterClone && (
-        <GreenButton onClick={onClickUseWaterClone}>
-          Use Water Clone
-        </GreenButton>
+        <StyledButtonWrapper>
+          <GreenButton onClick={onClickUseWaterClone}>
+            Use Water Clone
+          </GreenButton>
+        </StyledButtonWrapper>
       )}
 
       {isAllAttacksUsed ? (
@@ -81,8 +91,8 @@ export const RopAttackControls = () => {
       ) : (
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
-          resetText={`End Turn, skip my ${attacksAvailable} attack${
-            attacksAvailable !== 1 ? 's' : ''
+          resetText={`End Turn, skip my ${totalNumberOfAttacksAllowed} attack${
+            totalNumberOfAttacksAllowed !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />

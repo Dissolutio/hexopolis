@@ -10,8 +10,9 @@ export const StyledControlsHeaderH2 = styled.h2`
 `
 export const StyledControlsP = styled.p`
   font-size: 1rem;
-  margin: 0;
+  margin: 0 auto;
   text-align: center;
+  max-width: 800px;
   @media screen and (max-width: 1100px) {
     font-size: 0.8rem;
   }

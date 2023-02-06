@@ -16,11 +16,27 @@ import {
   GiSverdIFjell,
   GiVikingShield,
   GiAngelOutfit,
-  GiDragonBreath,
+  GiSpikedDragonHead,
   GiDinosaurRex,
+  GiDragonHead,
+  GiSauropodHead,
+  GiSauropodSkeleton,
+  GiSpaceSuit,
+  GiWingedSword,
+  GiCaduceus,
+  GiSpartanHelmet,
+  GiHornedReptile,
+  GiVelociraptor,
+  GiSnake,
+  GiSpartan,
+  GiDoubleShot,
+  GiStrikingArrows,
+  GiThornHelix,
+  GiBoneKnife,
+  GiAnubis,
 } from 'react-icons/gi'
 
-const playerIconColors: { [key: string]: string } = {
+export const playerIconColors: { [key: string]: string } = {
   '0': 'var(--bee-yellow)',
   '1': 'var(--butterfly-purple)',
 }
@@ -72,7 +88,7 @@ export const UnitIcon = ({
       return <GiAlliedStar {...gameIconProps} />
     case 'hs1004':
       // syvarris
-      return <GiArcher {...gameIconProps} />
+      return <GiDoubleShot {...gameIconProps} />
     case 'hs1005':
       // krav maga agents
       return <GiPistolGun {...gameIconProps} />
@@ -99,13 +115,55 @@ export const UnitIcon = ({
       return <GiAngelOutfit {...gameIconProps} />
     case 'hs1013':
       // mimring
-      return <GiDragonBreath {...gameIconProps} />
+      return <GiSpikedDragonHead {...gameIconProps} />
     case 'hs1014':
       // negoksa
       return <GiAlienStare {...gameIconProps} />
     case 'hs1015':
       // grimnak
       return <GiDinosaurRex {...gameIconProps} />
+    case 'hs1016':
+      // omnicron snipers
+      return <GiSpaceSuit {...gameIconProps} />
+    case 'hs1017':
+      // taelord
+      return <GiWingedSword {...gameIconProps} />
+    case 'hs1018':
+      // kelda
+      return <GiCaduceus {...gameIconProps} />
+    case 'hs1019':
+      // marcus decimus gallus
+      return <GiSpartanHelmet {...gameIconProps} />
+    case 'hs1020':
+      // venoc warlord
+      return <GiHornedReptile {...gameIconProps} />
+    case 'hs1021':
+      // tornak
+      return <GiVelociraptor {...gameIconProps} />
+    case 'hs1022':
+      // venoc vipers
+      return <GiSnake {...gameIconProps} />
+    case 'hs1023':
+      // roman legionnaires
+      return <GiSpartan {...gameIconProps} />
+    case 'hs1024':
+      // roman archers
+      return <GiStrikingArrows {...gameIconProps} />
+    case 'hs1025':
+      // arrow gruts
+      return <GiThornHelix {...gameIconProps} />
+    case 'hs1026':
+      // blade gruts
+      return <GiBoneKnife {...gameIconProps} />
+    case 'hs1027':
+      // khosumet
+      return <GiAnubis {...gameIconProps} />
+    case 'hs1062':
+      // charos
+      return <GiDragonHead {...gameIconProps} />
+    case 'hs1065':
+      // subakna
+      return <GiSauropodSkeleton {...gameIconProps} />
     case 'hs1185':
       // mezzodemon
       return <GiSadCrab {...gameIconProps} />

@@ -2,6 +2,10 @@ export interface GameState {
   initialArmyCards: GameArmyCard[]
   gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
+  // killedUnits is updated when units die, and when units are resurrected/cloned
+  killedUnits: GameUnits
+  // annihilatedUnits would be units that were never killed, because they were never placed on the map (in placement, no room in start zone)
+  // annihilatedUnits: GameUnits
   players: PlayersState
   hexMap: HexMap
   boardHexes: BoardHexes
@@ -15,7 +19,8 @@ export interface GameState {
   roundOfPlayStartReady: PlayerStateToggle
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
-  unitsAttacked: string[]
+  unitsAttacked: { [attackingUnitID: string]: string[] }
+  // unitsKilled does not get erased or updated when killed units are resurrected/cloned
   unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]
   /* 
@@ -25,9 +30,7 @@ export interface GameState {
     to
     2. the bgio-move `disengagementSwipe`
    */
-  disengagesAttempting:
-    | undefined
-    | { unit: GameUnit; defendersToDisengage: GameUnit[]; endHexID: string }
+  disengagesAttempting: undefined | DisengageAttempt
   /* END */
 
   /* 
@@ -36,6 +39,8 @@ export interface GameState {
    */
   disengagedUnitIds: string[]
   /* END */
+  waterCloneRoll?: WaterCloneRoll
+  waterClonesPlaced: WaterClonesPlaced
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
@@ -90,6 +95,7 @@ export default Orientation
 export type BoardHex = HexCoordinates & {
   id: string
   occupyingUnitID: string
+  isUnitTail: boolean
   altitude: number
   startzonePlayerIDs: string[]
   terrain: string
@@ -178,6 +184,7 @@ export type GameUnit = {
   wounds: number
   movePoints: number
   moveRange: MoveRange
+  is2Hex: boolean
 }
 
 export type GameUnits = {
@@ -194,14 +201,49 @@ export type PlayerStateToggle = {
 
 export type MoveRange = {
   [hexID: string]: {
-    isSafe?: boolean
-    isEngage?: boolean
-    isDisengage?: boolean
     fromHexID: string
     fromCost: number
     movePointsLeft: number
+    disengagedUnitIDs: string[]
+    engagedUnitIDs: string[]
+    isSafe?: boolean
+    isEngage?: boolean
+    isDisengage?: boolean
   }
 }
+
+export type DisengageAttempt = {
+  unit: GameUnit
+  endHexID: string
+  endFromHexID: string
+  defendersToDisengage: GameUnit[]
+}
+export type UnitsCloning = {
+  // The units that are cloning, and the valid hex IDs they can clone onto
+  clonerID: string
+  clonerHexID: string
+  tails: string[]
+}[]
+export type WaterClonesPlaced = {
+  clonedID: string
+  hexID: string
+  clonerID: string
+}[]
+// this is what the server will send to the client
+export type WaterCloneRoll = {
+  diceRolls: { [gameUnitID: string]: number }
+  threshholds: { [gameUnitID: string]: number }
+  cloneCount: number
+  placements: {
+    // placements tell us where the clones are cloning "from" and the tails are where they could be placed
+    [gameUnitID: string]: {
+      clonerID: string
+      clonerHexID: string
+      tails: string[]
+    }
+  }
+}
+
 export type PlayerOrderMarkers = { [order: string]: string }
 
 export type OrderMarker = {
@@ -228,7 +270,7 @@ export type BaseGameOptions =
       orderMarkers?: OrderMarkers
       initiative?: string[]
       unitsMoved?: string[]
-      unitsAttacked?: string[]
+      unitsAttacked?: {}
       players?: PlayersState
     }
   | undefined
@@ -240,7 +282,11 @@ export type MapOptions = {
   // flat-top, or pointy-top hexes
   flat?: boolean
 }
-
+export type RangeScan = {
+  isInRange: boolean
+  isMelee: boolean
+  isRanged: boolean
+}
 export type StringKeyedObj = {
   [key: string]: string
 }

@@ -24,13 +24,19 @@
     "cSpell.words": [
         "Bogdan",
         "gameover",
+        "ghostwalk",
         "izumi",
         "marro",
         "moverange",
+        "placeables",
+        "Preplaced",
         "raelin",
         "Rechets",
         "Syvarris",
-        "ullar"
+        "Thorian",
+        "threshholds",
+        "ullar",
+        "unkill"
     ],
     "editor.snippetSuggestions": "top",
     "editor.suggest.snippetsPreventQuickSuggestions": false,

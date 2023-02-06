@@ -1,4 +1,3 @@
-import { Ref } from 'react'
 import styled from 'styled-components'
 
 type MapHexStylesProps = {
@@ -54,7 +53,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     polygon {
       @media (hover: hover) {
         &:hover {
-          fill: var(--neon-orange);
+          fill: var(--sub-white);
         }
       }
     }
@@ -105,19 +104,18 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       stroke-width: 0.8;
     }
   }
-
   // highlight placeable hexes for selected unit, if hex is occupied
   .maphex__start-zone--placement--occupied > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
     fill: var(--player-color);
-    fill-opacity: 0.1;
+    fill-opacity: 0.4;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.8;
     }
   }
-  // highlight placeable hexes for selected unit, if hex is NOT occupied by friendly unit
+  // highlight selected unit
   .maphex__start-zone--placement--selected-unit > g polygon {
     stroke: var(--success-green);
     /* stroke: var(--neon-green); */
@@ -147,10 +145,8 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__selected-card-unit--active > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
-    filter: drop-shadow(1px 1px 1px var(--sub-white))
-      drop-shadow(-1px -1px 1px var(--sub-white))
-      drop-shadow(1px -1px 1px var(--sub-white))
-      drop-shadow(-1px 1px 1px var(--sub-white));
+    filter: drop-shadow(2.5px 2.5px 2px var(--sub-white))
+      drop-shadow(-2.5px -2.5px 2px var(--sub-white));
   }
   // PHASE: ROP-opponent's turn
   // highlight active enemy unit
@@ -197,9 +193,23 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
-    filter: drop-shadow(5px 5px 4px var(--neon-red))
-      drop-shadow(-5px -5px 4px var(--neon-red))
-      drop-shadow(5px -5px 4px var(--neon-red))
-      drop-shadow(-5px 5px 4px var(--neon-red));
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-red))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-red));
+  }
+  //PHASE: ROP-water-clone
+  // paint places where water clone can be placed
+  .maphex__cloner-hexes > g polygon {
+    stroke: var(--player-color);
+    stroke-width: 0.3;
+    // style stroke width a little thicker on mobile so you can see it
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.4;
+    }
+  }
+  .maphex__clone-placeable > g polygon {
+    fill: var(--neon-green);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-green));
   }
 `
