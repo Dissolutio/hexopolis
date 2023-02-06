@@ -130,6 +130,13 @@ export function selectIfGameArmyCardHasZettianTargeting(
     ? gameArmyCard.abilities.some((a) => a.name === 'Zettian Targeting')
     : false
 }
+export function selectIfGameArmyCardHasSwordOfReckoning(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Sword of Reckoning')
+    : false
+}
 export function selectIfGameArmyCardHasDoubleAttack(
   gameArmyCard?: GameArmyCard
 ): boolean {
@@ -150,18 +157,23 @@ export const selectUnitAttackDiceForAttack = ({
   attackerArmyCard,
   defender,
   unitsAttacked,
+  isMelee,
 }: {
   defender: GameUnit
   attackerArmyCard: GameArmyCard
   unitsAttacked: Record<string, string[]>
+  isMelee: boolean
 }): number => {
   let dice = attackerArmyCard.attack
   const zettianTargetingBonus =
     selectIfGameArmyCardHasZettianTargeting(attackerArmyCard) &&
+    // if second zettian attacks same unit as first, +1
     Object.values(unitsAttacked).flat().includes(defender.unitID)
       ? 1
       : 0
-  return dice + zettianTargetingBonus
+  const swordOfReckoningBonus =
+    isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
+  return dice + zettianTargetingBonus + swordOfReckoningBonus
 }
 
 // attacks allowed
