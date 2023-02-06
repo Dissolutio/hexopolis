@@ -25,8 +25,8 @@ const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
-  syvarrisID,
   zettianID,
+  syvarrisID,
   // airbornID,
   // raelinID,
   // deathwalker9000ID,

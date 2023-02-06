@@ -10,7 +10,10 @@ import {
 import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
-import { selectIfGameArmyCardHasCounterStrike } from 'game/selectors/card-selectors'
+import {
+  selectIfGameArmyCardHasCounterStrike,
+  selectUnitAttackDiceForAttack,
+} from 'game/selectors/card-selectors'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -125,7 +128,12 @@ export const attackAction: Move<GameState> = {
       return
     }
     // ALLOW
-    const attackRolled = attackerGameCard.attack
+    // const attackRolled = attackerGameCard.attack
+    const attackRolled = selectUnitAttackDiceForAttack({
+      defender: defenderGameUnit,
+      attackerArmyCard: attackerGameCard,
+      unitsAttacked: G.unitsAttacked,
+    })
     const defenseRolled = defenderGameCard.defense
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds

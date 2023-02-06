@@ -123,6 +123,13 @@ export function selectIfGameArmyCardHasThorianSpeed(
     ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
     : false
 }
+export function selectIfGameArmyCardHasZettianTargeting(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Zettian Targeting')
+    : false
+}
 export function selectIfGameArmyCardHasDoubleAttack(
   gameArmyCard?: GameArmyCard
 ): boolean {
@@ -136,6 +143,25 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
   return gameArmyCard
     ? gameArmyCard.abilities.some((a) => a.name === 'Range Enhancement')
     : false
+}
+
+// ATTACK DICE FOR SPECIFIC ATTACK:
+export const selectUnitAttackDiceForAttack = ({
+  attackerArmyCard,
+  defender,
+  unitsAttacked,
+}: {
+  defender: GameUnit
+  attackerArmyCard: GameArmyCard
+  unitsAttacked: Record<string, string[]>
+}): number => {
+  let dice = attackerArmyCard.attack
+  const zettianTargetingBonus =
+    selectIfGameArmyCardHasZettianTargeting(attackerArmyCard) &&
+    Object.values(unitsAttacked).flat().includes(defender.unitID)
+      ? 1
+      : 0
+  return dice + zettianTargetingBonus
 }
 
 // attacks allowed
