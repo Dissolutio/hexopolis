@@ -19,6 +19,7 @@ import {
   selectHexForUnit,
   selectRevealedGameCard,
   selectIfGameArmyCardHasFlying,
+  selectIsInRangeOfAttack,
 } from '../../game/selectors'
 import {
   generateBlankMoveRange,
@@ -73,7 +74,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
-    gameArmyCards: armyCards,
+    gameArmyCards,
     gameUnits,
     killedUnits,
     unitsAttacked,
@@ -95,7 +96,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   } = useBgioMoves()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
-  const selectedUnitGameCard = armyCards.find(
+  const selectedUnitGameCard = gameArmyCards.find(
     (card) => card.gameCardID === selectedUnit?.gameCardID
   )
 
@@ -147,10 +148,17 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
           isFlying,
           boardHexes,
           gameUnits,
-          armyCards
+          gameArmyCards
         )
       )
-  }, [armyCards, isFlying, boardHexes, gameUnits, selectedUnit, selectedUnitID])
+  }, [
+    gameArmyCards,
+    isFlying,
+    boardHexes,
+    gameUnits,
+    selectedUnit,
+    selectedUnitID,
+  ])
 
   // water clone
   const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
@@ -160,10 +168,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const isAllClonesPlaced =
     waterClonesPlacedClonerIDs.length ===
     Object.values(waterCloneRoll?.placements ?? {}).length
-  console.log(
-    '🚀 ~ file: play-phase-context.tsx:161 ~ PlayContextProvider ~ isAllClonesPlaced',
-    isAllClonesPlaced
-  )
   const clonePlaceableHexIDs = isAllClonesPlaced
     ? []
     : Object.values(waterCloneRoll?.placements ?? {})
@@ -220,7 +224,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     players?.[playerID]?.orderMarkers?.[currentOrderMarker] ?? ''
   const revealedGameCard = selectRevealedGameCard(
     orderMarkers,
-    armyCards,
+    gameArmyCards,
     currentOrderMarker,
     currentPlayer
   )
@@ -321,6 +325,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const isUnitOnHexReadyToSelect =
       unitOnHex?.gameCardID === currentTurnGameCardID
     const isUnitOnHexSelected = unitOnHex?.unitID === selectedUnitID
+    const isEndHexEnemyOccupied =
+      isEndHexOccupied && endHexUnitPlayerID !== playerID
 
     // MOVE STAGE
     if (isMovementStage) {
@@ -356,9 +362,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     }
     // ATTACK STAGE
     if (isAttackingStage) {
-      const isEndHexEnemyOccupied =
-        isEndHexOccupied && endHexUnitPlayerID !== playerID
-
       // select unit
       if (isUnitOnHexReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
@@ -368,15 +371,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         setSelectedUnitID('')
       }
       // attack with selected unit
-      if (selectedUnitID && isEndHexEnemyOccupied) {
-        const startHex = selectHexForUnit(selectedUnitID, boardHexes)
-        const gameCard: any = Object.values(armyCards).find(
-          (armyCard: GameArmyCard) =>
-            armyCard?.gameCardID === currentTurnGameCardID
-        )
-        const isInRange =
-          hexUtilsDistance(startHex as BoardHex, sourceHex) <=
-            gameCard?.range ?? false
+      if (selectedUnit && isEndHexEnemyOccupied) {
+        const { isInRange } = selectIsInRangeOfAttack({
+          attacker: selectedUnit,
+          defenderHex: sourceHex,
+          gameArmyCards: gameArmyCards,
+          boardHexes: boardHexes,
+          gameUnits: gameUnits,
+        })
         if (isInRange) {
           attackAction(selectedUnit, boardHexes[sourceHex.id])
         }

@@ -1,3 +1,4 @@
+import { HEXGRID_SPACING } from 'app/constants'
 import { useBgioG } from 'bgio-contexts'
 import { MapShapes } from 'game/types'
 import { useMapContext } from 'hexopolis-ui/contexts'
@@ -79,7 +80,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       <HexgridLayout
         size={{ x: hexSize, y: hexSize }}
         flat={flat}
-        spacing={1.05}
+        spacing={HEXGRID_SPACING}
       >
         <svg
           width={`${mapState.width}%`}

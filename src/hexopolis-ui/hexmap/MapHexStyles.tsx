@@ -1,4 +1,3 @@
-import { Ref } from 'react'
 import styled from 'styled-components'
 
 type MapHexStylesProps = {
@@ -146,10 +145,8 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__selected-card-unit--active > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
-    filter: drop-shadow(1px 1px 1px var(--sub-white))
-      drop-shadow(-1px -1px 1px var(--sub-white))
-      drop-shadow(1px -1px 1px var(--sub-white))
-      drop-shadow(-1px 1px 1px var(--sub-white));
+    filter: drop-shadow(2.5px 2.5px 2px var(--sub-white))
+      drop-shadow(-2.5px -2.5px 2px var(--sub-white));
   }
   // PHASE: ROP-opponent's turn
   // highlight active enemy unit
@@ -196,10 +193,8 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
-    filter: drop-shadow(5px 5px 4px var(--neon-red))
-      drop-shadow(-5px -5px 4px var(--neon-red))
-      drop-shadow(5px -5px 4px var(--neon-red))
-      drop-shadow(-5px 5px 4px var(--neon-red));
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-red))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-red));
   }
   //PHASE: ROP-water-clone
   // paint places where water clone can be placed
@@ -216,13 +211,5 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     fill-opacity: 1;
     filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
       drop-shadow(-2.5px -2.5px 2px var(--neon-green));
-  }
-  .maphex__clone-re-placeable > g polygon {
-    fill: var(neon-yellow);
-    fill-opacity: 1;
-    filter: drop-shadow(2.5px 2.5px 2px var(neon-yellow))
-      drop-shadow(-2.5px -2.5px 2px var(neon-yellow))
-      drop-shadow(2.5px -2.5px 2px var(neon-yellow))
-      drop-shadow(-2.5px 2.5px 2px var(neon-yellow));
   }
 `

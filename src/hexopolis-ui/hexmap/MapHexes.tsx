@@ -105,6 +105,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         isWaterCloneStage,
         boardHexes,
         gameUnits,
+        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
         clonerHexIDs,

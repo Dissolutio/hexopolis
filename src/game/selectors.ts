@@ -7,9 +7,11 @@ import {
   OrderMarkers,
   OrderMarker,
   PlayerOrderMarkers,
+  HexCoordinates,
+  RangeScan,
 } from './types'
 import { generateHexID } from './constants'
-import { hexUtilsNeighbors } from './hex-utils'
+import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
 import { uniq } from 'lodash'
 
 // returns the hex for 1-hex units, and the head-hex for multi-hex units
@@ -112,7 +114,7 @@ export function selectMoveCostBetweenNeighbors(
   const totalCost = heightCost + distanceCost
   return totalCost
 }
-export function selectAreTwoUnitsEngaged({
+export function selectAreTwoAdjacentUnitsEngaged({
   aHeight,
   aAltitude,
   bHeight,
@@ -127,7 +129,115 @@ export function selectAreTwoUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
+export function selectAreTwoUnitsInMelee({
+  unit1,
+  unit2,
+  gameArmyCards,
+  boardHexes,
+}: {
+  unit1: GameUnit
+  unit2: GameUnit
+  gameArmyCards: GameArmyCard[]
+  boardHexes: BoardHexes
+}) {
+  const is2Hex = unit1.is2Hex
+  const unit1Hex = selectHexForUnit(unit1.unitID, boardHexes)
+  const unit1TailHex = selectTailHexForUnit(unit1.unitID, boardHexes)
+  const unit1GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
+  const unit2GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
+  if (
+    !unit1Hex ||
+    (is2Hex && !unit1TailHex) ||
+    !unit1GameCard ||
+    !unit2GameCard
+  ) {
+    return false
+  }
+  // take the attacker and select all hex-neighbors of attacker+tail, see if any hexes are occupied by the defender and engaged
+  return [
+    ...selectHexNeighbors(unit1Hex.id, boardHexes),
+    ...selectHexNeighbors(unit1TailHex?.id ?? '', boardHexes),
+  ]
+    .filter((hex) => hex.occupyingUnitID === unit2.unitID)
+    .some((hex) =>
+      selectAreTwoAdjacentUnitsEngaged({
+        aHeight: unit1GameCard.height,
+        aAltitude: unit1Hex.altitude,
+        bHeight: unit2GameCard.height,
+        bAltitude: hex.altitude,
+      })
+    )
+}
+export const selectIsInRangeOfAttack = ({
+  attacker,
+  defenderHex,
+  gameArmyCards,
+  boardHexes,
+  gameUnits,
+}: {
+  attacker: GameUnit
+  defenderHex: BoardHex
+  gameArmyCards: GameArmyCard[]
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+}): RangeScan => {
+  const { unitID } = attacker
+  const isUnit2Hex = attacker.is2Hex
+  const attackerGameCard = selectGameCardByID(
+    gameArmyCards,
+    attacker.gameCardID
+  )
+  const unitRange = attackerGameCard?.range ?? 0
+  const attackerHex = selectHexForUnit(unitID, boardHexes)
+  const attackerTailHex = selectTailHexForUnit(unitID, boardHexes)
+  const { occupyingUnitID: defenderHexUnitID } = defenderHex
 
+  const defenderGameUnit = gameUnits[defenderHexUnitID]
+  const defenderGameCard = selectGameCardByID(
+    gameArmyCards,
+    defenderGameUnit.gameCardID
+  )
+  if (!attackerHex || !attackerGameCard || !defenderGameCard) {
+    console.error(
+      "Something went wrong in the 'selectIsInRangeOfAttack' selector, necessary ingredients are missing."
+    )
+    return {
+      isInRange: false,
+      isMelee: false,
+      isRanged: false,
+    }
+  }
+  const isInMeleeRange = selectAreTwoUnitsInMelee({
+    unit1: attacker,
+    unit2: defenderGameUnit,
+    gameArmyCards,
+    boardHexes,
+  })
+  const isInTailRange =
+    isUnit2Hex && attackerTailHex
+      ? hexUtilsDistance(attackerTailHex as HexCoordinates, defenderHex) <=
+        unitRange
+      : false
+  const isInHeadHexRange = attackerHex
+    ? hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
+    : false
+  // This totally ignores line of sight
+  const isInRangedRange = isInTailRange || isInHeadHexRange
+  const isRangeOneWhichRequiresEngagement = unitRange === 1
+  const isThorianSpeedDefender =
+    selectIfGameArmyCardHasThorianSpeed(defenderGameCard)
+  const isAttackerRequiredToBeEngagedToDefender =
+    isRangeOneWhichRequiresEngagement || isThorianSpeedDefender
+  const isInRange = isAttackerRequiredToBeEngagedToDefender
+    ? isInMeleeRange
+    : isInRangedRange
+  return {
+    isInRange,
+    isMelee: isInMeleeRange,
+    // a normal attack cannot be a ranged attack if the unit is engaged
+    isRanged: isInRangedRange && !isInMeleeRange,
+  }
+}
 // this function will lookup the unit on the hex, OR you can pass an override unit to place on the hex to predict engagements
 export function selectEngagementsForHex({
   hexID,
@@ -184,9 +294,9 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          gameUnits[h.occupyingUnitID].playerID !== playerID &&
+          unitOnHex.playerID !== playerID &&
           // filter for engaged units
-          selectAreTwoUnitsEngaged({
+          selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,
             aAltitude: hex?.altitude ?? 0,
             bHeight:
@@ -291,6 +401,20 @@ export function selectIfGameArmyCardHasFlying(
     ? gameArmyCard.abilities.some((a) => a.name === 'Stealth Flying')
     : false
   return { hasFlying, hasStealth }
+}
+export function selectIfGameArmyCardHasCounterStrike(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
+    : false
+}
+export function selectIfGameArmyCardHasThorianSpeed(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
+    : false
 }
 type HasStealthReport = {
   hasDisengage: boolean
