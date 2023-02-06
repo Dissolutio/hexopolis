@@ -18,7 +18,6 @@ import {
 import {
   selectHexForUnit,
   selectRevealedGameCard,
-  selectIfGameArmyCardHasFlying,
   selectIsInRangeOfAttack,
 } from '../../game/selectors'
 import {
@@ -34,6 +33,7 @@ import {
 } from 'bgio-contexts'
 import { hexUtilsDistance } from 'game/hex-utils'
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
+import { selectIfGameArmyCardHasFlying } from 'game/selectors/card-selectors'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -44,6 +44,7 @@ const PlayContext = createContext<PlayContextValue | undefined>(undefined)
 type PlayContextValue = {
   // state
   selectedUnitMoveRange: MoveRange
+  selectedUnitAttackRange: string[] // hexIDs
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
   isWalkingFlyer: boolean
@@ -60,9 +61,7 @@ type PlayContextValue = {
   revealedGameCardTargetsInRange: TargetsInRange
   revealedGameCardKilledUnits: GameUnit[]
   unitsWithTargets: number
-  selectedGameCardUnits: GameUnit[]
   freeAttacksAvailable: number
-  isFreeAttackAvailable: boolean
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
   // handlers
@@ -137,25 +136,68 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
+  const [selectedUnitAttackRange, setSelectedUnitAttackRange] = useState<
+    string[]
+  >([])
   const { safeMoves, engageMoves, disengageMoves } =
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
-  // effect: update moverange when selected unit changes
+  // effect: update moverange when selected unit changes (only necessary in movement stage)
   useEffect(() => {
-    if (selectedUnitID && selectedUnit)
-      setSelectedUnitMoveRange(() =>
-        computeUnitMoveRange(
-          selectedUnit,
-          isFlying,
-          boardHexes,
-          gameUnits,
-          gameArmyCards
+    if (isMovementStage) {
+      if (selectedUnitID && selectedUnit) {
+        setSelectedUnitMoveRange(() =>
+          computeUnitMoveRange(
+            selectedUnit,
+            isFlying,
+            boardHexes,
+            gameUnits,
+            gameArmyCards
+          )
         )
-      )
+      }
+    }
   }, [
+    isMovementStage,
     gameArmyCards,
     isFlying,
     boardHexes,
     gameUnits,
+    selectedUnit,
+    selectedUnitID,
+  ])
+  // effect: update attack-range when selected unit changes (only necessary in attacking stage)
+  useEffect(() => {
+    if (isAttackingStage) {
+      if (selectedUnitID && selectedUnit) {
+        const idsInRange = Object.values(boardHexes)
+          .filter((hex) => {
+            // if hex is not occupied by enemy unit, return false
+            if (
+              !hex.occupyingUnitID ||
+              !gameUnits[hex.occupyingUnitID] ||
+              gameUnits[hex.occupyingUnitID].playerID === playerID
+            ) {
+              return false
+            }
+            const { isInRange } = selectIsInRangeOfAttack({
+              attackingUnit: selectedUnit,
+              defenderHex: hex,
+              gameArmyCards: gameArmyCards,
+              boardHexes: boardHexes,
+              gameUnits: gameUnits,
+            })
+            return isInRange
+          })
+          .map((hex) => hex.id)
+        setSelectedUnitAttackRange(idsInRange)
+      }
+    }
+  }, [
+    boardHexes,
+    gameArmyCards,
+    gameUnits,
+    isAttackingStage,
+    playerID,
     selectedUnit,
     selectedUnitID,
   ])
@@ -303,16 +345,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const attacksAllowed = revealedGameCard?.figures ?? 0
   const countOfUnitsThatMoved = uniqUnitsMoved.length
   const initialFreeAttacksAvailable = attacksAllowed - countOfUnitsThatMoved
-  const unitsThatAttackedButDidNotMove = unitsAttacked.filter(
+  const unitsThatAttackedButDidNotMove = Object.keys(unitsAttacked).filter(
     (id) => !uniqUnitsMoved.includes(id)
   )
   const countFreeAttacksUsed = unitsThatAttackedButDidNotMove.length
   const freeAttacksAvailable =
     initialFreeAttacksAvailable - countFreeAttacksUsed
-  const isFreeAttackAvailable = freeAttacksAvailable > 0
-  const selectedGameCardUnits = Object.values(gameUnits).filter(
-    (unit: GameUnit) => unit.gameCardID === currentTurnGameCardID
-  )
 
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to map-background onClick (if ever one is added)
@@ -398,6 +436,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     <PlayContext.Provider
       value={{
         selectedUnitMoveRange,
+        selectedUnitAttackRange,
         // disengage confirm
         showDisengageConfirm,
         disengageAttempt,
@@ -407,7 +446,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         toggleDisengageConfirm: onClickDisengageHex,
         // COMPUTED
         currentTurnGameCardID,
-        selectedGameCardUnits,
         selectedUnit,
         revealedGameCard,
         revealedGameCardUnits,
@@ -416,7 +454,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCardKilledUnits,
         unitsWithTargets,
         freeAttacksAvailable,
-        isFreeAttackAvailable,
         clonerHexIDs: clonerHexes,
         clonePlaceableHexIDs: clonePlaceableHexIDs,
         // HANDLERS

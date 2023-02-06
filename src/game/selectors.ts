@@ -13,7 +13,11 @@ import {
 import { generateHexID } from './constants'
 import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
 import { uniq } from 'lodash'
-import { selectUnitRange } from './selectors/card-selectors'
+import {
+  selectIfGameArmyCardHasDoubleAttack,
+  selectIfGameArmyCardHasThorianSpeed,
+  selectUnitRange,
+} from './selectors/card-selectors'
 
 // returns the hex for 1-hex units, and the head-hex for multi-hex units
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
@@ -130,6 +134,55 @@ export function selectAreTwoAdjacentUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
+export const selectAttackerHasAttacksAllowed = ({
+  attackingUnit,
+  gameArmyCards,
+  unitsAttacked,
+  unitsMoved,
+}: {
+  attackingUnit: GameUnit
+  gameArmyCards: GameArmyCard[]
+  unitsAttacked: Record<string, string[]>
+  unitsMoved: string[]
+}) => {
+  const { unitID: attackerUnitID } = attackingUnit
+  const attackerGameCard = selectGameCardByID(
+    gameArmyCards,
+    attackingUnit.gameCardID
+  )
+  const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+    attackerGameCard
+  )
+    ? 2
+    : 1
+  const totalNumberOfAttacksAllowed =
+    numberOfAttackingFigures * attacksAllowedPerFigure
+  const attacksUsed = Object.values(unitsAttacked).flat().length
+  const attacksUsedByThisFigure = unitsAttacked?.[attackerUnitID]?.length ?? 0
+  const attacksLeftFromTotal = totalNumberOfAttacksAllowed - attacksUsed
+  const isNoAttacksLeftFromTotal = attacksLeftFromTotal <= 0
+  const isUnitHasNoAttacksLeft =
+    attacksAllowedPerFigure - attacksUsedByThisFigure <= 0
+  const isMovedUnitAttacking = unitsMoved.includes(attackerUnitID)
+  const isAttackAvailableForUnmovedUnitToUse =
+    attacksLeftFromTotal >
+    unitsMoved.filter((id) => !Object.keys(unitsAttacked).includes(id)).length
+  const isUnmovedUnitUsableAttack =
+    isMovedUnitAttacking || isAttackAvailableForUnmovedUnitToUse
+  return {
+    isNoAttacksLeftFromTotal,
+    isUnitHasNoAttacksLeft,
+    attacksUsed,
+    attacksUsedByThisFigure,
+    attacksLeftFromTotal,
+    isMovedUnitAttacking,
+    isAttackAvailableForUnmovedUnitToUse,
+    isUnmovedUnitUsableAttack,
+  }
+}
+
+// MAIN RANGE FN
 export const selectIsInRangeOfAttack = ({
   attackingUnit,
   defenderHex,
@@ -150,7 +203,7 @@ export const selectIsInRangeOfAttack = ({
     attackingUnit.gameCardID
   )
   // const unitRange = attackerGameCard?.range ?? 0
-  const unitRange = selectUnitRange({
+  let unitRange = selectUnitRange({
     attackingUnit,
     gameArmyCards,
     boardHexes,
@@ -163,7 +216,7 @@ export const selectIsInRangeOfAttack = ({
   const defenderGameUnit = gameUnits[defenderHexUnitID]
   const defenderGameCard = selectGameCardByID(
     gameArmyCards,
-    defenderGameUnit.gameCardID
+    defenderGameUnit?.gameCardID ?? ''
   )
   if (!attackerHex || !attackerGameCard || !defenderGameCard) {
     console.error(
@@ -242,7 +295,7 @@ export function selectEngagementsForHex({
   const isUnit2Hex = unitOnHex.is2Hex
   // mutate/expand tailNeighbors if unit is 2 hex
   let tailNeighbors: BoardHex[] = []
-  if (isUnit2Hex) {
+  if (isUnit2Hex && tailHexID) {
     tailNeighbors = selectHexNeighbors(tailHexID, boardHexes)
   }
   const playerID = unitOnHex?.playerID
@@ -263,7 +316,7 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          unitOnHex.playerID !== playerID &&
+          gameUnits[h.occupyingUnitID].playerID !== playerID &&
           // filter for engaged units
           selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,
@@ -354,56 +407,7 @@ export function selectMoveEngagedUnitIDs({
   })
   return newEngagements.filter((id) => !initialEngagements.includes(id))
 }
-type HasFlyingReport = {
-  hasFlying: boolean
-  hasStealth: boolean
-}
-export function selectIfGameArmyCardHasFlying(
-  gameArmyCard?: GameArmyCard
-): HasFlyingReport {
-  const hasFlying = gameArmyCard
-    ? gameArmyCard.abilities.some(
-        (a) => a.name === 'Flying' || a.name === 'Stealth Flying'
-      )
-    : false
-  const hasStealth = gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Stealth Flying')
-    : false
-  return { hasFlying, hasStealth }
-}
-export function selectIfGameArmyCardHasCounterStrike(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
-    : false
-}
-export function selectIfGameArmyCardHasThorianSpeed(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
-    : false
-}
-type HasStealthReport = {
-  hasDisengage: boolean
-  hasGhostWalk: boolean
-}
-export function selectIfGameArmyCardHasDisengage(
-  gameArmyCard?: GameArmyCard
-): HasStealthReport {
-  const hasGhostWalk = gameArmyCard
-    ? gameArmyCard.abilities.some(
-        (a) => a.name === 'Ghost Walk' || a.name === 'Phantom Walk'
-      )
-    : false
-  const hasDisengage = gameArmyCard
-    ? gameArmyCard.abilities.some(
-        (a) => a.name === 'Disengage' || a.name === 'Phantom Walk'
-      )
-    : false
-  return { hasDisengage, hasGhostWalk }
-}
+
 export function selectIsClimbable(
   unit: GameUnit,
   armyCards: GameArmyCard[],
@@ -415,29 +419,3 @@ export function selectIsClimbable(
   const altitudeDelta = endHex.altitude - startHex.altitude
   return altitudeDelta < unitHeight
 }
-
-// for after move abilities (water clone)
-// export function selectCardsWithAfterMoveAbilities({
-//   playerID,
-//   gameUnits,
-//   armyCards,
-// }: {
-//   playerID: string
-//   gameUnits: GameUnits
-//   armyCards: GameArmyCard[]
-// }) {
-//   const initialEngagements: string[] = selectEngagementsForUnit({
-//     unitID: unit.unitID,
-//     boardHexes,
-//     gameUnits,
-//     armyCards,
-//   })
-//   const engagementsForCurrentHex = selectEngagementsForHex({
-//     overrideUnitID: unit.unitID,
-//     hexID: endHexID,
-//     boardHexes,
-//     gameUnits,
-//     armyCards,
-//   })
-//   return engagementsForCurrentHex.some((id) => !initialEngagements.includes(id))
-// }

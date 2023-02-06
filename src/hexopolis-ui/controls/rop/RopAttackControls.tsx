@@ -10,6 +10,7 @@ import {
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
+import { selectGameArmyCardAttacksAllowed } from 'game/selectors/card-selectors'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
@@ -20,13 +21,18 @@ export const RopAttackControls = () => {
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
     (ability) => ability.name === 'Water Clone'
   )
-  const attacksAllowed = revealedGameCard?.figures ?? 0
-  const attacksUsed = unitsAttacked.length
+  // Early return if no card is revealed, this should not happen!
+  if (!revealedGameCard) {
+    return null
+  }
+  const { totalNumberOfAttacksAllowed } =
+    selectGameArmyCardAttacksAllowed(revealedGameCard)
+
+  const attacksUsed = Object.values(unitsAttacked).flat().length
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
-  const attacksAvailable = attacksAllowed - attacksUsed
-  const isAllAttacksUsed = attacksAvailable <= 0
+  const isAllAttacksUsed = totalNumberOfAttacksAllowed <= 0
   const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
@@ -46,7 +52,7 @@ export const RopAttackControls = () => {
       </StyledControlsP>
 
       <StyledControlsP>
-        {attacksUsed} / {attacksAllowed} attacks used
+        {attacksUsed} / {totalNumberOfAttacksAllowed} attacks used
       </StyledControlsP>
 
       <StyledControlsP>
@@ -85,8 +91,8 @@ export const RopAttackControls = () => {
       ) : (
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
-          resetText={`End Turn, skip my ${attacksAvailable} attack${
-            attacksAvailable !== 1 ? 's' : ''
+          resetText={`End Turn, skip my ${totalNumberOfAttacksAllowed} attack${
+            totalNumberOfAttacksAllowed !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />

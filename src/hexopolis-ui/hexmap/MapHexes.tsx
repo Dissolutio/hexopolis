@@ -48,6 +48,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   } = usePlacementContext()
   const {
     selectedUnitMoveRange,
+    selectedUnitAttackRange,
     onClickTurnHex,
     revealedGameCard,
     revealedGameCardUnits,
@@ -108,6 +109,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
         gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
+        selectedUnitAttackRange,
         clonerHexIDs,
         clonePlaceableHexIDs,
       })

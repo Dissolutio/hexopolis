@@ -158,6 +158,7 @@ export function calcRopHexClassNames({
   gameUnits,
   unitsMoved,
   selectedUnitMoveRange,
+  selectedUnitAttackRange,
   clonerHexIDs,
   clonePlaceableHexIDs,
 }: {
@@ -176,6 +177,7 @@ export function calcRopHexClassNames({
   gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
+  selectedUnitAttackRange: string[]
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
 }) {
@@ -220,17 +222,8 @@ export function calcRopHexClassNames({
       classNames = classNames.concat(' maphex__selected-card-unit--active ')
     }
     // Highlight targetable enemy units
-    if (selectedUnitID && isEndHexEnemyOccupied) {
-      const { isInRange } = selectIsInRangeOfAttack({
-        attackingUnit: selectedUnit,
-        defenderHex: hex,
-        gameArmyCards: gameArmyCards,
-        boardHexes: boardHexes,
-        gameUnits: gameUnits,
-      })
-      if (isInRange) {
-        classNames = classNames.concat(' maphex__targetable-enemy ')
-      }
+    if (selectedUnitAttackRange.includes(hex.id)) {
+      classNames = classNames.concat(' maphex__targetable-enemy ')
     }
   }
 
