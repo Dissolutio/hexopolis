@@ -23,14 +23,15 @@ const mimringID = 'hs1013'
 const negoksaID = 'hs1014'
 const grimnakID = 'hs1015'
 
+// TEST SCENARIO ARMYCARDS
 const player1Ids = [
   // syvarrisID,
-  // zettianID,
+  zettianID,
   // airbornID,
   // raelinID,
-  // deathwalker9000ID,
-  marroID,
-  mimringID,
+  deathwalker9000ID,
+  // marroID,
+  // mimringID,
   // drake1ID,
 ]
 const player2Ids = [
@@ -43,6 +44,17 @@ const player2Ids = [
   grimnakID,
   // izumiID,
 ]
+// TEST SCENARIO ORDERMARKERS
+const p0_0 = `p0_${player1Ids[1]}`
+const p0_1 = `p0_${player1Ids[0]}`
+const p0_2 = `p0_${player1Ids[0]}`
+const p0_X = `p0_${player1Ids[0]}`
+
+const p1_0 = `p1_${player2Ids[0]}`
+const p1_1 = `p1_${player2Ids[0]}`
+const p1_2 = `p1_${player2Ids[0]}`
+const p1_X = `p1_${player2Ids[0]}`
+
 const armyCardsDevving = hsCardsToArmyCards(MS1Cards).filter((c) => {
   return [...player1Ids, ...player2Ids].includes(c.armyCardID)
 })
@@ -72,7 +84,6 @@ function hsCardsToArmyCards(params: ICoreHeroscapeCard[]): ArmyCard[] {
   })
 }
 
-//! TEST SCENARIO GAMEARMYCARDS
 export function armyCardsToGameArmyCardsForTest() {
   return armyCardsDevving.map((card) => {
     const isCardForPlayer1 = player1Ids.includes(card.armyCardID)
@@ -91,21 +102,19 @@ export function armyCardsToGameArmyCardsForTest() {
   })
 }
 
-const devPlayer1orderMarkers = `p0_${player1Ids[0]}`
-const devPlayer2orderMarkers = `p1_${player2Ids[0]}`
 export function generatePreplacedOrderMarkers(): OrderMarkers {
   const orderMarkers: OrderMarkers = {
     '0': [
-      { order: '0', gameCardID: devPlayer1orderMarkers },
-      { order: '1', gameCardID: devPlayer1orderMarkers },
-      { order: '2', gameCardID: devPlayer1orderMarkers },
-      { order: 'X', gameCardID: devPlayer1orderMarkers },
+      { order: '0', gameCardID: p0_0 },
+      { order: '1', gameCardID: p0_1 },
+      { order: '2', gameCardID: p0_2 },
+      { order: 'X', gameCardID: p0_X },
     ],
     '1': [
-      { order: '0', gameCardID: devPlayer2orderMarkers },
-      { order: '1', gameCardID: devPlayer2orderMarkers },
-      { order: '2', gameCardID: devPlayer2orderMarkers },
-      { order: 'X', gameCardID: devPlayer2orderMarkers },
+      { order: '0', gameCardID: p1_0 },
+      { order: '1', gameCardID: p1_1 },
+      { order: '2', gameCardID: p1_2 },
+      { order: 'X', gameCardID: p1_X },
     ],
   }
   return orderMarkers
@@ -114,18 +123,18 @@ export function playersStateWithPrePlacedOMs(): PlayersState {
   return {
     '0': {
       orderMarkers: {
-        '0': devPlayer1orderMarkers,
-        '1': devPlayer1orderMarkers,
-        '2': devPlayer1orderMarkers,
-        X: devPlayer1orderMarkers,
+        '0': p0_0,
+        '1': p0_1,
+        '2': p0_2,
+        X: p0_X,
       },
     },
     '1': {
       orderMarkers: {
-        '0': devPlayer2orderMarkers,
-        '1': devPlayer2orderMarkers,
-        '2': devPlayer2orderMarkers,
-        X: devPlayer2orderMarkers,
+        '0': p1_0,
+        '1': p1_1,
+        '2': p1_2,
+        X: p1_X,
       },
     },
   }

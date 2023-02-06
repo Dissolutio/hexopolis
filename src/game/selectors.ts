@@ -13,6 +13,7 @@ import {
 import { generateHexID } from './constants'
 import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
 import { uniq } from 'lodash'
+import { selectUnitRange } from './selectors/card-selectors'
 
 // returns the hex for 1-hex units, and the head-hex for multi-hex units
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
@@ -148,7 +149,13 @@ export const selectIsInRangeOfAttack = ({
     gameArmyCards,
     attackingUnit.gameCardID
   )
-  const unitRange = attackerGameCard?.range ?? 0
+  // const unitRange = attackerGameCard?.range ?? 0
+  const unitRange = selectUnitRange({
+    attackingUnit,
+    gameArmyCards,
+    boardHexes,
+    gameUnits,
+  })
   const attackerHex = selectHexForUnit(unitID, boardHexes)
   const attackerTailHex = selectTailHexForUnit(unitID, boardHexes)
   const { occupyingUnitID: defenderHexUnitID } = defenderHex

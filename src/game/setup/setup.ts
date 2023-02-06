@@ -3,7 +3,7 @@ import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
 } from '../constants'
-import { makeDevHexagonMap } from './mapGen'
+import { makeDevHexagonMap, makeHexagonShapedMap } from './mapGen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
   armyCardsToGameArmyCardsForTest,
@@ -43,20 +43,20 @@ function makeTestScenario(): GameState {
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  // const map = makeHexagonShapedMap({
-  //   mapSize: 2,
-  //   withPrePlacedUnits: isDevOverrideState,
-  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-  //   flat: false,
-  // })
+  const map = makeHexagonShapedMap({
+    mapSize: 6,
+    withPrePlacedUnits: isDevOverrideState,
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+    flat: false,
+  })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
   // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: true,
-    gameUnits,
-  })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState,
     currentRound: 1,
