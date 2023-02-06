@@ -12,7 +12,7 @@ import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
 
 export const RopAttackControls = () => {
-  const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
+  const { uniqUnitsMoved, unitsAttacked2, currentOrderMarker } = useBgioG()
   const { events } = useBgioEvents()
   const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
     usePlayContext()
@@ -21,7 +21,7 @@ export const RopAttackControls = () => {
     (ability) => ability.name === 'Water Clone'
   )
   const attacksAllowed = revealedGameCard?.figures ?? 0
-  const attacksUsed = unitsAttacked.length
+  const attacksUsed = Object.values(unitsAttacked2).flat().length
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }

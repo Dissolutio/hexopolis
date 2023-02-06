@@ -173,6 +173,7 @@ export const HexedMeadow: Game<GameState> = {
           G.gameUnits = mutatedGameUnits
           G.unitsMoved = []
           G.unitsAttacked = []
+          G.unitsAttacked2 = {}
         },
         // clear move-points,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {

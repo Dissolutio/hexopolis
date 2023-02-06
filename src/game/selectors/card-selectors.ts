@@ -59,9 +59,7 @@ export const selectUnitRange = ({
         hex.occupyingUnitID &&
         neighborUnitCard &&
         neighborUnitCard.playerID === attackingUnit.playerID &&
-        neighborUnitCard?.abilities?.some(
-          (ability) => ability.name === 'Range Enhancement'
-        ) &&
+        selectIfGameArmyCardHasSoulBorgRangeEnhancement(neighborUnitCard) &&
         selectAreTwoAdjacentUnitsEngaged({
           aHeight: attackerGameCard.height,
           aAltitude: attackerHex.altitude,
@@ -72,4 +70,70 @@ export const selectUnitRange = ({
     })
   const unitRange = attackerGameCard.range + (isD9000RangeEnhancement ? 2 : 0)
   return unitRange
+}
+// FLYING
+type HasFlyingReport = {
+  hasFlying: boolean
+  hasStealth: boolean
+}
+export function selectIfGameArmyCardHasFlying(
+  gameArmyCard?: GameArmyCard
+): HasFlyingReport {
+  const hasFlying = gameArmyCard
+    ? gameArmyCard.abilities.some(
+        (a) => a.name === 'Flying' || a.name === 'Stealth Flying'
+      )
+    : false
+  const hasStealth = gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Stealth Flying')
+    : false
+  return { hasFlying, hasStealth }
+}
+type HasStealthReport = {
+  hasDisengage: boolean
+  hasGhostWalk: boolean
+}
+export function selectIfGameArmyCardHasDisengage(
+  gameArmyCard?: GameArmyCard
+): HasStealthReport {
+  const hasGhostWalk = gameArmyCard
+    ? gameArmyCard.abilities.some(
+        (a) => a.name === 'Ghost Walk' || a.name === 'Phantom Walk'
+      )
+    : false
+  const hasDisengage = gameArmyCard
+    ? gameArmyCard.abilities.some(
+        (a) => a.name === 'Disengage' || a.name === 'Phantom Walk'
+      )
+    : false
+  return { hasDisengage, hasGhostWalk }
+}
+// abilities:
+export function selectIfGameArmyCardHasCounterStrike(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
+    : false
+}
+export function selectIfGameArmyCardHasThorianSpeed(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
+    : false
+}
+export function selectIfGameArmyCardHasDoubleAttack(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Double Attack')
+    : false
+}
+export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === 'Range Enhancement')
+    : false
 }

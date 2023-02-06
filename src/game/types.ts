@@ -20,6 +20,7 @@ export interface GameState {
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: string[]
+  unitsAttacked2: { [attackingUnitID: string]: string[] }
   // unitsKilled does not get erased or updated when killed units are resurrected/cloned
   unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]

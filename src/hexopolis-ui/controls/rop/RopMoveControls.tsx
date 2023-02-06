@@ -12,11 +12,11 @@ import {
   StyledButtonWrapper,
 } from '../ConfirmOrResetButtons'
 import { uniq } from 'lodash'
-import { selectIfGameArmyCardHasFlying } from 'game/selectors'
 import { omToString } from 'app/utilities'
 import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
+import { selectIfGameArmyCardHasFlying } from 'game/selectors/card-selectors'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,

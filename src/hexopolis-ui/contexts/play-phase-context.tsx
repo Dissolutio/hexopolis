@@ -18,7 +18,6 @@ import {
 import {
   selectHexForUnit,
   selectRevealedGameCard,
-  selectIfGameArmyCardHasFlying,
   selectIsInRangeOfAttack,
 } from '../../game/selectors'
 import {
@@ -34,6 +33,7 @@ import {
 } from 'bgio-contexts'
 import { hexUtilsDistance } from 'game/hex-utils'
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
+import { selectIfGameArmyCardHasFlying } from 'game/selectors/card-selectors'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -60,9 +60,7 @@ type PlayContextValue = {
   revealedGameCardTargetsInRange: TargetsInRange
   revealedGameCardKilledUnits: GameUnit[]
   unitsWithTargets: number
-  selectedGameCardUnits: GameUnit[]
   freeAttacksAvailable: number
-  isFreeAttackAvailable: boolean
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
   // handlers
@@ -77,7 +75,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     gameArmyCards,
     gameUnits,
     killedUnits,
-    unitsAttacked,
+    unitsAttacked2,
     orderMarkers,
     currentOrderMarker,
     players,
@@ -303,16 +301,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const attacksAllowed = revealedGameCard?.figures ?? 0
   const countOfUnitsThatMoved = uniqUnitsMoved.length
   const initialFreeAttacksAvailable = attacksAllowed - countOfUnitsThatMoved
-  const unitsThatAttackedButDidNotMove = unitsAttacked.filter(
+  const unitsThatAttackedButDidNotMove = Object.keys(unitsAttacked2).filter(
     (id) => !uniqUnitsMoved.includes(id)
   )
   const countFreeAttacksUsed = unitsThatAttackedButDidNotMove.length
   const freeAttacksAvailable =
     initialFreeAttacksAvailable - countFreeAttacksUsed
-  const isFreeAttackAvailable = freeAttacksAvailable > 0
-  const selectedGameCardUnits = Object.values(gameUnits).filter(
-    (unit: GameUnit) => unit.gameCardID === currentTurnGameCardID
-  )
 
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to map-background onClick (if ever one is added)
@@ -407,7 +401,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         toggleDisengageConfirm: onClickDisengageHex,
         // COMPUTED
         currentTurnGameCardID,
-        selectedGameCardUnits,
         selectedUnit,
         revealedGameCard,
         revealedGameCardUnits,
@@ -416,7 +409,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCardKilledUnits,
         unitsWithTargets,
         freeAttacksAvailable,
-        isFreeAttackAvailable,
         clonerHexIDs: clonerHexes,
         clonePlaceableHexIDs: clonePlaceableHexIDs,
         // HANDLERS

@@ -3,13 +3,16 @@ import type { Move } from 'boardgame.io'
 import {
   selectGameCardByID,
   selectIsInRangeOfAttack,
-  selectIfGameArmyCardHasCounterStrike,
   selectHexForUnit,
   selectTailHexForUnit,
 } from '../selectors'
 import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
+import {
+  selectIfGameArmyCardHasCounterStrike,
+  selectIfGameArmyCardHasDoubleAttack,
+} from 'game/selectors/card-selectors'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -61,9 +64,19 @@ export const attackAction: Move<GameState> = {
     const unitName = attackerGameCard?.name ?? ''
     const unitsMoved = [...G.unitsMoved]
     const unitsAttacked = [...G.unitsAttacked]
-    // attacksAllowed is where we might account for Double Attack, etc.
-    const attacksAllowed = attackerGameCard?.figures ?? 0
-    const attacksLeft = attacksAllowed - unitsAttacked.length
+    const unitsAttacked2 = { ...G.unitsAttacked2 }
+    const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
+    const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+      attackerGameCard
+    )
+      ? 2
+      : 1
+    const totalNumberOfAttacksAllowed =
+      numberOfAttackingFigures * attacksAllowedPerFigure
+    const attacksUsed = Object.values(unitsAttacked2).flat().length
+    const attacksUsedByThisFigure =
+      unitsAttacked2?.[attackerUnitID]?.length ?? 0
+    const attacksLeft = totalNumberOfAttacksAllowed - attacksUsed
     const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } =
       defenderHex
     const defenderGameUnit = G.gameUnits[defenderHexUnitID]
@@ -100,9 +113,12 @@ export const attackAction: Move<GameState> = {
       return
     }
     // DISALLOW - unit already attacked
-    const isUnitHasNoAttacksLeft = unitsAttacked.includes(attackerUnitID)
+    const isUnitHasNoAttacksLeft =
+      attacksAllowedPerFigure - attacksUsedByThisFigure <= 0
     if (isUnitHasNoAttacksLeft) {
-      console.error(`Attack action denied:unit already attacked`)
+      console.error(
+        `Attack action denied:unit already attacked or used all their attacks`
+      )
       return
     }
     // DISALLOW - attack must be used by a moved unit
@@ -202,7 +218,13 @@ export const attackAction: Move<GameState> = {
     }
     // update units attacked
     unitsAttacked.push(attackerUnitID)
+    unitsAttacked2[attackerUnitID] = [
+      ...(unitsAttacked2?.[attackerUnitID] ?? []),
+      defenderGameUnit.unitID,
+    ]
+
     G.unitsAttacked = unitsAttacked
+    G.unitsAttacked2 = unitsAttacked2
     // update game log
     const gameLogForThisAttack = encodeGameLogMessage({
       type: 'attack',

@@ -9,8 +9,6 @@ import {
 import { generateBlankMoveRange } from './constants'
 import {
   selectHexForUnit,
-  selectIfGameArmyCardHasFlying,
-  selectIfGameArmyCardHasDisengage,
   selectEngagementsForHex,
   selectHexNeighbors,
   selectMoveCostBetweenNeighbors,
@@ -20,6 +18,10 @@ import {
   selectIsClimbable,
   selectTailHexForUnit,
 } from './selectors'
+import {
+  selectIfGameArmyCardHasDisengage,
+  selectIfGameArmyCardHasFlying,
+} from './selectors/card-selectors'
 
 const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
   // returns a new object with the highest movePointsLeft for each hex
