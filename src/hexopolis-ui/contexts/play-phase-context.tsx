@@ -44,6 +44,7 @@ const PlayContext = createContext<PlayContextValue | undefined>(undefined)
 type PlayContextValue = {
   // state
   selectedUnitMoveRange: MoveRange
+  selectedUnitAttackRange: string[] // hexIDs
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
   isWalkingFlyer: boolean
@@ -135,6 +136,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
+  const [selectedUnitAttackRange, setSelectedUnitAttackRange] = useState<
+    string[]
+  >([])
   const { safeMoves, engageMoves, disengageMoves } =
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
   // effect: update moverange when selected unit changes (only necessary in movement stage)
@@ -158,6 +162,42 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isFlying,
     boardHexes,
     gameUnits,
+    selectedUnit,
+    selectedUnitID,
+  ])
+  // effect: update attack-range when selected unit changes (only necessary in attacking stage)
+  useEffect(() => {
+    if (isAttackingStage) {
+      if (selectedUnitID && selectedUnit) {
+        const idsInRange = Object.values(boardHexes)
+          .filter((hex) => {
+            // if hex is not occupied by enemy unit, return false
+            if (
+              !hex.occupyingUnitID ||
+              !gameUnits[hex.occupyingUnitID] ||
+              gameUnits[hex.occupyingUnitID].playerID === playerID
+            ) {
+              return false
+            }
+            const { isInRange } = selectIsInRangeOfAttack({
+              attackingUnit: selectedUnit,
+              defenderHex: hex,
+              gameArmyCards: gameArmyCards,
+              boardHexes: boardHexes,
+              gameUnits: gameUnits,
+            })
+            return isInRange
+          })
+          .map((hex) => hex.id)
+        setSelectedUnitAttackRange(idsInRange)
+      }
+    }
+  }, [
+    boardHexes,
+    gameArmyCards,
+    gameUnits,
+    isAttackingStage,
+    playerID,
     selectedUnit,
     selectedUnitID,
   ])
@@ -396,6 +436,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     <PlayContext.Provider
       value={{
         selectedUnitMoveRange,
+        selectedUnitAttackRange,
         // disengage confirm
         showDisengageConfirm,
         disengageAttempt,

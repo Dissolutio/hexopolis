@@ -216,7 +216,7 @@ export const selectIsInRangeOfAttack = ({
   const defenderGameUnit = gameUnits[defenderHexUnitID]
   const defenderGameCard = selectGameCardByID(
     gameArmyCards,
-    defenderGameUnit.gameCardID
+    defenderGameUnit?.gameCardID ?? ''
   )
   if (!attackerHex || !attackerGameCard || !defenderGameCard) {
     console.error(
