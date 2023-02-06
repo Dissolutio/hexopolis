@@ -53,11 +53,12 @@ export const selectUnitRange = ({
     ].some((hex) => {
       const neighborUnitCard = selectGameCardByID(
         gameArmyCards,
-        gameUnits[hex.occupyingUnitID].gameCardID
+        gameUnits[hex.occupyingUnitID]?.gameCardID
       )
       return (
         hex.occupyingUnitID &&
-        gameUnits[hex.occupyingUnitID]?.playerID === attackingUnit.playerID &&
+        neighborUnitCard &&
+        neighborUnitCard.playerID === attackingUnit.playerID &&
         neighborUnitCard?.abilities?.some(
           (ability) => ability.name === 'Range Enhancement'
         ) &&
