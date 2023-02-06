@@ -137,19 +137,23 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   )
   const { safeMoves, engageMoves, disengageMoves } =
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
-  // effect: update moverange when selected unit changes
+  // effect: update moverange when selected unit changes (only necessary in movement stage)
   useEffect(() => {
-    if (selectedUnitID && selectedUnit)
-      setSelectedUnitMoveRange(() =>
-        computeUnitMoveRange(
-          selectedUnit,
-          isFlying,
-          boardHexes,
-          gameUnits,
-          gameArmyCards
+    if (isMovementStage) {
+      if (selectedUnitID && selectedUnit) {
+        setSelectedUnitMoveRange(() =>
+          computeUnitMoveRange(
+            selectedUnit,
+            isFlying,
+            boardHexes,
+            gameUnits,
+            gameArmyCards
+          )
         )
-      )
+      }
+    }
   }, [
+    isMovementStage,
     gameArmyCards,
     isFlying,
     boardHexes,
