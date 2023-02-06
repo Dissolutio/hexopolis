@@ -5,14 +5,12 @@ import {
   selectIsInRangeOfAttack,
   selectHexForUnit,
   selectTailHexForUnit,
+  selectAttackerHasAttacksAllowed,
 } from '../selectors'
 import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
-import {
-  selectIfGameArmyCardHasCounterStrike,
-  selectIfGameArmyCardHasDoubleAttack,
-} from 'game/selectors/card-selectors'
+import { selectIfGameArmyCardHasCounterStrike } from 'game/selectors/card-selectors'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -62,20 +60,7 @@ export const attackAction: Move<GameState> = {
       G.boardHexes
     )
     const { currentRound, currentOrderMarker } = G
-    const unitsMoved = [...G.unitsMoved]
     const unitsAttacked = { ...G.unitsAttacked }
-    const unitsAttackedIds = Object.keys(unitsAttacked)
-    const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
-    const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
-      attackerGameCard
-    )
-      ? 2
-      : 1
-    const totalNumberOfAttacksAllowed =
-      numberOfAttackingFigures * attacksAllowedPerFigure
-    const attacksUsed = Object.values(unitsAttacked).flat().length
-    const attacksUsedByThisFigure = unitsAttacked?.[attackerUnitID]?.length ?? 0
-    const attacksLeftFromTotal = totalNumberOfAttacksAllowed - attacksUsed
     const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } =
       defenderHex
     const defenderGameUnit = G.gameUnits[defenderHexUnitID]
@@ -101,27 +86,28 @@ export const attackAction: Move<GameState> = {
       )
       return
     }
-    // DISALLOW - all attacks used
-    const isNoAttacksLeftFromTotal = attacksLeftFromTotal <= 0
+    const {
+      isNoAttacksLeftFromTotal,
+      isUnitHasNoAttacksLeft,
+      isUnmovedUnitUsableAttack,
+    } = selectAttackerHasAttacksAllowed({
+      attackingUnit,
+      gameArmyCards: G.gameArmyCards,
+      unitsAttacked: G.unitsAttacked,
+      unitsMoved: G.unitsMoved,
+    })
+    // DISALLOW - all attacks used from total
     if (isNoAttacksLeftFromTotal) {
       console.error(`Attack action denied:all attacks used`)
       return
     }
-    // DISALLOW - unit already attacked
-    const isUnitHasNoAttacksLeft =
-      attacksAllowedPerFigure - attacksUsedByThisFigure <= 0
+    // DISALLOW - unit has used all their attacks
     if (isUnitHasNoAttacksLeft) {
       console.error(`Attack action denied:unit already used all their attacks`)
       return
     }
     // DISALLOW - attack must be used by a moved unit
-    const isMovedUnitAttacking = unitsMoved.includes(attackerUnitID)
-    const isAttackAvailableForUnmovedUnitToUse =
-      attacksLeftFromTotal >
-      unitsMoved.filter((id) => !unitsAttackedIds.includes(id)).length
-    const isUsableAttack =
-      isMovedUnitAttacking || isAttackAvailableForUnmovedUnitToUse
-    if (!isUsableAttack) {
+    if (!isUnmovedUnitUsableAttack) {
       console.error(`Attack action denied:attack must be used by a moved unit`)
       return
     }

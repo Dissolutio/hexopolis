@@ -14,6 +14,7 @@ import { generateHexID } from './constants'
 import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
 import { uniq } from 'lodash'
 import {
+  selectIfGameArmyCardHasDoubleAttack,
   selectIfGameArmyCardHasThorianSpeed,
   selectUnitRange,
 } from './selectors/card-selectors'
@@ -133,6 +134,55 @@ export function selectAreTwoAdjacentUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
+export const selectAttackerHasAttacksAllowed = ({
+  attackingUnit,
+  gameArmyCards,
+  unitsAttacked,
+  unitsMoved,
+}: {
+  attackingUnit: GameUnit
+  gameArmyCards: GameArmyCard[]
+  unitsAttacked: Record<string, string[]>
+  unitsMoved: string[]
+}) => {
+  const { unitID: attackerUnitID } = attackingUnit
+  const attackerGameCard = selectGameCardByID(
+    gameArmyCards,
+    attackingUnit.gameCardID
+  )
+  const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+    attackerGameCard
+  )
+    ? 2
+    : 1
+  const totalNumberOfAttacksAllowed =
+    numberOfAttackingFigures * attacksAllowedPerFigure
+  const attacksUsed = Object.values(unitsAttacked).flat().length
+  const attacksUsedByThisFigure = unitsAttacked?.[attackerUnitID]?.length ?? 0
+  const attacksLeftFromTotal = totalNumberOfAttacksAllowed - attacksUsed
+  const isNoAttacksLeftFromTotal = attacksLeftFromTotal <= 0
+  const isUnitHasNoAttacksLeft =
+    attacksAllowedPerFigure - attacksUsedByThisFigure <= 0
+  const isMovedUnitAttacking = unitsMoved.includes(attackerUnitID)
+  const isAttackAvailableForUnmovedUnitToUse =
+    attacksLeftFromTotal >
+    unitsMoved.filter((id) => !Object.keys(unitsAttacked).includes(id)).length
+  const isUnmovedUnitUsableAttack =
+    isMovedUnitAttacking || isAttackAvailableForUnmovedUnitToUse
+  return {
+    isNoAttacksLeftFromTotal,
+    isUnitHasNoAttacksLeft,
+    attacksUsed,
+    attacksUsedByThisFigure,
+    attacksLeftFromTotal,
+    isMovedUnitAttacking,
+    isAttackAvailableForUnmovedUnitToUse,
+    isUnmovedUnitUsableAttack,
+  }
+}
+
+// MAIN RANGE FN
 export const selectIsInRangeOfAttack = ({
   attackingUnit,
   defenderHex,

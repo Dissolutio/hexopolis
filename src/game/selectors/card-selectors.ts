@@ -137,3 +137,22 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
     ? gameArmyCard.abilities.some((a) => a.name === 'Range Enhancement')
     : false
 }
+
+// attacks allowed
+export const selectGameArmyCardAttacksAllowed = (
+  gameArmyCard: GameArmyCard
+) => {
+  const numberOfAttackingFigures = gameArmyCard.figures
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+    gameArmyCard
+  )
+    ? 2
+    : 1
+  const totalNumberOfAttacksAllowed =
+    numberOfAttackingFigures * attacksAllowedPerFigure
+  return {
+    numberOfAttackingFigures,
+    attacksAllowedPerFigure,
+    totalNumberOfAttacksAllowed,
+  }
+}
