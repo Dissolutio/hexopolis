@@ -153,7 +153,7 @@ export const selectIsInRangeOfAttack = ({
     attackingUnit.gameCardID
   )
   // const unitRange = attackerGameCard?.range ?? 0
-  const unitRange = selectUnitRange({
+  let unitRange = selectUnitRange({
     attackingUnit,
     gameArmyCards,
     boardHexes,
@@ -245,7 +245,7 @@ export function selectEngagementsForHex({
   const isUnit2Hex = unitOnHex.is2Hex
   // mutate/expand tailNeighbors if unit is 2 hex
   let tailNeighbors: BoardHex[] = []
-  if (isUnit2Hex) {
+  if (isUnit2Hex && tailHexID) {
     tailNeighbors = selectHexNeighbors(tailHexID, boardHexes)
   }
   const playerID = unitOnHex?.playerID
@@ -266,7 +266,7 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          unitOnHex.playerID !== playerID &&
+          gameUnits[h.occupyingUnitID].playerID !== playerID &&
           // filter for engaged units
           selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,
