@@ -129,45 +129,6 @@ export function selectAreTwoAdjacentUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
-export function selectAreTwoUnitsInMelee({
-  unit1,
-  unit2,
-  gameArmyCards,
-  boardHexes,
-}: {
-  unit1: GameUnit
-  unit2: GameUnit
-  gameArmyCards: GameArmyCard[]
-  boardHexes: BoardHexes
-}) {
-  const is2Hex = unit1.is2Hex
-  const unit1Hex = selectHexForUnit(unit1.unitID, boardHexes)
-  const unit1TailHex = selectTailHexForUnit(unit1.unitID, boardHexes)
-  const unit1GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
-  const unit2GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
-  if (
-    !unit1Hex ||
-    (is2Hex && !unit1TailHex) ||
-    !unit1GameCard ||
-    !unit2GameCard
-  ) {
-    return false
-  }
-  // take the attacker and select all hex-neighbors of attacker+tail, see if any hexes are occupied by the defender and engaged
-  return [
-    ...selectHexNeighbors(unit1Hex.id, boardHexes),
-    ...selectHexNeighbors(unit1TailHex?.id ?? '', boardHexes),
-  ]
-    .filter((hex) => hex.occupyingUnitID === unit2.unitID)
-    .some((hex) =>
-      selectAreTwoAdjacentUnitsEngaged({
-        aHeight: unit1GameCard.height,
-        aAltitude: unit1Hex.altitude,
-        bHeight: unit2GameCard.height,
-        bAltitude: hex.altitude,
-      })
-    )
-}
 export const selectIsInRangeOfAttack = ({
   attackingUnit,
   defenderHex,
@@ -207,12 +168,13 @@ export const selectIsInRangeOfAttack = ({
       isRanged: false,
     }
   }
-  const isInMeleeRange = selectAreTwoUnitsInMelee({
-    unit1: attacker,
-    unit2: defenderGameUnit,
-    gameArmyCards,
+  // SHOULD HAVE DONE IT THIS WAY:
+  const isInMeleeRange = selectEngagementsForHex({
+    hexID: attackerHex.id,
     boardHexes,
-  })
+    gameUnits,
+    armyCards: gameArmyCards,
+  }).includes(defenderHexUnitID)
   const isInTailRange =
     isUnit2Hex && attackerTailHex
       ? hexUtilsDistance(attackerTailHex as HexCoordinates, defenderHex) <=
