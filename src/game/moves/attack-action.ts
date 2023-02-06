@@ -115,7 +115,7 @@ export const attackAction: Move<GameState> = {
       return
     }
 
-    const { isInRange } = selectIsInRangeOfAttack({
+    const { isInRange, isMelee } = selectIsInRangeOfAttack({
       attackingUnit: attackingUnit,
       defenderHex,
       gameArmyCards: G.gameArmyCards,
@@ -133,6 +133,7 @@ export const attackAction: Move<GameState> = {
       defender: defenderGameUnit,
       attackerArmyCard: attackerGameCard,
       unitsAttacked: G.unitsAttacked,
+      isMelee,
     })
     const defenseRolled = defenderGameCard.defense
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds

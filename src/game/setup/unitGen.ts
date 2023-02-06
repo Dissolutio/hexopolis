@@ -35,9 +35,9 @@ const player1Ids = [
   // drake1ID,
 ]
 const player2Ids = [
+  carrID,
   kravMagaID,
   // tarnID,
-  // carrID,
   // finnID,
   // thorgrimID,
   // negoksaID,
