@@ -27,7 +27,6 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
       {
         name: 'Water Clone',
         desc: 'Instead of attacking with all of the Marro Warriors, one at a time, roll the 20-sided die for each Marro Warrior in play. If you roll a 15 or higher, place a previously destroyed Marro Warrior on a same-level space adjacent to that Marro Warrior. Any Marro Warrior on a water space needs a 10 or higher to Water Clone. You may only Water Clone after you move.',
-        isAfterMove: true,
       },
     ],
   },
@@ -241,7 +240,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         desc: 'Agent Carr can move through all figures.',
       },
       {
-        name: 'Sword of Reckoning 4',
+        name: 'Sword of Reckoning',
         desc: "If Agent Carr is attacking an adjacent figure, add 4 dice to Agent Carr's attack.",
       },
       {

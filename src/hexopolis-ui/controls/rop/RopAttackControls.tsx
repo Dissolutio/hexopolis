@@ -18,7 +18,7 @@ export const RopAttackControls = () => {
     usePlayContext()
   const revealedGameCardName = revealedGameCard?.name ?? ''
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
-    (ability) => !!ability.isAfterMove
+    (ability) => ability.name === 'Water Clone'
   )
   const attacksAllowed = revealedGameCard?.figures ?? 0
   const attacksUsed = unitsAttacked.length
@@ -41,11 +41,6 @@ export const RopAttackControls = () => {
         revealedGameCardName={revealedGameCardName}
       />
 
-      {attacksAvailable <= 0 && (
-        <StyledControlsP>
-          You now have no units with targets in range
-        </StyledControlsP>
-      )}
       <StyledControlsP>
         Units with targets in range: {unitsWithTargets}
       </StyledControlsP>

@@ -24,17 +24,16 @@ const negoksaID = 'hs1014'
 const grimnakID = 'hs1015'
 
 const player1Ids = [
-  drake1ID,
   // syvarrisID,
   // zettianID,
   // airbornID,
   // raelinID,
-  mimringID,
-  marroID,
   // deathwalker9000ID,
+  marroID,
+  mimringID,
+  // drake1ID,
 ]
 const player2Ids = [
-  // izumiID,
   kravMagaID,
   // tarnID,
   // carrID,
@@ -42,6 +41,7 @@ const player2Ids = [
   // thorgrimID,
   // negoksaID,
   grimnakID,
+  // izumiID,
 ]
 const armyCardsDevving = hsCardsToArmyCards(MS1Cards).filter((c) => {
   return [...player1Ids, ...player2Ids].includes(c.armyCardID)
