@@ -3,6 +3,7 @@ import { hexUtilsDistance } from 'game/hex-utils'
 import {
   selectGameCardByID,
   selectHexForUnit,
+  selectIsInRangeOfAttack,
   selectTailHexForUnit,
 } from 'game/selectors'
 import {
@@ -153,6 +154,7 @@ export function calcRopHexClassNames({
   revealedGameCardUnitIDs,
   revealedGameCard,
   boardHexes,
+  gameArmyCards,
   gameUnits,
   unitsMoved,
   selectedUnitMoveRange,
@@ -171,6 +173,7 @@ export function calcRopHexClassNames({
   revealedGameCard: GameArmyCard | undefined
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
   clonerHexIDs: string[]
@@ -208,7 +211,6 @@ export function calcRopHexClassNames({
 
   //phase: ROP-attack
   if (isAttackingStage) {
-    // Highlight targetable enemy units
     const isEndHexOccupied = Boolean(hexUnitID)
     const endHexUnitPlayerID = hexUnit?.playerID
     const isEndHexEnemyOccupied =
@@ -217,21 +219,15 @@ export function calcRopHexClassNames({
     if (selectedUnitID && isSelectedUnitHex(hex)) {
       classNames = classNames.concat(' maphex__selected-card-unit--active ')
     }
-    // If unit selected, hex is enemy occupied...
+    // Highlight targetable enemy units
     if (selectedUnitID && isEndHexEnemyOccupied) {
-      const startHex = selectHexForUnit(selectedUnitID, boardHexes)
-      const tailHex = selectTailHexForUnit(selectedUnitID, boardHexes)
-      const is2HexSelectedUnit = selectedUnit?.is2Hex && tailHex
-      const isInTailRange =
-        is2HexSelectedUnit && tailHex
-          ? hexUtilsDistance(tailHex as HexCoordinates, hex) <=
-            (revealedGameCard?.range ?? 0)
-          : false
-      const isInRange =
-        isInTailRange ||
-        (startHex ? hexUtilsDistance(startHex as HexCoordinates, hex) : -1) <=
-          (revealedGameCard?.range ?? 0)
-      // ... and is in range
+      const { isInRange } = selectIsInRangeOfAttack({
+        attacker: selectedUnit,
+        defenderHex: hex,
+        gameArmyCards: gameArmyCards,
+        boardHexes: boardHexes,
+        gameUnits: gameUnits,
+      })
       if (isInRange) {
         classNames = classNames.concat(' maphex__targetable-enemy ')
       }

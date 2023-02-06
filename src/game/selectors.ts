@@ -114,7 +114,7 @@ export function selectMoveCostBetweenNeighbors(
   const totalCost = heightCost + distanceCost
   return totalCost
 }
-export function selectAreTwoUnitsEngaged({
+export function selectAreTwoAdjacentUnitsEngaged({
   aHeight,
   aAltitude,
   bHeight,
@@ -129,37 +129,44 @@ export function selectAreTwoUnitsEngaged({
   // TODO: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
-export function selectAreTwoUnitsEngaged2({
+export function selectAreTwoUnitsInMelee({
   unit1,
   unit2,
   gameArmyCards,
   boardHexes,
-  gameUnits,
 }: {
   unit1: GameUnit
   unit2: GameUnit
-  defenderHex: BoardHex
   gameArmyCards: GameArmyCard[]
   boardHexes: BoardHexes
-  gameUnits: GameUnits
 }) {
-  // 4 cases: the head or tail of one unit is touching the head or tail of the other
+  const is2Hex = unit1.is2Hex
   const unit1Hex = selectHexForUnit(unit1.unitID, boardHexes)
   const unit1TailHex = selectTailHexForUnit(unit1.unitID, boardHexes)
   const unit1GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
-
-  const unit2Hex = selectHexForUnit(unit1.unitID, boardHexes)
-  const unit2TailHex = selectTailHexForUnit(unit1.unitID, boardHexes)
   const unit2GameCard = selectGameCardByID(gameArmyCards, unit1.gameCardID)
-
-  // const aHeight =
-  // const aAltitude =
-  // const bHeight =
-  // const bAltitude =
-
-  // this just checks if the top of one unit is above the bottom of the other
-  // TODO: account for barriers between two hexes
-  // return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
+  if (
+    !unit1Hex ||
+    (is2Hex && !unit1TailHex) ||
+    !unit1GameCard ||
+    !unit2GameCard
+  ) {
+    return false
+  }
+  // take the attacker and select all hex-neighbors of attacker+tail, see if any hexes are occupied by the defender and engaged
+  return [
+    ...selectHexNeighbors(unit1Hex.id, boardHexes),
+    ...selectHexNeighbors(unit1TailHex?.id ?? '', boardHexes),
+  ]
+    .filter((hex) => hex.occupyingUnitID === unit2.unitID)
+    .some((hex) =>
+      selectAreTwoAdjacentUnitsEngaged({
+        aHeight: unit1GameCard.height,
+        aAltitude: unit1Hex.altitude,
+        bHeight: unit2GameCard.height,
+        bAltitude: hex.altitude,
+      })
+    )
 }
 export const selectIsInRangeOfAttack = ({
   attacker,
@@ -200,12 +207,11 @@ export const selectIsInRangeOfAttack = ({
       isRanged: false,
     }
   }
-  // THIS IS BROKEN BELOW, IT ASSUMES THE HEXES ARE ADJACENT
-  const isInMeleeRange = selectAreTwoUnitsEngaged({
-    aHeight: attackerGameCard?.height ?? 0,
-    aAltitude: attackerHex?.altitude ?? 0,
-    bHeight: defenderGameCard?.height ?? 0,
-    bAltitude: defenderHex.altitude,
+  const isInMeleeRange = selectAreTwoUnitsInMelee({
+    unit1: attacker,
+    unit2: defenderGameUnit,
+    gameArmyCards,
+    boardHexes,
   })
   const isInTailRange =
     isUnit2Hex && attackerTailHex
@@ -225,7 +231,6 @@ export const selectIsInRangeOfAttack = ({
   const isInRange = isAttackerRequiredToBeEngagedToDefender
     ? isInMeleeRange
     : isInRangedRange
-  console.log('🚀 ~ file: selectors.ts:203 ~ isInMeleeRange', isInMeleeRange)
   return {
     isInRange,
     isMelee: isInMeleeRange,
@@ -291,7 +296,7 @@ export function selectEngagementsForHex({
           // TODO: account for team play here, where adjacent units may be friendly
           unitOnHex.playerID !== playerID &&
           // filter for engaged units
-          selectAreTwoUnitsEngaged({
+          selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,
             aAltitude: hex?.altitude ?? 0,
             bHeight:
