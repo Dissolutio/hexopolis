@@ -75,7 +75,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     gameArmyCards,
     gameUnits,
     killedUnits,
-    unitsAttacked2,
+    unitsAttacked,
     orderMarkers,
     currentOrderMarker,
     players,
@@ -301,7 +301,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const attacksAllowed = revealedGameCard?.figures ?? 0
   const countOfUnitsThatMoved = uniqUnitsMoved.length
   const initialFreeAttacksAvailable = attacksAllowed - countOfUnitsThatMoved
-  const unitsThatAttackedButDidNotMove = Object.keys(unitsAttacked2).filter(
+  const unitsThatAttackedButDidNotMove = Object.keys(unitsAttacked).filter(
     (id) => !uniqUnitsMoved.includes(id)
   )
   const countFreeAttacksUsed = unitsThatAttackedButDidNotMove.length

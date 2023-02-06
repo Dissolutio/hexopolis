@@ -52,6 +52,7 @@ export const attackAction: Move<GameState> = {
       G.gameArmyCards,
       attackingUnit.gameCardID
     )
+    const unitName = attackerGameCard?.name ?? ''
     const attackingUnitHex = selectHexForUnit(
       attackingUnit.unitID,
       G.boardHexes
@@ -61,10 +62,9 @@ export const attackAction: Move<GameState> = {
       G.boardHexes
     )
     const { currentRound, currentOrderMarker } = G
-    const unitName = attackerGameCard?.name ?? ''
     const unitsMoved = [...G.unitsMoved]
-    const unitsAttacked = [...G.unitsAttacked]
-    const unitsAttacked2 = { ...G.unitsAttacked2 }
+    const unitsAttacked = { ...G.unitsAttacked }
+    const unitsAttackedIds = Object.keys(unitsAttacked)
     const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
     const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
       attackerGameCard
@@ -73,26 +73,26 @@ export const attackAction: Move<GameState> = {
       : 1
     const totalNumberOfAttacksAllowed =
       numberOfAttackingFigures * attacksAllowedPerFigure
-    const attacksUsed = Object.values(unitsAttacked2).flat().length
-    const attacksUsedByThisFigure =
-      unitsAttacked2?.[attackerUnitID]?.length ?? 0
-    const attacksLeft = totalNumberOfAttacksAllowed - attacksUsed
+    const attacksUsed = Object.values(unitsAttacked).flat().length
+    const attacksUsedByThisFigure = unitsAttacked?.[attackerUnitID]?.length ?? 0
+    const attacksLeftFromTotal = totalNumberOfAttacksAllowed - attacksUsed
     const { id: defenderHexID, occupyingUnitID: defenderHexUnitID } =
       defenderHex
     const defenderGameUnit = G.gameUnits[defenderHexUnitID]
-    const defenderTailHex = selectTailHexForUnit(
-      defenderGameUnit.unitID,
-      G.boardHexes
-    )
     const defenderGameCard = selectGameCardByID(
       G.gameArmyCards,
       defenderGameUnit.gameCardID
+    )
+    const defenderTailHex = selectTailHexForUnit(
+      defenderGameUnit.unitID,
+      G.boardHexes
     )
     //! EARLY OUTS
     // DISALLOW - missing needed ingredients
     if (
       !attackerGameCard ||
       !attackingUnitHex ||
+      !defenderHexUnitID ||
       !defenderGameCard ||
       !defenderGameUnit
     ) {
@@ -101,14 +101,9 @@ export const attackAction: Move<GameState> = {
       )
       return
     }
-    // DISALLOW - no target
-    if (!defenderHexUnitID) {
-      console.error(`Attack action denied:no target`)
-      return
-    }
     // DISALLOW - all attacks used
-    const isNoAttacksLeft = attacksLeft <= 0
-    if (isNoAttacksLeft) {
+    const isNoAttacksLeftFromTotal = attacksLeftFromTotal <= 0
+    if (isNoAttacksLeftFromTotal) {
       console.error(`Attack action denied:all attacks used`)
       return
     }
@@ -116,16 +111,14 @@ export const attackAction: Move<GameState> = {
     const isUnitHasNoAttacksLeft =
       attacksAllowedPerFigure - attacksUsedByThisFigure <= 0
     if (isUnitHasNoAttacksLeft) {
-      console.error(
-        `Attack action denied:unit already attacked or used all their attacks`
-      )
+      console.error(`Attack action denied:unit already used all their attacks`)
       return
     }
     // DISALLOW - attack must be used by a moved unit
     const isMovedUnitAttacking = unitsMoved.includes(attackerUnitID)
     const isAttackAvailableForUnmovedUnitToUse =
-      attacksLeft >
-      unitsMoved.filter((id) => !unitsAttacked.includes(id)).length
+      attacksLeftFromTotal >
+      unitsMoved.filter((id) => !unitsAttackedIds.includes(id)).length
     const isUsableAttack =
       isMovedUnitAttacking || isAttackAvailableForUnmovedUnitToUse
     if (!isUsableAttack) {
@@ -133,7 +126,7 @@ export const attackAction: Move<GameState> = {
       return
     }
 
-    const { isInRange, isRanged, isMelee } = selectIsInRangeOfAttack({
+    const { isInRange } = selectIsInRangeOfAttack({
       attackingUnit: attackingUnit,
       defenderHex,
       gameArmyCards: G.gameArmyCards,
@@ -158,14 +151,13 @@ export const attackAction: Move<GameState> = {
     const isHit = woundsDealt > 0
     const isFatal = woundsDealt >= defenderLife
     const defenderUnitName = defenderGameCard.name
-    const indexOfThisAttack = unitsAttacked.length
+    const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
     const hasCounterStrike =
       selectIfGameArmyCardHasCounterStrike(defenderGameCard)
     const counterStrikeWounds = hasCounterStrike ? shields - skulls : 0
     const isCounterStrikeWounds = counterStrikeWounds > 0
     const isFatalCounterStrike = counterStrikeWounds >= attackerLife
-    // const gameLogHumanFriendly = `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls} skulls, ${shields} shields)`
 
     // deal damage
     if (isHit) {
@@ -217,14 +209,12 @@ export const attackAction: Move<GameState> = {
       // TODO: add counter-strike to game log
     }
     // update units attacked
-    unitsAttacked.push(attackerUnitID)
-    unitsAttacked2[attackerUnitID] = [
-      ...(unitsAttacked2?.[attackerUnitID] ?? []),
+    unitsAttacked[attackerUnitID] = [
+      ...(unitsAttacked?.[attackerUnitID] ?? []),
       defenderGameUnit.unitID,
     ]
 
     G.unitsAttacked = unitsAttacked
-    G.unitsAttacked2 = unitsAttacked2
     // update game log
     const gameLogForThisAttack = encodeGameLogMessage({
       type: 'attack',
