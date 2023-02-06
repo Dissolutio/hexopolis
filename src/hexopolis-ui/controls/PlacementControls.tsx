@@ -148,9 +148,6 @@ const ConfirmReady = ({
 }
 const StyledConfirmDiv = styled.div`
   padding: 10px;
-  p {
-    margin: 5px 0;
-  }
 `
 // PLACEMENT UNIT TILES
 const PlacementUnitTiles = () => {

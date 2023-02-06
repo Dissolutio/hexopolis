@@ -3,7 +3,11 @@ import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
 } from '../constants'
-import { makeDevHexagonMap, makeHexagonShapedMap } from './mapGen'
+import {
+  makeDevHexagonMap,
+  makeGiantsTableMap,
+  makeHexagonShapedMap,
+} from './mapGen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
   armyCardsToGameArmyCardsForTest,
@@ -11,8 +15,11 @@ import {
   playersStateWithPrePlacedOMs,
 } from './unitGen'
 
-const isDevOverrideState = true
-// const isDevOverrideState = false
+const isDevOverrideState =
+  process.env.NODE_ENV === 'production'
+    ? false
+    : // toggle this one to test the game with pre-placed units
+      false
 const frequentlyChangedDevState = isDevOverrideState
   ? {
       placementReady: {
@@ -43,16 +50,16 @@ function makeTestScenario(): GameState {
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  const map = makeHexagonShapedMap({
-    mapSize: 6,
-    withPrePlacedUnits: isDevOverrideState,
-    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-    flat: false,
-  })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
+  // const map = makeHexagonShapedMap({
+  //   mapSize: 6,
+  //   withPrePlacedUnits: isDevOverrideState,
+  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+  //   flat: false,
   // })
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
