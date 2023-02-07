@@ -26,23 +26,23 @@ const grimnakID = 'hs1015'
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
   marroID,
-  // zettianID,
-  // syvarrisID,
-  // raelinOneID,
+  zettianID,
+  syvarrisID,
+  airbornID,
+  raelinID,
+  deathwalker9000ID,
   mimringID,
-  // deathwalker9000ID,
-  // drake1ID,
-  // airbornID,
+  drake1ID,
 ]
 const player2Ids = [
-  // carrID,
-  // kravMagaID,
+  carrID,
   izumiID,
+  kravMagaID,
+  tarnID,
   finnID,
-  // thorgrimID,
-  // grimnakID,
-  // tarnID,
-  // negoksaID,
+  thorgrimID,
+  negoksaID,
+  grimnakID,
 ]
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${player1Ids[0]}`

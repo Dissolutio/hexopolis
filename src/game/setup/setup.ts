@@ -19,7 +19,7 @@ const isDevOverrideState =
   process.env.NODE_ENV === 'production'
     ? false
     : // toggle this one to test the game with pre-placed units
-      true
+      false
 const frequentlyChangedDevState = isDevOverrideState
   ? {
       placementReady: {
@@ -56,14 +56,14 @@ function makeTestScenario(): GameState {
   //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
   //   flat: false,
   // })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
-  // })
-  const map = makeDevHexagonMap({
+  const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
     gameUnits,
   })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState,
     currentRound: 1,
