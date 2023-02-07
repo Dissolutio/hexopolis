@@ -56,10 +56,7 @@ export const attackAction: Move<GameState> = {
       attackingUnit.gameCardID
     )
     const unitName = attackerGameCard?.name ?? ''
-    const attackingUnitHex = selectHexForUnit(
-      attackingUnit.unitID,
-      G.boardHexes
-    )
+    const attackerHex = selectHexForUnit(attackingUnit.unitID, G.boardHexes)
     const attackingUnitTailHex = selectTailHexForUnit(
       attackingUnit.unitID,
       G.boardHexes
@@ -81,7 +78,7 @@ export const attackAction: Move<GameState> = {
     // DISALLOW - missing needed ingredients
     if (
       !attackerGameCard ||
-      !attackingUnitHex ||
+      !attackerHex ||
       !defenderHexUnitID ||
       !defenderGameCard ||
       !defenderGameUnit
@@ -131,12 +128,16 @@ export const attackAction: Move<GameState> = {
     }
     // ALLOW
     const attackRolled = selectUnitAttackDiceForAttack({
+      attackerHex,
+      defenderHex,
       defender: defenderGameUnit,
       attackerArmyCard: attackerGameCard,
       unitsAttacked: G.unitsAttacked,
       isMelee,
     })
     const defenseRolled = selectUnitDefenseDiceForAttack({
+      attackerHex,
+      defenderHex,
       defenderArmyCard: defenderGameCard,
       defenderUnit: defenderGameUnit,
       boardHexes: G.boardHexes,
@@ -165,7 +166,8 @@ export const attackAction: Move<GameState> = {
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
     const hasCounterStrike =
       selectIfGameArmyCardHasCounterStrike(defenderGameCard)
-    const counterStrikeWounds = hasCounterStrike ? shields - skulls : 0
+    const counterStrikeWounds =
+      hasCounterStrike && isMelee ? shields - skulls : 0
     const isCounterStrikeWounds = counterStrikeWounds > 0
     const isFatalCounterStrike = counterStrikeWounds >= attackerLife
 
@@ -208,7 +210,7 @@ export const attackAction: Move<GameState> = {
         }
         delete G.gameUnits[attackingUnit.unitID]
         // remove from hex, and tail if applicable
-        G.boardHexes[attackingUnitHex.id].occupyingUnitID = ''
+        G.boardHexes[attackerHex.id].occupyingUnitID = ''
         if (attackingUnit.is2Hex && attackingUnitTailHex) {
           G.boardHexes[attackingUnitTailHex.id].occupyingUnitID = ''
           G.boardHexes[attackingUnitTailHex.id].isUnitTail = false

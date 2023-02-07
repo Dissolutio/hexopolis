@@ -1,4 +1,10 @@
-import { BoardHexes, GameArmyCard, GameUnits, GameUnit } from '../types'
+import {
+  BoardHexes,
+  GameArmyCard,
+  GameUnits,
+  GameUnit,
+  BoardHex,
+} from '../types'
 import {
   selectAreTwoAdjacentUnitsEngaged,
   selectEngagementsForHex,
@@ -165,17 +171,22 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
 export const selectUnitAttackDiceForAttack = ({
+  attackerHex,
+  defenderHex,
   attackerArmyCard,
   defender,
   unitsAttacked,
   isMelee,
 }: {
+  attackerHex: BoardHex
+  defenderHex: BoardHex
   defender: GameUnit
   attackerArmyCard: GameArmyCard
   unitsAttacked: Record<string, string[]>
   isMelee: boolean
 }): number => {
   let dice = attackerArmyCard.attack
+  const heightBonus = attackerHex.altitude > defenderHex.altitude ? 1 : 0
   const zettianTargetingBonus =
     selectIfGameArmyCardHasZettianTargeting(attackerArmyCard) &&
     // if second zettian attacks same unit as first, +1
@@ -184,23 +195,28 @@ export const selectUnitAttackDiceForAttack = ({
       : 0
   const swordOfReckoningBonus =
     isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
-  return dice + zettianTargetingBonus + swordOfReckoningBonus
+  return dice + heightBonus + zettianTargetingBonus + swordOfReckoningBonus
 }
 // DEFENSE DICE FOR SPECIFIC ATTACK:
 export const selectUnitDefenseDiceForAttack = ({
   defenderArmyCard,
   defenderUnit,
+  attackerHex,
+  defenderHex,
   boardHexes,
   gameArmyCards,
   gameUnits,
 }: {
   defenderArmyCard: GameArmyCard
   defenderUnit: GameUnit
+  attackerHex: BoardHex
+  defenderHex: BoardHex
   boardHexes: BoardHexes
   gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
 }): number => {
   let dice = defenderArmyCard.defense
+  const heightBonus = defenderHex.altitude > attackerHex.altitude ? 1 : 0
   const raelinDefensiveAura = () => {
     const theirRaelinCard = gameArmyCards.filter(
       (c) =>
@@ -225,7 +241,7 @@ export const selectUnitDefenseDiceForAttack = ({
       ? 2
       : 0
   }
-  return dice + raelinDefensiveAura()
+  return dice + heightBonus + raelinDefensiveAura()
 }
 
 // attacks allowed
