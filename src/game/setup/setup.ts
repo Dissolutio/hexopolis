@@ -73,6 +73,7 @@ function makeTestScenario(): GameState {
     disengagesAttempting: undefined,
     disengagedUnitIds: [],
     unitsAttacked: {},
+    isCurrentPlayerAttacking: false,
     unitsKilled: {},
     gameLog: [],
     gameArmyCards: armyCards,

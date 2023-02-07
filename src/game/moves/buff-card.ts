@@ -1,4 +1,5 @@
 import type { Move } from 'boardgame.io'
+import { stageNames } from 'game/constants'
 import { GameState } from '../types'
 
 export const placeAttackSpirit: Move<GameState> = (
@@ -14,5 +15,10 @@ export const placeAttackSpirit: Move<GameState> = (
     )
   }
   G.gameArmyCards[indexToUpdate].attack++
-  events.setActivePlayers({ revert: true })
+  const stageToRevertBackTo = G.isCurrentPlayerAttacking
+    ? stageNames.attacking
+    : stageNames.movement
+  // clear isCurrentPlayerAttacking state after we use it
+  G.isCurrentPlayerAttacking = false
+  events.setActivePlayers({ currentPlayer: stageToRevertBackTo })
 }

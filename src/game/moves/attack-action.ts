@@ -261,6 +261,8 @@ export const attackAction: Move<GameState> = {
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
     if (isWarriorSpirit) {
+      // mark this so after placing spirit we can get back to it
+      G.isCurrentPlayerAttacking = true
       // TODO: Multiplayer, set stages for all other players to idle
       events.setActivePlayers({
         value: {
