@@ -137,6 +137,14 @@ export function selectIfGameArmyCardHasSwordOfReckoning(
     ? gameArmyCard.abilities.some((a) => a.name === 'Sword of Reckoning')
     : false
 }
+export function selectIfGameArmyCardHasAbility(
+  abilityName: string,
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === abilityName)
+    : false
+}
 export function selectIfGameArmyCardHasDoubleAttack(
   gameArmyCard?: GameArmyCard
 ): boolean {
