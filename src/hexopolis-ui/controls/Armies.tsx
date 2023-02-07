@@ -1,10 +1,9 @@
 import styled from 'styled-components'
-import React from 'react'
 import { GameArmyCard, OrderMarker } from 'game/types'
 import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { playerIDDisplay } from 'game/transformers'
 import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexopolis-ui/unit-icons'
-import { compact } from 'lodash'
+import { selectedTileStyle } from 'hexopolis-ui/layout/styles'
 
 export const Armies = () => {
   const { gameArmyCards } = useBgioG()
@@ -32,17 +31,25 @@ export const Armies = () => {
     </>
   )
 }
-const Army = ({
+export const Army = ({
   cards,
   playerID,
+  onClickCard,
+  selectedID,
 }: {
   cards: GameArmyCard[]
   playerID: string
+  onClickCard?: (clickedCardID: string) => void
+  selectedID?: string
 }) => {
   return (
     <StyledOrderMarkerArmyCardsUl playerID={playerID}>
       {cards.map((card) => (
-        <ArmyCard card={card} />
+        <ArmyCard
+          card={card}
+          onClickCard={onClickCard}
+          selectedID={selectedID}
+        />
       ))}
     </StyledOrderMarkerArmyCardsUl>
   )
@@ -58,11 +65,20 @@ const StyledOrderMarkerArmyCardsUl = styled.ul<{ playerID: string }>`
   padding: 5px;
   color: ${(props) => `var(--player${props.playerID})`};
 `
-const ArmyCard = ({ card }: { card: GameArmyCard }) => {
+export const ArmyCard = ({
+  card,
+  onClickCard,
+  selectedID,
+}: {
+  card: GameArmyCard
+  onClickCard?: (clickedCardID: string) => void
+  selectedID?: string
+}) => {
   const { orderMarkers, players } = useBgioG()
   const { playerID } = useBgioClientInfo()
   const cardPlayerID = card.playerID
   const isMyCard = playerID === cardPlayerID
+  const activeStyle = selectedID === card.gameCardID ? selectedTileStyle : ''
   let orderMarkersOnThisCard: OrderMarker[]
   if (isMyCard) {
     orderMarkersOnThisCard = Object.entries(players[playerID].orderMarkers)
@@ -75,7 +91,10 @@ const ArmyCard = ({ card }: { card: GameArmyCard }) => {
   }
 
   return (
-    <StyledOrderMarkerArmyCardsLi>
+    <StyledOrderMarkerArmyCardsLi
+      onClick={() => onClickCard?.(card.gameCardID)}
+      style={{ ...activeStyle }}
+    >
       <PlaceOrderMarkersArmyCardUnitIcon
         armyCardID={card.armyCardID}
         playerID={card.playerID}
@@ -85,7 +104,7 @@ const ArmyCard = ({ card }: { card: GameArmyCard }) => {
     </StyledOrderMarkerArmyCardsLi>
   )
 }
-const StyledOrderMarkerArmyCardsLi = styled.li`
+export const StyledOrderMarkerArmyCardsLi = styled.li`
   padding: 5px;
   margin: 5px;
   max-width: 300px;

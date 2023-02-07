@@ -1,6 +1,9 @@
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { startsWith } from 'lodash'
 import {
+  useBgioClientInfo,
   useBgioCtx,
-  useBgioEvents,
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
@@ -9,41 +12,33 @@ import {
   StyledControlsP,
 } from 'hexopolis-ui/layout/Typography'
 import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
-import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
+import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
-import { selectHexForUnit, selectValidTailHexes } from 'game/selectors'
-import { GameUnit, UnitsCloning } from 'game/types'
-import { usePlayContext } from 'hexopolis-ui/contexts'
-import { UndoRedoButtons } from './UndoRedoButtons'
-import { useMemo } from 'react'
 import { playerIDDisplay } from 'game/transformers'
 import { finnID } from 'game/setup/unitGen'
-import { startsWith } from 'lodash'
+import { Army } from '../Armies'
 
 export const PlaceAttackSpiritControls = () => {
-  const { events } = useBgioEvents()
-  const { myCards, gameArmyCards } = useBgioG()
-  const myUniqueCards = myCards?.filter((c) => startsWith(c.type, 'unique'))
-  console.log(
-    '🚀 ~ file: PlaceAttackSpirit.tsx:27 ~ PlaceAttackSpiritControls ~ myUniqueCards',
-    myUniqueCards
+  const { myAliveCards, gameArmyCards } = useBgioG()
+  const {
+    moves: { placeAttackSpirit },
+  } = useBgioMoves()
+  const { playerID } = useBgioClientInfo()
+  const myAliveUniqueCards = myAliveCards?.filter((c) =>
+    startsWith(c.type, 'unique')
   )
   const finnsCard = gameArmyCards?.find((c) => c.armyCardID === finnID)
-  /* RENDER
-    0. You have placed the attack spirit, confirm
-    1. Here are your unique cards, select one, then confirm
-    */
-
-  //    0. You have placed the attack spirit, confirm
-  if (false) {
-    return (
-      <>
-        <StyledControlsHeaderH2></StyledControlsHeaderH2>
-        <StyledControlsP></StyledControlsP>
-      </>
-    )
+  const [receiverGameCardID, setReceiverGameCardID] = useState<string>('')
+  const receiverGameCard = gameArmyCards?.find(
+    (gc) => gc.gameCardID === receiverGameCardID
+  )
+  const onClickCard = (clickedCardID: string) => {
+    setReceiverGameCardID(clickedCardID)
   }
-  // 1. Here are your unique cards, select one, then confirm
+  const onClickConfirm = () => {
+    placeAttackSpirit({ gameCardID: receiverGameCardID })
+  }
+
   return (
     <>
       <StyledControlsHeaderH2>
@@ -56,6 +51,27 @@ export const PlaceAttackSpiritControls = () => {
         Your unique army cards are below, select one to give the Attack Spirit
         (+1 attack)
       </StyledControlsP>
+      <AnimatePresence initial={false}>
+        {receiverGameCard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <StyledButtonWrapper>
+              <GreenButton onClick={onClickConfirm}>
+                {`Confirm: ${receiverGameCard.name} shall inherit the Attack Spirit`}
+              </GreenButton>
+            </StyledButtonWrapper>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <Army
+        playerID={playerID}
+        cards={myAliveUniqueCards}
+        onClickCard={onClickCard}
+        selectedID={receiverGameCardID}
+      />
     </>
   )
 }
