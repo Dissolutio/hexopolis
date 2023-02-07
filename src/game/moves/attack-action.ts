@@ -11,9 +11,12 @@ import {
 import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import {
+  selectIfGameArmyCardHasAbility,
   selectIfGameArmyCardHasCounterStrike,
   selectUnitAttackDiceForAttack,
+  selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
+import { stageNames } from 'game/constants'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -47,17 +50,18 @@ export const rollHeroscapeDice = (
 
 export const attackAction: Move<GameState> = {
   undoable: false,
-  move: ({ G, random }, attackingUnit: GameUnit, defenderHex: BoardHex) => {
+  move: (
+    { G, random, events },
+    attackingUnit: GameUnit,
+    defenderHex: BoardHex
+  ) => {
     const { unitID: attackerUnitID } = attackingUnit
     const attackerGameCard = selectGameCardByID(
       G.gameArmyCards,
       attackingUnit.gameCardID
     )
     const unitName = attackerGameCard?.name ?? ''
-    const attackingUnitHex = selectHexForUnit(
-      attackingUnit.unitID,
-      G.boardHexes
-    )
+    const attackerHex = selectHexForUnit(attackingUnit.unitID, G.boardHexes)
     const attackingUnitTailHex = selectTailHexForUnit(
       attackingUnit.unitID,
       G.boardHexes
@@ -79,7 +83,7 @@ export const attackAction: Move<GameState> = {
     // DISALLOW - missing needed ingredients
     if (
       !attackerGameCard ||
-      !attackingUnitHex ||
+      !attackerHex ||
       !defenderHexUnitID ||
       !defenderGameCard ||
       !defenderGameUnit
@@ -115,7 +119,7 @@ export const attackAction: Move<GameState> = {
       return
     }
 
-    const { isInRange, isMelee } = selectIsInRangeOfAttack({
+    const { isInRange, isMelee, isRanged } = selectIsInRangeOfAttack({
       attackingUnit: attackingUnit,
       defenderHex,
       gameArmyCards: G.gameArmyCards,
@@ -128,29 +132,62 @@ export const attackAction: Move<GameState> = {
       return
     }
     // ALLOW
-    // const attackRolled = attackerGameCard.attack
     const attackRolled = selectUnitAttackDiceForAttack({
+      attackerHex,
+      defenderHex,
       defender: defenderGameUnit,
       attackerArmyCard: attackerGameCard,
+      defenderArmyCard: defenderGameCard,
+      boardHexes: G.boardHexes,
+      gameArmyCards: G.gameArmyCards,
+      gameUnits: G.gameUnits,
       unitsAttacked: G.unitsAttacked,
       isMelee,
     })
-    const defenseRolled = defenderGameCard.defense
+    const defenseRolled = selectUnitDefenseDiceForAttack({
+      attackerHex,
+      defenderHex,
+      defenderArmyCard: defenderGameCard,
+      defenderUnit: defenderGameUnit,
+      boardHexes: G.boardHexes,
+      gameArmyCards: G.gameArmyCards,
+      gameUnits: G.gameUnits,
+    })
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds
     const attackRoll = rollHeroscapeDice(attackRolled, random)
     const skulls = attackRoll.skulls
     const defenseRoll = rollHeroscapeDice(defenseRolled, random)
     const shields = defenseRoll.shields
-    const woundsDealt = Math.max(skulls - shields, 0)
-    const isHit = woundsDealt > 0
+
+    // SPECIAL ABILITIES TIME XD
+    const isStealthDodge =
+      isRanged &&
+      selectIfGameArmyCardHasAbility('Stealth Dodge', defenderGameCard) &&
+      shields > 0 &&
+      shields < skulls
+    const isHit = skulls > shields && !isStealthDodge
+    const woundsDealt = isHit ? Math.max(skulls - shields, 0) : 0
     const isFatal = woundsDealt >= defenderLife
+    const isWarriorSpirit =
+      isFatal &&
+      selectIfGameArmyCardHasAbility(
+        "Warrior's Attack Spirit 1",
+        defenderGameCard
+      )
+    const isArmorSpirit =
+      isFatal &&
+      selectIfGameArmyCardHasAbility(
+        "Warrior's Armor Spirit 1",
+        defenderGameCard
+      )
     const defenderUnitName = defenderGameCard.name
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
-    const hasCounterStrike =
-      selectIfGameArmyCardHasCounterStrike(defenderGameCard)
-    const counterStrikeWounds = hasCounterStrike ? shields - skulls : 0
+    const counterStrikeWounds =
+      selectIfGameArmyCardHasCounterStrike(defenderGameCard) && isMelee
+        ? shields - skulls
+        : 0
     const isCounterStrikeWounds = counterStrikeWounds > 0
     const isFatalCounterStrike = counterStrikeWounds >= attackerLife
 
@@ -179,7 +216,7 @@ export const attackAction: Move<GameState> = {
       }
     }
     // apply counter-strike if applicable
-    if (hasCounterStrike && isCounterStrikeWounds) {
+    if (isCounterStrikeWounds) {
       if (isFatalCounterStrike) {
         G.unitsKilled = {
           ...G.unitsKilled,
@@ -193,7 +230,7 @@ export const attackAction: Move<GameState> = {
         }
         delete G.gameUnits[attackingUnit.unitID]
         // remove from hex, and tail if applicable
-        G.boardHexes[attackingUnitHex.id].occupyingUnitID = ''
+        G.boardHexes[attackerHex.id].occupyingUnitID = ''
         if (attackingUnit.is2Hex && attackingUnitTailHex) {
           G.boardHexes[attackingUnitTailHex.id].occupyingUnitID = ''
           G.boardHexes[attackingUnitTailHex.id].isUnitTail = false
@@ -226,7 +263,30 @@ export const attackAction: Move<GameState> = {
       isFatal,
       counterStrikeWounds,
       isFatalCounterStrike,
+      isStealthDodge,
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
+    if (isWarriorSpirit) {
+      // mark this so after placing spirit we can get back to it
+      G.isCurrentPlayerAttacking = true
+      // TODO: Multiplayer, set stages for all other players to idle
+      events.setActivePlayers({
+        value: {
+          [defenderGameCard.playerID]: stageNames.placingAttackSpirit,
+          [attackerGameCard.playerID]: stageNames.idlePlacingAttackSpirit,
+        },
+      })
+    }
+    if (isArmorSpirit) {
+      // mark this so after placing spirit we can get back to it
+      G.isCurrentPlayerAttacking = true
+      // TODO: Multiplayer, set stages for all other players to idle
+      events.setActivePlayers({
+        value: {
+          [defenderGameCard.playerID]: stageNames.placingArmorSpirit,
+          [attackerGameCard.playerID]: stageNames.idlePlacingArmorSpirit,
+        },
+      })
+    }
   },
 }

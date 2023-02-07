@@ -178,15 +178,24 @@ function recurseThroughMoves({
   // Neighbors are either passable or unpassable
   let nextResults = neighbors.reduce(
     (result: MoveRange, neighbor: BoardHex): MoveRange => {
-      const fromCost = isFlying
-        ? 1
-        : selectMoveCostBetweenNeighbors(startHex, neighbor)
       const isFromOccupied =
         startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
       const validTailSpotsForNeighbor = selectValidTailHexes(
         neighbor.id,
         boardHexes
       ).map((hex) => hex.id)
+      const isStartHexWater = startHex.terrain === 'water'
+      const isNeighborHexWater = neighbor.terrain === 'water'
+      const isWaterStoppage =
+        (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
+        (!isUnit2Hex && isNeighborHexWater)
+      const fromCost = isFlying
+        ? // flying is just one point to go anywhere
+          1
+        : // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
+        isWaterStoppage
+        ? movePoints
+        : selectMoveCostBetweenNeighbors(startHex, neighbor)
       const movePointsLeft = movePoints - fromCost
       const isVisitedAlready =
         initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft

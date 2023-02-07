@@ -93,6 +93,24 @@ export function selectHexNeighbors(
     })
     .filter((item) => Boolean(item)) as BoardHex[]
 }
+export function selectIsUnitWithinNHexesOfUnit({
+  startUnitID,
+  endUnitID,
+  boardHexes,
+  n,
+}: {
+  startUnitID: string
+  endUnitID: string
+  boardHexes: BoardHexes
+  n: number
+}): boolean {
+  const startHex = selectHexForUnit(startUnitID, boardHexes)
+  const endHex = selectHexForUnit(endUnitID, boardHexes)
+  if (!startHex || !endHex) return false
+  const distance = hexUtilsDistance(startHex, endHex)
+  // TODO: RUINS: account for barriers between two hexes
+  return distance <= n
+}
 export function selectValidTailHexes(
   hexID: string,
   boardHexes: BoardHexes
@@ -266,12 +284,14 @@ export function selectEngagementsForHex({
   boardHexes,
   gameUnits,
   armyCards,
+  friendly,
   override,
 }: {
   hexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
+  friendly?: boolean // if true, then only return friendly units
   override?: {
     overrideUnitID: string
     // probably a problem that this is optional
@@ -316,7 +336,9 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          gameUnits[h.occupyingUnitID].playerID !== playerID &&
+          (friendly
+            ? gameUnits[h.occupyingUnitID].playerID === playerID
+            : gameUnits[h.occupyingUnitID].playerID !== playerID) &&
           // filter for engaged units
           selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,

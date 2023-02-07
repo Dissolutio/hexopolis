@@ -13,17 +13,17 @@ export const hexUtilsGetTailCoordinates = (
   neighbor: HexCoordinates
 ): Point => {
   if (hexUtilsEquals(hexUtilsNeighbor(hex, 0), neighbor))
-    return { x: 8.66, y: -15 }
+    return { x: 8.66, y: -15 } // NE +q -r
   if (hexUtilsEquals(hexUtilsNeighbor(hex, 1), neighbor))
-    return { x: 17.32, y: 0 }
+    return { x: 17.32, y: 0 } // E +q -s
   if (hexUtilsEquals(hexUtilsNeighbor(hex, 2), neighbor))
-    return { x: 8.66, y: 15 }
+    return { x: 8.66, y: 15 } // SE +r -s
   if (hexUtilsEquals(hexUtilsNeighbor(hex, 3), neighbor))
-    return { x: -8.66, y: 15 }
+    return { x: -8.66, y: 15 } // SW -q +r
   if (hexUtilsEquals(hexUtilsNeighbor(hex, 4), neighbor))
-    return { x: -17.32, y: 0 }
+    return { x: -17.32, y: 0 } // W -q +s
   if (hexUtilsEquals(hexUtilsNeighbor(hex, 5), neighbor))
-    return { x: -8.66, y: -15 }
+    return { x: -8.66, y: -15 } // NW -r +s
   return { x: 0, y: 0 }
 }
 export const hexUtilsEquals = (
@@ -167,7 +167,6 @@ export const hexUtilsHexLerp = (
 export const hexUtilsGetID = (hex: HexCoordinates): string => {
   return `${hex.q},${hex.r},${hex.s}`
 }
-type Generator = (args: any) => HexCoordinates[]
 
 export const generateHexagonHexas = (mapRadius: number): HexCoordinates[] => {
   let hexas: HexCoordinates[] = []

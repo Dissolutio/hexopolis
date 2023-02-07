@@ -1,12 +1,21 @@
-import { BoardHexes, GameArmyCard, GameUnits, GameUnit } from '../types'
+import {
+  BoardHexes,
+  GameArmyCard,
+  GameUnits,
+  GameUnit,
+  BoardHex,
+} from '../types'
 import {
   selectAreTwoAdjacentUnitsEngaged,
   selectEngagementsForHex,
   selectGameCardByID,
   selectHexForUnit,
   selectHexNeighbors,
+  selectIsUnitWithinNHexesOfUnit,
   selectTailHexForUnit,
+  selectUnitsForCard,
 } from '../selectors'
+import { finnID, raelinOneID, thorgrimID } from 'game/setup/unitGen'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
@@ -137,6 +146,14 @@ export function selectIfGameArmyCardHasSwordOfReckoning(
     ? gameArmyCard.abilities.some((a) => a.name === 'Sword of Reckoning')
     : false
 }
+export function selectIfGameArmyCardHasAbility(
+  abilityName: string,
+  gameArmyCard?: GameArmyCard
+): boolean {
+  return gameArmyCard
+    ? gameArmyCard.abilities.some((a) => a.name === abilityName)
+    : false
+}
 export function selectIfGameArmyCardHasDoubleAttack(
   gameArmyCard?: GameArmyCard
 ): boolean {
@@ -154,17 +171,30 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
 export const selectUnitAttackDiceForAttack = ({
-  attackerArmyCard,
+  attackerHex,
+  defenderHex,
   defender,
+  attackerArmyCard,
+  defenderArmyCard,
+  boardHexes,
+  gameArmyCards,
+  gameUnits,
   unitsAttacked,
   isMelee,
 }: {
+  attackerHex: BoardHex
+  defenderHex: BoardHex
   defender: GameUnit
   attackerArmyCard: GameArmyCard
+  defenderArmyCard: GameArmyCard
+  boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
   unitsAttacked: Record<string, string[]>
   isMelee: boolean
 }): number => {
   let dice = attackerArmyCard.attack
+  const heightBonus = attackerHex.altitude > defenderHex.altitude ? 1 : 0
   const zettianTargetingBonus =
     selectIfGameArmyCardHasZettianTargeting(attackerArmyCard) &&
     // if second zettian attacks same unit as first, +1
@@ -173,7 +203,120 @@ export const selectUnitAttackDiceForAttack = ({
       : 0
   const swordOfReckoningBonus =
     isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
-  return dice + zettianTargetingBonus + swordOfReckoningBonus
+  const finnsAttackAura = () => {
+    const finnCard = gameArmyCards.filter(
+      (c) => c.playerID === attackerArmyCard.playerID && c.armyCardID === finnID
+    )?.[0]
+    if (
+      !finnCard ||
+      !selectIfGameArmyCardHasAbility('Attack Aura 1', finnCard)
+    ) {
+      return 0
+    }
+    console.log(
+      '🚀 ~ file: card-selectors.ts:210 ~ finnsAttackAura ~ finnCard',
+      finnCard.name
+    )
+    const finnUnit = selectUnitsForCard(finnCard.gameCardID, gameUnits)?.[0]
+    if (!finnUnit) {
+      return 0
+    }
+    console.log(
+      '🚀 ~ file: card-selectors.ts:217 ~ finnsAttackAura ~ finnUnit',
+      finnUnit.unitID
+    )
+    return isMelee &&
+      selectEngagementsForHex({
+        hexID: attackerHex.id,
+        boardHexes,
+        gameUnits,
+        armyCards: gameArmyCards,
+        friendly: true,
+      }).includes(finnUnit.unitID)
+      ? 1
+      : 0
+  }
+  return (
+    dice +
+    heightBonus +
+    zettianTargetingBonus +
+    swordOfReckoningBonus +
+    finnsAttackAura()
+  )
+}
+// DEFENSE DICE FOR SPECIFIC ATTACK:
+export const selectUnitDefenseDiceForAttack = ({
+  defenderArmyCard,
+  defenderUnit,
+  attackerHex,
+  defenderHex,
+  boardHexes,
+  gameArmyCards,
+  gameUnits,
+}: {
+  defenderArmyCard: GameArmyCard
+  defenderUnit: GameUnit
+  attackerHex: BoardHex
+  defenderHex: BoardHex
+  boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+}): number => {
+  let dice = defenderArmyCard.defense
+  const heightBonus = defenderHex.altitude > attackerHex.altitude ? 1 : 0
+  const raelinDefensiveAura = () => {
+    const theirRaelinCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === defenderArmyCard.playerID && c.armyCardID === raelinOneID
+    )?.[0]
+    if (!theirRaelinCard) {
+      return 0
+    }
+    const theirRaelinUnit = selectUnitsForCard(
+      theirRaelinCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!theirRaelinUnit) {
+      return 0
+    }
+    return selectIsUnitWithinNHexesOfUnit({
+      startUnitID: theirRaelinUnit.unitID,
+      endUnitID: defenderUnit.unitID,
+      boardHexes,
+      n: 4,
+    })
+      ? 2
+      : 0
+  }
+  const thorgrimDefensiveAura = () => {
+    const thorgrimCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === defenderArmyCard.playerID && c.armyCardID === thorgrimID
+    )?.[0]
+    if (
+      !thorgrimCard ||
+      !selectIfGameArmyCardHasAbility('Defensive Aura 1', thorgrimCard)
+    ) {
+      return 0
+    }
+    const thorgrimUnit = selectUnitsForCard(
+      thorgrimCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!thorgrimUnit) {
+      return 0
+    }
+    return selectEngagementsForHex({
+      hexID: defenderHex.id,
+      boardHexes,
+      gameUnits,
+      armyCards: gameArmyCards,
+      friendly: true,
+    }).includes(thorgrimUnit.unitID)
+      ? 1
+      : 0
+  }
+  return dice + heightBonus + raelinDefensiveAura() + thorgrimDefensiveAura()
 }
 
 // attacks allowed
