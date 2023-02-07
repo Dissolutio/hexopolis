@@ -1,3 +1,4 @@
+import { selectUnitsForCard } from 'game/selectors'
 import {
   GameArmyCard,
   GameState,
@@ -13,6 +14,7 @@ type BgioGProviderProps = { children: React.ReactNode; G: GameState }
 const BgioGContext = React.createContext<
   | (GameState & {
       myCards: GameArmyCard[]
+      myAliveCards: GameArmyCard[]
       myStartZone: string[]
       myUnits: GameUnit[]
       myOrderMarkers: PlayerOrderMarkers
@@ -25,6 +27,9 @@ const BgioGContext = React.createContext<
 export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const { playerID, belongsToPlayer } = useBgioClientInfo()
   const myCards: GameArmyCard[] = G.gameArmyCards.filter(belongsToPlayer)
+  const myAliveCards: GameArmyCard[] = myCards.filter(
+    (c) => selectUnitsForCard(c.gameCardID, G.gameUnits).length > 0
+  )
   const myStartZone: string[] = G.startZones[playerID]
   const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
   const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers
@@ -35,6 +40,7 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
       value={{
         ...G,
         myCards,
+        myAliveCards,
         myStartZone,
         myUnits,
         myOrderMarkers,

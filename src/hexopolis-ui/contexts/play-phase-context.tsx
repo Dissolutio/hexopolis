@@ -154,6 +154,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             gameArmyCards
           )
         )
+      } else {
+        setSelectedUnitMoveRange(generateBlankMoveRange())
       }
     }
   }, [
@@ -391,10 +393,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         // deselect unit
         if (isUnitOnHexSelected) {
           setSelectedUnitID('')
-          setSelectedUnitMoveRange(generateBlankMoveRange())
+          // setSelectedUnitMoveRange(generateBlankMoveRange())
         } else if (isUnitOnHexReadyToSelect) {
           setSelectedUnitID(unitOnHex.unitID)
-          setSelectedUnitMoveRange(generateBlankMoveRange())
+          // setSelectedUnitMoveRange(generateBlankMoveRange())
         }
       }
     }

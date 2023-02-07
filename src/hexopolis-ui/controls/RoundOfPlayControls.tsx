@@ -19,6 +19,14 @@ import { PlayerIdToUnitsMap } from 'game/types'
 import { RopAttackControls } from './rop/RopAttackControls'
 import { WaterCloneControls } from './rop/WaterCloneControls'
 import { RopMoveControls } from './rop/RopMoveControls'
+import {
+  IdlePlaceAttackSpiritControls,
+  PlaceAttackSpiritControls,
+} from './rop/PlaceAttackSpirit'
+import {
+  IdlePlaceArmorSpiritControls,
+  PlaceArmorSpiritControls,
+} from './rop/PlaceArmorSpirit'
 
 export const RoundOfPlayControls = () => {
   const {
@@ -28,6 +36,10 @@ export const RoundOfPlayControls = () => {
     isDisengagementSwipeStage,
     isAttackingStage,
     isWaterCloneStage,
+    isPlacingAttackSpiritStage,
+    isIdlePlacingAttackSpiritStage,
+    isPlacingArmorSpiritStage,
+    isIdlePlacingArmorSpiritStage,
   } = useBgioCtx()
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
@@ -72,6 +84,34 @@ export const RoundOfPlayControls = () => {
     return (
       <>
         <WaterCloneControls />
+      </>
+    )
+  }
+  if (isPlacingAttackSpiritStage) {
+    return (
+      <>
+        <PlaceAttackSpiritControls />
+      </>
+    )
+  }
+  if (isIdlePlacingAttackSpiritStage) {
+    return (
+      <>
+        <IdlePlaceAttackSpiritControls />
+      </>
+    )
+  }
+  if (isPlacingArmorSpiritStage) {
+    return (
+      <>
+        <PlaceArmorSpiritControls />
+      </>
+    )
+  }
+  if (isIdlePlacingArmorSpiritStage) {
+    return (
+      <>
+        <IdlePlaceArmorSpiritControls />
       </>
     )
   }

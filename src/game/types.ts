@@ -20,6 +20,8 @@ export interface GameState {
   // rop game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: { [attackingUnitID: string]: string[] }
+  // These 2 booleans are for shuffling the stage of the current player, so say, if finn dies, after placing his spirit the activePlayers can be updated to the right thing (w/e current player was doing before finn died)
+  isCurrentPlayerAttacking: boolean
   // unitsKilled does not get erased or updated when killed units are resurrected/cloned
   unitsKilled: { [unitID: string]: string[] }
   gameLog: string[]
