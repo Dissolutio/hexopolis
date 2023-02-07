@@ -143,7 +143,6 @@ export interface ICoreHeroscapeCard {
 export type CardAbility = {
   name: string
   desc: string
-  isAfterMove?: boolean
 }
 export type ArmyCard = {
   abilities: CardAbility[]
