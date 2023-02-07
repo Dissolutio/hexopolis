@@ -1,5 +1,4 @@
 import { ICoreHeroscapeCard } from './types'
-
 export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
   {
     name: 'Marro Warriors',
@@ -2474,7 +2473,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         desc: 'Raelin may attack any or all figures adjacent to her. Roll each attack separately.',
       },
       {
-        name: 'Extended Defense Aura',
+        name: 'Extended Defensive Aura',
         desc: "All figures you control within 6 clear sight spaces of Raelin add 1 to their defense dice. Raelin's Extended Defensive Aura does not affect Raelin.",
       },
       {
