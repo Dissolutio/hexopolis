@@ -139,8 +139,8 @@ export const devHexagon = {
       id: '-1,1,0',
       occupyingUnitID: '',
       isUnitTail: false,
-      altitude: 2,
-      terrain: 'grass',
+      altitude: 0,
+      terrain: 'water',
       startzonePlayerIDs: [],
     },
     '-1,2,-1': {
@@ -205,8 +205,8 @@ export const devHexagon = {
       id: '0,0,0',
       occupyingUnitID: '',
       isUnitTail: false,
-      altitude: 1,
-      terrain: 'grass',
+      altitude: 0,
+      terrain: 'water',
       startzonePlayerIDs: [],
     },
     '0,1,-1': {
@@ -271,8 +271,8 @@ export const devHexagon = {
       id: '1,-1,0',
       occupyingUnitID: '',
       isUnitTail: false,
-      altitude: 2,
-      terrain: 'grass',
+      altitude: 0,
+      terrain: 'water',
       startzonePlayerIDs: [],
     },
     '1,0,-1': {
