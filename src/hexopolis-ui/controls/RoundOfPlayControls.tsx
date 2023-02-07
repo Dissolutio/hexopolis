@@ -19,6 +19,10 @@ import { PlayerIdToUnitsMap } from 'game/types'
 import { RopAttackControls } from './rop/RopAttackControls'
 import { WaterCloneControls } from './rop/WaterCloneControls'
 import { RopMoveControls } from './rop/RopMoveControls'
+import {
+  IdlePlaceAttackSpiritControls,
+  PlaceAttackSpiritControls,
+} from './rop/PlaceAttackSpirit'
 
 export const RoundOfPlayControls = () => {
   const {
@@ -28,6 +32,8 @@ export const RoundOfPlayControls = () => {
     isDisengagementSwipeStage,
     isAttackingStage,
     isWaterCloneStage,
+    isPlacingAttackSpiritStage,
+    isIdlePlacingAttackSpiritStage,
   } = useBgioCtx()
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
@@ -72,6 +78,20 @@ export const RoundOfPlayControls = () => {
     return (
       <>
         <WaterCloneControls />
+      </>
+    )
+  }
+  if (isPlacingAttackSpiritStage) {
+    return (
+      <>
+        <PlaceAttackSpiritControls />
+      </>
+    )
+  }
+  if (isIdlePlacingAttackSpiritStage) {
+    return (
+      <>
+        <IdlePlaceAttackSpiritControls />
       </>
     )
   }

@@ -21,6 +21,8 @@ export const stageNames = {
   waitingForDisengageSwipe: 'waitingForDisengageSwipe',
   disengagementSwipe: 'disengagementSwipe',
   waterClone: 'waterClone',
+  placingAttackSpirit: 'placingAttackSpirit',
+  idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
 }
 
 export const OM_COUNT = 3

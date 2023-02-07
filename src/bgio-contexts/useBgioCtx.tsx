@@ -19,6 +19,8 @@ type BgioCtxValue = BoardProps['ctx'] & {
   isWaitingForDisengagementSwipeStage: boolean
   isDisengagementSwipeStage: boolean
   isWaterCloneStage: boolean
+  isPlacingAttackSpiritStage: boolean
+  isIdlePlacingAttackSpiritStage: boolean
   isAttackingStage: boolean
   isGameover: boolean
 }
@@ -39,6 +41,12 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const isWaterCloneStage: boolean =
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.waterClone
+  const isPlacingAttackSpiritStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.placingAttackSpirit
+  const isIdlePlacingAttackSpiritStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.idlePlacingAttackSpirit
   const isWaitingForDisengagementSwipeStage: boolean =
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.waitingForDisengageSwipe
@@ -59,6 +67,8 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
         isWaitingForDisengagementSwipeStage,
         isDisengagementSwipeStage,
         isWaterCloneStage,
+        isPlacingAttackSpiritStage,
+        isIdlePlacingAttackSpiritStage,
         isAttackingStage,
         isGameover,
       }}

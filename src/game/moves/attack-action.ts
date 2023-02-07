@@ -16,6 +16,7 @@ import {
   selectUnitAttackDiceForAttack,
   selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
+import { stageNames } from 'game/constants'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -49,7 +50,11 @@ export const rollHeroscapeDice = (
 
 export const attackAction: Move<GameState> = {
   undoable: false,
-  move: ({ G, random }, attackingUnit: GameUnit, defenderHex: BoardHex) => {
+  move: (
+    { G, random, events },
+    attackingUnit: GameUnit,
+    defenderHex: BoardHex
+  ) => {
     const { unitID: attackerUnitID } = attackingUnit
     const attackerGameCard = selectGameCardByID(
       G.gameArmyCards,
@@ -162,9 +167,14 @@ export const attackAction: Move<GameState> = {
       shields > 0 &&
       shields < skulls
     const isHit = skulls > shields && !isStealthDodge
-
     const woundsDealt = isHit ? Math.max(skulls - shields, 0) : 0
     const isFatal = woundsDealt >= defenderLife
+    const isWarriorSpirit =
+      isFatal &&
+      selectIfGameArmyCardHasAbility(
+        "Warrior's Attack Spirit 1",
+        defenderGameCard
+      )
     const defenderUnitName = defenderGameCard.name
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
@@ -250,5 +260,14 @@ export const attackAction: Move<GameState> = {
       isStealthDodge,
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
+    if (isWarriorSpirit) {
+      // TODO: Multiplayer, set stages for all other players to idle
+      events.setActivePlayers({
+        value: {
+          [defenderGameCard.playerID]: stageNames.placingAttackSpirit,
+          [attackerGameCard.playerID]: stageNames.idlePlacingAttackSpirit,
+        },
+      })
+    }
   },
 }
