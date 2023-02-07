@@ -29,7 +29,7 @@ const player1Ids = [
   zettianID,
   syvarrisID,
   airbornID,
-  raelinID,
+  raelinOneID,
   deathwalker9000ID,
   mimringID,
   drake1ID,
