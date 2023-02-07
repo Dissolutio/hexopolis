@@ -16,8 +16,7 @@ export const rollForWaterClone: Move<GameState> = (
       const isOnWater = G.boardHexes[current.clonerHexID].terrain === 'water'
       const threshhold = isOnWater ? 10 : 15
       // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
-      //   const dieRoll = random.Die(20)
-      const dieRoll = 18
+      const dieRoll = random.Die(20)
       const isSuccess = dieRoll >= threshhold
       return {
         ...result,
