@@ -46,6 +46,7 @@ export const Army = ({
     <StyledOrderMarkerArmyCardsUl playerID={playerID}>
       {cards.map((card) => (
         <ArmyCard
+          key={card.gameCardID}
           card={card}
           onClickCard={onClickCard}
           selectedID={selectedID}
