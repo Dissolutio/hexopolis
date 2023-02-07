@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { stageNames } from 'game/constants'
+import { stageNames } from '../constants'
 import { GameState } from '../types'
 
 export const placeAttackSpirit: Move<GameState> = (
