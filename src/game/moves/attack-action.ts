@@ -132,6 +132,10 @@ export const attackAction: Move<GameState> = {
       defenderHex,
       defender: defenderGameUnit,
       attackerArmyCard: attackerGameCard,
+      defenderArmyCard: defenderGameCard,
+      boardHexes: G.boardHexes,
+      gameArmyCards: G.gameArmyCards,
+      gameUnits: G.gameUnits,
       unitsAttacked: G.unitsAttacked,
       isMelee,
     })

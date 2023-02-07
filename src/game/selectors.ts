@@ -284,12 +284,14 @@ export function selectEngagementsForHex({
   boardHexes,
   gameUnits,
   armyCards,
+  friendly,
   override,
 }: {
   hexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
+  friendly?: boolean // if true, then only return friendly units
   override?: {
     overrideUnitID: string
     // probably a problem that this is optional
@@ -334,7 +336,9 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          gameUnits[h.occupyingUnitID].playerID !== playerID &&
+          (friendly
+            ? gameUnits[h.occupyingUnitID].playerID === playerID
+            : gameUnits[h.occupyingUnitID].playerID !== playerID) &&
           // filter for engaged units
           selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,

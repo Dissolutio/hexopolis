@@ -16,8 +16,8 @@ const tarnID = 'hs1006'
 const carrID = 'hs1007'
 const zettianID = 'hs1008'
 const airbornID = 'hs1009'
-const finnID = 'hs1010'
-const thorgrimID = 'hs1011'
+export const finnID = 'hs1010'
+export const thorgrimID = 'hs1011'
 export const raelinOneID = 'hs1012'
 const mimringID = 'hs1013'
 const negoksaID = 'hs1014'
@@ -37,11 +37,11 @@ const player1Ids = [
 const player2Ids = [
   // carrID,
   // kravMagaID,
-  grimnakID,
   izumiID,
-  // tarnID,
-  // finnID,
+  finnID,
   // thorgrimID,
+  // grimnakID,
+  // tarnID,
   // negoksaID,
 ]
 // TEST SCENARIO ORDERMARKERS

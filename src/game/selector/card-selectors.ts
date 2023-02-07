@@ -15,7 +15,7 @@ import {
   selectTailHexForUnit,
   selectUnitsForCard,
 } from '../selectors'
-import { raelinOneID } from 'game/setup/unitGen'
+import { finnID, raelinOneID, thorgrimID } from 'game/setup/unitGen'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
@@ -173,8 +173,12 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
 export const selectUnitAttackDiceForAttack = ({
   attackerHex,
   defenderHex,
-  attackerArmyCard,
   defender,
+  attackerArmyCard,
+  defenderArmyCard,
+  boardHexes,
+  gameArmyCards,
+  gameUnits,
   unitsAttacked,
   isMelee,
 }: {
@@ -182,6 +186,10 @@ export const selectUnitAttackDiceForAttack = ({
   defenderHex: BoardHex
   defender: GameUnit
   attackerArmyCard: GameArmyCard
+  defenderArmyCard: GameArmyCard
+  boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
   unitsAttacked: Record<string, string[]>
   isMelee: boolean
 }): number => {
@@ -195,7 +203,46 @@ export const selectUnitAttackDiceForAttack = ({
       : 0
   const swordOfReckoningBonus =
     isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
-  return dice + heightBonus + zettianTargetingBonus + swordOfReckoningBonus
+  const finnsAttackAura = () => {
+    const finnCard = gameArmyCards.filter(
+      (c) => c.playerID === attackerArmyCard.playerID && c.armyCardID === finnID
+    )?.[0]
+    if (
+      !finnCard ||
+      !selectIfGameArmyCardHasAbility('Attack Aura 1', finnCard)
+    ) {
+      return 0
+    }
+    console.log(
+      '🚀 ~ file: card-selectors.ts:210 ~ finnsAttackAura ~ finnCard',
+      finnCard.name
+    )
+    const finnUnit = selectUnitsForCard(finnCard.gameCardID, gameUnits)?.[0]
+    if (!finnUnit) {
+      return 0
+    }
+    console.log(
+      '🚀 ~ file: card-selectors.ts:217 ~ finnsAttackAura ~ finnUnit',
+      finnUnit.unitID
+    )
+    return isMelee &&
+      selectEngagementsForHex({
+        hexID: attackerHex.id,
+        boardHexes,
+        gameUnits,
+        armyCards: gameArmyCards,
+        friendly: true,
+      }).includes(finnUnit.unitID)
+      ? 1
+      : 0
+  }
+  return (
+    dice +
+    heightBonus +
+    zettianTargetingBonus +
+    swordOfReckoningBonus +
+    finnsAttackAura()
+  )
 }
 // DEFENSE DICE FOR SPECIFIC ATTACK:
 export const selectUnitDefenseDiceForAttack = ({
@@ -241,7 +288,35 @@ export const selectUnitDefenseDiceForAttack = ({
       ? 2
       : 0
   }
-  return dice + heightBonus + raelinDefensiveAura()
+  const thorgrimDefensiveAura = () => {
+    const thorgrimCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === defenderArmyCard.playerID && c.armyCardID === thorgrimID
+    )?.[0]
+    if (
+      !thorgrimCard ||
+      !selectIfGameArmyCardHasAbility('Defensive Aura 1', thorgrimCard)
+    ) {
+      return 0
+    }
+    const thorgrimUnit = selectUnitsForCard(
+      thorgrimCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!thorgrimUnit) {
+      return 0
+    }
+    return selectEngagementsForHex({
+      hexID: defenderHex.id,
+      boardHexes,
+      gameUnits,
+      armyCards: gameArmyCards,
+      friendly: true,
+    }).includes(thorgrimUnit.unitID)
+      ? 1
+      : 0
+  }
+  return dice + heightBonus + raelinDefensiveAura() + thorgrimDefensiveAura()
 }
 
 // attacks allowed
