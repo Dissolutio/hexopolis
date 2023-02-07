@@ -164,10 +164,10 @@ export const attackAction: Move<GameState> = {
     const defenderUnitName = defenderGameCard.name
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
-    const hasCounterStrike =
-      selectIfGameArmyCardHasCounterStrike(defenderGameCard)
     const counterStrikeWounds =
-      hasCounterStrike && isMelee ? shields - skulls : 0
+      selectIfGameArmyCardHasCounterStrike(defenderGameCard) && isMelee
+        ? shields - skulls
+        : 0
     const isCounterStrikeWounds = counterStrikeWounds > 0
     const isFatalCounterStrike = counterStrikeWounds >= attackerLife
 
@@ -196,7 +196,7 @@ export const attackAction: Move<GameState> = {
       }
     }
     // apply counter-strike if applicable
-    if (hasCounterStrike && isCounterStrikeWounds) {
+    if (isCounterStrikeWounds) {
       if (isFatalCounterStrike) {
         G.unitsKilled = {
           ...G.unitsKilled,
