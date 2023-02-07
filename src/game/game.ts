@@ -1,6 +1,5 @@
 import { Game } from 'boardgame.io'
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
-import { nanoid } from 'nanoid'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import { GameState, OrderMarker, GameUnit } from './types'
@@ -35,7 +34,7 @@ export const HexedMeadow: Game<GameState> = {
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
   */
   moves,
-  seed: nanoid(),
+  seed: `${Math.random()}`,
   // The minimum and maximum number of players supported (this is only enforced when using the Lobby server component)
   minPlayers: 2,
   maxPlayers: 2,
