@@ -97,7 +97,7 @@ const LocalApp = () => {
   return (
     <>
       <Helmet>
-        <title>Hexopolis - Local Game</title>
+        <title>Hexoscape - Local Game</title>
       </Helmet>
       <DemoGameClient
         matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
