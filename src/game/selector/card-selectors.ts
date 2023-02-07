@@ -5,8 +5,11 @@ import {
   selectGameCardByID,
   selectHexForUnit,
   selectHexNeighbors,
+  selectIsUnitWithinNHexesOfUnit,
   selectTailHexForUnit,
+  selectUnitsForCard,
 } from '../selectors'
+import { raelinOneID } from 'game/setup/unitGen'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
@@ -182,6 +185,47 @@ export const selectUnitAttackDiceForAttack = ({
   const swordOfReckoningBonus =
     isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
   return dice + zettianTargetingBonus + swordOfReckoningBonus
+}
+// DEFENSE DICE FOR SPECIFIC ATTACK:
+export const selectUnitDefenseDiceForAttack = ({
+  defenderArmyCard,
+  defenderUnit,
+  boardHexes,
+  gameArmyCards,
+  gameUnits,
+}: {
+  defenderArmyCard: GameArmyCard
+  defenderUnit: GameUnit
+  boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+}): number => {
+  let dice = defenderArmyCard.defense
+  const raelinDefensiveAura = () => {
+    const theirRaelinCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === defenderArmyCard.playerID && c.armyCardID === raelinOneID
+    )?.[0]
+    if (!theirRaelinCard) {
+      return 0
+    }
+    const theirRaelinUnit = selectUnitsForCard(
+      theirRaelinCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!theirRaelinUnit) {
+      return 0
+    }
+    return selectIsUnitWithinNHexesOfUnit({
+      startUnitID: theirRaelinUnit.unitID,
+      endUnitID: defenderUnit.unitID,
+      boardHexes,
+      n: 4,
+    })
+      ? 2
+      : 0
+  }
+  return dice + raelinDefensiveAura()
 }
 
 // attacks allowed

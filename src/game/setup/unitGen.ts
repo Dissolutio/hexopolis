@@ -18,7 +18,7 @@ const zettianID = 'hs1008'
 const airbornID = 'hs1009'
 const finnID = 'hs1010'
 const thorgrimID = 'hs1011'
-const raelinID = 'hs1012'
+export const raelinOneID = 'hs1012'
 const mimringID = 'hs1013'
 const negoksaID = 'hs1014'
 const grimnakID = 'hs1015'
@@ -28,7 +28,7 @@ const player1Ids = [
   // marroID,
   // zettianID,
   // syvarrisID,
-  raelinID,
+  raelinOneID,
   airbornID,
   deathwalker9000ID,
   mimringID,
