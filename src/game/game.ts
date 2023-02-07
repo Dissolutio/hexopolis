@@ -1,6 +1,13 @@
+import { Game } from 'boardgame.io'
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
+import { nanoid } from 'nanoid'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
+import { GameState, OrderMarker, GameUnit } from './types'
+import { moves } from './moves/moves'
+import { rollD20Initiative } from './rollInitiative'
+import { testScenario } from './setup/setup'
+import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 import {
   phaseNames,
   stageNames,
@@ -8,14 +15,6 @@ import {
   generateBlankOrderMarkers,
   generateBlankPlayersOrderMarkers,
 } from './constants'
-
-import { GameState, OrderMarker, GameUnit } from './types'
-import { moves } from './moves/moves'
-import { rollD20Initiative } from './rollInitiative'
-import { Game } from 'boardgame.io'
-import { testScenario } from './setup/setup'
-import { encodeGameLogMessage, gameLogTypes } from './gamelog'
-import { nanoid } from 'nanoid'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },

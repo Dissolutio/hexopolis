@@ -9,6 +9,7 @@ import {
 import {
   BoardHex,
   BoardHexes,
+  BoardHexesUnitDeployment,
   GameArmyCard,
   GameUnit,
   GameUnits,
@@ -17,7 +18,6 @@ import {
   StartZones,
   WaterCloneRoll,
 } from 'game/types'
-import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
 export function calcPlacementHexClassNames({
   selectedMapHex,
@@ -38,7 +38,7 @@ export function calcPlacementHexClassNames({
   startZones: StartZones
   startZoneForMy2HexUnits: string[]
   playerID: string
-  editingBoardHexes: DeploymentProposition
+  editingBoardHexes: BoardHexesUnitDeployment
   activeTailPlacementUnitID: string
   tailPlaceables: string[]
 }) {

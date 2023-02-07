@@ -1,5 +1,9 @@
 import type { Move, MoveMap } from 'boardgame.io'
-import { GameState, PlayerOrderMarkers } from '../types'
+import {
+  BoardHexesUnitDeployment,
+  GameState,
+  PlayerOrderMarkers,
+} from '../types'
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
@@ -9,12 +13,11 @@ import {
   finishWaterCloningAndEndTurn,
   placeWaterClone,
 } from './water-clone-action'
-import { DeploymentProposition } from 'hexopolis-ui/contexts'
 
 //phase:___Placement
 const deployUnits: Move<GameState> = (
   { G },
-  deploymentProposition: DeploymentProposition,
+  deploymentProposition: BoardHexesUnitDeployment,
   playerID: string
 ) => {
   const myStartZone = G.startZones[playerID]

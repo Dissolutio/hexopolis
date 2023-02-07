@@ -16,7 +16,7 @@ import { omToString } from 'app/utilities'
 import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
-import { selectIfGameArmyCardHasFlying } from 'game/selectors/card-selectors'
+import { selectIfGameArmyCardHasFlying } from 'game/selector/card-selectors'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,

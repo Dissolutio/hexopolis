@@ -33,7 +33,7 @@ import {
 } from 'bgio-contexts'
 import { hexUtilsDistance } from 'game/hex-utils'
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
-import { selectIfGameArmyCardHasFlying } from 'game/selectors/card-selectors'
+import { selectIfGameArmyCardHasFlying } from 'game/selector/card-selectors'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs

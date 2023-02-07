@@ -1,14 +1,6 @@
-import { Orientation, Point } from 'game/types'
+import { LayoutDimension, Orientation, Point } from 'game/types'
 import * as React from 'react'
 
-export type Size = { x: number; y: number }
-
-export type LayoutDimension = {
-  size: Size
-  orientation: Orientation
-  origin: Size
-  spacing: number
-}
 export type LayoutContextProps = {
   layout: LayoutDimension
   points: string
@@ -89,7 +81,7 @@ export type LayoutProps = {
   flat?: boolean
   origin?: any
   /* defines scale */
-  size?: Size
+  size?: Point
   space?: number
   spacing?: number
 }

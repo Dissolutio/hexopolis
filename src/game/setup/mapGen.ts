@@ -8,7 +8,7 @@ import {
 } from '../types'
 import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
-import { selectValidTailHexes } from 'game/selectors'
+import { selectValidTailHexes } from '../selectors'
 
 function generateUID() {
   // I generate the UID from two parts here

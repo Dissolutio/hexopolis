@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io'
-import { transformMoveRangeToArraysOfIds } from 'game/constants'
+import { transformMoveRangeToArraysOfIds } from '../constants'
 import { uniq } from 'lodash'
 import { encodeGameLogMessage } from '../gamelog'
 import {

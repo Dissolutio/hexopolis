@@ -1,3 +1,4 @@
+import { uniq } from 'lodash'
 import {
   BoardHexes,
   BoardHex,
@@ -12,12 +13,11 @@ import {
 } from './types'
 import { generateHexID } from './constants'
 import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
-import { uniq } from 'lodash'
 import {
   selectIfGameArmyCardHasDoubleAttack,
   selectIfGameArmyCardHasThorianSpeed,
   selectUnitRange,
-} from './selectors/card-selectors'
+} from './selector/card-selectors'
 
 // returns the hex for 1-hex units, and the head-hex for multi-hex units
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {

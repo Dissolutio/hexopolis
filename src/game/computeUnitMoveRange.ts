@@ -21,7 +21,7 @@ import {
 import {
   selectIfGameArmyCardHasDisengage,
   selectIfGameArmyCardHasFlying,
-} from './selectors/card-selectors'
+} from './selector/card-selectors'
 
 const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
   // returns a new object with the highest movePointsLeft for each hex

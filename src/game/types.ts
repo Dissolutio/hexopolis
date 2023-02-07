@@ -89,9 +89,6 @@ export type Orientation = {
   b3: number
   startAngle: number
 }
-
-export default Orientation
-
 export type BoardHex = HexCoordinates & {
   id: string
   occupyingUnitID: string
@@ -102,6 +99,12 @@ export type BoardHex = HexCoordinates & {
 }
 export type BoardHexes = {
   [key: string]: BoardHex
+}
+export type BoardHexesUnitDeployment = {
+  [boardHexId: string]: {
+    occupyingUnitID: string
+    isUnitTail: boolean
+  }
 }
 export type StartZones = {
   [playerID: string]: string[] // boardHex IDs
@@ -274,7 +277,6 @@ export type BaseGameOptions =
       players?: PlayersState
     }
   | undefined
-
 export type MapOptions = {
   mapSize: number
   gameUnits?: GameUnits | undefined
@@ -289,5 +291,11 @@ export type RangeScan = {
 }
 export type StringKeyedObj = {
   [key: string]: string
+}
+export type LayoutDimension = {
+  size: Point
+  orientation: Orientation
+  origin: Point
+  spacing: number
 }
 export type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }

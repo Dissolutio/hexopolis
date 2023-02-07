@@ -10,7 +10,7 @@ import {
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
-import { selectGameArmyCardAttacksAllowed } from 'game/selectors/card-selectors'
+import { selectGameArmyCardAttacksAllowed } from 'game/selector/card-selectors'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()

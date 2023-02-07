@@ -5,7 +5,13 @@ import React, {
   useState,
 } from 'react'
 import { useUIContext, useMapContext } from '.'
-import { BoardHex, ArmyCard, GameUnit, PlacementUnit } from 'game/types'
+import {
+  BoardHex,
+  ArmyCard,
+  GameUnit,
+  PlacementUnit,
+  BoardHexesUnitDeployment,
+} from 'game/types'
 import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { selectValidTailHexes } from 'game/selectors'
 
@@ -23,15 +29,8 @@ type PlacementContextValue = {
     event: React.SyntheticEvent,
     sourceHex: BoardHex
   ) => void
-  editingBoardHexes: DeploymentProposition
+  editingBoardHexes: BoardHexesUnitDeployment
   onResetPlacementState: () => void
-}
-
-export type DeploymentProposition = {
-  [boardHexId: string]: {
-    occupyingUnitID: string
-    isUnitTail: boolean
-  }
 }
 
 const PlacementContextProvider = ({
@@ -88,7 +87,7 @@ const PlacementContextProvider = ({
         return unit.unitID
       })
   const [editingBoardHexes, setEditingBoardHexes] =
-    useState<DeploymentProposition>(initialEditingBoardHexes())
+    useState<BoardHexesUnitDeployment>(initialEditingBoardHexes())
   const [placementUnits, setPlacementUnits] = useState((): string[] =>
     initialPlacementUnits()
   )

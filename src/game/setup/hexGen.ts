@@ -1,11 +1,6 @@
 import { BoardHexes, HexCoordinates } from '../types'
 import { generateHexID } from '../constants'
-import {
-  generateHexagonHexas,
-  generateOrientedRectangleHexas,
-  generateParalellogramHexas,
-  generateRectangleHexas,
-} from 'game/hex-utils'
+import { generateHexagonHexas } from '../hex-utils'
 
 export const generateHexagon = (mapSize: number): BoardHexes => {
   const hexgridHexes = generateHexagonHexas(mapSize)

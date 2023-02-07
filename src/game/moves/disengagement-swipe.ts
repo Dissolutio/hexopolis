@@ -1,5 +1,4 @@
 import type { Move } from 'boardgame.io'
-import { hexUtilsDistance } from 'game/hex-utils'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {

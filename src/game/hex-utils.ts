@@ -1,5 +1,4 @@
-import { LayoutDimension } from 'hexopolis-ui/hexmap/HexgridLayout'
-import { HexCoordinates, Point } from './types'
+import { HexCoordinates, LayoutDimension, Point } from './types'
 
 const DIRECTIONS: HexCoordinates[] = [
   { q: 1, r: -1, s: 0 }, // NE +q -r

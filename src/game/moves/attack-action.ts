@@ -1,4 +1,5 @@
 import type { Move } from 'boardgame.io'
+import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
 
 import {
   selectGameCardByID,
@@ -9,11 +10,10 @@ import {
 } from '../selectors'
 import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
-import { RandomAPI } from 'boardgame.io/dist/types/src/plugins/random/random'
 import {
   selectIfGameArmyCardHasCounterStrike,
   selectUnitAttackDiceForAttack,
-} from 'game/selectors/card-selectors'
+} from '../selector/card-selectors'
 
 type HeroscapeDieRoll = {
   skulls: number

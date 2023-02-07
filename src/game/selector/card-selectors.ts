@@ -6,7 +6,7 @@ import {
   selectHexForUnit,
   selectHexNeighbors,
   selectTailHexForUnit,
-} from 'game/selectors'
+} from '../selectors'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
