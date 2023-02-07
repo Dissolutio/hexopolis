@@ -86,6 +86,12 @@ export const takeDisengagementSwipe: Move<GameState> = {
         "Warrior's Attack Spirit 1",
         unitAttemptingCard
       )
+    const isArmorSpirit =
+      isFatal &&
+      selectIfGameArmyCardHasAbility(
+        "Warrior's Armor Spirit 1",
+        unitAttemptingCard
+      )
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     const newUnitsMoved = [...G.unitsMoved]
@@ -135,6 +141,15 @@ export const takeDisengagementSwipe: Move<GameState> = {
               [unitAttemptingToDisengage.playerID]:
                 stageNames.placingAttackSpirit,
               [unitSwiping.playerID]: stageNames.idlePlacingAttackSpirit,
+            },
+          })
+        } else if (isArmorSpirit) {
+          // TODO: Multiplayer, set stages for all other players to idle
+          events.setActivePlayers({
+            value: {
+              [unitAttemptingToDisengage.playerID]:
+                stageNames.placingArmorSpirit,
+              [unitSwiping.playerID]: stageNames.idlePlacingArmorSpirit,
             },
           })
         } else {

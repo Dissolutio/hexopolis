@@ -175,6 +175,12 @@ export const attackAction: Move<GameState> = {
         "Warrior's Attack Spirit 1",
         defenderGameCard
       )
+    const isArmorSpirit =
+      isFatal &&
+      selectIfGameArmyCardHasAbility(
+        "Warrior's Armor Spirit 1",
+        defenderGameCard
+      )
     const defenderUnitName = defenderGameCard.name
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
@@ -268,6 +274,17 @@ export const attackAction: Move<GameState> = {
         value: {
           [defenderGameCard.playerID]: stageNames.placingAttackSpirit,
           [attackerGameCard.playerID]: stageNames.idlePlacingAttackSpirit,
+        },
+      })
+    }
+    if (isArmorSpirit) {
+      // mark this so after placing spirit we can get back to it
+      G.isCurrentPlayerAttacking = true
+      // TODO: Multiplayer, set stages for all other players to idle
+      events.setActivePlayers({
+        value: {
+          [defenderGameCard.playerID]: stageNames.placingArmorSpirit,
+          [attackerGameCard.playerID]: stageNames.idlePlacingArmorSpirit,
         },
       })
     }

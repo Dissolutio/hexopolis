@@ -23,6 +23,8 @@ export const stageNames = {
   waterClone: 'waterClone',
   placingAttackSpirit: 'placingAttackSpirit',
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
+  placingArmorSpirit: 'placingArmorSpirit',
+  idlePlacingArmorSpirit: 'idlePlacingArmorSpirit',
 }
 
 export const OM_COUNT = 3
