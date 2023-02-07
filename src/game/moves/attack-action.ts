@@ -13,6 +13,7 @@ import { encodeGameLogMessage } from '../gamelog'
 import {
   selectIfGameArmyCardHasCounterStrike,
   selectUnitAttackDiceForAttack,
+  selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
 
 type HeroscapeDieRoll = {
@@ -128,14 +129,19 @@ export const attackAction: Move<GameState> = {
       return
     }
     // ALLOW
-    // const attackRolled = attackerGameCard.attack
     const attackRolled = selectUnitAttackDiceForAttack({
       defender: defenderGameUnit,
       attackerArmyCard: attackerGameCard,
       unitsAttacked: G.unitsAttacked,
       isMelee,
     })
-    const defenseRolled = defenderGameCard.defense
+    const defenseRolled = selectUnitDefenseDiceForAttack({
+      defenderArmyCard: defenderGameCard,
+      defenderUnit: defenderGameUnit,
+      boardHexes: G.boardHexes,
+      gameArmyCards: G.gameArmyCards,
+      gameUnits: G.gameUnits,
+    })
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds
     const attackRoll = rollHeroscapeDice(attackRolled, random)

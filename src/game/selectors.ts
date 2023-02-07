@@ -93,6 +93,24 @@ export function selectHexNeighbors(
     })
     .filter((item) => Boolean(item)) as BoardHex[]
 }
+export function selectIsUnitWithinNHexesOfUnit({
+  startUnitID,
+  endUnitID,
+  boardHexes,
+  n,
+}: {
+  startUnitID: string
+  endUnitID: string
+  boardHexes: BoardHexes
+  n: number
+}): boolean {
+  const startHex = selectHexForUnit(startUnitID, boardHexes)
+  const endHex = selectHexForUnit(endUnitID, boardHexes)
+  if (!startHex || !endHex) return false
+  const distance = hexUtilsDistance(startHex, endHex)
+  // TODO: RUINS: account for barriers between two hexes
+  return distance <= n
+}
 export function selectValidTailHexes(
   hexID: string,
   boardHexes: BoardHexes
