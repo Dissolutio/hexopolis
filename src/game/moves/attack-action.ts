@@ -11,6 +11,7 @@ import {
 import { GameState, BoardHex, GameUnit } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import {
+  selectIfGameArmyCardHasAbility,
   selectIfGameArmyCardHasCounterStrike,
   selectUnitAttackDiceForAttack,
   selectUnitDefenseDiceForAttack,
@@ -116,7 +117,7 @@ export const attackAction: Move<GameState> = {
       return
     }
 
-    const { isInRange, isMelee } = selectIsInRangeOfAttack({
+    const { isInRange, isMelee, isRanged } = selectIsInRangeOfAttack({
       attackingUnit: attackingUnit,
       defenderHex,
       gameArmyCards: G.gameArmyCards,
@@ -148,8 +149,16 @@ export const attackAction: Move<GameState> = {
     const skulls = attackRoll.skulls
     const defenseRoll = rollHeroscapeDice(defenseRolled, random)
     const shields = defenseRoll.shields
-    const woundsDealt = Math.max(skulls - shields, 0)
-    const isHit = woundsDealt > 0
+
+    // SPECIAL ABILITIES TIME XD
+    const isStealthDodge =
+      isRanged &&
+      selectIfGameArmyCardHasAbility('Stealth Dodge', defenderGameCard) &&
+      shields > 0 &&
+      shields < skulls
+    const isHit = skulls > shields && !isStealthDodge
+
+    const woundsDealt = isHit ? Math.max(skulls - shields, 0) : 0
     const isFatal = woundsDealt >= defenderLife
     const defenderUnitName = defenderGameCard.name
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
@@ -232,6 +241,7 @@ export const attackAction: Move<GameState> = {
       isFatal,
       counterStrikeWounds,
       isFatalCounterStrike,
+      isStealthDodge,
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
   },
