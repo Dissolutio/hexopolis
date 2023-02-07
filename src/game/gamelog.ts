@@ -17,6 +17,7 @@ export type GameLogMessage = {
   isFatal?: boolean
   counterStrikeWounds?: number
   isFatalCounterStrike?: boolean
+  isStealthDodge?: boolean
 
   // roundBegin logs below
   initiativeRolls?: Roll[][]
@@ -71,6 +72,7 @@ export const decodeGameLogMessage = (
       wounds,
       isFatal,
       isFatalCounterStrike,
+      isStealthDodge,
       counterStrikeWounds,
       // roundBegin
       initiativeRolls,
@@ -86,9 +88,12 @@ export const decodeGameLogMessage = (
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
+        const isCounterStrike = counterStrikeWounds > 0
         const counterStrikeMsg = isFatalCounterStrike
           ? `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was defeated by counter strike!`
           : `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was hit by counter strike for ${counterStrikeWounds} wounds!`
+        const stealthDodgeMsgText = `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields), but the attack was evaded with Stealth Dodge!`
+
         const attackMsgText = isFatal
           ? `${unitName} destroyed ${defenderUnitName} with a ${wounds}-wound attack (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
           : `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
@@ -105,7 +110,11 @@ export const decodeGameLogMessage = (
           shields,
           wounds,
           isFatal,
-          msg: counterStrikeWounds > 0 ? counterStrikeMsg : attackMsgText,
+          msg: isCounterStrike
+            ? counterStrikeMsg
+            : isStealthDodge
+            ? stealthDodgeMsgText
+            : attackMsgText,
         }
       case gameLogTypes.roundBegin:
         // TODO display initiative rolls
