@@ -1,4 +1,5 @@
 import type { Move } from 'boardgame.io'
+import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
@@ -79,12 +80,12 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const numberOfWounds = isAHit.skulls >= 1 ? 1 : 0
     const isFatal =
       unitAttemptingToDisengage.wounds + numberOfWounds >= initialLife
-    const revealedGameCard = selectRevealedGameCard(
-      G.orderMarkers,
-      G.gameArmyCards,
-      G.currentOrderMarker,
-      ctx.currentPlayer
-    )
+    const isWarriorSpirit =
+      isFatal &&
+      selectIfGameArmyCardHasAbility(
+        "Warrior's Attack Spirit 1",
+        unitAttemptingCard
+      )
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     const newUnitsMoved = [...G.unitsMoved]
@@ -95,13 +96,11 @@ export const takeDisengagementSwipe: Move<GameState> = {
     if (isTaking) {
       if (isFatal) {
         // remove  killed unit from hex
+        newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
         if (is2Hex) {
-          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
           newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
             ''
           newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
-        } else {
-          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
         }
         // kill unit
         G.killedUnits[unitAttemptingToDisengage.unitID] = {
@@ -129,11 +128,22 @@ export const takeDisengagementSwipe: Move<GameState> = {
           id,
         })
         G.gameLog.push(gameLogForThisMove)
-        // end disengagement swipe stage
-        events.setActivePlayers({
-          currentPlayer: stageNames.movement,
-        })
-        events.endStage()
+        if (isWarriorSpirit) {
+          // TODO: Multiplayer, set stages for all other players to idle
+          events.setActivePlayers({
+            value: {
+              [unitAttemptingToDisengage.playerID]:
+                stageNames.placingAttackSpirit,
+              [unitSwiping.playerID]: stageNames.idlePlacingAttackSpirit,
+            },
+          })
+        } else {
+          events.setActivePlayers({
+            currentPlayer: stageNames.movement,
+          })
+          // end disengagement swipe stage (unsure if this should also be done when we setActivePlayers for all players?)
+          events.endStage()
+        }
       } else if (!isFatal) {
         // assign wounds
         newGameUnits[unitAttemptingToDisengage.unitID].wounds += numberOfWounds
