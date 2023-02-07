@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {

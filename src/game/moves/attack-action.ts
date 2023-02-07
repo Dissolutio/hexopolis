@@ -16,7 +16,7 @@ import {
   selectUnitAttackDiceForAttack,
   selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
-import { stageNames } from 'game/constants'
+import { stageNames } from '../constants'
 
 type HeroscapeDieRoll = {
   skulls: number

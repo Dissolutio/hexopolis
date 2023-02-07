@@ -15,7 +15,7 @@ import {
   selectTailHexForUnit,
   selectUnitsForCard,
 } from '../selectors'
-import { finnID, raelinOneID, thorgrimID } from 'game/setup/unitGen'
+import { finnID, raelinOneID, thorgrimID } from '../setup/unitGen'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
