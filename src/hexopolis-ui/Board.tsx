@@ -76,7 +76,6 @@ export const Board = ({
                     chatMessages={chatMessages}
                     sendChatMessage={sendChatMessage}
                   >
-                    {/* // pass mapSize to MapContextProvider so it does not need to consume bgio-G ctx */}
                     <MapContextProvider hexMap={G.hexMap}>
                       {/* UI Context is consumed by PlacementContext and PlayContext */}
                       <UIContextProvider>
