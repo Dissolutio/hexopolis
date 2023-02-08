@@ -41,7 +41,8 @@ export const RopAttackControls = () => {
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
-  const isAllAttacksUsed = totalNumberOfAttacksAllowed <= 0
+  const attacksLeft = totalNumberOfAttacksAllowed - attacksUsed
+  const isAllAttacksUsed = attacksLeft <= 0
   const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
@@ -105,14 +106,14 @@ export const RopAttackControls = () => {
       {isAllAttacksUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndTurnButtonClick}
-          confirmText={'End Turn'}
+          confirmText={'All attacks used, end turn'}
           noResetButton
         />
       ) : (
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
-          resetText={`End Turn, skip my ${totalNumberOfAttacksAllowed} attack${
-            totalNumberOfAttacksAllowed !== 1 ? 's' : ''
+          resetText={`End Turn, skip my ${attacksLeft} attack${
+            attacksLeft !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />
