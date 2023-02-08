@@ -45,6 +45,7 @@ export const RopMoveControls = () => {
   const movesAvailable =
     Math.min(allowedMoveCount, unitsAliveCount) - movedUnitsCount
   const isAllMovesUsed = movesAvailable <= 0
+  // TODO: If we have "Before attacking, or After moving" abilities, we'll need put the user in those stages instead of attacking
   const handleEndMovementClick = () => {
     // setSelectedUnitID('')
     events?.setStage?.(stageNames.attacking)
