@@ -19,6 +19,7 @@ import {
 import Hexagon from './Hexagon'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { HexIDText } from './HexIDText'
+import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 
 export const MapHexes = () => {
   const { playerID } = useBgioClientInfo()
@@ -41,6 +42,7 @@ export const MapHexes = () => {
     isAttackingStage,
     isMovementStage,
     isWaterCloneStage,
+    isFireLineSAStage,
   } = useBgioCtx()
   const {
     onClickPlacementHex,
@@ -59,7 +61,8 @@ export const MapHexes = () => {
     clonerHexIDs,
     clonePlaceableHexIDs,
   } = usePlayContext()
-
+  const { possibleFireLineAttacks, chosenSpecialAttack, selectSpecialAttack } =
+    useSpecialAttackContext()
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
@@ -87,8 +90,7 @@ export const MapHexes = () => {
     }
     if (isOrderMarkerPhase) {
       return calcOrderMarkerHexClassNames({
-        selectedMapHex,
-        hex,
+        terrain: hex.terrain,
       })
     }
     if (isRoundOfPlayPhase) {
@@ -96,16 +98,15 @@ export const MapHexes = () => {
         selectedUnitID,
         hex,
         playerID,
-        revealedGameCard,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
         isMovementStage,
         isWaterCloneStage,
+        isFireLineSAStage,
         boardHexes,
         gameUnits,
-        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
         selectedUnitAttackRange,
