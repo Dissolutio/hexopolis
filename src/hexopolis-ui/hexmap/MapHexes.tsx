@@ -20,14 +20,16 @@ import Hexagon from './Hexagon'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { HexIDText } from './HexIDText'
 
-type MapHexesProps = {
-  hexSize: number
-}
-
-export const MapHexes = ({ hexSize }: MapHexesProps) => {
+export const MapHexes = () => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameArmyCards, startZones, gameUnits, unitsMoved } =
-    useBgioG()
+  const {
+    boardHexes,
+    hexMap: { hexSize },
+    gameArmyCards,
+    startZones,
+    gameUnits,
+    unitsMoved,
+  } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
@@ -45,6 +47,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     editingBoardHexes,
     activeTailPlacementUnitID,
     tailPlaceables,
+    startZoneForMy2HexUnits,
   } = usePlacementContext()
   const {
     selectedUnitMoveRange,
@@ -57,10 +60,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     clonePlaceableHexIDs,
   } = usePlayContext()
 
-  // computed
-  const startZoneForMy2HexUnits = startZones[playerID].filter((sz) => {
-    return selectValidTailHexes(sz, boardHexes).length > 0
-  })
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {

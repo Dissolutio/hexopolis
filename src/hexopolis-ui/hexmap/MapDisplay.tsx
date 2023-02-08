@@ -90,7 +90,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
         >
           <g className="hexgrid-layout">
-            <MapHexes hexSize={hexSize} />
+            <MapHexes />
           </g>
         </svg>
       </HexgridLayout>

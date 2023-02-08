@@ -30,6 +30,7 @@ type PlacementContextValue = {
     sourceHex: BoardHex
   ) => void
   editingBoardHexes: BoardHexesUnitDeployment
+  startZoneForMy2HexUnits: string[]
   onResetPlacementState: () => void
 }
 
@@ -41,6 +42,7 @@ const PlacementContextProvider = ({
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
+    startZones,
     gameUnits,
     myUnits,
     myCards,
@@ -68,6 +70,9 @@ const PlacementContextProvider = ({
           },
         }
       }, {})
+  const startZoneForMy2HexUnits = startZones[playerID].filter((sz) => {
+    return selectValidTailHexes(sz, boardHexes).length > 0
+  })
   const initialEditingBoardHexesIfTotallyReset = {}
   const myUnitIdsAlreadyOnMap = () =>
     Object.values(boardHexes)
@@ -287,6 +292,7 @@ const PlacementContextProvider = ({
         onClickPlacementUnit,
         onClickPlacementHex,
         editingBoardHexes,
+        startZoneForMy2HexUnits,
         onResetPlacementState,
       }}
     >
