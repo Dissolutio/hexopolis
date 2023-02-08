@@ -10,7 +10,10 @@ import {
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
-import { selectGameArmyCardAttacksAllowed } from 'game/selector/card-selectors'
+import {
+  selectGameArmyCardAttacksAllowed,
+  selectIfGameArmyCardHasAbility,
+} from 'game/selector/card-selectors'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
@@ -21,6 +24,12 @@ export const RopAttackControls = () => {
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
     (ability) => ability.name === 'Water Clone'
   )
+  const hasFireLine = revealedGameCard
+    ? selectIfGameArmyCardHasAbility(
+        'Fire Line Special Attack',
+        revealedGameCard
+      )
+    : false
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
@@ -78,6 +87,17 @@ export const RopAttackControls = () => {
         <StyledButtonWrapper>
           <GreenButton onClick={onClickUseWaterClone}>
             Use Water Clone
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasFireLine && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.fireLineSA)
+            }}
+          >
+            Use Fire Line Special Attack
           </GreenButton>
         </StyledButtonWrapper>
       )}

@@ -27,6 +27,7 @@ import {
   IdlePlaceArmorSpiritControls,
   PlaceArmorSpiritControls,
 } from './rop/PlaceArmorSpirit'
+import { FireLineControls } from './rop/FireLineSAControls'
 
 export const RoundOfPlayControls = () => {
   const {
@@ -40,6 +41,7 @@ export const RoundOfPlayControls = () => {
     isIdlePlacingAttackSpiritStage,
     isPlacingArmorSpiritStage,
     isIdlePlacingArmorSpiritStage,
+    isFireLineSAStage,
   } = useBgioCtx()
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
@@ -112,6 +114,13 @@ export const RoundOfPlayControls = () => {
     return (
       <>
         <IdlePlaceArmorSpiritControls />
+      </>
+    )
+  }
+  if (isFireLineSAStage) {
+    return (
+      <>
+        <FireLineControls />
       </>
     )
   }
