@@ -12,7 +12,12 @@ import {
   RangeScan,
 } from './types'
 import { generateHexID } from './constants'
-import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
+import {
+  hexUtilsDistance,
+  hexUtilsNeighbor,
+  hexUtilsNeighbors,
+  hexUtilsNeighborsWithDirections,
+} from './hex-utils'
 import {
   selectIfGameArmyCardHasDoubleAttack,
   selectIfGameArmyCardHasThorianSpeed,
@@ -92,6 +97,56 @@ export function selectHexNeighbors(
       return exists ? { ...boardHexes[generateHexID(hex)] } : null
     })
     .filter((item) => Boolean(item)) as BoardHex[]
+}
+
+export function selectHexNeighborsWithDirections(
+  // this fn actually returns an array of arrays, [string, number] where the string is the hexID and the number is the direction
+  // the any[] is to get around a Typescript error I don't understand
+  startHexID: string,
+  boardHexes: BoardHexes
+): any[] {
+  const startHex = boardHexes?.[startHexID]
+  if (!startHex) return []
+  const neighborsWithDirections = hexUtilsNeighborsWithDirections(startHex)
+  const initialThing = Object.entries(neighborsWithDirections)
+  const result: any[] = initialThing.reduce((acc: any[], entry) => {
+    const isExistingBoardHex = Object.keys(boardHexes).includes(entry[0])
+    const newEntry = [entry[0], entry[1]]
+    return isExistingBoardHex ? [...acc, newEntry] : acc
+  }, [])
+  return result
+}
+export function selectHexesInLineFromHex(
+  // this fn actually returns an array of arrays, [string, number] where the string is the hexID and the number is the direction
+  // the any[] is to get around a Typescript error I don't understand
+  startHexID: string,
+  direction: number, // 0-5 NE-E-SE-SW-E-NW
+  n: number, // the number of hexes in a line
+  boardHexes: BoardHexes
+): BoardHex[] {
+  const startHex = boardHexes?.[startHexID]
+  if (!startHex) return []
+  const startCoord: HexCoordinates = {
+    q: startHex.q,
+    r: startHex.r,
+    s: startHex.s,
+  }
+  if (n <= 1) {
+    return [startHex]
+  }
+  let theoreticalHexes: string[] = [startHex.id]
+  let lastHex = startCoord
+  for (let index = 0; index < n - 1; index++) {
+    const nextHex = hexUtilsNeighbor(lastHex, direction)
+    const element = generateHexID(nextHex)
+    theoreticalHexes.push(element)
+    lastHex = nextHex
+  }
+  const firstOneThatsNotARealHex = theoreticalHexes.findIndex(
+    (hexID) => !boardHexes[hexID]
+  )
+  theoreticalHexes = theoreticalHexes.slice(0, firstOneThatsNotARealHex)
+  return theoreticalHexes.map((hexID) => boardHexes[hexID])
 }
 export function selectIsUnitWithinNHexesOfUnit({
   startUnitID,

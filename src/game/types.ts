@@ -300,3 +300,4 @@ export type LayoutDimension = {
   spacing: number
 }
 export type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }
+export type HexNeighborsWithDirections = { [hexID: string]: number }
