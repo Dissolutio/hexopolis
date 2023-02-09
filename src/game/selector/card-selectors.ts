@@ -221,7 +221,7 @@ export const selectUnitAttackDiceForAttack = ({
     if (!finnUnit) {
       return 0
     }
-    console.log(
+    return attackerArmyCard.range === 1 &&
       '🚀 ~ file: card-selectors.ts:217 ~ finnsAttackAura ~ finnUnit',
       finnUnit.unitID
     )
