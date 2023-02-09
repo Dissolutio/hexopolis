@@ -57,7 +57,7 @@ export const FireLineControls = () => {
     rollForFireLineSpecialAttack({
       chosenFireLineAttack,
       affectedUnitIDs,
-      attackingUnitID: unitFireLining?.unitID,
+      attackerUnitID: unitFireLining?.unitID,
     })
   }
 

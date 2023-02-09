@@ -121,7 +121,7 @@ export function SpecialAttackContextProvider({
       {}
     )
     return result
-  }, [boardHexes, isMyTurn, revealedGameCard, unitFireLining.unitID])
+  }, [boardHexes, isMyTurn, revealedGameCard, unitFireLining])
 
   const chosenFireLineAttack = Object.values(possibleFireLineAttacks)?.find?.(
     (pa) => {
