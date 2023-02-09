@@ -139,6 +139,9 @@ export function calcRopHexClassNames({
   selectedUnitAttackRange,
   clonerHexIDs,
   clonePlaceableHexIDs,
+  targetableHexIDs,
+  malaffectedHexIDs,
+  selectedFireLinePathHexIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
@@ -157,6 +160,9 @@ export function calcRopHexClassNames({
   selectedUnitAttackRange: string[]
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
+  targetableHexIDs: string[]
+  malaffectedHexIDs: string[]
+  selectedFireLinePathHexIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -189,10 +195,6 @@ export function calcRopHexClassNames({
 
   //phase: ROP-attack
   if (isAttackingStage) {
-    const isEndHexOccupied = Boolean(hexUnitID)
-    const endHexUnitPlayerID = hexUnit?.playerID
-    const isEndHexEnemyOccupied =
-      isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
     // Highlight selected unit
     if (selectedUnitID && isSelectedUnitHex(hex)) {
       classNames = classNames.concat(' maphex__selected-card-unit--active ')
@@ -254,11 +256,14 @@ export function calcRopHexClassNames({
   }
   //  phase: ROP-fire-line Special Attack
   if (isFireLineSAStage) {
-    if ([''].includes(hex.id)) {
-      classNames = classNames.concat(' hexagon-attack-selectable ')
+    if (targetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
     }
-    if ([''].includes(hex.id)) {
+    if (malaffectedHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-malaffected ')
+    }
+    if (selectedFireLinePathHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
   return classNames

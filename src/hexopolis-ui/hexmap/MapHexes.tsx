@@ -55,20 +55,28 @@ export const MapHexes = () => {
     selectedUnitMoveRange,
     selectedUnitAttackRange,
     onClickTurnHex,
-    revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
     clonerHexIDs,
     clonePlaceableHexIDs,
   } = usePlayContext()
-  const { possibleFireLineAttacks, chosenSpecialAttack, selectSpecialAttack } =
-    useSpecialAttackContext()
+  const {
+    malaffectedHexIDs,
+    selectedFireLinePathHexIDs,
+    targetableHexIDs,
+    selectSpecialAttack,
+  } = useSpecialAttackContext()
+
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
     }
-    if (isRoundOfPlayPhase) {
+    if (isFireLineSAStage) {
+      if (targetableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isRoundOfPlayPhase) {
       onClickTurnHex?.(event, sourceHex)
     }
   }
@@ -112,6 +120,9 @@ export const MapHexes = () => {
         selectedUnitAttackRange,
         clonerHexIDs,
         clonePlaceableHexIDs,
+        targetableHexIDs,
+        malaffectedHexIDs,
+        selectedFireLinePathHexIDs,
       })
     }
   }

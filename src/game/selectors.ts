@@ -37,14 +37,27 @@ export function selectTailHexForUnit(unitID: string, boardHexes: BoardHexes) {
 }
 export function selectUnitForHex(
   hexID: string,
-  gameUnits: GameUnits,
-  boardHexes: BoardHexes
+  boardHexes: BoardHexes,
+  gameUnits: GameUnits
 ): GameUnit {
   const hex = boardHexes?.[hexID]
   const unitID = hex?.occupyingUnitID
   const unit = gameUnits?.[unitID]
   return unit
 }
+export function selectUnitGameCardForHex(
+  hexID: string,
+  boardHexes: BoardHexes,
+  gameArmyCards: GameArmyCard[],
+  gameUnits: GameUnits
+): GameArmyCard | undefined {
+  const hex = boardHexes?.[hexID]
+  const unitID = hex?.occupyingUnitID
+  const unit = gameUnits?.[unitID]
+  const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+  return card
+}
+// TODO: the params on this fn are backwards by my convention of most specific to least, then G in usual order
 export function selectGameCardByID(
   gameArmyCards: GameArmyCard[],
   gameCardID: string
@@ -349,7 +362,6 @@ export function selectEngagementsForHex({
   friendly?: boolean // if true, then only return friendly units
   override?: {
     overrideUnitID: string
-    // probably a problem that this is optional
     overrideTailHexID?: string
   }
 }) {

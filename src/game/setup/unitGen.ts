@@ -27,7 +27,6 @@ const grimnakID = 'hs1015'
 const player1Ids = [
   // zettianID,
   // syvarrisID,
-  // raelinOneID,
   // marroID,
   mimringID,
   deathwalker9000ID,
@@ -37,12 +36,13 @@ const player1Ids = [
 const player2Ids = [
   // carrID,
   // kravMagaID,
-  // finnID,
-  // thorgrimID,
+  finnID,
+  thorgrimID,
   // izumiID,
-  grimnakID,
-  tarnID,
-  negoksaID,
+  // raelinOneID,
+  // grimnakID,
+  // tarnID,
+  // negoksaID,
 ]
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${player1Ids[0]}`
@@ -51,7 +51,7 @@ const p0_2 = `p0_${player1Ids[0]}`
 const p0_X = `p0_${player1Ids[0]}`
 
 const p1_0 = `p1_${player2Ids[0]}`
-const p1_1 = `p1_${player2Ids[0]}`
+const p1_1 = `p1_${player2Ids[1]}`
 const p1_2 = `p1_${player2Ids[0]}`
 const p1_X = `p1_${player2Ids[0]}`
 

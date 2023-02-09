@@ -5,13 +5,21 @@ import {
   selectTailHexForUnit,
   selectHexNeighborsWithDirections,
   selectHexesInLineFromHex,
+  selectUnitForHex,
+  selectGameCardByID,
 } from '../../game/selectors'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
-import { PossibleAttack } from 'hexopolis-ui/controls/rop/FireLineSAControls'
-import { uniq } from 'lodash'
+import { uniq, uniqBy } from 'lodash'
 import { usePlayContext } from './play-phase-context'
 import { useBgioCtx, useBgioG } from 'bgio-contexts'
+import { BoardHex, GameUnit } from 'game/types'
 
+export type PossibleAttack = {
+  affectedUnitIDs: string[]
+  clickableHexID: string
+  direction: number
+  line: BoardHex[]
+}
 type SpecialAttackContextProviderProps = {
   children: React.ReactNode
 }
@@ -21,6 +29,12 @@ const SpecialAttackContext = React.createContext<
       chosenSpecialAttack: string
       possibleFireLineAttacks: PossibleAttack[]
       selectSpecialAttack: (id: string) => void
+      unitFireLining: GameUnit | undefined
+      chosenFireLineAttack: PossibleAttack | undefined
+      malaffectedHexIDs: string[]
+      selectedFireLinePathHexIDs: string[]
+      targetableHexIDs: string[]
+      affectedSelectedUnitNames: string[]
     }
   | undefined
 >(undefined)
@@ -30,11 +44,13 @@ export function SpecialAttackContextProvider({
 }: SpecialAttackContextProviderProps) {
   const { revealedGameCard, revealedGameCardUnits } = usePlayContext()
   const { isMyTurn } = useBgioCtx()
-  const { boardHexes } = useBgioG()
+  const { boardHexes, gameUnits, gameArmyCards } = useBgioG()
   const [chosenSpecialAttack, setChosenSpecialAttack] = useState<string>('')
   const selectSpecialAttack = (id: string) => {
     setChosenSpecialAttack(id)
   }
+  const unitFireLining = revealedGameCardUnits?.[0]
+
   const possibleFireLineAttacks: PossibleAttack[] = useMemo(() => {
     const hasFireLine = selectIfGameArmyCardHasAbility(
       'Fire Line Special Attack',
@@ -51,7 +67,6 @@ export function SpecialAttackContextProvider({
     if (!isMyTurn || !hasFireLine || !revealedGameCard) {
       return []
     }
-    const unitFireLining = revealedGameCardUnits?.[0]
     const headHex = selectHexForUnit(unitFireLining.unitID, boardHexes)
     const tailHex = selectTailHexForUnit(unitFireLining.unitID, boardHexes)
     const unitsNeighborHexIDAndDirectionPairs = [
@@ -81,11 +96,12 @@ export function SpecialAttackContextProvider({
         const affectedUnitIDs = uniq(
           lineOfBoardHexes.map((hex) => hex.occupyingUnitID).filter((h) => !!h)
         )
-        const theKeyFor6NormalHexes = lineOfBoardHexes[0].id
-        const theKeyFor2SpecialHexes = lineOfBoardHexes[1].id
+        const theKeyFor6NormalHexes = lineOfBoardHexes[0]?.id
+        const theKeyFor2SpecialHexes = lineOfBoardHexes[1]?.id
         const direction = idDirectionPair[1]
         // this is when we do the adjustment for the 2 special hexes, and instead use the second hex in the line as the key, if there is a second hex
-        if (specialIDs.includes(idDirectionPair[0])) {
+        // if its a special ID AND there is a second hex in the line, then use the second hex as the key
+        if (specialIDs.includes(idDirectionPair[0]) && theKeyFor2SpecialHexes) {
           acc[theKeyFor2SpecialHexes] = {
             clickableHexID: theKeyFor2SpecialHexes,
             direction,
@@ -105,13 +121,61 @@ export function SpecialAttackContextProvider({
       {}
     )
     return result
-  }, [boardHexes, isMyTurn, revealedGameCard, revealedGameCardUnits])
+  }, [boardHexes, isMyTurn, revealedGameCard, unitFireLining.unitID])
+
+  const chosenFireLineAttack = Object.values(possibleFireLineAttacks)?.find?.(
+    (pa) => {
+      return pa.clickableHexID === chosenSpecialAttack
+    }
+  )
+  const selectedFireLinePathHexIDs =
+    chosenFireLineAttack?.line?.map?.((hex) => hex.id) ?? []
+
+  const targetableHexIDs =
+    Object.values(possibleFireLineAttacks)?.map?.((pa) => pa.clickableHexID) ??
+    []
+  const allMalaffectedHexIDs =
+    (
+      Object.values(possibleFireLineAttacks)?.map?.((pa) =>
+        pa?.line?.map?.((hex) => hex.id)
+      ) ?? []
+    )?.flat() ?? []
+  const malaffectedHexIDs = allMalaffectedHexIDs.filter(
+    (id) => !targetableHexIDs.includes(id)
+  )
+  const affectedUnits = uniqBy(
+    selectedFireLinePathHexIDs
+      .map((id) => {
+        const hex = boardHexes[id]
+        const unit = selectUnitForHex(hex.id, boardHexes, gameUnits)
+        const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+        if (!card || !unit || !hex) {
+          return undefined
+        }
+        return { ...unit, singleName: card?.singleName }
+      })
+      .filter((unit) => !!unit),
+    'unitID'
+  )
+
+  const affectedSelectedUnitNames = affectedUnits.map((unit) => {
+    return unit?.singleName ?? ''
+  })
+  const affectedUnitIDs = affectedUnits.map((unit) => {
+    return unit?.unitID ?? ''
+  })
   return (
     <SpecialAttackContext.Provider
       value={{
-        possibleFireLineAttacks,
         chosenSpecialAttack,
         selectSpecialAttack,
+        possibleFireLineAttacks,
+        chosenFireLineAttack,
+        malaffectedHexIDs,
+        selectedFireLinePathHexIDs,
+        targetableHexIDs,
+        affectedSelectedUnitNames,
+        unitFireLining,
       }}
     >
       {children}

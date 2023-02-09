@@ -171,6 +171,7 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
 export const selectUnitAttackDiceForAttack = ({
+  // since attackerHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   attackerHex,
   defenderHex,
   defender,
@@ -213,19 +214,11 @@ export const selectUnitAttackDiceForAttack = ({
     ) {
       return 0
     }
-    console.log(
-      '🚀 ~ file: card-selectors.ts:210 ~ finnsAttackAura ~ finnCard',
-      finnCard.name
-    )
     const finnUnit = selectUnitsForCard(finnCard.gameCardID, gameUnits)?.[0]
     if (!finnUnit) {
       return 0
     }
     return attackerArmyCard.range === 1 &&
-      '🚀 ~ file: card-selectors.ts:217 ~ finnsAttackAura ~ finnUnit',
-      finnUnit.unitID
-    )
-    return isMelee &&
       selectEngagementsForHex({
         hexID: attackerHex.id,
         boardHexes,
@@ -248,6 +241,7 @@ export const selectUnitAttackDiceForAttack = ({
 export const selectUnitDefenseDiceForAttack = ({
   defenderArmyCard,
   defenderUnit,
+  // since attackerHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   attackerHex,
   defenderHex,
   boardHexes,

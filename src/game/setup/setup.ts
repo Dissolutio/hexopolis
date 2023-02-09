@@ -51,7 +51,7 @@ function makeTestScenario(): GameState {
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
   const map = makeHexagonShapedMap({
-    mapSize: 6,
+    mapSize: 3,
     withPrePlacedUnits: isDevOverrideState,
     gameUnits: transformGameArmyCardsToGameUnits(armyCards),
     flat: false,
