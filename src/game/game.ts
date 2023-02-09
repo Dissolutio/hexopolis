@@ -5,7 +5,7 @@ import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import { GameState, OrderMarker, GameUnit } from './types'
 import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
-import { testScenario } from './setup/setup'
+import { gameSetupInitialGameState } from './setup/setup'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 import {
   phaseNames,
@@ -28,7 +28,7 @@ export const HexedMeadow: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    return testScenario
+    return gameSetupInitialGameState
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',

@@ -42,7 +42,7 @@ const frequentlyChangedDevState = isDevOverrideState
       players: generateBlankPlayersState(),
     }
 //!! TEST SCENARIO
-export const testScenario = makeTestScenario()
+export const gameSetupInitialGameState = makeTestScenario()
 function makeTestScenario(): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
@@ -84,5 +84,6 @@ function makeTestScenario(): GameState {
     boardHexes: map.boardHexes,
     startZones: map.startZones,
     waterClonesPlaced: [],
+    stageQueue: [],
   }
 }
