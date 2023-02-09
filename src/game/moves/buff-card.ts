@@ -1,11 +1,13 @@
 import type { Move } from 'boardgame.io'
-import { stageNames } from '../constants'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { GameState } from '../types'
 
 export const placeAttackSpirit: Move<GameState> = (
   { G, events },
   { gameCardID }
 ) => {
+  // this stage may have been entered in a long line of similar stages
+  let newStageQueue = [...G.stageQueue]
   const indexToUpdate = G.gameArmyCards.findIndex(
     (gc) => gc.gameCardID === gameCardID
   )
@@ -15,14 +17,32 @@ export const placeAttackSpirit: Move<GameState> = (
     )
   }
   G.gameArmyCards[indexToUpdate].attack++
-  const wasCurrentPlayerAttacking =
-    G.isCurrentPlayerAttacking === true ? true : false
-  // clear isCurrentPlayerAttacking state after we use it
-  G.isCurrentPlayerAttacking = false
-  if (wasCurrentPlayerAttacking) {
+  // Next stage
+  const nextStage = newStageQueue.shift()
+  G.stageQueue = newStageQueue
+  if (nextStage?.stage === stageNames.placingAttackSpirit) {
+    const activePlayers = getActivePlayersIdleStage({
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.placingAttackSpirit,
+      idleStage: stageNames.idlePlacingAttackSpirit,
+    })
+    events.setActivePlayers({
+      value: activePlayers,
+    })
+  } else if (nextStage?.stage === stageNames.placingArmorSpirit) {
+    const activePlayers = getActivePlayersIdleStage({
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.placingArmorSpirit,
+      idleStage: stageNames.idlePlacingArmorSpirit,
+    })
+    events.setActivePlayers({
+      value: activePlayers,
+    })
+  } else if (nextStage?.stage === stageNames.attacking) {
     events.setActivePlayers({ currentPlayer: stageNames.attacking })
-  } else {
-    // we died from disengagement, can't move a dead man, and should end turn
+  }
+  // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
+  else {
     events.endTurn()
   }
 }
@@ -30,6 +50,8 @@ export const placeArmorSpirit: Move<GameState> = (
   { G, events },
   { gameCardID }
 ) => {
+  // this stage may have been entered in a long line of similar stages
+  let newStageQueue = [...G.stageQueue]
   const indexToUpdate = G.gameArmyCards.findIndex(
     (gc) => gc.gameCardID === gameCardID
   )
@@ -38,15 +60,35 @@ export const placeArmorSpirit: Move<GameState> = (
       'Placing armor spirit denied: gameCardID chosen not found in gameArmyCards'
     )
   }
+  // Apply armor spirit to chosen card
   G.gameArmyCards[indexToUpdate].defense++
-  const wasCurrentPlayerAttacking =
-    G.isCurrentPlayerAttacking === true ? true : false
-  // clear isCurrentPlayerAttacking state after we use it
-  G.isCurrentPlayerAttacking = false
-  if (wasCurrentPlayerAttacking) {
+
+  // Next stage
+  const nextStage = newStageQueue.shift()
+  G.stageQueue = newStageQueue
+  if (nextStage?.stage === stageNames.placingAttackSpirit) {
+    const activePlayers = getActivePlayersIdleStage({
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.placingAttackSpirit,
+      idleStage: stageNames.idlePlacingAttackSpirit,
+    })
+    events.setActivePlayers({
+      value: activePlayers,
+    })
+  } else if (nextStage?.stage === stageNames.placingArmorSpirit) {
+    const activePlayers = getActivePlayersIdleStage({
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.placingArmorSpirit,
+      idleStage: stageNames.idlePlacingArmorSpirit,
+    })
+    events.setActivePlayers({
+      value: activePlayers,
+    })
+  } else if (nextStage?.stage === stageNames.attacking) {
     events.setActivePlayers({ currentPlayer: stageNames.attacking })
-  } else {
-    // we died from disengagement, can't move a dead man, and should end turn
+  }
+  // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
+  else {
     events.endTurn()
   }
 }

@@ -8,7 +8,7 @@ import {
   selectTailHexForUnit,
   selectAttackerHasAttacksAllowed,
 } from '../selectors'
-import { GameState, BoardHex, GameUnit } from '../types'
+import { GameState, BoardHex, GameUnit, StageQueueItem } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import {
   selectIfGameArmyCardHasAbility,
@@ -16,7 +16,7 @@ import {
   selectUnitAttackDiceForAttack,
   selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
-import { stageNames } from '../constants'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -55,6 +55,7 @@ export const attackAction: Move<GameState> = {
     attackingUnit: GameUnit,
     defenderHex: BoardHex
   ) => {
+    let newStageQueue: StageQueueItem[] = []
     const { unitID: attackerUnitID } = attackingUnit
     const attackerGameCard = selectGameCardByID(
       G.gameArmyCards,
@@ -263,26 +264,36 @@ export const attackAction: Move<GameState> = {
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
     if (isWarriorSpirit) {
-      // mark this so after placing spirit we can get back to it
-      G.isCurrentPlayerAttacking = true
-      // TODO: Multiplayer, set stages for all other players to idle
+      // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
+      newStageQueue.push({
+        playerID: attackerGameCard.playerID,
+        stage: stageNames.attacking,
+      })
+      const activePlayers = getActivePlayersIdleStage({
+        activePlayerID: defenderGameCard.playerID,
+        activeStage: stageNames.placingAttackSpirit,
+        idleStage: stageNames.idlePlacingAttackSpirit,
+      })
       events.setActivePlayers({
-        value: {
-          [defenderGameCard.playerID]: stageNames.placingAttackSpirit,
-          [attackerGameCard.playerID]: stageNames.idlePlacingAttackSpirit,
-        },
+        value: activePlayers,
       })
     }
     if (isArmorSpirit) {
-      // mark this so after placing spirit we can get back to it
-      G.isCurrentPlayerAttacking = true
-      // TODO: Multiplayer, set stages for all other players to idle
+      // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
+      newStageQueue.push({
+        playerID: attackerGameCard.playerID,
+        stage: stageNames.attacking,
+      })
+      const activePlayers = getActivePlayersIdleStage({
+        activePlayerID: defenderGameCard.playerID,
+        activeStage: stageNames.placingArmorSpirit,
+        idleStage: stageNames.idlePlacingArmorSpirit,
+      })
       events.setActivePlayers({
-        value: {
-          [defenderGameCard.playerID]: stageNames.placingArmorSpirit,
-          [attackerGameCard.playerID]: stageNames.idlePlacingArmorSpirit,
-        },
+        value: activePlayers,
       })
     }
+    // This update of G.stageQueue technically happens before the events.setActivePlayers above
+    G.stageQueue = newStageQueue
   },
 }

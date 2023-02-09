@@ -82,3 +82,24 @@ export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
     ),
   }
 }
+const gamePlayerIDs = ['0', '1']
+const selectAllOtherGamePlayerIDs = (playerID: string) => {
+  return gamePlayerIDs.filter((id) => id !== playerID)
+}
+// Use this when you know the playerID and stage to put one player in, and need the rest to go to an idle stage
+export function getActivePlayersIdleStage({
+  activePlayerID,
+  activeStage,
+  idleStage,
+}: {
+  activePlayerID: string
+  activeStage: string
+  idleStage: string
+}) {
+  return gamePlayerIDs.reduce((prev, curr) => {
+    if (curr === activePlayerID) {
+      return { ...prev, [curr]: activeStage }
+    }
+    return { ...prev, [curr]: idleStage }
+  }, {})
+}

@@ -38,7 +38,7 @@ const player2Ids = [
   // kravMagaID,
   finnID,
   thorgrimID,
-  // izumiID,
+  izumiID,
   // raelinOneID,
   // grimnakID,
   // tarnID,
