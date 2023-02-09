@@ -279,12 +279,14 @@ export const selectUnitDefenseDiceForAttack = ({
     if (!theirRaelinUnit) {
       return 0
     }
-    return selectIsUnitWithinNHexesOfUnit({
-      startUnitID: theirRaelinUnit.unitID,
-      endUnitID: defenderUnit.unitID,
-      boardHexes,
-      n: 4,
-    })
+    // raelin does benefit from her own defensive aura
+    return theirRaelinUnit.unitID !== defenderUnit.unitID &&
+      selectIsUnitWithinNHexesOfUnit({
+        startUnitID: theirRaelinUnit.unitID,
+        endUnitID: defenderUnit.unitID,
+        boardHexes,
+        n: 4,
+      })
       ? 2
       : 0
   }
