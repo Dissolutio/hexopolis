@@ -43,6 +43,12 @@ export interface GameState {
   /* END */
   waterCloneRoll?: WaterCloneRoll
   waterClonesPlaced: WaterClonesPlaced
+  // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
+  stageQueue: StageQueueItem[]
+}
+export type StageQueueItem = {
+  stage: string
+  playerID: string
 }
 // for secret state
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
