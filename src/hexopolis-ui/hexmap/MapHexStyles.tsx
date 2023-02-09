@@ -132,7 +132,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke-width: 0.6;
   }
 
-  // PHASE: ROP-all stages
+  // PHASE: ROP-most stages
   // highlight selectable units for selected card: stroke, stroke-width
   .maphex__selected-card-unit--selectable > g polygon {
     stroke: var(--sub-white);
@@ -207,5 +207,25 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     fill-opacity: 1;
     filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
       drop-shadow(-2.5px -2.5px 2px var(--neon-green));
+  }
+
+  //PHASE: ROP-fire-line-special-attack: fill, fill-opacity, drop-shadow
+  .hexagon-selectable > g polygon {
+    fill: var(--neon-green);
+    fill-opacity: 1;
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-green));
+  }
+  .hexagon-malaffected > g polygon {
+    fill: var(--neon-yellow);
+    fill-opacity: 0.6;
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-orange))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-orange));
+  }
+  .hexagon-selected-special-attack > g polygon {
+    fill: var(--neon-red);
+    fill-opacity: 0.6;
+    filter: drop-shadow(2.5px 2.5px 2px var(--neon-red))
+      drop-shadow(-2.5px -2.5px 2px var(--neon-red));
   }
 `

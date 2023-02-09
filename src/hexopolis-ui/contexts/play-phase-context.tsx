@@ -89,6 +89,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isMovementStage,
     isAttackingStage,
     isWaterCloneStage,
+    isMyTurn,
   } = useBgioCtx()
   const {
     moves: { moveAction, attackAction, attemptDisengage, placeWaterClone },

@@ -22,6 +22,7 @@ import { ChatMessage } from 'boardgame.io'
 import { GameState } from 'game/types'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/App'
 import { TabsComponent } from './controls/TabsComponent'
+import { SpecialAttackContextProvider } from './contexts/special-attack-context'
 
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
@@ -81,14 +82,15 @@ export const Board = ({
                       <UIContextProvider>
                         <PlacementContextProvider>
                           <PlayContextProvider>
-                            <Layout mapWrapperRef={mapWrapperRef}>
-                              <HeaderNav
-                                isLocalOrDemoGame={isLocalOrDemoGame}
-                              />
-
-                              <MapDisplay mapWrapperRef={mapWrapperRef} />
-                              <TabsComponent />
-                            </Layout>
+                            <SpecialAttackContextProvider>
+                              <Layout mapWrapperRef={mapWrapperRef}>
+                                <HeaderNav
+                                  isLocalOrDemoGame={isLocalOrDemoGame}
+                                />
+                                <MapDisplay mapWrapperRef={mapWrapperRef} />
+                                <TabsComponent />
+                              </Layout>
+                            </SpecialAttackContextProvider>
                           </PlayContextProvider>
                         </PlacementContextProvider>
                       </UIContextProvider>

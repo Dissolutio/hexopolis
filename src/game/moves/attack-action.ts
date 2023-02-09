@@ -60,7 +60,6 @@ export const attackAction: Move<GameState> = {
       G.gameArmyCards,
       attackingUnit.gameCardID
     )
-    const unitName = attackerGameCard?.name ?? ''
     const attackerHex = selectHexForUnit(attackingUnit.unitID, G.boardHexes)
     const attackingUnitTailHex = selectTailHexForUnit(
       attackingUnit.unitID,
@@ -155,10 +154,8 @@ export const attackAction: Move<GameState> = {
     })
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds
-    const attackRoll = rollHeroscapeDice(attackRolled, random)
-    const skulls = attackRoll.skulls
-    const defenseRoll = rollHeroscapeDice(defenseRolled, random)
-    const shields = defenseRoll.shields
+    const { skulls } = rollHeroscapeDice(attackRolled, random)
+    const { shields } = rollHeroscapeDice(defenseRolled, random)
 
     // SPECIAL ABILITIES TIME XD
     const isStealthDodge =
@@ -238,7 +235,6 @@ export const attackAction: Move<GameState> = {
       } else {
         G.gameUnits[attackingUnit.unitID].wounds += counterStrikeWounds
       }
-      // TODO: add counter-strike to game log
     }
     // update units attacked
     unitsAttacked[attackerUnitID] = [
@@ -252,7 +248,7 @@ export const attackAction: Move<GameState> = {
       type: 'attack',
       id: attackId,
       unitID: attackerUnitID,
-      unitName,
+      unitName: attackerGameCard.name,
       targetHexID: defenderHexID,
       defenderUnitName,
       attackRolled,

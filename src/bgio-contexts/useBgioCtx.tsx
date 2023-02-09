@@ -24,6 +24,7 @@ type BgioCtxValue = BoardProps['ctx'] & {
   isPlacingArmorSpiritStage: boolean
   isIdlePlacingArmorSpiritStage: boolean
   isAttackingStage: boolean
+  isFireLineSAStage: boolean
   isGameover: boolean
 }
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
@@ -61,6 +62,9 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const isDisengagementSwipeStage: boolean =
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.disengagementSwipe
+  const isFireLineSAStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.fireLineSA
   const isGameover: boolean = Boolean(ctx.gameover)
   return (
     <BgioCtxContext.Provider
@@ -80,6 +84,7 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
         isPlacingArmorSpiritStage,
         isIdlePlacingArmorSpiritStage,
         isAttackingStage,
+        isFireLineSAStage,
         isGameover,
       }}
     >

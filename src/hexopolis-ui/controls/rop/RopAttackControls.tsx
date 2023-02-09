@@ -10,7 +10,10 @@ import {
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
-import { selectGameArmyCardAttacksAllowed } from 'game/selector/card-selectors'
+import {
+  selectGameArmyCardAttacksAllowed,
+  selectIfGameArmyCardHasAbility,
+} from 'game/selector/card-selectors'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
@@ -21,6 +24,12 @@ export const RopAttackControls = () => {
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
     (ability) => ability.name === 'Water Clone'
   )
+  const hasFireLine = revealedGameCard
+    ? selectIfGameArmyCardHasAbility(
+        'Fire Line Special Attack',
+        revealedGameCard
+      )
+    : false
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
@@ -32,7 +41,8 @@ export const RopAttackControls = () => {
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
-  const isAllAttacksUsed = totalNumberOfAttacksAllowed <= 0
+  const attacksLeft = totalNumberOfAttacksAllowed - attacksUsed
+  const isAllAttacksUsed = attacksLeft <= 0
   const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
@@ -81,18 +91,29 @@ export const RopAttackControls = () => {
           </GreenButton>
         </StyledButtonWrapper>
       )}
+      {isNoAttacksUsed && hasFireLine && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.fireLineSA)
+            }}
+          >
+            Use Fire Line Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
 
       {isAllAttacksUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndTurnButtonClick}
-          confirmText={'End Turn'}
+          confirmText={'All attacks used, end turn'}
           noResetButton
         />
       ) : (
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
-          resetText={`End Turn, skip my ${totalNumberOfAttacksAllowed} attack${
-            totalNumberOfAttacksAllowed !== 1 ? 's' : ''
+          resetText={`End Turn, skip my ${attacksLeft} attack${
+            attacksLeft !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />

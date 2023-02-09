@@ -25,21 +25,21 @@ const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
-  marroID,
   // zettianID,
   // syvarrisID,
-  // raelinOneID,
+  // marroID,
   mimringID,
-  // deathwalker9000ID,
-  // drake1ID,
-  // airbornID,
+  deathwalker9000ID,
+  drake1ID,
+  airbornID,
 ]
 const player2Ids = [
   // carrID,
   // kravMagaID,
-  izumiID,
   finnID,
-  // thorgrimID,
+  thorgrimID,
+  // izumiID,
+  // raelinOneID,
   // grimnakID,
   // tarnID,
   // negoksaID,
@@ -51,7 +51,7 @@ const p0_2 = `p0_${player1Ids[0]}`
 const p0_X = `p0_${player1Ids[0]}`
 
 const p1_0 = `p1_${player2Ids[0]}`
-const p1_1 = `p1_${player2Ids[0]}`
+const p1_1 = `p1_${player2Ids[1]}`
 const p1_2 = `p1_${player2Ids[0]}`
 const p1_X = `p1_${player2Ids[0]}`
 

@@ -25,6 +25,7 @@ export const stageNames = {
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
   placingArmorSpirit: 'placingArmorSpirit',
   idlePlacingArmorSpirit: 'idlePlacingArmorSpirit',
+  fireLineSA: 'fireLineSA',
 }
 
 export const OM_COUNT = 3
