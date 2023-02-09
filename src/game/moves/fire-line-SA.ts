@@ -10,10 +10,10 @@ import {
   selectTailHexForUnit,
 } from '../selectors'
 import { PossibleAttack } from '../../hexopolis-ui/contexts/special-attack-context'
-import { GameState } from '../types'
+import { GameState, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
-import { encodeGameLogMessage } from 'game/gamelog'
-import { stageNames } from 'game/constants'
+import { encodeGameLogMessage } from '../gamelog'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
 
 export const rollForFireLineSpecialAttack: Move<GameState> = (
   { G, events, random },
@@ -28,7 +28,8 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
   }
 ) => {
   // 0. get ready
-  const attackRolled = 4
+  let newStageQueue: StageQueueItem[] = []
+  const attackRolled = 40
   const unitsAttacked = { ...G.unitsAttacked }
   const attackerHex = selectHexForUnit(attackerUnitID, G.boardHexes)
   const attackerGameCard = selectGameCardByID(
@@ -151,6 +152,7 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
 
     G.unitsAttacked = unitsAttacked
     // update game log
+    // TODO: pull this game log out of the loop like stageQueue
     const gameLogForThisAttack = encodeGameLogMessage({
       type: 'attack',
       id: attackId,
@@ -168,26 +170,42 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
     if (isWarriorSpirit) {
-      // mark this so after placing spirit we can get back to it
-      G.isCurrentPlayerAttacking = true
-      // TODO: Multiplayer, set stages for all other players to idle
-      events.setActivePlayers({
-        value: {
-          [defenderGameCard.playerID]: stageNames.placingAttackSpirit,
-          [attackerGameCard.playerID]: stageNames.idlePlacingAttackSpirit,
-        },
+      newStageQueue.push({
+        playerID: defenderGameCard.playerID,
+        stage: stageNames.placingAttackSpirit,
       })
     }
     if (isArmorSpirit) {
-      // mark this so after placing spirit we can get back to it
-      G.isCurrentPlayerAttacking = true
-      // TODO: Multiplayer, set stages for all other players to idle
-      events.setActivePlayers({
-        value: {
-          [defenderGameCard.playerID]: stageNames.placingArmorSpirit,
-          [attackerGameCard.playerID]: stageNames.idlePlacingArmorSpirit,
-        },
+      newStageQueue.push({
+        playerID: defenderGameCard.playerID,
+        stage: stageNames.placingArmorSpirit,
       })
     }
+    // END LOOP
   })
+
+  // at this point, newStageQueue could be populated with many stages
+  const nextStage = newStageQueue.shift()
+  G.stageQueue = newStageQueue
+  if (nextStage?.stage === stageNames.placingAttackSpirit) {
+    const activePlayers = getActivePlayersIdleStage({
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.placingAttackSpirit,
+      idleStage: stageNames.idlePlacingAttackSpirit,
+    })
+    events.setActivePlayers({ value: activePlayers })
+  }
+  if (nextStage?.stage === stageNames.placingArmorSpirit) {
+    const activePlayers = getActivePlayersIdleStage({
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.placingArmorSpirit,
+      idleStage: stageNames.idlePlacingArmorSpirit,
+    })
+    events.setActivePlayers({
+      value: activePlayers,
+    })
+  }
+  if (!nextStage) {
+    events.endTurn()
+  }
 }

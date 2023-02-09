@@ -19,8 +19,12 @@ export const FireLineControls = () => {
   const { events } = useBgioEvents()
   const { revealedGameCard: mimringsCard } = usePlayContext()
   const { boardHexes, gameArmyCards, gameUnits } = useBgioG()
-  const { chosenFireLineAttack, selectedFireLinePathHexIDs, unitFireLining } =
-    useSpecialAttackContext()
+  const {
+    chosenFireLineAttack,
+    selectedFireLinePathHexIDs,
+    unitFireLining,
+    selectSpecialAttack,
+  } = useSpecialAttackContext()
   const affectedUnits = uniqBy(
     selectedFireLinePathHexIDs
       .map((id) => {
@@ -35,7 +39,9 @@ export const FireLineControls = () => {
       .filter((unit) => !!unit),
     'unitID'
   )
-
+  const friendlyAffectedUnitsCount = affectedUnits.filter((unit) => {
+    return unit?.playerID === unitFireLining?.playerID
+  }).length
   const affectedSelectedUnitNames = affectedUnits.map((unit) => {
     return unit?.singleName ?? ''
   })
@@ -48,6 +54,7 @@ export const FireLineControls = () => {
   }
       `
   const goBackToAttack = () => {
+    selectSpecialAttack('')
     events?.setStage?.(stageNames.attacking)
   }
   const affectedUnitIDs = affectedUnits.map((unit) => {
@@ -70,11 +77,21 @@ export const FireLineControls = () => {
       <StyledControlsP>
         The current path will hit {affectedUnitNamesDisplay}
       </StyledControlsP>
+      {friendlyAffectedUnitsCount > 0 && (
+        <StyledControlsP style={{ color: 'var(--error-red)' }}>
+          {`${friendlyAffectedUnitsCount} FRIENDLY UNIT${
+            friendlyAffectedUnitsCount === 1 ? '' : 'S'
+          } WILL BE HIT`}
+        </StyledControlsP>
+      )}
       <StyledButtonWrapper>
         <GreenButton onClick={goBackToAttack}>
           Go back to normal attack
         </GreenButton>
-        <RedButton onClick={confirmChosenAttack}>
+        <RedButton
+          onClick={confirmChosenAttack}
+          disabled={!chosenFireLineAttack}
+        >
           Flame on! (confirm selected attack path)
         </RedButton>
       </StyledButtonWrapper>
