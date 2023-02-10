@@ -29,15 +29,15 @@ const player1Ids = [
   // syvarrisID,
   // marroID,
   // mimringID,
-  // finnID,
-  deathwalker9000ID,
   airbornID,
+  finnID,
+  deathwalker9000ID,
   drake1ID,
 ]
 const player2Ids = [
   // carrID,
   // kravMagaID,
-  // thorgrimID,
+  thorgrimID,
   // izumiID,
   // raelinOneID,
   grimnakID,

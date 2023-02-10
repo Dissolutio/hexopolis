@@ -46,7 +46,7 @@ export function SpecialAttackContextProvider({
   children,
 }: SpecialAttackContextProviderProps) {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameUnits, gameArmyCards } = useBgioG()
+  const { boardHexes, gameUnits, gameArmyCards, unitsAttacked } = useBgioG()
   const { isMyTurn, isGrenadeSAStage, isExplosionSAStage } = useBgioCtx()
   const { revealedGameCard, revealedGameCardUnits, selectedUnit } =
     usePlayContext()
@@ -67,11 +67,11 @@ export function SpecialAttackContextProvider({
       revealedGameCard
     )
     const headHex = selectHexForUnit(
-      singleUnitOfRevealedGameCard.unitID,
+      singleUnitOfRevealedGameCard?.unitID ?? '',
       boardHexes
     )
     const tailHex = selectTailHexForUnit(
-      singleUnitOfRevealedGameCard.unitID,
+      singleUnitOfRevealedGameCard?.unitID ?? '',
       boardHexes
     )
     // 0. This attack is illustrated in the ROTV 2nd Edition Rules(p. 15), it can affect stacked hexes in 3D (if this game ever gets that far)
@@ -209,9 +209,13 @@ export function SpecialAttackContextProvider({
     const unitToUse = isGrenadeSAStage
       ? selectedUnit
       : singleUnitOfRevealedGameCard
+    const unitAlreadyAttacked =
+      Boolean(unitToUse) &&
+      Object.keys(unitsAttacked).includes(unitToUse.unitID)
     const hasExplosion =
       selectIfGameArmyCardHasAbility('Explosion Special Attack', cardToUse) ||
       (!cardToUse?.hasThrownGrenade &&
+        !unitAlreadyAttacked &&
         selectIfGameArmyCardHasAbility('Grenade Special Attack', cardToUse))
     // deathwalker 9000 & AirborneElite are 1-hex figures
     const headHex = selectHexForUnit(unitToUse?.unitID ?? '', boardHexes)
