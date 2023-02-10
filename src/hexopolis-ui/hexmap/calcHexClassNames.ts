@@ -129,7 +129,6 @@ export function calcRopHexClassNames({
   isFireLineSAStage,
   selectedUnitID,
   hex,
-  playerID,
   revealedGameCardUnits,
   revealedGameCardUnitIDs,
   boardHexes,
@@ -150,7 +149,6 @@ export function calcRopHexClassNames({
   isFireLineSAStage: boolean
   selectedUnitID: string
   hex: BoardHex
-  playerID: string
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
   boardHexes: BoardHexes

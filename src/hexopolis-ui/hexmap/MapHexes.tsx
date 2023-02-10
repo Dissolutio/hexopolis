@@ -105,7 +105,6 @@ export const MapHexes = () => {
       return calcRopHexClassNames({
         selectedUnitID,
         hex,
-        playerID,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         isMyTurn,
