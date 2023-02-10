@@ -28,7 +28,7 @@ const player1Ids = [
   // zettianID,
   // syvarrisID,
   // marroID,
-  mimringID,
+  // mimringID,
   deathwalker9000ID,
   drake1ID,
   airbornID,
@@ -36,13 +36,13 @@ const player1Ids = [
 const player2Ids = [
   // carrID,
   // kravMagaID,
-  finnID,
-  thorgrimID,
-  izumiID,
+  // finnID,
+  // thorgrimID,
+  // izumiID,
   // raelinOneID,
-  // grimnakID,
-  // tarnID,
-  // negoksaID,
+  grimnakID,
+  tarnID,
+  negoksaID,
 ]
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${player1Ids[0]}`
