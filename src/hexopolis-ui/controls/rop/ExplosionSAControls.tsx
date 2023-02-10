@@ -6,27 +6,28 @@ import {
 import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
-import { CardAbility } from 'game/types'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
-import { uniqBy } from 'lodash'
+import { AbilityReadout } from './FireLineSAControls'
 import { selectGameCardByID, selectUnitForHex } from 'game/selectors'
+import { uniqBy } from 'lodash'
 
-export const FireLineControls = () => {
+export const ExplosionSAControls = () => {
   const {
-    moves: { rollForFireLineSpecialAttack },
+    moves: { rollForExplosionSpecialAttack },
   } = useBgioMoves()
   const { events } = useBgioEvents()
-  const { revealedGameCard: mimringsCard } = usePlayContext()
+  const { revealedGameCard: attackersCard } = usePlayContext()
   const { boardHexes, gameArmyCards, gameUnits } = useBgioG()
   const {
     selectSpecialAttack,
-    singleUnitOfRevealedGameCard: mimringUnit,
-    chosenFireLineAttack,
-    fireLineSelectedHexIDs,
+    singleUnitOfRevealedGameCard: deathwalker9000Unit,
+    explosionAffectedHexIDs,
+    chosenExplosionAttack,
   } = useSpecialAttackContext()
+
   const affectedUnits = uniqBy(
-    fireLineSelectedHexIDs
+    explosionAffectedHexIDs
       .map((id) => {
         const hex = boardHexes[id]
         const unit = selectUnitForHex(hex.id, boardHexes, gameUnits)
@@ -40,7 +41,7 @@ export const FireLineControls = () => {
     'unitID'
   )
   const friendlyAffectedUnitsCount = affectedUnits.filter((unit) => {
-    return unit?.playerID === mimringUnit?.playerID
+    return unit?.playerID === deathwalker9000Unit?.playerID
   }).length
   const affectedSelectedUnitNames = affectedUnits.map((unit) => {
     return unit?.singleName ?? ''
@@ -57,23 +58,17 @@ export const FireLineControls = () => {
     selectSpecialAttack('')
     events?.setStage?.(stageNames.attacking)
   }
-  const affectedUnitIDs = affectedUnits.map((unit) => {
-    return unit?.unitID ?? ''
-  })
   const confirmChosenAttack = () => {
-    rollForFireLineSpecialAttack({
-      chosenFireLineAttack,
-      affectedUnitIDs,
-      attackerUnitID: mimringUnit?.unitID,
+    rollForExplosionSpecialAttack({
+      attackerUnitID: deathwalker9000Unit?.unitID ?? '',
+      chosenExplosionAttack,
     })
   }
 
   return (
     <>
-      <StyledControlsHeaderH2>Fire Line Special Attack</StyledControlsHeaderH2>
-      <StyledControlsP>
-        Select a green hex to choose that attack path.
-      </StyledControlsP>
+      <StyledControlsHeaderH2>Explosion Special Attack</StyledControlsHeaderH2>
+      <StyledControlsP>Select a target.</StyledControlsP>
       <StyledControlsP>
         The current path will hit {affectedUnitNamesDisplay}
       </StyledControlsP>
@@ -90,30 +85,14 @@ export const FireLineControls = () => {
         </GreenButton>
         <RedButton
           onClick={confirmChosenAttack}
-          disabled={!chosenFireLineAttack}
+          //   disabled={!chosenExplosionAttack}
         >
-          Flame on! (confirm selected attack path)
+          Launch payload! (confirm selected target)
         </RedButton>
       </StyledButtonWrapper>
-      {mimringsCard?.abilities?.[0] && (
-        <AbilityReadout cardAbility={mimringsCard.abilities[0]} />
+      {attackersCard?.abilities?.[0] && (
+        <AbilityReadout cardAbility={attackersCard.abilities[0]} />
       )}
     </>
-  )
-}
-
-export const AbilityReadout = ({
-  cardAbility,
-}: {
-  cardAbility: CardAbility
-}) => {
-  return (
-    <StyledControlsP
-      style={{
-        padding: '1rem 0.5rem',
-        color: 'var(--text-muted)',
-        maxWidth: '800px',
-      }}
-    >{`${cardAbility.name}: ${cardAbility.desc}`}</StyledControlsP>
   )
 }

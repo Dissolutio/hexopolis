@@ -10,6 +10,7 @@ import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
 import { placeAttackSpirit, placeArmorSpirit } from './buff-card'
 import { rollForFireLineSpecialAttack } from './fire-line-SA'
+import { rollForExplosionSpecialAttack } from './explosion-SA'
 import {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
@@ -99,4 +100,5 @@ export const moves: MoveMap<GameState> = {
   placeAttackSpirit,
   placeArmorSpirit,
   rollForFireLineSpecialAttack,
+  rollForExplosionSpecialAttack,
 }

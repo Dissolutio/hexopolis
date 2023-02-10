@@ -8,7 +8,7 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { selectGameCardByID, selectValidTailHexes } from 'game/selectors'
+import { selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
@@ -43,6 +43,7 @@ export const MapHexes = () => {
     isMovementStage,
     isWaterCloneStage,
     isFireLineSAStage,
+    isExplosionSAStage,
   } = useBgioCtx()
   const {
     onClickPlacementHex,
@@ -65,6 +66,11 @@ export const MapHexes = () => {
     fireLineTargetableHexIDs,
     fireLineAffectedHexIDs,
     fireLineSelectedHexIDs,
+    explosionTargetableHexIDs,
+    explosionAffectedHexIDs,
+    explosionAffectedUnitIDs,
+    explosionSelectedUnitIDs,
+    singleUnitOfRevealedGameCard,
   } = useSpecialAttackContext()
 
   // handlers
@@ -75,6 +81,14 @@ export const MapHexes = () => {
     if (isFireLineSAStage) {
       if (fireLineTargetableHexIDs.includes(sourceHex.id)) {
         selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isExplosionSAStage) {
+      if (explosionTargetableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+      // clear selection if you click on Deathwalker9000
+      if (singleUnitOfRevealedGameCard?.unitID === sourceHex.occupyingUnitID) {
+        selectSpecialAttack('sourceHex.id')
       }
     } else if (isRoundOfPlayPhase) {
       onClickTurnHex?.(event, sourceHex)
@@ -112,6 +126,7 @@ export const MapHexes = () => {
         isMovementStage,
         isWaterCloneStage,
         isFireLineSAStage,
+        isExplosionSAStage,
         boardHexes,
         gameUnits,
         unitsMoved,
@@ -122,6 +137,10 @@ export const MapHexes = () => {
         fireLineTargetableHexIDs,
         fireLineAffectedHexIDs,
         fireLineSelectedHexIDs,
+        explosionTargetableHexIDs,
+        explosionAffectedHexIDs,
+        explosionAffectedUnitIDs,
+        explosionSelectedUnitIDs,
       })
     }
   }

@@ -24,12 +24,23 @@ export const RopAttackControls = () => {
   const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
     (ability) => ability.name === 'Water Clone'
   )
-  const hasFireLine = revealedGameCard
-    ? selectIfGameArmyCardHasAbility(
-        'Fire Line Special Attack',
-        revealedGameCard
-      )
-    : false
+  const getHasSpecialAttack = () => {
+    return {
+      hasFireLine: revealedGameCard
+        ? selectIfGameArmyCardHasAbility(
+            'Fire Line Special Attack',
+            revealedGameCard
+          )
+        : false,
+      hasExplosion: revealedGameCard
+        ? selectIfGameArmyCardHasAbility(
+            'Explosion Special Attack',
+            revealedGameCard
+          )
+        : false,
+    }
+  }
+  const { hasFireLine, hasExplosion } = getHasSpecialAttack()
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
@@ -99,6 +110,17 @@ export const RopAttackControls = () => {
             }}
           >
             Use Fire Line Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasExplosion && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.explosionSA)
+            }}
+          >
+            Use Explosion Special Attack
           </GreenButton>
         </StyledButtonWrapper>
       )}

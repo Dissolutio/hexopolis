@@ -15,7 +15,6 @@ import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { selectGameCardByID } from 'game/selectors'
 import { playerIDDisplay } from 'game/transformers'
-import { PlayerIdToUnitsMap } from 'game/types'
 import { RopAttackControls } from './rop/RopAttackControls'
 import { WaterCloneControls } from './rop/WaterCloneControls'
 import { RopMoveControls } from './rop/RopMoveControls'
@@ -28,6 +27,10 @@ import {
   PlaceArmorSpiritControls,
 } from './rop/PlaceArmorSpirit'
 import { FireLineControls } from './rop/FireLineSAControls'
+import { ExplosionSAControls } from './rop/ExplosionSAControls'
+import { GameUnit } from 'game/types'
+
+type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }
 
 export const RoundOfPlayControls = () => {
   const {
@@ -42,6 +45,7 @@ export const RoundOfPlayControls = () => {
     isPlacingArmorSpiritStage,
     isIdlePlacingArmorSpiritStage,
     isFireLineSAStage,
+    isExplosionSAStage,
   } = useBgioCtx()
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
@@ -121,6 +125,13 @@ export const RoundOfPlayControls = () => {
     return (
       <>
         <FireLineControls />
+      </>
+    )
+  }
+  if (isExplosionSAStage) {
+    return (
+      <>
+        <ExplosionSAControls />
       </>
     )
   }

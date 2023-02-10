@@ -127,6 +127,7 @@ export function calcRopHexClassNames({
   isMovementStage,
   isWaterCloneStage,
   isFireLineSAStage,
+  isExplosionSAStage,
   selectedUnitID,
   hex,
   revealedGameCardUnits,
@@ -141,12 +142,16 @@ export function calcRopHexClassNames({
   fireLineTargetableHexIDs,
   fireLineAffectedHexIDs,
   fireLineSelectedHexIDs,
+  explosionTargetableHexIDs,
+  explosionAffectedUnitIDs,
+  explosionSelectedUnitIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
   isMovementStage: boolean
   isWaterCloneStage: boolean
   isFireLineSAStage: boolean
+  isExplosionSAStage: boolean
   selectedUnitID: string
   hex: BoardHex
   revealedGameCardUnits: GameUnit[]
@@ -161,6 +166,10 @@ export function calcRopHexClassNames({
   fireLineTargetableHexIDs: string[]
   fireLineAffectedHexIDs: string[]
   fireLineSelectedHexIDs: string[]
+  explosionTargetableHexIDs: string[]
+  explosionAffectedHexIDs: string[]
+  explosionAffectedUnitIDs: string[]
+  explosionSelectedUnitIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -261,6 +270,17 @@ export function calcRopHexClassNames({
       classNames = classNames.concat(' hexagon-malaffected ')
     }
     if (fireLineSelectedHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
+    }
+  }
+  if (isExplosionSAStage) {
+    if (explosionTargetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-malaffected ')
+    }
+    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
