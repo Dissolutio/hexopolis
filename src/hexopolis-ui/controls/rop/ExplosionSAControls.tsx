@@ -17,7 +17,10 @@ export const ExplosionSAControls = () => {
   const { events } = useBgioEvents()
   const { revealedGameCard: attackersCard } = usePlayContext()
   const { boardHexes, gameArmyCards, gameUnits } = useBgioG()
-  const { selectSpecialAttack } = useSpecialAttackContext()
+  const {
+    selectSpecialAttack,
+    singleUnitOfRevealedGameCard: deathwalker9000Unit,
+  } = useSpecialAttackContext()
   const goBackToAttack = () => {
     selectSpecialAttack('')
     events?.setStage?.(stageNames.attacking)

@@ -21,7 +21,7 @@ export const FireLineControls = () => {
   const { boardHexes, gameArmyCards, gameUnits } = useBgioG()
   const {
     selectSpecialAttack,
-    mimringUnit,
+    singleUnitOfRevealedGameCard: mimringUnit,
     chosenFireLineAttack,
     fireLineSelectedHexIDs,
   } = useSpecialAttackContext()

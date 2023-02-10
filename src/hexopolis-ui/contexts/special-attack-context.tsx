@@ -6,11 +6,13 @@ import {
   selectHexNeighborsWithDirections,
   selectHexesInLineFromHex,
   selectEngagementsForHex,
+  selectIsInRangeOfAttack,
+  selectHexNeighbors,
 } from '../../game/selectors'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
-import { uniq, uniqBy } from 'lodash'
+import { uniq } from 'lodash'
 import { usePlayContext } from './play-phase-context'
-import { useBgioCtx, useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { BoardHex, GameUnit } from 'game/types'
 
 export type PossibleFireLineAttack = {
@@ -19,6 +21,11 @@ export type PossibleFireLineAttack = {
   direction: number
   line: BoardHex[]
 }
+export type PossibleExplosionAttack = {
+  affectedUnitIDs: string[]
+  clickableHexID: string
+  affectedHexIDs: string[]
+}
 type SpecialAttackContextProviderProps = {
   children: React.ReactNode
 }
@@ -26,11 +33,14 @@ type SpecialAttackContextProviderProps = {
 const SpecialAttackContext = React.createContext<
   | {
       selectSpecialAttack: (id: string) => void
-      mimringUnit: GameUnit | undefined
+      singleUnitOfRevealedGameCard: GameUnit | undefined
       chosenFireLineAttack: PossibleFireLineAttack | undefined
       fireLineTargetableHexIDs: string[]
       fireLineAffectedHexIDs: string[]
       fireLineSelectedHexIDs: string[]
+      explosionTargetableHexIDs: string[]
+      explosionAffectedHexIDs: string[]
+      explosionSelectedHexIDs: string[]
     }
   | undefined
 >(undefined)
@@ -41,20 +51,27 @@ export function SpecialAttackContextProvider({
   const { revealedGameCard, revealedGameCardUnits } = usePlayContext()
   const { isMyTurn } = useBgioCtx()
   const { boardHexes, gameUnits, gameArmyCards } = useBgioG()
+  const { playerID } = useBgioClientInfo()
   const [chosenSpecialAttack, setChosenSpecialAttack] = useState<string>('')
   const selectSpecialAttack = (id: string) => {
     setChosenSpecialAttack(id)
   }
+  const singleUnitOfRevealedGameCard = revealedGameCardUnits?.[0]
 
   // MIMRING FIRE LINE
-  const mimringUnit = revealedGameCardUnits?.[0]
   const possibleFireLineAttacks: PossibleFireLineAttack[] = useMemo(() => {
     const hasFireLine = selectIfGameArmyCardHasAbility(
       'Fire Line Special Attack',
       revealedGameCard
     )
-    const headHex = selectHexForUnit(mimringUnit.unitID, boardHexes)
-    const tailHex = selectTailHexForUnit(mimringUnit.unitID, boardHexes)
+    const headHex = selectHexForUnit(
+      singleUnitOfRevealedGameCard.unitID,
+      boardHexes
+    )
+    const tailHex = selectTailHexForUnit(
+      singleUnitOfRevealedGameCard.unitID,
+      boardHexes
+    )
     // 0. This attack is illustrated in the ROTV 2nd Edition Rules(p. 15), it can affect stacked hexes in 3D (if this game ever gets that far)
     // 0.1 The affected path of the attack is 8 hexes projected out in a straight line, starting from either the head or tail of the unit
     // 1. Get the 8 neighboring hexes, 6 of them will simply have one path going through them, note their direction from their source
@@ -67,7 +84,7 @@ export function SpecialAttackContextProvider({
       !isMyTurn ||
       !hasFireLine ||
       !revealedGameCard ||
-      !mimringUnit ||
+      !singleUnitOfRevealedGameCard ||
       !headHex ||
       !tailHex
     ) {
@@ -139,13 +156,12 @@ export function SpecialAttackContextProvider({
     return result
   }, [
     revealedGameCard,
-    mimringUnit,
+    singleUnitOfRevealedGameCard,
     boardHexes,
     isMyTurn,
     gameUnits,
     gameArmyCards,
   ])
-
   const chosenFireLineAttack = Object.values(possibleFireLineAttacks)?.find?.(
     (pa) => {
       return pa.clickableHexID === chosenSpecialAttack
@@ -185,16 +201,119 @@ export function SpecialAttackContextProvider({
     chosenFireLineAttack?.line,
     fireLineTargetableHexIDs,
   ])
+  // DEATHWALKER 9000 EXPLOSION
+  const possibleExplosionAttacks: PossibleExplosionAttack[] = useMemo(() => {
+    const hasExplosion = selectIfGameArmyCardHasAbility(
+      'Explosion Special Attack',
+      revealedGameCard
+    )
+    // deathwalker 9000 is a 1hex hero
+    const headHex = selectHexForUnit(
+      singleUnitOfRevealedGameCard.unitID,
+      boardHexes
+    )
+    // This attack is very similar to normal attack, select a unit in range
+    if (
+      !isMyTurn ||
+      !hasExplosion ||
+      !revealedGameCard ||
+      !singleUnitOfRevealedGameCard ||
+      !headHex
+    ) {
+      return []
+    }
+    const engagedEnemyUnitIDs = selectEngagementsForHex({
+      hexID: headHex.id,
+      boardHexes,
+      gameUnits,
+      armyCards: gameArmyCards,
+    })
+    const hexIDsInRange = Object.values(boardHexes)
+      .filter((hex) => {
+        // if hex is not occupied by enemy unit, return false
+        if (
+          // not occupied
+          !hex.occupyingUnitID ||
+          // no unit for id on hex (shouldn't happen))
+          !gameUnits[hex.occupyingUnitID] ||
+          // unit is engaged and not by this unit
+          (engagedEnemyUnitIDs.length > 0 &&
+            !engagedEnemyUnitIDs.some((id) => id === hex.occupyingUnitID)) ||
+          // unit is a friendly unit (TODO: It's technically legal to attack your own figures)
+          gameUnits[hex.occupyingUnitID].playerID === playerID
+        ) {
+          return false
+        }
+        const { isInRange } = selectIsInRangeOfAttack({
+          attackingUnit: singleUnitOfRevealedGameCard,
+          defenderHex: hex,
+          gameArmyCards: gameArmyCards,
+          boardHexes: boardHexes,
+          gameUnits: gameUnits,
+        })
+        return isInRange
+      })
+      .map((hex) => [hex.id, hex.occupyingUnitID])
 
+    const result: PossibleExplosionAttack[] = hexIDsInRange.reduce(
+      (acc: PossibleExplosionAttack[], [hexID, hexUnitID]) => {
+        // TODO this is a broken way to do this
+        // it would be nice if selectEngagementsForHex returned the hexes it affected
+        const affectedUnitIDs = selectEngagementsForHex({
+          hexID,
+          boardHexes,
+          gameUnits,
+          armyCards: gameArmyCards,
+          all: true,
+        })
+        const affectedHexIDs: string[] = affectedUnitIDs
+          .map((id) => {
+            return selectHexForUnit(id, boardHexes)?.id ?? ''
+          })
+          .filter((id) => id !== '')
+        return [
+          ...acc,
+          {
+            clickableHexID: hexID,
+            affectedUnitIDs: [hexUnitID, ...affectedUnitIDs],
+            affectedHexIDs,
+            secondaryAffectedHexIDs: affectedHexIDs,
+          },
+        ]
+      },
+      []
+    )
+    return result
+  }, [
+    revealedGameCard,
+    singleUnitOfRevealedGameCard,
+    boardHexes,
+    isMyTurn,
+    gameUnits,
+    gameArmyCards,
+    playerID,
+  ])
+  const explosionTargetableHexIDs =
+    possibleExplosionAttacks?.map?.((pa) => pa.clickableHexID) ?? []
+  const chosenExplosionAttack = possibleExplosionAttacks?.find?.((pa) => {
+    return pa.clickableHexID === chosenSpecialAttack
+  })
+  const explosionSelectedHexIDs = chosenExplosionAttack
+    ? [chosenExplosionAttack.clickableHexID]
+    : []
+  const explosionAffectedHexIDs = chosenExplosionAttack?.affectedHexIDs ?? []
   return (
     <SpecialAttackContext.Provider
       value={{
         selectSpecialAttack,
-        mimringUnit,
+        singleUnitOfRevealedGameCard,
         chosenFireLineAttack,
         fireLineSelectedHexIDs,
         fireLineTargetableHexIDs,
         fireLineAffectedHexIDs,
+        explosionTargetableHexIDs,
+        explosionAffectedHexIDs,
+        explosionSelectedHexIDs,
       }}
     >
       {children}
