@@ -12,7 +12,6 @@ import { GameState, BoardHex, GameUnit, StageQueueItem } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import {
   selectIfGameArmyCardHasAbility,
-  selectIfGameArmyCardHasCounterStrike,
   selectUnitAttackDiceForAttack,
   selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
@@ -183,7 +182,8 @@ export const attackAction: Move<GameState> = {
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
     const counterStrikeWounds =
-      selectIfGameArmyCardHasCounterStrike(defenderGameCard) && isMelee
+      selectIfGameArmyCardHasAbility('Counter Strike', defenderGameCard) &&
+      isMelee
         ? shields - skulls
         : 0
     const isCounterStrikeWounds = counterStrikeWounds > 0

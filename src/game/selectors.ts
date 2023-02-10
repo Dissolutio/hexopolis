@@ -19,8 +19,7 @@ import {
   hexUtilsNeighborsWithDirections,
 } from './hex-utils'
 import {
-  selectIfGameArmyCardHasDoubleAttack,
-  selectIfGameArmyCardHasThorianSpeed,
+  selectIfGameArmyCardHasAbility,
   selectUnitRange,
 } from './selector/card-selectors'
 
@@ -237,7 +236,8 @@ export const selectAttackerHasAttacksAllowed = ({
     attackingUnit.gameCardID
   )
   const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
-  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasAbility(
+    'Double Attack',
     attackerGameCard
   )
     ? 2
@@ -338,8 +338,10 @@ export const selectIsInRangeOfAttack = ({
   // This totally ignores line of sight
   const isInRangedRange = isInTailRange || isInHeadHexRange
   const isRangeOneWhichRequiresEngagement = unitRange === 1
-  const isThorianSpeedDefender =
-    selectIfGameArmyCardHasThorianSpeed(defenderGameCard)
+  const isThorianSpeedDefender = selectIfGameArmyCardHasAbility(
+    'Thorian Speed',
+    defenderGameCard
+  )
   const isAttackerRequiredToBeEngagedToDefender =
     isRangeOneWhichRequiresEngagement ||
     (!isSpecialAttack && isThorianSpeedDefender)

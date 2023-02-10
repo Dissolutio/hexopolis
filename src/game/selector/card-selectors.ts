@@ -68,7 +68,7 @@ export const selectUnitRange = ({
         hex.occupyingUnitID &&
         neighborUnitCard &&
         neighborUnitCard.playerID === attackingUnit.playerID &&
-        selectIfGameArmyCardHasSoulBorgRangeEnhancement(neighborUnitCard) &&
+        selectIfGameArmyCardHasAbility('Range Enhancement', neighborUnitCard) &&
         selectAreTwoAdjacentUnitsEngaged({
           aHeight: attackerGameCard.height,
           aAltitude: attackerHex.altitude,
@@ -118,54 +118,12 @@ export function selectIfGameArmyCardHasDisengage(
   return { hasDisengage, hasGhostWalk }
 }
 // abilities:
-export function selectIfGameArmyCardHasCounterStrike(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
-    : false
-}
-export function selectIfGameArmyCardHasThorianSpeed(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
-    : false
-}
-export function selectIfGameArmyCardHasZettianTargeting(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Zettian Targeting')
-    : false
-}
-export function selectIfGameArmyCardHasSwordOfReckoning(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Sword of Reckoning')
-    : false
-}
 export function selectIfGameArmyCardHasAbility(
   abilityName: string,
   gameArmyCard?: GameArmyCard
 ): boolean {
   return gameArmyCard
     ? gameArmyCard.abilities.some((a) => a.name === abilityName)
-    : false
-}
-export function selectIfGameArmyCardHasDoubleAttack(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Double Attack')
-    : false
-}
-export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Range Enhancement')
     : false
 }
 
@@ -199,13 +157,16 @@ export const selectUnitAttackDiceForAttack = ({
   let dice = attackerArmyCard.attack
   const heightBonus = attackerHex.altitude > defenderHex.altitude ? 1 : 0
   const zettianTargetingBonus =
-    selectIfGameArmyCardHasZettianTargeting(attackerArmyCard) &&
+    selectIfGameArmyCardHasAbility('Zettian Targeting', attackerArmyCard) &&
     // if second zettian attacks same unit as first, +1
     Object.values(unitsAttacked).flat().includes(defender.unitID)
       ? 1
       : 0
   const swordOfReckoningBonus =
-    isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
+    isMelee &&
+    selectIfGameArmyCardHasAbility('Sword of Reckoning', attackerArmyCard)
+      ? 4
+      : 0
   const finnsAttackAura = () => {
     const finnCard = gameArmyCards.filter(
       (c) => c.playerID === attackerArmyCard.playerID && c.armyCardID === finnID
@@ -324,7 +285,8 @@ export const selectGameArmyCardAttacksAllowed = (
   gameArmyCard: GameArmyCard
 ) => {
   const numberOfAttackingFigures = gameArmyCard.figures
-  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasAbility(
+    'Double Attack',
     gameArmyCard
   )
     ? 2
