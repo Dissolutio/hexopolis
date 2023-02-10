@@ -305,5 +305,18 @@ export type LayoutDimension = {
   origin: Point
   spacing: number
 }
-export type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }
+
 export type HexNeighborsWithDirections = { [hexID: string]: number }
+
+export type PossibleFireLineAttack = {
+  affectedUnitIDs: string[]
+  clickableHexID: string
+  direction: number
+  line: BoardHex[]
+}
+export type PossibleExplosionAttack = {
+  clickableHexID: string
+  clickableHexUnitID: string
+  affectedUnitIDs: string[]
+  affectedHexIDs: string[]
+}

@@ -9,6 +9,8 @@ import { stageNames } from 'game/constants'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 import { AbilityReadout } from './FireLineSAControls'
+import { selectGameCardByID, selectUnitForHex } from 'game/selectors'
+import { uniqBy } from 'lodash'
 
 export const ExplosionSAControls = () => {
   const {
@@ -20,19 +22,63 @@ export const ExplosionSAControls = () => {
   const {
     selectSpecialAttack,
     singleUnitOfRevealedGameCard: deathwalker9000Unit,
+    explosionAffectedHexIDs,
+    chosenExplosionAttack,
   } = useSpecialAttackContext()
+
+  const affectedUnits = uniqBy(
+    explosionAffectedHexIDs
+      .map((id) => {
+        const hex = boardHexes[id]
+        const unit = selectUnitForHex(hex.id, boardHexes, gameUnits)
+        const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+        if (!card || !unit || !hex) {
+          return undefined
+        }
+        return { ...unit, singleName: card?.singleName }
+      })
+      .filter((unit) => !!unit),
+    'unitID'
+  )
+  const friendlyAffectedUnitsCount = affectedUnits.filter((unit) => {
+    return unit?.playerID === deathwalker9000Unit?.playerID
+  }).length
+  const affectedSelectedUnitNames = affectedUnits.map((unit) => {
+    return unit?.singleName ?? ''
+  })
+  const affectedUnitNamesDisplay = `${affectedSelectedUnitNames.length} unit${
+    affectedSelectedUnitNames.length !== 1 ? 's' : ''
+  } ${
+    affectedSelectedUnitNames.length > 0
+      ? `(${affectedSelectedUnitNames.join(', ')})`
+      : ''
+  }
+      `
   const goBackToAttack = () => {
     selectSpecialAttack('')
     events?.setStage?.(stageNames.attacking)
   }
   const confirmChosenAttack = () => {
-    rollForExplosionSpecialAttack()
+    rollForExplosionSpecialAttack({
+      attackerUnitID: deathwalker9000Unit?.unitID ?? '',
+      chosenExplosionAttack,
+    })
   }
 
   return (
     <>
       <StyledControlsHeaderH2>Explosion Special Attack</StyledControlsHeaderH2>
       <StyledControlsP>Select a target.</StyledControlsP>
+      <StyledControlsP>
+        The current path will hit {affectedUnitNamesDisplay}
+      </StyledControlsP>
+      {friendlyAffectedUnitsCount > 0 && (
+        <StyledControlsP style={{ color: 'var(--error-red)' }}>
+          {`${friendlyAffectedUnitsCount} FRIENDLY UNIT${
+            friendlyAffectedUnitsCount === 1 ? '' : 'S'
+          } WILL BE HIT`}
+        </StyledControlsP>
+      )}
       <StyledButtonWrapper>
         <GreenButton onClick={goBackToAttack}>
           Go back to normal attack

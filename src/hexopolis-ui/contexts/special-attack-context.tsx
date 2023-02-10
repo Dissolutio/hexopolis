@@ -13,19 +13,13 @@ import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
 import { uniq } from 'lodash'
 import { usePlayContext } from './play-phase-context'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
-import { BoardHex, GameUnit } from 'game/types'
+import {
+  BoardHex,
+  GameUnit,
+  PossibleExplosionAttack,
+  PossibleFireLineAttack,
+} from 'game/types'
 
-export type PossibleFireLineAttack = {
-  affectedUnitIDs: string[]
-  clickableHexID: string
-  direction: number
-  line: BoardHex[]
-}
-export type PossibleExplosionAttack = {
-  affectedUnitIDs: string[]
-  clickableHexID: string
-  affectedHexIDs: string[]
-}
 type SpecialAttackContextProviderProps = {
   children: React.ReactNode
 }
@@ -41,7 +35,8 @@ const SpecialAttackContext = React.createContext<
       explosionTargetableHexIDs: string[]
       explosionAffectedHexIDs: string[]
       explosionAffectedUnitIDs: string[]
-      explosionSelectedHexIDs: string[]
+      explosionSelectedUnitIDs: string[]
+      chosenExplosionAttack: PossibleExplosionAttack | undefined
     }
   | undefined
 >(undefined)
@@ -229,7 +224,7 @@ export function SpecialAttackContextProvider({
       gameUnits,
       armyCards: gameArmyCards,
     })
-    const hexIDsInRange = Object.values(boardHexes)
+    const hexIDsInRange: [string, string][] = Object.values(boardHexes)
       .filter((hex) => {
         // if hex is not occupied by enemy unit, return false
         if (
@@ -258,15 +253,18 @@ export function SpecialAttackContextProvider({
 
     const result: PossibleExplosionAttack[] = hexIDsInRange.reduce(
       (acc: PossibleExplosionAttack[], [hexID, hexUnitID]) => {
-        // TODO this is a broken way to do this
         // it would be nice if selectEngagementsForHex returned the hexes it affected
-        const affectedUnitIDs = selectEngagementsForHex({
-          hexID,
-          boardHexes,
-          gameUnits,
-          armyCards: gameArmyCards,
-          all: true,
-        })
+        const affectedUnitIDs = uniq([
+          // include the clickable unit
+          hexUnitID,
+          ...selectEngagementsForHex({
+            hexID,
+            boardHexes,
+            gameUnits,
+            armyCards: gameArmyCards,
+            all: true,
+          }),
+        ])
         const affectedHexIDs: string[] = affectedUnitIDs
           .map((id) => {
             return selectHexForUnit(id, boardHexes)?.id ?? ''
@@ -276,9 +274,9 @@ export function SpecialAttackContextProvider({
           ...acc,
           {
             clickableHexID: hexID,
-            affectedUnitIDs: [hexUnitID, ...affectedUnitIDs],
+            clickableHexUnitID: hexUnitID,
+            affectedUnitIDs,
             affectedHexIDs,
-            secondaryAffectedHexIDs: affectedHexIDs,
           },
         ]
       },
@@ -299,8 +297,9 @@ export function SpecialAttackContextProvider({
   const chosenExplosionAttack = possibleExplosionAttacks?.find?.((pa) => {
     return pa.clickableHexID === chosenSpecialAttack
   })
-  const explosionSelectedHexIDs = chosenExplosionAttack
-    ? [chosenExplosionAttack.clickableHexID]
+  // plural name, but it's an array of one unitID
+  const explosionSelectedUnitIDs = chosenExplosionAttack
+    ? [chosenExplosionAttack.clickableHexUnitID]
     : []
   const explosionAffectedHexIDs = chosenExplosionAttack?.affectedHexIDs ?? []
   const explosionAffectedUnitIDs = chosenExplosionAttack?.affectedUnitIDs ?? []
@@ -316,7 +315,8 @@ export function SpecialAttackContextProvider({
         explosionTargetableHexIDs,
         explosionAffectedHexIDs,
         explosionAffectedUnitIDs,
-        explosionSelectedHexIDs,
+        explosionSelectedUnitIDs,
+        chosenExplosionAttack,
       }}
     >
       {children}
