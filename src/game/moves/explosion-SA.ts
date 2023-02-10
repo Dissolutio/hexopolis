@@ -20,10 +20,12 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     attackerUnitID,
     chosenExplosionAttack,
     grenadeThrowingGameCardID,
+    isStillAttacksLeft,
   }: {
     attackerUnitID: string
     chosenExplosionAttack: PossibleExplosionAttack
     grenadeThrowingGameCardID?: string
+    isStillAttacksLeft?: boolean
   }
 ) => {
   const affectedUnitIDs = chosenExplosionAttack?.affectedUnitIDs
@@ -184,6 +186,13 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     }
     // END LOOP
   })
+  // After end of loop, add a marker to come back to finish grenade attacks
+  if (isStillAttacksLeft) {
+    newStageQueue.push({
+      playerID: attackerGameCard.playerID,
+      stage: stageNames.grenadeSA,
+    })
+  }
 
   // at this point, newStageQueue could be populated with many stages
   const nextStage = newStageQueue.shift()

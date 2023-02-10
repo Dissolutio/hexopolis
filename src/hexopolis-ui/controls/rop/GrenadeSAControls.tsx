@@ -23,6 +23,8 @@ export const GrenadeSAControls = () => {
   const { selectSpecialAttack, chosenExplosionAttack } =
     useSpecialAttackContext()
 
+  const unitsAliveCount = revealedGameCardUnitIDs.length
+  const attacksUsed = Object.values(unitsAttacked).flat().length
   const goBackToAttack = () => {
     selectSpecialAttack('')
     events?.setStage?.(stageNames.attacking)
@@ -33,6 +35,7 @@ export const GrenadeSAControls = () => {
       attackerUnitID: selectedUnit.unitID,
       chosenExplosionAttack,
       grenadeThrowingGameCardID: attackersCard?.gameCardID ?? '',
+      isStillAttacksLeft: attacksUsed + 1 < unitsAliveCount,
     })
   }
 
