@@ -44,6 +44,7 @@ export const MapHexes = () => {
     isWaterCloneStage,
     isFireLineSAStage,
     isExplosionSAStage,
+    isGrenadeSAStage,
   } = useBgioCtx()
   const {
     onClickPlacementHex,
@@ -58,6 +59,7 @@ export const MapHexes = () => {
     onClickTurnHex,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
+    currentTurnGameCardID,
     clonerHexIDs,
     clonePlaceableHexIDs,
   } = usePlayContext()
@@ -86,12 +88,25 @@ export const MapHexes = () => {
       if (explosionTargetableHexIDs.includes(sourceHex.id)) {
         selectSpecialAttack(sourceHex.id)
       }
-      // clear selection if you click on Deathwalker9000
-      if (singleUnitOfRevealedGameCard?.unitID === sourceHex.occupyingUnitID) {
-        selectSpecialAttack('sourceHex.id')
-      }
     } else if (isRoundOfPlayPhase) {
-      onClickTurnHex?.(event, sourceHex)
+      if (
+        isGrenadeSAStage &&
+        explosionTargetableHexIDs.includes(sourceHex.id)
+      ) {
+        // this is a weird splitting off to select a grenade hex, part of hacky GrenadeSA implementation
+        selectSpecialAttack(sourceHex.id)
+      } else {
+        // if we clicked a grenade unit, we need to deselect the attack (if any) of the previously selected grenade unit
+        if (
+          isGrenadeSAStage &&
+          sourceHex.occupyingUnitID !== selectedUnitID &&
+          gameUnits[sourceHex.occupyingUnitID]?.gameCardID ===
+            currentTurnGameCardID
+        ) {
+          selectSpecialAttack('')
+        }
+        onClickTurnHex?.(event, sourceHex)
+      }
     }
   }
   // classnames
@@ -127,6 +142,7 @@ export const MapHexes = () => {
         isWaterCloneStage,
         isFireLineSAStage,
         isExplosionSAStage,
+        isGrenadeSAStage,
         boardHexes,
         gameUnits,
         unitsMoved,

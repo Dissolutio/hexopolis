@@ -27,6 +27,7 @@ export const stageNames = {
   idlePlacingArmorSpirit: 'idlePlacingArmorSpirit',
   fireLineSA: 'fireLineSA',
   explosionSA: 'explosionSA',
+  grenadeSA: 'grenadeSA',
 }
 
 export const OM_COUNT = 3

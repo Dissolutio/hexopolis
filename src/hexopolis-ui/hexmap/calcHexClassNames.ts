@@ -128,6 +128,7 @@ export function calcRopHexClassNames({
   isWaterCloneStage,
   isFireLineSAStage,
   isExplosionSAStage,
+  isGrenadeSAStage,
   selectedUnitID,
   hex,
   revealedGameCardUnits,
@@ -152,6 +153,7 @@ export function calcRopHexClassNames({
   isWaterCloneStage: boolean
   isFireLineSAStage: boolean
   isExplosionSAStage: boolean
+  isGrenadeSAStage: boolean
   selectedUnitID: string
   hex: BoardHex
   revealedGameCardUnits: GameUnit[]
@@ -274,6 +276,21 @@ export function calcRopHexClassNames({
     }
   }
   if (isExplosionSAStage) {
+    if (explosionTargetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-malaffected ')
+    }
+    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
+    }
+  }
+  if (isGrenadeSAStage) {
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
     if (explosionTargetableHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }

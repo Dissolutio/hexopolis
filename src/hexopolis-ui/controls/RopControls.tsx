@@ -29,10 +29,11 @@ import {
 import { FireLineControls } from './rop/FireLineSAControls'
 import { ExplosionSAControls } from './rop/ExplosionSAControls'
 import { GameUnit } from 'game/types'
+import { GrenadeSAControls } from './rop/GrenadeSAControls'
 
 type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }
 
-export const RoundOfPlayControls = () => {
+export const RopControls = () => {
   const {
     isIdleStage,
     isMovementStage,
@@ -46,6 +47,7 @@ export const RoundOfPlayControls = () => {
     isIdlePlacingArmorSpiritStage,
     isFireLineSAStage,
     isExplosionSAStage,
+    isGrenadeSAStage,
   } = useBgioCtx()
   const { showDisengageConfirm } = usePlayContext()
   if (showDisengageConfirm) {
@@ -132,6 +134,13 @@ export const RoundOfPlayControls = () => {
     return (
       <>
         <ExplosionSAControls />
+      </>
+    )
+  }
+  if (isGrenadeSAStage) {
+    return (
+      <>
+        <GrenadeSAControls />
       </>
     )
   }

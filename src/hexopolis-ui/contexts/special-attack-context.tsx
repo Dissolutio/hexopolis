@@ -19,6 +19,7 @@ import {
   PossibleExplosionAttack,
   PossibleFireLineAttack,
 } from 'game/types'
+import { useUIContext } from './ui-context'
 
 type SpecialAttackContextProviderProps = {
   children: React.ReactNode
@@ -44,10 +45,15 @@ const SpecialAttackContext = React.createContext<
 export function SpecialAttackContextProvider({
   children,
 }: SpecialAttackContextProviderProps) {
-  const { revealedGameCard, revealedGameCardUnits } = usePlayContext()
-  const { isMyTurn } = useBgioCtx()
-  const { boardHexes, gameUnits, gameArmyCards } = useBgioG()
   const { playerID } = useBgioClientInfo()
+  const { boardHexes, gameUnits, gameArmyCards } = useBgioG()
+  const { isMyTurn, isGrenadeSAStage, isExplosionSAStage } = useBgioCtx()
+  const { revealedGameCard, revealedGameCardUnits, selectedUnit } =
+    usePlayContext()
+  const selectedUnitGameCard = gameArmyCards.find(
+    (card) => card.gameCardID === selectedUnit?.gameCardID
+  )
+
   const [chosenSpecialAttack, setChosenSpecialAttack] = useState<string>('')
   const selectSpecialAttack = (id: string) => {
     setChosenSpecialAttack(id)
@@ -197,25 +203,20 @@ export function SpecialAttackContextProvider({
     chosenFireLineAttack?.line,
     fireLineTargetableHexIDs,
   ])
-  // DEATHWALKER 9000 EXPLOSION
+  // DEATHWALKER-9000 EXPLOSION & AIRBORNE GRENADE
   const possibleExplosionAttacks: PossibleExplosionAttack[] = useMemo(() => {
-    const hasExplosion = selectIfGameArmyCardHasAbility(
-      'Explosion Special Attack',
-      revealedGameCard
-    )
-    // deathwalker 9000 is a 1hex hero
-    const headHex = selectHexForUnit(
-      singleUnitOfRevealedGameCard.unitID,
-      boardHexes
-    )
+    const cardToUse = isGrenadeSAStage ? selectedUnitGameCard : revealedGameCard
+    const unitToUse = isGrenadeSAStage
+      ? selectedUnit
+      : singleUnitOfRevealedGameCard
+    const hasExplosion =
+      selectIfGameArmyCardHasAbility('Explosion Special Attack', cardToUse) ||
+      (!cardToUse?.hasThrownGrenade &&
+        selectIfGameArmyCardHasAbility('Grenade Special Attack', cardToUse))
+    // deathwalker 9000 & AirborneElite are 1-hex figures
+    const headHex = selectHexForUnit(unitToUse?.unitID ?? '', boardHexes)
     // This attack is very similar to normal attack, select a unit in range
-    if (
-      !isMyTurn ||
-      !hasExplosion ||
-      !revealedGameCard ||
-      !singleUnitOfRevealedGameCard ||
-      !headHex
-    ) {
+    if (!isMyTurn || !hasExplosion || !cardToUse || !unitToUse || !headHex) {
       return []
     }
     const engagedEnemyUnitIDs = selectEngagementsForHex({
@@ -232,7 +233,7 @@ export function SpecialAttackContextProvider({
           !hex.occupyingUnitID ||
           // no unit for id on hex (shouldn't happen))
           !gameUnits[hex.occupyingUnitID] ||
-          // unit is engaged and not by this unit
+          // attacking unit is engaged and not by this unit, must attacked engaged units
           (engagedEnemyUnitIDs.length > 0 &&
             !engagedEnemyUnitIDs.some((id) => id === hex.occupyingUnitID)) ||
           // unit is a friendly unit (TODO: It's technically legal to attack your own figures)
@@ -241,11 +242,17 @@ export function SpecialAttackContextProvider({
           return false
         }
         const { isInRange } = selectIsInRangeOfAttack({
-          attackingUnit: singleUnitOfRevealedGameCard,
+          attackingUnit: unitToUse,
           defenderHex: hex,
           gameArmyCards: gameArmyCards,
           boardHexes: boardHexes,
           gameUnits: gameUnits,
+          overrideUnitRange: isGrenadeSAStage
+            ? 5
+            : isExplosionSAStage
+            ? 7
+            : undefined,
+          isSpecialAttack: true,
         })
         return isInRange
       })
@@ -253,7 +260,6 @@ export function SpecialAttackContextProvider({
 
     const result: PossibleExplosionAttack[] = hexIDsInRange.reduce(
       (acc: PossibleExplosionAttack[], [hexID, hexUnitID]) => {
-        // it would be nice if selectEngagementsForHex returned the hexes it affected
         const affectedUnitIDs = uniq([
           // include the clickable unit
           hexUnitID,
@@ -284,13 +290,17 @@ export function SpecialAttackContextProvider({
     )
     return result
   }, [
+    isGrenadeSAStage,
+    selectedUnitGameCard,
     revealedGameCard,
+    selectedUnit,
     singleUnitOfRevealedGameCard,
     boardHexes,
     isMyTurn,
     gameUnits,
     gameArmyCards,
     playerID,
+    isExplosionSAStage,
   ])
   const explosionTargetableHexIDs =
     possibleExplosionAttacks?.map?.((pa) => pa.clickableHexID) ?? []

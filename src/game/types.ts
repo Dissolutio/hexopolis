@@ -184,6 +184,8 @@ export type GameArmyCard = ArmyCard & {
   playerID: string
   gameCardID: string
   cardQuantity: number
+  // this is for the airborn elite ability, which is a one time use
+  hasThrownGrenade?: boolean
 }
 
 export type GameUnit = {
