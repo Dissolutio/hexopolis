@@ -68,6 +68,7 @@ export const MapHexes = () => {
     fireLineSelectedHexIDs,
     explosionTargetableHexIDs,
     explosionAffectedHexIDs,
+    explosionAffectedUnitIDs,
     explosionSelectedHexIDs,
     singleUnitOfRevealedGameCard,
   } = useSpecialAttackContext()
@@ -138,6 +139,7 @@ export const MapHexes = () => {
         fireLineSelectedHexIDs,
         explosionTargetableHexIDs,
         explosionAffectedHexIDs,
+        explosionAffectedUnitIDs,
         explosionSelectedHexIDs,
       })
     }

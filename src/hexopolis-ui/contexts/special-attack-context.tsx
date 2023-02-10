@@ -40,6 +40,7 @@ const SpecialAttackContext = React.createContext<
       fireLineSelectedHexIDs: string[]
       explosionTargetableHexIDs: string[]
       explosionAffectedHexIDs: string[]
+      explosionAffectedUnitIDs: string[]
       explosionSelectedHexIDs: string[]
     }
   | undefined
@@ -302,6 +303,7 @@ export function SpecialAttackContextProvider({
     ? [chosenExplosionAttack.clickableHexID]
     : []
   const explosionAffectedHexIDs = chosenExplosionAttack?.affectedHexIDs ?? []
+  const explosionAffectedUnitIDs = chosenExplosionAttack?.affectedUnitIDs ?? []
   return (
     <SpecialAttackContext.Provider
       value={{
@@ -313,6 +315,7 @@ export function SpecialAttackContextProvider({
         fireLineAffectedHexIDs,
         explosionTargetableHexIDs,
         explosionAffectedHexIDs,
+        explosionAffectedUnitIDs,
         explosionSelectedHexIDs,
       }}
     >
