@@ -9,8 +9,7 @@ import {
   selectHexForUnit,
   selectTailHexForUnit,
 } from '../selectors'
-import { PossibleFireLineAttack } from '../../hexopolis-ui/contexts/special-attack-context'
-import { GameState, StageQueueItem } from '../types'
+import { GameState, PossibleFireLineAttack, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { encodeGameLogMessage } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'

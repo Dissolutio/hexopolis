@@ -170,9 +170,11 @@ export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
 }
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
+// attackerHex and defenderHex can be head or tail here, does not matter, they only have same altitude for head/tail, and also yield same engagements
 export const selectUnitAttackDiceForAttack = ({
   // since attackerHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   attackerHex,
+  // since defenderHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   defenderHex,
   defender,
   attackerArmyCard,
@@ -238,10 +240,10 @@ export const selectUnitAttackDiceForAttack = ({
   )
 }
 // DEFENSE DICE FOR SPECIFIC ATTACK:
+// attackerHex and defenderHex can be head or tail here, does not matter, they only have same altitude for head/tail, and also yield same engagements
 export const selectUnitDefenseDiceForAttack = ({
   defenderArmyCard,
   defenderUnit,
-  // since attackerHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   attackerHex,
   defenderHex,
   boardHexes,
@@ -250,7 +252,9 @@ export const selectUnitDefenseDiceForAttack = ({
 }: {
   defenderArmyCard: GameArmyCard
   defenderUnit: GameUnit
+  // head or tail, same results
   attackerHex: BoardHex
+  // head or tail, same results
   defenderHex: BoardHex
   boardHexes: BoardHexes
   gameArmyCards: GameArmyCard[]

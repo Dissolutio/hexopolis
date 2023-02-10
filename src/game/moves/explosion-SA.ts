@@ -9,8 +9,7 @@ import {
   selectHexForUnit,
   selectTailHexForUnit,
 } from '../selectors'
-import { PossibleFireLineAttack } from '../../hexopolis-ui/contexts/special-attack-context'
-import { GameState, StageQueueItem } from '../types'
+import { GameState, PossibleExplosionAttack, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { encodeGameLogMessage } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
@@ -18,15 +17,15 @@ import { getActivePlayersIdleStage, stageNames } from '../constants'
 export const rollForExplosionSpecialAttack: Move<GameState> = (
   { G, events, random },
   {
-    chosenFireLineAttack,
-    affectedUnitIDs,
     attackerUnitID,
+    chosenExplosionAttack,
   }: {
-    chosenFireLineAttack: PossibleFireLineAttack
-    affectedUnitIDs: string[]
     attackerUnitID: string
+    chosenExplosionAttack: PossibleExplosionAttack
   }
 ) => {
+  const affectedUnitIDs = chosenExplosionAttack?.affectedUnitIDs
+  const affectedHexIDs = chosenExplosionAttack?.affectedHexIDs
   // 0. get ready
   let newStageQueue: StageQueueItem[] = []
   const attackRolled = 3
@@ -37,7 +36,12 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     G.gameUnits[attackerUnitID].gameCardID
   )
   // DISALLOW - missing needed ingredients
-  if (!attackerHex || !attackerGameCard) {
+  if (
+    !attackerHex ||
+    !attackerGameCard ||
+    !affectedUnitIDs ||
+    !affectedHexIDs
+  ) {
     console.error(
       `Fire Line Special Attack aborted before attack was rolled: missing needed ingredients to calculate attack`
     )
@@ -53,36 +57,31 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
       G.gameArmyCards,
       defenderGameUnit.gameCardID
     )
-    // we take the hex that is closest to the attacker to be the defender hex
+    // this hex is the one we will measure range to, the range function won't care if it's the head or tail
+    const defenderHeadHex = selectHexForUnit(
+      defenderGameUnit.unitID,
+      G.boardHexes
+    )
     // DISALLOW - no card should not happen
-    if (!defenderGameCard) {
+    if (!defenderGameCard || !defenderHeadHex) {
       console.error(
         `Attack action denied: missing needed ingredients to calculate attack`
       )
       return
     }
-    const firstIndexOfDefenderInLine = chosenFireLineAttack.line.findIndex(
-      (hex) => hex.occupyingUnitID === defenderGameUnit.unitID
-    )
-    // this hex is the one we will measure range to, we don't care if it's the tail or head
-    const defenderHex = chosenFireLineAttack.line[firstIndexOfDefenderInLine]
-    const defenderHeadHex = selectHexForUnit(
-      defenderGameUnit.unitID,
-      G.boardHexes
-    )
     const defenderTailHex = selectTailHexForUnit(
       defenderGameUnit.unitID,
       G.boardHexes
     )
-    const isRanged = selectEngagementsForHex({
-      hexID: defenderHex.id,
+    const isRanged = !selectEngagementsForHex({
+      hexID: defenderHeadHex.id,
       boardHexes: G.boardHexes,
       gameUnits: G.gameUnits,
       armyCards: G.gameArmyCards,
     }).includes(attackerUnitID)
     const defenseRolled = selectUnitDefenseDiceForAttack({
       attackerHex,
-      defenderHex,
+      defenderHex: defenderHeadHex,
       defenderArmyCard: defenderGameCard,
       defenderUnit: defenderGameUnit,
       boardHexes: G.boardHexes,
@@ -158,7 +157,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
       id: attackId,
       unitID: attackerUnitID,
       unitName: attackerGameCard.name,
-      targetHexID: defenderHex.id,
+      targetHexID: defenderHeadHex.id,
       defenderUnitName,
       attackRolled,
       defenseRolled,

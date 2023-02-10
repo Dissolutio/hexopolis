@@ -143,9 +143,8 @@ export function calcRopHexClassNames({
   fireLineAffectedHexIDs,
   fireLineSelectedHexIDs,
   explosionTargetableHexIDs,
-  explosionAffectedHexIDs,
   explosionAffectedUnitIDs,
-  explosionSelectedHexIDs,
+  explosionSelectedUnitIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
@@ -170,7 +169,7 @@ export function calcRopHexClassNames({
   explosionTargetableHexIDs: string[]
   explosionAffectedHexIDs: string[]
   explosionAffectedUnitIDs: string[]
-  explosionSelectedHexIDs: string[]
+  explosionSelectedUnitIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -281,7 +280,7 @@ export function calcRopHexClassNames({
     if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-malaffected ')
     }
-    if (explosionSelectedHexIDs.includes(hex.id)) {
+    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
