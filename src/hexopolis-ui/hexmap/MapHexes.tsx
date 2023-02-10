@@ -69,6 +69,7 @@ export const MapHexes = () => {
     explosionTargetableHexIDs,
     explosionAffectedHexIDs,
     explosionSelectedHexIDs,
+    singleUnitOfRevealedGameCard,
   } = useSpecialAttackContext()
 
   // handlers
@@ -83,6 +84,10 @@ export const MapHexes = () => {
     } else if (isExplosionSAStage) {
       if (explosionTargetableHexIDs.includes(sourceHex.id)) {
         selectSpecialAttack(sourceHex.id)
+      }
+      // clear selection if you click on Deathwalker9000
+      if (singleUnitOfRevealedGameCard?.unitID === sourceHex.occupyingUnitID) {
+        selectSpecialAttack('sourceHex.id')
       }
     } else if (isRoundOfPlayPhase) {
       onClickTurnHex?.(event, sourceHex)
