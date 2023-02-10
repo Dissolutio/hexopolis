@@ -3,7 +3,7 @@ import toast, { useToaster } from 'react-hot-toast/headless'
 import { useBgioG } from 'bgio-contexts'
 import { useEffect } from 'react'
 import { useUIContext } from 'hexopolis-ui/contexts'
-import { decodeGameLogMessage } from 'game/gamelog'
+import { decodeGameLogMessage, gameLogTypes } from 'game/gamelog'
 import { uniqBy } from 'lodash'
 
 export const Notifications = () => {
@@ -19,8 +19,10 @@ export const Notifications = () => {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
         const gameLogString = gameLog[i]
         const gameLogMessage = decodeGameLogMessage(gameLogString)
+        const duration =
+          gameLogMessage?.type === gameLogTypes.move ? 5000 : 20000
         toast(gameLogMessage?.msg ?? '', {
-          duration: 10000,
+          duration,
           id: gameLogMessage?.id,
         })
       }
