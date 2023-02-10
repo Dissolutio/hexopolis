@@ -61,10 +61,10 @@ export const MapHexes = () => {
     clonePlaceableHexIDs,
   } = usePlayContext()
   const {
-    malaffectedHexIDs,
-    selectedFireLinePathHexIDs,
-    targetableHexIDs,
     selectSpecialAttack,
+    fireLineTargetableHexIDs,
+    fireLineAffectedHexIDs,
+    fireLineSelectedHexIDs,
   } = useSpecialAttackContext()
 
   // handlers
@@ -73,7 +73,7 @@ export const MapHexes = () => {
       onClickPlacementHex?.(event, sourceHex)
     }
     if (isFireLineSAStage) {
-      if (targetableHexIDs.includes(sourceHex.id)) {
+      if (fireLineTargetableHexIDs.includes(sourceHex.id)) {
         selectSpecialAttack(sourceHex.id)
       }
     } else if (isRoundOfPlayPhase) {
@@ -120,9 +120,9 @@ export const MapHexes = () => {
         selectedUnitAttackRange,
         clonerHexIDs,
         clonePlaceableHexIDs,
-        targetableHexIDs,
-        malaffectedHexIDs,
-        selectedFireLinePathHexIDs,
+        fireLineTargetableHexIDs,
+        fireLineAffectedHexIDs,
+        fireLineSelectedHexIDs,
       })
     }
   }

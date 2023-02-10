@@ -14,7 +14,7 @@ import { usePlayContext } from './play-phase-context'
 import { useBgioCtx, useBgioG } from 'bgio-contexts'
 import { BoardHex, GameUnit } from 'game/types'
 
-export type PossibleAttack = {
+export type PossibleFireLineAttack = {
   affectedUnitIDs: string[]
   clickableHexID: string
   direction: number
@@ -26,15 +26,13 @@ type SpecialAttackContextProviderProps = {
 
 const SpecialAttackContext = React.createContext<
   | {
-      chosenSpecialAttack: string
-      possibleFireLineAttacks: PossibleAttack[]
       selectSpecialAttack: (id: string) => void
-      unitFireLining: GameUnit | undefined
-      chosenFireLineAttack: PossibleAttack | undefined
-      malaffectedHexIDs: string[]
-      selectedFireLinePathHexIDs: string[]
-      targetableHexIDs: string[]
-      affectedSelectedUnitNames: string[]
+      chosenFireLineAttack: PossibleFireLineAttack | undefined
+      fireLineAffectedHexIDs: string[]
+      fireLineSelectedHexIDs: string[]
+      fireLineTargetableHexIDs: string[]
+      fireLineSelectedUnitNames: string[]
+      mimringUnit: GameUnit | undefined
     }
   | undefined
 >(undefined)
@@ -49,9 +47,10 @@ export function SpecialAttackContextProvider({
   const selectSpecialAttack = (id: string) => {
     setChosenSpecialAttack(id)
   }
-  const unitFireLining = revealedGameCardUnits?.[0]
 
-  const possibleFireLineAttacks: PossibleAttack[] = useMemo(() => {
+  // MIMRING FIRE LINE
+  const mimringUnit = revealedGameCardUnits?.[0]
+  const possibleFireLineAttacks: PossibleFireLineAttack[] = useMemo(() => {
     const hasFireLine = selectIfGameArmyCardHasAbility(
       'Fire Line Special Attack',
       revealedGameCard
@@ -67,8 +66,8 @@ export function SpecialAttackContextProvider({
     if (!isMyTurn || !hasFireLine || !revealedGameCard) {
       return []
     }
-    const headHex = selectHexForUnit(unitFireLining.unitID, boardHexes)
-    const tailHex = selectTailHexForUnit(unitFireLining.unitID, boardHexes)
+    const headHex = selectHexForUnit(mimringUnit.unitID, boardHexes)
+    const tailHex = selectTailHexForUnit(mimringUnit.unitID, boardHexes)
     const unitsNeighborHexIDAndDirectionPairs = [
       ...selectHexNeighborsWithDirections(headHex?.id ?? '', boardHexes),
       ...selectHexNeighborsWithDirections(tailHex?.id ?? '', boardHexes),
@@ -121,61 +120,84 @@ export function SpecialAttackContextProvider({
       {}
     )
     return result
-  }, [boardHexes, isMyTurn, revealedGameCard, unitFireLining])
-
+  }, [boardHexes, isMyTurn, revealedGameCard, mimringUnit])
   const chosenFireLineAttack = Object.values(possibleFireLineAttacks)?.find?.(
     (pa) => {
       return pa.clickableHexID === chosenSpecialAttack
     }
   )
-  const selectedFireLinePathHexIDs =
-    chosenFireLineAttack?.line?.map?.((hex) => hex.id) ?? []
-
-  const targetableHexIDs =
-    Object.values(possibleFireLineAttacks)?.map?.((pa) => pa.clickableHexID) ??
-    []
-  const allMalaffectedHexIDs =
-    (
-      Object.values(possibleFireLineAttacks)?.map?.((pa) =>
-        pa?.line?.map?.((hex) => hex.id)
+  const { fireLineTargetableHexIDs, secondaryTargetHexIDs } = useMemo(() => {
+    const fireLineTargetHexIDs =
+      Object.values(possibleFireLineAttacks)?.map?.(
+        (pa) => pa.clickableHexID
       ) ?? []
-    )?.flat() ?? []
-  const malaffectedHexIDs = allMalaffectedHexIDs.filter(
-    (id) => !targetableHexIDs.includes(id)
-  )
-  const affectedUnits = uniqBy(
-    selectedFireLinePathHexIDs
-      .map((id) => {
-        const hex = boardHexes[id]
-        const unit = selectUnitForHex(hex.id, boardHexes, gameUnits)
-        const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
-        if (!card || !unit || !hex) {
-          return undefined
-        }
-        return { ...unit, singleName: card?.singleName }
-      })
-      .filter((unit) => !!unit),
-    'unitID'
-  )
+    const secondaryTargetHexIDs =
+      (
+        Object.values(possibleFireLineAttacks)?.map?.((pa) =>
+          pa?.line?.map?.((hex) => hex.id)
+        ) ?? []
+      )?.flat() ?? []
+    return {
+      fireLineTargetableHexIDs: fireLineTargetHexIDs,
+      secondaryTargetHexIDs,
+    }
+  }, [possibleFireLineAttacks])
 
-  const affectedSelectedUnitNames = affectedUnits.map((unit) => {
-    return unit?.singleName ?? ''
-  })
-  const affectedUnitIDs = affectedUnits.map((unit) => {
-    return unit?.unitID ?? ''
-  })
+  const {
+    fireLineSelectedHexIDs,
+    fireLineAffectedHexIDs,
+    fireLineSelectedUnitNames,
+  } = useMemo(() => {
+    const fireLineSelectedHexIDs =
+      chosenFireLineAttack?.line?.map?.((hex) => hex.id) ?? []
+
+    const fireLineAffectedHexIDs = secondaryTargetHexIDs.filter(
+      (id) => !fireLineTargetableHexIDs.includes(id)
+    )
+
+    const affectedUnits = uniqBy(
+      fireLineSelectedHexIDs
+        .map((id) => {
+          const hex = boardHexes[id]
+          const unit = selectUnitForHex(hex.id, boardHexes, gameUnits)
+          const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+          if (!card || !unit || !hex) {
+            return undefined
+          }
+          return { ...unit, singleName: card?.singleName }
+        })
+        .filter((unit) => !!unit),
+      'unitID'
+    )
+
+    const fireLineSelectedUnitNames = affectedUnits.map((unit) => {
+      return unit?.singleName ?? ''
+    })
+    return {
+      fireLineSelectedHexIDs,
+      fireLineTargetableHexIDs,
+      fireLineAffectedHexIDs,
+      fireLineSelectedUnitNames,
+    }
+  }, [
+    secondaryTargetHexIDs,
+    boardHexes,
+    chosenFireLineAttack?.line,
+    gameArmyCards,
+    gameUnits,
+    fireLineTargetableHexIDs,
+  ])
+
   return (
     <SpecialAttackContext.Provider
       value={{
-        chosenSpecialAttack,
         selectSpecialAttack,
-        possibleFireLineAttacks,
+        mimringUnit,
         chosenFireLineAttack,
-        malaffectedHexIDs,
-        selectedFireLinePathHexIDs,
-        targetableHexIDs,
-        affectedSelectedUnitNames,
-        unitFireLining,
+        fireLineSelectedHexIDs,
+        fireLineTargetableHexIDs,
+        fireLineAffectedHexIDs,
+        fireLineSelectedUnitNames,
       }}
     >
       {children}

@@ -9,7 +9,7 @@ import {
   selectHexForUnit,
   selectTailHexForUnit,
 } from '../selectors'
-import { PossibleAttack } from '../../hexopolis-ui/contexts/special-attack-context'
+import { PossibleFireLineAttack } from '../../hexopolis-ui/contexts/special-attack-context'
 import { GameState, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { encodeGameLogMessage } from '../gamelog'
@@ -22,14 +22,15 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
     affectedUnitIDs,
     attackerUnitID,
   }: {
-    chosenFireLineAttack: PossibleAttack
+    chosenFireLineAttack: PossibleFireLineAttack
     affectedUnitIDs: string[]
     attackerUnitID: string
   }
 ) => {
   // 0. get ready
   let newStageQueue: StageQueueItem[] = []
-  const attackRolled = 40
+  // TODO: Special Attack abilities should have attackRolled and range as data
+  const attackRolled = 4
   const unitsAttacked = { ...G.unitsAttacked }
   const attackerHex = selectHexForUnit(attackerUnitID, G.boardHexes)
   const attackerGameCard = selectGameCardByID(

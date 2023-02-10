@@ -139,9 +139,9 @@ export function calcRopHexClassNames({
   selectedUnitAttackRange,
   clonerHexIDs,
   clonePlaceableHexIDs,
-  targetableHexIDs,
-  malaffectedHexIDs,
-  selectedFireLinePathHexIDs,
+  fireLineTargetableHexIDs,
+  fireLineAffectedHexIDs,
+  fireLineSelectedHexIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
@@ -160,9 +160,9 @@ export function calcRopHexClassNames({
   selectedUnitAttackRange: string[]
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
-  targetableHexIDs: string[]
-  malaffectedHexIDs: string[]
-  selectedFireLinePathHexIDs: string[]
+  fireLineTargetableHexIDs: string[]
+  fireLineAffectedHexIDs: string[]
+  fireLineSelectedHexIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
@@ -256,13 +256,13 @@ export function calcRopHexClassNames({
   }
   //  phase: ROP-fire-line Special Attack
   if (isFireLineSAStage) {
-    if (targetableHexIDs.includes(hex.id)) {
+    if (fireLineTargetableHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
-    if (malaffectedHexIDs.includes(hex.id)) {
+    if (fireLineAffectedHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-malaffected ')
     }
-    if (selectedFireLinePathHexIDs.includes(hex.id)) {
+    if (fireLineSelectedHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }

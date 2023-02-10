@@ -20,13 +20,13 @@ export const FireLineControls = () => {
   const { revealedGameCard: mimringsCard } = usePlayContext()
   const { boardHexes, gameArmyCards, gameUnits } = useBgioG()
   const {
-    chosenFireLineAttack,
-    selectedFireLinePathHexIDs,
-    unitFireLining,
     selectSpecialAttack,
+    mimringUnit,
+    chosenFireLineAttack,
+    fireLineSelectedHexIDs,
   } = useSpecialAttackContext()
   const affectedUnits = uniqBy(
-    selectedFireLinePathHexIDs
+    fireLineSelectedHexIDs
       .map((id) => {
         const hex = boardHexes[id]
         const unit = selectUnitForHex(hex.id, boardHexes, gameUnits)
@@ -40,7 +40,7 @@ export const FireLineControls = () => {
     'unitID'
   )
   const friendlyAffectedUnitsCount = affectedUnits.filter((unit) => {
-    return unit?.playerID === unitFireLining?.playerID
+    return unit?.playerID === mimringUnit?.playerID
   }).length
   const affectedSelectedUnitNames = affectedUnits.map((unit) => {
     return unit?.singleName ?? ''
@@ -64,7 +64,7 @@ export const FireLineControls = () => {
     rollForFireLineSpecialAttack({
       chosenFireLineAttack,
       affectedUnitIDs,
-      attackerUnitID: unitFireLining?.unitID,
+      attackerUnitID: mimringUnit?.unitID,
     })
   }
 
