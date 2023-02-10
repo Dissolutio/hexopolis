@@ -21,8 +21,9 @@ export const RopAttackControls = () => {
   const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
     usePlayContext()
   const revealedGameCardName = revealedGameCard?.name ?? ''
-  const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
-    (ability) => ability.name === 'Water Clone'
+  const hasWaterClone = selectIfGameArmyCardHasAbility(
+    'Water Clone',
+    revealedGameCard
   )
   const getHasSpecialAttack = () => {
     return {
