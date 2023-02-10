@@ -32,6 +32,7 @@ export const GrenadeSAControls = () => {
     rollForExplosionSpecialAttack({
       attackerUnitID: selectedUnit.unitID,
       chosenExplosionAttack,
+      grenadeThrowingGameCardID: attackersCard?.gameCardID ?? '',
     })
   }
 

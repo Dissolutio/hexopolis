@@ -43,6 +43,8 @@ export interface GameState {
   /* END */
   waterCloneRoll?: WaterCloneRoll
   waterClonesPlaced: WaterClonesPlaced
+  // This is an array of gameCardIDs, it gets added to whenever a grenade gets thrown, and then at end of turn, in game.ts file,  we can mark that card true for hasThrownGrenade
+  grenadesThrown: string[]
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
 }

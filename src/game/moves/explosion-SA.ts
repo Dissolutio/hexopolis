@@ -19,9 +19,11 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
   {
     attackerUnitID,
     chosenExplosionAttack,
+    grenadeThrowingGameCardID,
   }: {
     attackerUnitID: string
     chosenExplosionAttack: PossibleExplosionAttack
+    grenadeThrowingGameCardID?: string
   }
 ) => {
   const affectedUnitIDs = chosenExplosionAttack?.affectedUnitIDs
@@ -43,7 +45,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     !affectedHexIDs
   ) {
     console.error(
-      `Fire Line Special Attack aborted before attack was rolled: missing needed ingredients to calculate attack`
+      `Explosion/Grenade Special Attack aborted before attack was rolled: missing needed ingredients to calculate attack`
     )
     return
   }
@@ -203,6 +205,10 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     events.setActivePlayers({
       value: activePlayers,
     })
+  }
+  // Mark this so that in game.ts file
+  if (grenadeThrowingGameCardID) {
+    G.grenadesThrown = [...G.grenadesThrown, grenadeThrowingGameCardID]
   }
   if (!nextStage) {
     events.endTurn()
