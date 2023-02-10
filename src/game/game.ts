@@ -175,6 +175,13 @@ export const HexedMeadow: Game<GameState> = {
         },
         // clear move-points,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {
+          // if any card threw grenades, mark them as used
+          ;[...new Set(G.grenadesThrown)].forEach((cardID) => {
+            const indexToUpdate = G.gameArmyCards.findIndex(
+              (card) => card.gameCardID === cardID
+            )
+            G.gameArmyCards[indexToUpdate].hasThrownGrenade = true
+          })
           // reset unit move-points
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0

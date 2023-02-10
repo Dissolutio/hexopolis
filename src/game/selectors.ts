@@ -275,12 +275,16 @@ export const selectIsInRangeOfAttack = ({
   gameArmyCards,
   boardHexes,
   gameUnits,
+  isSpecialAttack,
+  overrideUnitRange,
 }: {
   attackingUnit: GameUnit
   defenderHex: BoardHex
   gameArmyCards: GameArmyCard[]
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  isSpecialAttack?: boolean
+  overrideUnitRange?: number
 }): RangeScan => {
   const { unitID } = attackingUnit
   const isUnit2Hex = attackingUnit.is2Hex
@@ -289,12 +293,14 @@ export const selectIsInRangeOfAttack = ({
     attackingUnit.gameCardID
   )
   // const unitRange = attackerGameCard?.range ?? 0
-  let unitRange = selectUnitRange({
-    attackingUnit,
-    gameArmyCards,
-    boardHexes,
-    gameUnits,
-  })
+  let unitRange = overrideUnitRange
+    ? overrideUnitRange
+    : selectUnitRange({
+        attackingUnit,
+        gameArmyCards,
+        boardHexes,
+        gameUnits,
+      })
   const attackerHex = selectHexForUnit(unitID, boardHexes)
   const attackerTailHex = selectTailHexForUnit(unitID, boardHexes)
   const { occupyingUnitID: defenderHexUnitID } = defenderHex
@@ -335,7 +341,8 @@ export const selectIsInRangeOfAttack = ({
   const isThorianSpeedDefender =
     selectIfGameArmyCardHasThorianSpeed(defenderGameCard)
   const isAttackerRequiredToBeEngagedToDefender =
-    isRangeOneWhichRequiresEngagement || isThorianSpeedDefender
+    isRangeOneWhichRequiresEngagement ||
+    (!isSpecialAttack && isThorianSpeedDefender)
   const isInRange = isAttackerRequiredToBeEngagedToDefender
     ? isInMeleeRange
     : isInRangedRange
@@ -380,7 +387,9 @@ export function selectEngagementsForHex({
   }
   const tailHexID = overrideUnitID
     ? overrideTailHexID || ''
-    : selectTailHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? '' // we could auto select a tail spot too?
+    : selectTailHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
+  // refetch the head in case we had the tail to start with
+  const headHexID = selectHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
   const isUnit2Hex = unitOnHex.is2Hex
   // mutate/expand tailNeighbors if unit is 2 hex
   let tailNeighbors: BoardHex[] = []
@@ -393,7 +402,7 @@ export function selectEngagementsForHex({
     unitOnHex?.gameCardID
   )
   const allNeighborsToUnitOnHex = [
-    ...selectHexNeighbors(hexID, boardHexes),
+    ...selectHexNeighbors(headHexID, boardHexes),
     ...tailNeighbors,
   ]
   const engagedUnitIDs = uniq(

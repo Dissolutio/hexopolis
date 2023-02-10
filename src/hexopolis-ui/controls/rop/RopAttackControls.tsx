@@ -38,9 +38,16 @@ export const RopAttackControls = () => {
             revealedGameCard
           )
         : false,
+      hasGrenade:
+        revealedGameCard && !revealedGameCard.hasThrownGrenade
+          ? selectIfGameArmyCardHasAbility(
+              'Grenade Special Attack',
+              revealedGameCard
+            )
+          : false,
     }
   }
-  const { hasFireLine, hasExplosion } = getHasSpecialAttack()
+  const { hasFireLine, hasExplosion, hasGrenade } = getHasSpecialAttack()
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
@@ -121,6 +128,17 @@ export const RopAttackControls = () => {
             }}
           >
             Use Explosion Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasGrenade && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.grenadeSA)
+            }}
+          >
+            Use Grenade Special Attack
           </GreenButton>
         </StyledButtonWrapper>
       )}

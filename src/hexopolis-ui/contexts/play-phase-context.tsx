@@ -90,6 +90,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isAttackingStage,
     isWaterCloneStage,
     isMyTurn,
+    isGrenadeSAStage,
   } = useBgioCtx()
   const {
     moves: { moveAction, attackAction, attemptDisengage, placeWaterClone },
@@ -401,8 +402,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         }
       }
     }
-    // ATTACK STAGE
-    if (isAttackingStage) {
+    // ATTACK STAGE / Grenade SA is stowing-away on the selection/deselection logic
+    if (isAttackingStage || isGrenadeSAStage) {
       // select unit
       if (isUnitOnHexReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
@@ -412,16 +413,19 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         setSelectedUnitID('')
       }
       // attack with selected unit
-      if (selectedUnit && isEndHexEnemyOccupied) {
-        const { isInRange } = selectIsInRangeOfAttack({
-          attackingUnit: selectedUnit,
-          defenderHex: sourceHex,
-          gameArmyCards: gameArmyCards,
-          boardHexes: boardHexes,
-          gameUnits: gameUnits,
-        })
-        if (isInRange) {
-          attackAction(selectedUnit, boardHexes[sourceHex.id])
+      // the selecting of a special attack is split off in MapHexes, weird but let's GrenadeSA reuse some stuff
+      if (isAttackingStage) {
+        if (selectedUnit && isEndHexEnemyOccupied) {
+          const { isInRange } = selectIsInRangeOfAttack({
+            attackingUnit: selectedUnit,
+            defenderHex: sourceHex,
+            gameArmyCards: gameArmyCards,
+            boardHexes: boardHexes,
+            gameUnits: gameUnits,
+          })
+          if (isInRange) {
+            attackAction(selectedUnit, boardHexes[sourceHex.id])
+          }
         }
       }
     }

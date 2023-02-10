@@ -84,6 +84,7 @@ function makeTestScenario(): GameState {
     boardHexes: map.boardHexes,
     startZones: map.startZones,
     waterClonesPlaced: [],
+    grenadesThrown: [],
     stageQueue: [],
   }
 }

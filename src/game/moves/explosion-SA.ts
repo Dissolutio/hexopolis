@@ -19,16 +19,21 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
   {
     attackerUnitID,
     chosenExplosionAttack,
+    grenadeThrowingGameCardID,
+    isStillAttacksLeft,
   }: {
     attackerUnitID: string
     chosenExplosionAttack: PossibleExplosionAttack
+    grenadeThrowingGameCardID?: string
+    isStillAttacksLeft?: boolean
   }
 ) => {
   const affectedUnitIDs = chosenExplosionAttack?.affectedUnitIDs
   const affectedHexIDs = chosenExplosionAttack?.affectedHexIDs
+  const isGrenadesInsteadOfExplosion = !!grenadeThrowingGameCardID
   // 0. get ready
   let newStageQueue: StageQueueItem[] = []
-  const attackRolled = 30
+  const attackRolled = isGrenadesInsteadOfExplosion ? 2 : 3 // D9000 explosion is 3, airborne grenade is 2
   const unitsAttacked = { ...G.unitsAttacked }
   const attackerHex = selectHexForUnit(attackerUnitID, G.boardHexes)
   const attackerGameCard = selectGameCardByID(
@@ -43,7 +48,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     !affectedHexIDs
   ) {
     console.error(
-      `Fire Line Special Attack aborted before attack was rolled: missing needed ingredients to calculate attack`
+      `Explosion/Grenade Special Attack aborted before attack was rolled: missing needed ingredients to calculate attack`
     )
     return
   }
@@ -182,6 +187,13 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     }
     // END LOOP
   })
+  // After end of loop, add a marker to come back to finish grenade attacks
+  if (isStillAttacksLeft) {
+    newStageQueue.push({
+      playerID: attackerGameCard.playerID,
+      stage: stageNames.grenadeSA,
+    })
+  }
 
   // at this point, newStageQueue could be populated with many stages
   const nextStage = newStageQueue.shift()
@@ -203,6 +215,10 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     events.setActivePlayers({
       value: activePlayers,
     })
+  }
+  // Mark this so that in game.ts file
+  if (grenadeThrowingGameCardID) {
+    G.grenadesThrown = [...G.grenadesThrown, grenadeThrowingGameCardID]
   }
   if (!nextStage) {
     events.endTurn()
