@@ -173,6 +173,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
       isStealthDodge,
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
+    // handle post death spirit abilities
     if (isWarriorSpirit) {
       newStageQueue.push({
         playerID: defenderGameCard.playerID,
