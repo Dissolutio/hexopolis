@@ -31,17 +31,17 @@ const player1Ids = [
   // mimringID,
   // airbornID,
   // deathwalker9000ID,
-  finnID,
+  // finnID,
   tarnID,
-  // negoksaID,
-  // drake1ID,
+  negoksaID,
 ]
 const player2Ids = [
+  drake1ID,
   // carrID,
   // kravMagaID,
   // thorgrimID,
-  grimnakID,
-  izumiID,
+  // grimnakID,
+  // izumiID,
   // raelinOneID,
 ]
 // TEST SCENARIO ORDERMARKERS

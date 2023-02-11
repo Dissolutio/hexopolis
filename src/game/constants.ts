@@ -21,6 +21,7 @@ export const stageNames = {
   waitingForDisengageSwipe: 'waitingForDisengageSwipe',
   disengagementSwipe: 'disengagementSwipe',
   waterClone: 'waterClone',
+  berserkerCharge: 'berserkerCharge',
   placingAttackSpirit: 'placingAttackSpirit',
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
   placingArmorSpirit: 'placingArmorSpirit',

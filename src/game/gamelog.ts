@@ -32,6 +32,10 @@ export type GameLogMessage = {
   endHexID?: string
   // disengage attempts below
   unitIdsToAttemptToDisengage?: string[]
+  // berserker charge logs, going to try and make a generalized roll log
+  roll?: number
+  isRollSuccessful?: boolean
+  rollThreshold?: number
   // chomp logs
   isChompSuccessful?: boolean
   chompingUnitID?: string
@@ -51,6 +55,7 @@ export const gameLogTypes = {
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
   chomp: 'chomp',
+  berserkerCharge: 'berserkerCharge',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -101,6 +106,10 @@ export const decodeGameLogMessage = (
       // NO UNITS ON TURN
       playerID,
       cardNameWithNoUnits,
+      // berserker charge
+      roll,
+      isRollSuccessful,
+      rollThreshold,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -139,6 +148,16 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.berserkerCharge:
+        const msgBerserkerChargeSuccess = `${unitName} move again with Berserker Charge! (rolled ${roll}/${rollThreshold})`
+        const msgBerserkerChargeFailure = `${unitName} have failed their Berserker Charge roll (rolled ${roll}/${rollThreshold})`
+        return {
+          type,
+          id,
+          msg: isRollSuccessful
+            ? msgBerserkerChargeSuccess
+            : msgBerserkerChargeFailure,
         }
       case gameLogTypes.noUnitsOnTurn:
         const msgNoUnitsOnTurn = `${playerIDDisplay(

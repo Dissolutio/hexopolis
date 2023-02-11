@@ -14,6 +14,7 @@ import {
   generateBlankOrderMarkers,
   generateBlankPlayersOrderMarkers,
 } from './constants'
+import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },
@@ -158,26 +159,26 @@ export const HexedMeadow: Game<GameState> = {
             unrevealedGameCard?.gameCardID ?? '',
             G.gameUnits
           )
-          const movePoints = unrevealedGameCard?.move ?? 0
           // loop thru this turns units
-          let mutatedGameUnits = { ...G.gameUnits }
           currentTurnUnits.length &&
             currentTurnUnits.forEach((unit: GameUnit) => {
               const { unitID } = unit
-              // move-points
-              const unitWithMovePoints = {
-                ...unit,
-                movePoints,
-              }
-              mutatedGameUnits[unitID] = unitWithMovePoints
+              // G mutator
+              assignCardMovePointsToUnit_G({
+                gameArmyCards: G.gameArmyCards,
+                gameUnits: G.gameUnits,
+                unitID,
+              })
             })
 
-          // finally, update state
-          G.gameUnits = mutatedGameUnits
+          // finally, reset state for the turn about to be taken
           G.unitsMoved = []
           G.unitsAttacked = {}
           G.isCurrentPlayerAttacking = false
           G.chompsAttempted = []
+          G.grenadesThrown = []
+          G.berserkerChargeRoll = undefined
+          G.berserkerChargeSuccessCount = 0
           // if no units, end turn
           if (isRevealedGameCardCompletelyOutOfUnits) {
             const revealedGameCard = G.gameArmyCards.find(

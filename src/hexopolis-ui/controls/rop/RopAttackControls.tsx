@@ -50,6 +50,10 @@ export const RopAttackControls = () => {
     }
   }
   const { hasFireLine, hasExplosion, hasGrenade } = selectHasSpecialAttack()
+  const hasBerserkerCharge = selectIfGameArmyCardHasAbility(
+    'Berserker Charge',
+    revealedGameCard
+  )
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
@@ -141,6 +145,17 @@ export const RopAttackControls = () => {
             }}
           >
             Use Grenade Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasBerserkerCharge && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.berserkerCharge)
+            }}
+          >
+            Use Berserker Charge
           </GreenButton>
         </StyledButtonWrapper>
       )}

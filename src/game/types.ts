@@ -47,6 +47,9 @@ export interface GameState {
   grenadesThrown: string[]
   // this marks grimnak as having chomped
   chompsAttempted: string[]
+  // this is used to track results of Tarn Viking Warrior berserker charges
+  berserkerChargeRoll: BerserkerChargeRoll | undefined
+  berserkerChargeSuccessCount: number
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
 }
@@ -330,5 +333,9 @@ export type PossibleChomp = {
   chompingUnitID: string
   targetHexID: string
   isSquad: boolean
+}
+export type BerserkerChargeRoll = {
+  roll: number
+  isSuccessful: boolean
 }
 export type UnitsKilled = { [unitID: string]: string[] }
