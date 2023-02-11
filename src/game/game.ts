@@ -179,6 +179,8 @@ export const HexedMeadow: Game<GameState> = {
           G.isCurrentPlayerAttacking = false
           G.chompsAttempted = []
           G.grenadesThrown = []
+          G.berserkerChargeRoll = undefined
+          G.berserkerChargeSuccessCount = 0
           // if no units, end turn
           if (isRevealedGameCardCompletelyOutOfUnits) {
             const revealedGameCard = G.gameArmyCards.find(

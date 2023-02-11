@@ -155,7 +155,7 @@ export const RopAttackControls = () => {
               events?.setStage?.(stageNames.berserkerCharge)
             }}
           >
-            Use Grenade Special Attack
+            Use Berserker Charge
           </GreenButton>
         </StyledButtonWrapper>
       )}

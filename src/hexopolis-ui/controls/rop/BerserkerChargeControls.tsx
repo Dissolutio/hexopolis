@@ -6,81 +6,109 @@ import {
 import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
-import { selectHexForUnit, selectValidTailHexes } from 'game/selectors'
-import { GameUnit, UnitsCloning } from 'game/types'
 import { usePlayContext } from 'hexopolis-ui/contexts'
-import { UndoRedoButtons } from './UndoRedoButtons'
-import { useMemo } from 'react'
-import { noop } from 'lodash'
 import { AbilityReadout } from './FireLineSAControls'
+import { useState } from 'react'
 
 export const BerserkerChargeControls = () => {
-  const { boardHexes, waterCloneRoll, waterClonesPlaced } = useBgioG()
   const {
-    moves: {},
+    moves: { rollForBerserkerCharge },
   } = useBgioMoves()
   const { events } = useBgioEvents()
-  const {
-    revealedGameCard,
-    revealedGameCardUnits,
-    revealedGameCardKilledUnits,
-  } = usePlayContext()
+  const { revealedGameCard } = usePlayContext()
+  // The idea here is we render with isJustRolled=false, player rolls and succeeds (toggles to true), and then their unitsMoved will be empty, but we don't yet want to show the NoUnitsMoved view, so we have this toggle to keep the view on the JustRolled view and not yet the NoUnitsMoved view, but once they navigate to move/attack and come back, the toggle will be false and we'll show the NoUnitsMoved view if applicable
+  const [isJustRolled, setIsJustRolled] = useState<boolean>(false)
+  const { unitsMoved, berserkerChargeRoll, berserkerChargeSuccessCount } =
+    useBgioG()
   const goBackToMove = () => {
     events?.setStage?.(stageNames.movement)
   }
+  const goBackToAttack = () => {
+    events?.setStage?.(stageNames.attacking)
+  }
+  const doRoll = () => {
+    setIsJustRolled(true)
+    rollForBerserkerCharge({ gameCardID: revealedGameCard?.gameCardID })
+  }
 
-  // 0. You have not moved any vikings anyway,
-  if (Math.random() > 0.5) {
+  // 0. You have not moved anybody yet, no reason to roll (show this even if last roll was successful)
+  if (
+    (!berserkerChargeRoll || berserkerChargeRoll?.isSuccessful) &&
+    unitsMoved.length <= 0
+  ) {
     return (
+      // NO UNITS MOVED
       <>
         <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
-        <StyledControlsP>{`You have not moved any units, you do not need to roll for more move points`}</StyledControlsP>
+        <StyledControlsP>{`Your warriors have full move points, you do not need to roll for Berserker Charge yet.`}</StyledControlsP>
+        {berserkerChargeSuccessCount > 0 && (
+          <StyledControlsP>{`Total Berserker Charges succeeded this turn: ${berserkerChargeSuccessCount}`}</StyledControlsP>
+        )}
         <StyledButtonWrapper>
-          <GreenButton onClick={goBackToMove}>
-            Nevermind, go back to attack
-          </GreenButton>
+          <GreenButton onClick={goBackToAttack}>Go to attack</GreenButton>
+          <GreenButton onClick={goBackToMove}>Go to move</GreenButton>
         </StyledButtonWrapper>
         <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
       </>
     )
   }
-  // 1. You rolled for the charge and got it! Now go back to move
-  if (Math.random() > 0.5) {
-    return (
-      <>
-        <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
-        <StyledControlsP>{`Glory to Njǫrd! You rolled a 17.`}</StyledControlsP>
-        <StyledButtonWrapper>
-          <GreenButton onClick={noop}>Great, CHARGE! (go to move)</GreenButton>
-        </StyledButtonWrapper>
-      </>
-    )
+  // 1.You JUST rolled successfully, or you have already rolled and failed
+  if (berserkerChargeRoll) {
+    // 1.A Your last roll was unsuccessful, you can't roll again, go to attack
+    if (!berserkerChargeRoll.isSuccessful) {
+      return (
+        <>
+          <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
+          <StyledControlsP>{`Loki and his tricks! You rolled a ${berserkerChargeRoll.roll} but needed a 15. You may not roll again. Your warriors may not move any more.`}</StyledControlsP>
+          {berserkerChargeSuccessCount > 0 && (
+            <StyledControlsP>{`Total Berserker Charges succeeded this turn: ${berserkerChargeSuccessCount}`}</StyledControlsP>
+          )}
+          <StyledButtonWrapper>
+            <GreenButton onClick={goBackToAttack}>
+              I see, begin the raid! (go to attack)
+            </GreenButton>
+          </StyledButtonWrapper>
+          <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
+        </>
+      )
+    }
+    // 1.B You JUST ROLLED for the charge and got it! Now go back to move
+    if (isJustRolled && berserkerChargeRoll.isSuccessful) {
+      return (
+        <>
+          <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
+          <StyledControlsP>{`Charge! You rolled a ${berserkerChargeRoll.roll}.`}</StyledControlsP>
+          <StyledButtonWrapper>
+            <GreenButton onClick={goBackToMove}>Go to move</GreenButton>
+          </StyledButtonWrapper>
+        </>
+      )
+    }
   }
-  // 2. You rolled for the charge and failed! Now go back to attack
-  if (Math.random() > 0.5) {
+  // 2. You have units moved, and you are eligible to roll (whether for the first time, or after a successful roll or rolls)
+  else {
     return (
       <>
         <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
-        <StyledControlsP>{`Loki and his tricks! You rolled a 14 and needed a 15`}</StyledControlsP>
+        <StyledControlsP>
+          If your roll is successful, your will get to move your warriors again.
+          If your roll fails, your movement is over and you may move onto
+          attacking. You can move and roll for Berserker Charge as many times as
+          you like, until you have an unsuccessful roll.
+        </StyledControlsP>
+        {berserkerChargeSuccessCount > 0 && (
+          <StyledControlsP>{`Total Berserker Charges succeeded this turn: ${berserkerChargeSuccessCount}`}</StyledControlsP>
+        )}
         <StyledButtonWrapper>
-          <GreenButton onClick={noop}>
-            Fine, let us raid instead (go to attack)
+          <GreenButton onClick={goBackToMove}>
+            Wait, let us move before we roll!
           </GreenButton>
+          <RedButton onClick={doRoll}>Roll for Berserker Charge!</RedButton>
         </StyledButtonWrapper>
+        <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
       </>
     )
   }
-  // 3. You haven't rolled yet, roll
-  return (
-    <>
-      <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
-      <StyledButtonWrapper>
-        <GreenButton onClick={goBackToMove}>
-          Wait, I have move points left to use, go back to move
-        </GreenButton>
-        <RedButton onClick={noop}>Roll for Berserker Charge!</RedButton>
-      </StyledButtonWrapper>
-      <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
-    </>
-  )
+  // Unsure why this case is uncovered
+  return null
 }
