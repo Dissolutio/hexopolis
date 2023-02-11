@@ -25,6 +25,7 @@ export const RopAttackControls = () => {
     'Water Clone',
     revealedGameCard
   )
+  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
   const getHasSpecialAttack = () => {
     return {
       hasFireLine: revealedGameCard
@@ -140,6 +141,17 @@ export const RopAttackControls = () => {
             }}
           >
             Use Grenade Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasChomp && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.chomp)
+            }}
+          >
+            Use Chomp
           </GreenButton>
         </StyledButtonWrapper>
       )}

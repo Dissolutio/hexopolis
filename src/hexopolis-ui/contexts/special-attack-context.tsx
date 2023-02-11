@@ -8,6 +8,7 @@ import {
   selectEngagementsForHex,
   selectIsInRangeOfAttack,
   selectHexNeighbors,
+  selectGameCardByID,
 } from '../../game/selectors'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
 import { uniq } from 'lodash'
@@ -38,6 +39,7 @@ const SpecialAttackContext = React.createContext<
       explosionAffectedUnitIDs: string[]
       explosionSelectedUnitIDs: string[]
       chosenExplosionAttack: PossibleExplosionAttack | undefined
+      chompableHexIDs: string[]
     }
   | undefined
 >(undefined)
@@ -60,6 +62,70 @@ export function SpecialAttackContextProvider({
   }
   const singleUnitOfRevealedGameCard = revealedGameCardUnits?.[0]
 
+  // GRIMNAK CHOMP
+  // const possibleChomps: string[] = useMemo(() => {
+  //   const hasChomp = selectIfGameArmyCardHasAbility(
+  //     'Chomp Special Attack',
+  //     revealedGameCard
+  //   )
+  //   const headHex = selectHexForUnit(
+  //     singleUnitOfRevealedGameCard?.unitID ?? '',
+  //     boardHexes
+  //   )
+  //   const tailHex = selectTailHexForUnit(
+  //     singleUnitOfRevealedGameCard?.unitID ?? '',
+  //     boardHexes
+  //   )
+  //   if (
+  //     !isMyTurn ||
+  //     !hasChomp ||
+  //     !revealedGameCard ||
+  //     !singleUnitOfRevealedGameCard ||
+  //     !headHex ||
+  //     !tailHex
+  //   ) {
+  //     return []
+  //   }
+  //   const engagedUnitIDs = selectEngagementsForHex({
+  //     // TODO: technically, you can chomp your own people
+  //     // all: true
+  //     hexID: headHex.id,
+  //     boardHexes,
+  //     gameUnits,
+  //     armyCards: gameArmyCards,
+  //   })
+  //   // .reduce((acc: { [hexID: string]: boolean }, id) => {
+  //   //   const cardForEngagedUnit = selectGameCardByID(
+  //   //     gameArmyCards,
+  //   //     gameUnits?.[id]?.gameCardID ?? ''
+  //   //   )
+  //   //   const isSmallOrMedium =
+  //   //     cardForEngagedUnit?.heightClass === 'small' ||
+  //   //     cardForEngagedUnit?.heightClass === 'medium'
+  //   //   if (!isSmallOrMedium) {
+  //   //     return acc
+  //   //   }
+  //   //   const isSquad = cardForEngagedUnit?.type?.includes?.('squad')
+  //   //   const hex = selectHexForUnit(id, boardHexes)
+  //   //   if (!hex) {
+  //   //     return acc
+  //   //   }
+  //   //   return {
+  //   //     ...acc,
+  //   //     [hex.id]: {
+
+  //   //     },
+  //   //   }
+  //   // }, {})
+  // }, [
+  //   boardHexes,
+  //   gameArmyCards,
+  //   gameUnits,
+  //   isMyTurn,
+  //   revealedGameCard,
+  //   singleUnitOfRevealedGameCard,
+  // ])
+  const chompableHexIDs = ['']
   // MIMRING FIRE LINE
   const possibleFireLineAttacks: PossibleFireLineAttack[] = useMemo(() => {
     const hasFireLine = selectIfGameArmyCardHasAbility(
@@ -99,8 +165,10 @@ export function SpecialAttackContextProvider({
       armyCards: gameArmyCards,
     })
     const unitsNeighborHexIDAndDirectionPairs = [
+      // get all the neighbors of the head and tail hexes
       ...selectHexNeighborsWithDirections(headHex?.id ?? '', boardHexes),
       ...selectHexNeighborsWithDirections(tailHex?.id ?? '', boardHexes),
+      // remove the head and tail hexes from the list
     ].filter((e) => e[0] !== headHex?.id && e[0] !== tailHex?.id)
     const specialIDs = uniq(
       unitsNeighborHexIDAndDirectionPairs.reduce((acc, pair) => {
@@ -299,6 +367,7 @@ export function SpecialAttackContextProvider({
     revealedGameCard,
     selectedUnit,
     singleUnitOfRevealedGameCard,
+    unitsAttacked,
     boardHexes,
     isMyTurn,
     gameUnits,
@@ -331,6 +400,7 @@ export function SpecialAttackContextProvider({
         explosionAffectedUnitIDs,
         explosionSelectedUnitIDs,
         chosenExplosionAttack,
+        chompableHexIDs,
       }}
     >
       {children}

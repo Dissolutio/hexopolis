@@ -25,6 +25,7 @@ export const stageNames = {
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
   placingArmorSpirit: 'placingArmorSpirit',
   idlePlacingArmorSpirit: 'idlePlacingArmorSpirit',
+  chomp: 'chomp',
   fireLineSA: 'fireLineSA',
   explosionSA: 'explosionSA',
   grenadeSA: 'grenadeSA',

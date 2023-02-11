@@ -11,6 +11,7 @@ import { attackAction } from './attack-action'
 import { placeAttackSpirit, placeArmorSpirit } from './buff-card'
 import { rollForFireLineSpecialAttack } from './fire-line-SA'
 import { rollForExplosionSpecialAttack } from './explosion-SA'
+import { chompAction } from './chomp-action'
 import {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
@@ -96,6 +97,7 @@ export const moves: MoveMap<GameState> = {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  chompAction,
   attackAction,
   placeAttackSpirit,
   placeArmorSpirit,
