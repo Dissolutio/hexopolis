@@ -308,7 +308,43 @@ export const selectUnitDefenseDiceForAttack = ({
       ? 1
       : 0
   }
-  return dice + heightBonus + raelinDefensiveAura() + thorgrimDefensiveAura()
+  const grimnaksOrcEnhancement = () => {
+    const grimnakCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === defenderArmyCard.playerID && c.armyCardID === grimnakID
+    )?.[0]
+    if (
+      !grimnakCard ||
+      !selectIfGameArmyCardHasAbility('Orc Warrior Enhancement', grimnakCard)
+    ) {
+      return 0
+    }
+    const grimnakUnit = selectUnitsForCard(
+      grimnakCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!grimnakUnit) {
+      return 0
+    }
+    return defenderArmyCard.race === 'orc' &&
+      defenderArmyCard.cardClass === 'warriors' &&
+      selectEngagementsForHex({
+        hexID: defenderHex.id,
+        boardHexes,
+        gameUnits,
+        armyCards: gameArmyCards,
+        friendly: true,
+      }).includes(grimnakUnit.unitID)
+      ? 1
+      : 0
+  }
+  return (
+    dice +
+    heightBonus +
+    raelinDefensiveAura() +
+    thorgrimDefensiveAura() +
+    grimnaksOrcEnhancement()
+  )
 }
 
 // attacks allowed
