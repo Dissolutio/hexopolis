@@ -391,7 +391,9 @@ export function selectEngagementsForHex({
     ? overrideTailHexID || ''
     : selectTailHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
   // refetch the head in case we had the tail to start with
-  const headHexID = selectHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
+  const headHexID = overrideUnitID
+    ? hexID
+    : selectHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
   const isUnit2Hex = unitOnHex.is2Hex
   // mutate/expand tailNeighbors if unit is 2 hex
   let tailNeighbors: BoardHex[] = []
@@ -503,6 +505,7 @@ export function selectMoveEngagedUnitIDs({
   const newEngagements = selectEngagementsForHex({
     override: {
       overrideUnitID: unit.unitID,
+      overrideTailHexID: startHexID,
     },
     hexID: neighborHexID,
     boardHexes,
