@@ -266,7 +266,7 @@ export function calcRopHexClassNames({
       classNames = classNames.concat(' maphex__cloner-hexes ')
     }
     if (clonePlaceableHexIDs.includes(hex.id)) {
-      classNames = classNames.concat(' maphex__clone-placeable ')
+      classNames = classNames.concat(' hexagon-selectable ')
     }
   }
   if (isChompStage) {

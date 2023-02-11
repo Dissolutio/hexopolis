@@ -26,7 +26,7 @@ export const RopAttackControls = () => {
     revealedGameCard
   )
   const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
-  const getHasSpecialAttack = () => {
+  const selectHasSpecialAttack = () => {
     return {
       hasFireLine: revealedGameCard
         ? selectIfGameArmyCardHasAbility(
@@ -49,7 +49,7 @@ export const RopAttackControls = () => {
           : false,
     }
   }
-  const { hasFireLine, hasExplosion, hasGrenade } = getHasSpecialAttack()
+  const { hasFireLine, hasExplosion, hasGrenade } = selectHasSpecialAttack()
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
