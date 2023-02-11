@@ -126,6 +126,7 @@ export function calcRopHexClassNames({
   isAttackingStage,
   isMovementStage,
   isWaterCloneStage,
+  isChompStage,
   isFireLineSAStage,
   isExplosionSAStage,
   isGrenadeSAStage,
@@ -140,6 +141,8 @@ export function calcRopHexClassNames({
   selectedUnitAttackRange,
   clonerHexIDs,
   clonePlaceableHexIDs,
+  chompableHexIDs,
+  chompSelectedHexIDs,
   fireLineTargetableHexIDs,
   fireLineAffectedHexIDs,
   fireLineSelectedHexIDs,
@@ -151,6 +154,7 @@ export function calcRopHexClassNames({
   isAttackingStage: boolean
   isMovementStage: boolean
   isWaterCloneStage: boolean
+  isChompStage: boolean
   isFireLineSAStage: boolean
   isExplosionSAStage: boolean
   isGrenadeSAStage: boolean
@@ -165,6 +169,8 @@ export function calcRopHexClassNames({
   selectedUnitAttackRange: string[]
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
+  chompableHexIDs: string[]
+  chompSelectedHexIDs: string[]
   fireLineTargetableHexIDs: string[]
   fireLineAffectedHexIDs: string[]
   fireLineSelectedHexIDs: string[]
@@ -260,7 +266,16 @@ export function calcRopHexClassNames({
       classNames = classNames.concat(' maphex__cloner-hexes ')
     }
     if (clonePlaceableHexIDs.includes(hex.id)) {
-      classNames = classNames.concat(' maphex__clone-placeable ')
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+  }
+  if (isChompStage) {
+    // TODO: Selected hex red?
+    if (chompableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (chompSelectedHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
   //  phase: ROP-fire-line Special Attack

@@ -25,7 +25,8 @@ export const RopAttackControls = () => {
     'Water Clone',
     revealedGameCard
   )
-  const getHasSpecialAttack = () => {
+  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
+  const selectHasSpecialAttack = () => {
     return {
       hasFireLine: revealedGameCard
         ? selectIfGameArmyCardHasAbility(
@@ -48,7 +49,7 @@ export const RopAttackControls = () => {
           : false,
     }
   }
-  const { hasFireLine, hasExplosion, hasGrenade } = getHasSpecialAttack()
+  const { hasFireLine, hasExplosion, hasGrenade } = selectHasSpecialAttack()
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
@@ -140,6 +141,17 @@ export const RopAttackControls = () => {
             }}
           >
             Use Grenade Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasChomp && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.chomp)
+            }}
+          >
+            Use Chomp
           </GreenButton>
         </StyledButtonWrapper>
       )}

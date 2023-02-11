@@ -202,20 +202,16 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       stroke-width: 0.4;
     }
   }
-  .maphex__clone-placeable > g polygon {
-    fill: var(--neon-green);
-    fill-opacity: 1;
-    filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
-      drop-shadow(-2.5px -2.5px 2px var(--neon-green));
-  }
 
-  //PHASE: ROP-fire-line-special-attack: fill, fill-opacity, drop-shadow
+  //PHASE: ROP WaterClone && FireLineSA: fill, fill-opacity, drop-shadow
+  /* hexagon-selectable is going to become more of a utility class for stages */
   .hexagon-selectable > g polygon {
     fill: var(--neon-green);
     fill-opacity: 1;
     filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
       drop-shadow(-2.5px -2.5px 2px var(--neon-green));
   }
+  //PHASE: ROP FireLineSA: fill, fill-opacity, drop-shadow
   .hexagon-malaffected > g polygon {
     fill: var(--neon-yellow);
     fill-opacity: 0.6;

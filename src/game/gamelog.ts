@@ -1,7 +1,7 @@
 import { Roll } from './rollInitiative'
 
 export type GameLogMessage = {
-  type: string // 'roundBegin' 'attack'
+  type: string // gameLogTypes
   id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
 
   // attack logs below
@@ -29,6 +29,13 @@ export type GameLogMessage = {
   endHexID?: string
   // disengage attempts below
   unitIdsToAttemptToDisengage?: string[]
+  // chomp logs
+  isChompSuccessful?: boolean
+  chompingUnitID?: string
+  chompRoll?: number
+  unitChompedName?: string
+  unitChompedSingleName?: string
+  isChompedUnitSquad?: boolean
 }
 export const gameLogTypes = {
   move: 'move',
@@ -39,6 +46,7 @@ export const gameLogTypes = {
   disengageSwipeMiss: 'disengageSwipeMiss',
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
+  chomp: 'chomp',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -85,6 +93,13 @@ export const decodeGameLogMessage = (
       // endHexID,
       // unitSingleName,
       unitIdsToAttemptToDisengage,
+      // CHOMP
+      isChompSuccessful,
+      chompRoll,
+      chompingUnitID,
+      unitChompedName,
+      unitChompedSingleName,
+      isChompedUnitSquad,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -123,6 +138,17 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.chomp:
+        const msggg = isChompSuccessful
+          ? `Grimnak chomped ${
+              isChompedUnitSquad ? unitChompedSingleName : unitChompedName
+            }! ${isChompedUnitSquad ? '' : `(rolled a ${chompRoll})`}`
+          : `Grimnak attempted to chomp ${unitChompedName}, but only rolled a ${chompRoll}`
+        return {
+          type,
+          id,
+          msg: msggg,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`

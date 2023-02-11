@@ -16,7 +16,10 @@ import { omToString } from 'app/utilities'
 import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
-import { selectIfGameArmyCardHasFlying } from 'game/selector/card-selectors'
+import {
+  selectIfGameArmyCardHasAbility,
+  selectIfGameArmyCardHasFlying,
+} from 'game/selector/card-selectors'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -41,6 +44,7 @@ export const RopMoveControls = () => {
   const unitsAliveCount = revealedGameCardUnitIDs.length
   const { hasFlying, hasStealth } =
     selectIfGameArmyCardHasFlying(revealedGameCard)
+  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
   const revealedGameCardName = revealedGameCard?.name ?? ''
   const movesAvailable =
     Math.min(allowedMoveCount, unitsAliveCount) - movedUnitsCount
@@ -80,6 +84,17 @@ export const RopMoveControls = () => {
           </StyledControlsP>
 
           <UndoRedoButtons />
+          {hasChomp && (
+            <StyledButtonWrapper>
+              <GreenButton
+                onClick={() => {
+                  events?.setStage?.(stageNames.chomp)
+                }}
+              >
+                Use Chomp
+              </GreenButton>
+            </StyledButtonWrapper>
+          )}
         </>
       )}
       {unitsAliveCount === 0 ? (

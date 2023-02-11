@@ -30,6 +30,7 @@ import { FireLineControls } from './rop/FireLineSAControls'
 import { ExplosionSAControls } from './rop/ExplosionSAControls'
 import { GameUnit } from 'game/types'
 import { GrenadeSAControls } from './rop/GrenadeSAControls'
+import { ChompControls } from './rop/ChompControls'
 
 type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }
 
@@ -45,6 +46,7 @@ export const RopControls = () => {
     isIdlePlacingAttackSpiritStage,
     isPlacingArmorSpiritStage,
     isIdlePlacingArmorSpiritStage,
+    isChompStage,
     isFireLineSAStage,
     isExplosionSAStage,
     isGrenadeSAStage,
@@ -120,6 +122,13 @@ export const RopControls = () => {
     return (
       <>
         <IdlePlaceArmorSpiritControls />
+      </>
+    )
+  }
+  if (isChompStage) {
+    return (
+      <>
+        <ChompControls />
       </>
     )
   }
