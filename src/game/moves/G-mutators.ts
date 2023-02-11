@@ -1,4 +1,5 @@
-import { BoardHexes, GameUnits, UnitsKilled } from '../types'
+import { selectGameCardByID } from 'game/selectors'
+import { BoardHexes, GameArmyCard, GameUnits, UnitsKilled } from '../types'
 
 export const killUnit_G = ({
   boardHexes,
@@ -34,4 +35,28 @@ export const killUnit_G = ({
     boardHexes[defenderTailHexID].occupyingUnitID = ''
     boardHexes[defenderTailHexID].isUnitTail = false
   }
+}
+export const assignCardMovePointsToUnit_G = ({
+  gameArmyCards,
+  gameUnits,
+  unitID,
+  overrideMovePoints,
+}: {
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+  unitID: string
+  overrideMovePoints?: number
+}) => {
+  const gameCard = selectGameCardByID(
+    gameArmyCards,
+    gameUnits[unitID].gameCardID
+  )
+  // TODO: move point card selector
+  const movePoints = overrideMovePoints ?? gameCard?.move ?? 0
+  // move-points
+  const unitWithMovePoints = {
+    ...gameUnits[unitID],
+    movePoints,
+  }
+  gameUnits[unitID] = unitWithMovePoints
 }
