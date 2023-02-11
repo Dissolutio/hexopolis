@@ -21,7 +21,7 @@ export const thorgrimID = 'hs1011'
 export const raelinOneID = 'hs1012'
 const mimringID = 'hs1013'
 const negoksaID = 'hs1014'
-const grimnakID = 'hs1015'
+export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
@@ -30,11 +30,11 @@ const player1Ids = [
   // marroID,
   // mimringID,
   // airbornID,
-  // finnID,
   // deathwalker9000ID,
+  finnID,
   tarnID,
-  negoksaID,
-  drake1ID,
+  // negoksaID,
+  // drake1ID,
 ]
 const player2Ids = [
   // carrID,
@@ -51,8 +51,8 @@ const p0_2 = `p0_${player1Ids[0]}`
 const p0_X = `p0_${player1Ids[0]}`
 
 const p1_0 = `p1_${player2Ids[0]}`
-const p1_1 = `p1_${player2Ids[0]}`
-const p1_2 = `p1_${player2Ids[0]}`
+const p1_1 = `p1_${player2Ids[1]}`
+const p1_2 = `p1_${player2Ids[1]}`
 const p1_X = `p1_${player2Ids[0]}`
 
 const armyCardsDevving = hsCardsToArmyCards(MS1Cards).filter((c) => {
