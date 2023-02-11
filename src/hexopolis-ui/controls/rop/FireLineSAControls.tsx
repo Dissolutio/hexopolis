@@ -105,8 +105,9 @@ export const FireLineControls = () => {
 export const AbilityReadout = ({
   cardAbility,
 }: {
-  cardAbility: CardAbility
+  cardAbility: CardAbility | undefined
 }) => {
+  if (!cardAbility) return null
   return (
     <StyledControlsP
       style={{
