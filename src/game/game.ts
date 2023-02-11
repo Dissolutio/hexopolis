@@ -178,7 +178,19 @@ export const HexedMeadow: Game<GameState> = {
           G.unitsAttacked = {}
           G.isCurrentPlayerAttacking = false
           G.chompsAttempted = []
+          // if no units, end turn
           if (isRevealedGameCardCompletelyOutOfUnits) {
+            const revealedGameCard = G.gameArmyCards.find(
+              (gc) => gc.gameCardID === revealedGameCardID
+            )
+            const id = `r${G.currentRound}:om${G.currentOrderMarker}:p${ctx.currentPlayer}:${revealedGameCardID}:no-units-end-turn`
+            const gameLogForNoUnitsOnTurn = encodeGameLogMessage({
+              type: gameLogTypes.noUnitsOnTurn,
+              id,
+              playerID: ctx.currentPlayer,
+              cardNameWithNoUnits: revealedGameCard?.name ?? '',
+            })
+            G.gameLog = [...G.gameLog, gameLogForNoUnitsOnTurn]
             events.endTurn()
           }
         },

@@ -1,9 +1,12 @@
 import { Roll } from './rollInitiative'
+import { playerIDDisplay } from './transformers'
 
 export type GameLogMessage = {
   type: string // gameLogTypes
   id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
-
+  // for noUnitsOnTurn
+  playerID?: string
+  cardNameWithNoUnits?: string
   // attack logs below
   unitID?: string
   unitName?: string
@@ -38,6 +41,7 @@ export type GameLogMessage = {
   isChompedUnitSquad?: boolean
 }
 export const gameLogTypes = {
+  noUnitsOnTurn: 'noUnitsOnTurn',
   move: 'move',
   attack: 'attack',
   roundBegin: 'roundBegin',
@@ -94,6 +98,9 @@ export const decodeGameLogMessage = (
       unitChompedName,
       unitChompedSingleName,
       isChompedUnitSquad,
+      // NO UNITS ON TURN
+      playerID,
+      cardNameWithNoUnits,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -132,6 +139,15 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.noUnitsOnTurn:
+        const msgNoUnitsOnTurn = `${playerIDDisplay(
+          playerID
+        )} has no units left for ${cardNameWithNoUnits}, and skips their turn`
+        return {
+          type,
+          id,
+          msg: msgNoUnitsOnTurn,
         }
       case gameLogTypes.chomp:
         const msggg = isChompSuccessful
