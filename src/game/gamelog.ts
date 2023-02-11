@@ -82,16 +82,10 @@ export const decodeGameLogMessage = (
       isFatalCounterStrike,
       isStealthDodge,
       counterStrikeWounds,
-      // roundBegin
       initiativeRolls,
-      // moves
       unitSingleName,
       startHexID,
       endHexID,
-      // disengage attempts
-      // unitID,
-      // endHexID,
-      // unitSingleName,
       unitIdsToAttemptToDisengage,
       // CHOMP
       isChompSuccessful,

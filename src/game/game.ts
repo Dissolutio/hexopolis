@@ -129,12 +129,17 @@ export const HexedMeadow: Game<GameState> = {
           currentPlayer: stageNames.movement,
         },
         // reveal order marker, assign move-points/move-ranges to eligible units
-        onBegin: ({ G, ctx }) => {
+        onBegin: ({ G, ctx, events }) => {
           // Reveal order marker
           const currentPlayersOrderMarkers =
             G.players[ctx.currentPlayer].orderMarkers
           const revealedGameCardID =
             currentPlayersOrderMarkers[G.currentOrderMarker.toString()]
+          const revealedGameCardUnits = Object.values(G.gameUnits).filter(
+            (u: GameUnit) => u?.gameCardID === revealedGameCardID
+          )
+          const isRevealedGameCardCompletelyOutOfUnits =
+            revealedGameCardUnits.length === 0
           const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
             (om: OrderMarker) =>
               om.gameCardID === revealedGameCardID && om.order === ''
@@ -172,6 +177,10 @@ export const HexedMeadow: Game<GameState> = {
           G.unitsMoved = []
           G.unitsAttacked = {}
           G.isCurrentPlayerAttacking = false
+          G.chompsAttempted = []
+          if (isRevealedGameCardCompletelyOutOfUnits) {
+            events.endTurn()
+          }
         },
         // clear move-points,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {
