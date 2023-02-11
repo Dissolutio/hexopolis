@@ -23,7 +23,7 @@ export interface GameState {
   // These 2 booleans are for shuffling the stage of the current player, so say, if finn dies, after placing his spirit the activePlayers can be updated to the right thing (w/e current player was doing before finn died)
   isCurrentPlayerAttacking: boolean
   // unitsKilled does not get erased or updated when killed units are resurrected/cloned
-  unitsKilled: { [unitID: string]: string[] }
+  unitsKilled: UnitsKilled
   gameLog: string[]
   /* 
     START 
@@ -324,3 +324,4 @@ export type PossibleExplosionAttack = {
   affectedUnitIDs: string[]
   affectedHexIDs: string[]
 }
+export type UnitsKilled = { [unitID: string]: string[] }

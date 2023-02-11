@@ -16,6 +16,7 @@ import {
   selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
+import { killUnit_G } from './G-mutators'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -195,23 +196,16 @@ export const attackAction: Move<GameState> = {
     }
     // kill unit, clear hex
     if (isFatal) {
-      G.unitsKilled = {
-        ...G.unitsKilled,
-        [attackerUnitID]: [
-          ...(G.unitsKilled?.[attackerUnitID] ?? []),
-          defenderGameUnit.unitID,
-        ],
-      }
-      G.killedUnits[defenderGameUnit.unitID] = {
-        ...G.gameUnits[defenderGameUnit.unitID],
-      }
-      delete G.gameUnits[defenderGameUnit.unitID]
-      // remove from hex, and tail if applicable
-      G.boardHexes[defenderHexID].occupyingUnitID = ''
-      if (defenderGameUnit.is2Hex && defenderTailHex) {
-        G.boardHexes[defenderTailHex.id].occupyingUnitID = ''
-        G.boardHexes[defenderTailHex.id].isUnitTail = false
-      }
+      killUnit_G({
+        boardHexes: G.boardHexes,
+        unitsKilled: G.unitsKilled,
+        killedUnits: G.killedUnits,
+        gameUnits: G.gameUnits,
+        unitToKillID: defenderHexUnitID,
+        killerUnitID: attackerUnitID,
+        defenderHexID: defenderHexID,
+        defenderTailHexID: defenderTailHex?.id,
+      })
     }
     // apply counter-strike if applicable
     if (isCounterStrikeWounds) {
