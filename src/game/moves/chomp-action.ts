@@ -97,4 +97,5 @@ export const chompAction: Move<GameState> = (
   } else {
     events.setStage(stageNames.movement)
   }
+  G.stageQueue = newStageQueue
 }
