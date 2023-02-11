@@ -33,7 +33,8 @@ export const BerserkerChargeControls = () => {
 
   // 0. You have not moved anybody yet, no reason to roll (show this even if last roll was successful)
   if (
-    (!berserkerChargeRoll || berserkerChargeRoll?.isSuccessful) &&
+    (!berserkerChargeRoll ||
+      (berserkerChargeRoll?.isSuccessful && !isJustRolled)) &&
     unitsMoved.length <= 0
   ) {
     return (
@@ -86,29 +87,25 @@ export const BerserkerChargeControls = () => {
     }
   }
   // 2. You have units moved, and you are eligible to roll (whether for the first time, or after a successful roll or rolls)
-  else {
-    return (
-      <>
-        <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
-        <StyledControlsP>
-          If your roll is successful, your will get to move your warriors again.
-          If your roll fails, your movement is over and you may move onto
-          attacking. You can move and roll for Berserker Charge as many times as
-          you like, until you have an unsuccessful roll.
-        </StyledControlsP>
-        {berserkerChargeSuccessCount > 0 && (
-          <StyledControlsP>{`Total Berserker Charges succeeded this turn: ${berserkerChargeSuccessCount}`}</StyledControlsP>
-        )}
-        <StyledButtonWrapper>
-          <GreenButton onClick={goBackToMove}>
-            Wait, let us move before we roll!
-          </GreenButton>
-          <RedButton onClick={doRoll}>Roll for Berserker Charge!</RedButton>
-        </StyledButtonWrapper>
-        <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
-      </>
-    )
-  }
-  // Unsure why this case is uncovered
-  return null
+  return (
+    <>
+      <StyledControlsHeaderH2>Berserker Charge</StyledControlsHeaderH2>
+      <StyledControlsP>
+        If your roll is successful, your will get to move your warriors again.
+        If your roll fails, your movement is over and you may move onto
+        attacking. You can move and roll for Berserker Charge as many times as
+        you like, until you have an unsuccessful roll.
+      </StyledControlsP>
+      {berserkerChargeSuccessCount > 0 && (
+        <StyledControlsP>{`Total Berserker Charges succeeded this turn: ${berserkerChargeSuccessCount}`}</StyledControlsP>
+      )}
+      <StyledButtonWrapper>
+        <GreenButton onClick={goBackToAttack}>
+          Nevermind, go back to attack
+        </GreenButton>
+        <RedButton onClick={doRoll}>Roll for Berserker Charge!</RedButton>
+      </StyledButtonWrapper>
+      <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
+    </>
+  )
 }

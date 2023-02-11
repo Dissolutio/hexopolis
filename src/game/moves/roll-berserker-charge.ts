@@ -2,6 +2,8 @@ import type { Move } from 'boardgame.io'
 import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
 import { selectUnitsForCard } from 'game/selectors'
 import { GameState } from '../types'
+import { assignCardMovePointsToUnit_G } from './G-mutators'
+
 export type RollForBerserkerChargeParams = {
   gameCardID: string
 }
@@ -24,20 +26,39 @@ export const rollForBerserkerCharge: Move<GameState> = (
     console.error(`Berserker charge failed: no units found for ${gameCardID}`)
     return
   }
-  // TODO: move point card selector
-  const movePoints = gameCard.move
 
   let indexOfThisCharge = 0
   // if success, assign move points
   if (isSuccessful) {
+    currentTurnUnits.forEach((unit) => {
+      const { unitID } = unit
+      // G mutator
+      assignCardMovePointsToUnit_G({
+        gameArmyCards: G.gameArmyCards,
+        gameUnits: G.gameUnits,
+        unitID,
+      })
+    })
   } else {
     // else remove all their move points ("after moving and before attacking" in ability description)
+    currentTurnUnits.forEach((unit) => {
+      const { unitID } = unit
+      // G mutator
+      assignCardMovePointsToUnit_G({
+        gameArmyCards: G.gameArmyCards,
+        gameUnits: G.gameUnits,
+        unitID,
+        overrideMovePoints: 0,
+      })
+    })
   }
   // report to UI
   G.berserkerChargeRoll = {
     roll,
     isSuccessful,
   }
+  // reset unitsMoved
+  G.unitsMoved = []
   // get index before incrementing the success count
   indexOfThisCharge = G.berserkerChargeSuccessCount
   const newSuccessCount = isSuccessful
