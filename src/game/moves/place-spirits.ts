@@ -40,11 +40,16 @@ export const placeAttackSpirit: Move<GameState> = (
     })
   } else if (nextStage?.stage === stageNames.attacking) {
     events.setActivePlayers({ currentPlayer: stageNames.attacking })
+  } else if (nextStage?.stage === stageNames.movement) {
+    events.setActivePlayers({
+      value: { [nextStage?.playerID]: stageNames.movement },
+    })
   }
+  // Disabling this for now, because it's causing a bug where the no-units-end-turn is being unnecessarily triggered
   // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
-  else {
-    events.endTurn()
-  }
+  // else {
+  //   events.endTurn()
+  // }
 }
 export const placeArmorSpirit: Move<GameState> = (
   { G, events },
@@ -86,6 +91,8 @@ export const placeArmorSpirit: Move<GameState> = (
     })
   } else if (nextStage?.stage === stageNames.attacking) {
     events.setActivePlayers({ currentPlayer: stageNames.attacking })
+  } else if (nextStage?.stage === stageNames.movement) {
+    events.setActivePlayers({ currentPlayer: stageNames.movement })
   }
   // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
   else {
