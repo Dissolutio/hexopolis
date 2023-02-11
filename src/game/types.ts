@@ -45,6 +45,8 @@ export interface GameState {
   waterClonesPlaced: WaterClonesPlaced
   // This is an array of gameCardIDs, it gets added to whenever a grenade gets thrown, and then at end of turn, in game.ts file,  we can mark that card true for hasThrownGrenade
   grenadesThrown: string[]
+  // this marks grimnak as having chomped
+  chompsAttempted: string[]
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
 }
@@ -323,5 +325,10 @@ export type PossibleExplosionAttack = {
   clickableHexUnitID: string
   affectedUnitIDs: string[]
   affectedHexIDs: string[]
+}
+export type PossibleChomp = {
+  chompingUnitID: string
+  targetHexID: string
+  isSquad: boolean
 }
 export type UnitsKilled = { [unitID: string]: string[] }

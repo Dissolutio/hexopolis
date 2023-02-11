@@ -17,6 +17,7 @@ import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
   BoardHex,
   GameUnit,
+  PossibleChomp,
   PossibleExplosionAttack,
   PossibleFireLineAttack,
 } from 'game/types'
@@ -40,6 +41,8 @@ const SpecialAttackContext = React.createContext<
       explosionSelectedUnitIDs: string[]
       chosenExplosionAttack: PossibleExplosionAttack | undefined
       chompableHexIDs: string[]
+      chompSelectedHexIDs: string[]
+      chosenChomp: undefined | PossibleChomp
     }
   | undefined
 >(undefined)
@@ -49,7 +52,8 @@ export function SpecialAttackContextProvider({
 }: SpecialAttackContextProviderProps) {
   const { playerID } = useBgioClientInfo()
   const { boardHexes, gameUnits, gameArmyCards, unitsAttacked } = useBgioG()
-  const { isMyTurn, isGrenadeSAStage, isExplosionSAStage } = useBgioCtx()
+  const { isMyTurn, isGrenadeSAStage, isExplosionSAStage, isChompStage } =
+    useBgioCtx()
   const { revealedGameCard, revealedGameCardUnits, selectedUnit } =
     usePlayContext()
   const selectedUnitGameCard = gameArmyCards.find(
@@ -60,72 +64,91 @@ export function SpecialAttackContextProvider({
   const selectSpecialAttack = (id: string) => {
     setChosenSpecialAttack(id)
   }
-  const singleUnitOfRevealedGameCard = revealedGameCardUnits?.[0]
+  const firstUnitOfRevealedGameCard = revealedGameCardUnits?.[0]
 
   // GRIMNAK CHOMP
-  // const possibleChomps: string[] = useMemo(() => {
-  //   const hasChomp = selectIfGameArmyCardHasAbility(
-  //     'Chomp Special Attack',
-  //     revealedGameCard
-  //   )
-  //   const headHex = selectHexForUnit(
-  //     singleUnitOfRevealedGameCard?.unitID ?? '',
-  //     boardHexes
-  //   )
-  //   const tailHex = selectTailHexForUnit(
-  //     singleUnitOfRevealedGameCard?.unitID ?? '',
-  //     boardHexes
-  //   )
-  //   if (
-  //     !isMyTurn ||
-  //     !hasChomp ||
-  //     !revealedGameCard ||
-  //     !singleUnitOfRevealedGameCard ||
-  //     !headHex ||
-  //     !tailHex
-  //   ) {
-  //     return []
-  //   }
-  //   const engagedUnitIDs = selectEngagementsForHex({
-  //     // TODO: technically, you can chomp your own people
-  //     // all: true
-  //     hexID: headHex.id,
-  //     boardHexes,
-  //     gameUnits,
-  //     armyCards: gameArmyCards,
-  //   })
-  //   // .reduce((acc: { [hexID: string]: boolean }, id) => {
-  //   //   const cardForEngagedUnit = selectGameCardByID(
-  //   //     gameArmyCards,
-  //   //     gameUnits?.[id]?.gameCardID ?? ''
-  //   //   )
-  //   //   const isSmallOrMedium =
-  //   //     cardForEngagedUnit?.heightClass === 'small' ||
-  //   //     cardForEngagedUnit?.heightClass === 'medium'
-  //   //   if (!isSmallOrMedium) {
-  //   //     return acc
-  //   //   }
-  //   //   const isSquad = cardForEngagedUnit?.type?.includes?.('squad')
-  //   //   const hex = selectHexForUnit(id, boardHexes)
-  //   //   if (!hex) {
-  //   //     return acc
-  //   //   }
-  //   //   return {
-  //   //     ...acc,
-  //   //     [hex.id]: {
+  const possibleChomps: { [hexID: string]: { isSquad: boolean } } =
+    useMemo(() => {
+      const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
+      if (!hasChomp || !isChompStage) {
+        return {}
+      }
+      const headHex = selectHexForUnit(
+        firstUnitOfRevealedGameCard?.unitID ?? '',
+        boardHexes
+      )
+      const tailHex = selectTailHexForUnit(
+        firstUnitOfRevealedGameCard?.unitID ?? '',
+        boardHexes
+      )
+      if (
+        !isMyTurn ||
+        !revealedGameCard ||
+        !firstUnitOfRevealedGameCard ||
+        !headHex ||
+        !tailHex
+      ) {
+        return {}
+      }
+      const result = selectEngagementsForHex({
+        // TODO: technically, you can chomp your own people
+        // all: true
+        hexID: headHex.id,
+        boardHexes,
+        gameUnits,
+        armyCards: gameArmyCards,
+      }).reduce(
+        (
+          acc: { [hexID: string]: { isSquad: boolean; targetUnitID: string } },
+          id
+        ) => {
+          const cardForEngagedUnit = selectGameCardByID(
+            gameArmyCards,
+            gameUnits?.[id]?.gameCardID ?? ''
+          )
+          const isSmallOrMedium =
+            cardForEngagedUnit?.heightClass === 'small' ||
+            cardForEngagedUnit?.heightClass === 'medium'
+          if (!isSmallOrMedium) {
+            return acc
+          }
+          const isSquad = cardForEngagedUnit?.type?.includes?.('squad')
+          // TODO: Reselecting the hex here causes the head to be selectable even if Grimnak is only engaged to the tail (if Grimnak is engaged to the head, no problem)
+          const hex = selectHexForUnit(id, boardHexes)
+          if (!hex) {
+            return acc
+          }
+          return {
+            ...acc,
+            [hex.id]: { isSquad, targetUnitID: id },
+          }
+        },
+        {}
+      )
+      return result
+    }, [
+      boardHexes,
+      gameArmyCards,
+      gameUnits,
+      isChompStage,
+      isMyTurn,
+      revealedGameCard,
+      firstUnitOfRevealedGameCard,
+    ])
 
-  //   //     },
-  //   //   }
-  //   // }, {})
-  // }, [
-  //   boardHexes,
-  //   gameArmyCards,
-  //   gameUnits,
-  //   isMyTurn,
-  //   revealedGameCard,
-  //   singleUnitOfRevealedGameCard,
-  // ])
-  const chompableHexIDs = ['']
+  const chompableHexIDs = Object.keys(possibleChomps)
+  const chompSelectedHexIDs =
+    possibleChomps?.[chosenSpecialAttack] !== undefined
+      ? [chosenSpecialAttack]
+      : []
+  const chosenChomp =
+    possibleChomps?.[chosenSpecialAttack] !== undefined
+      ? {
+          chompingUnitID: firstUnitOfRevealedGameCard?.unitID ?? '',
+          targetHexID: chosenSpecialAttack,
+          isSquad: possibleChomps?.[chosenSpecialAttack]?.isSquad,
+        }
+      : undefined
   // MIMRING FIRE LINE
   const possibleFireLineAttacks: PossibleFireLineAttack[] = useMemo(() => {
     const hasFireLine = selectIfGameArmyCardHasAbility(
@@ -133,11 +156,11 @@ export function SpecialAttackContextProvider({
       revealedGameCard
     )
     const headHex = selectHexForUnit(
-      singleUnitOfRevealedGameCard?.unitID ?? '',
+      firstUnitOfRevealedGameCard?.unitID ?? '',
       boardHexes
     )
     const tailHex = selectTailHexForUnit(
-      singleUnitOfRevealedGameCard?.unitID ?? '',
+      firstUnitOfRevealedGameCard?.unitID ?? '',
       boardHexes
     )
     // 0. This attack is illustrated in the ROTV 2nd Edition Rules(p. 15), it can affect stacked hexes in 3D (if this game ever gets that far)
@@ -152,7 +175,7 @@ export function SpecialAttackContextProvider({
       !isMyTurn ||
       !hasFireLine ||
       !revealedGameCard ||
-      !singleUnitOfRevealedGameCard ||
+      !firstUnitOfRevealedGameCard ||
       !headHex ||
       !tailHex
     ) {
@@ -226,7 +249,7 @@ export function SpecialAttackContextProvider({
     return result
   }, [
     revealedGameCard,
-    singleUnitOfRevealedGameCard,
+    firstUnitOfRevealedGameCard,
     boardHexes,
     isMyTurn,
     gameUnits,
@@ -276,7 +299,7 @@ export function SpecialAttackContextProvider({
     const cardToUse = isGrenadeSAStage ? selectedUnitGameCard : revealedGameCard
     const unitToUse = isGrenadeSAStage
       ? selectedUnit
-      : singleUnitOfRevealedGameCard
+      : firstUnitOfRevealedGameCard
     const unitAlreadyAttacked =
       Boolean(unitToUse) &&
       Object.keys(unitsAttacked).includes(unitToUse.unitID)
@@ -366,7 +389,7 @@ export function SpecialAttackContextProvider({
     selectedUnitGameCard,
     revealedGameCard,
     selectedUnit,
-    singleUnitOfRevealedGameCard,
+    firstUnitOfRevealedGameCard,
     unitsAttacked,
     boardHexes,
     isMyTurn,
@@ -390,7 +413,7 @@ export function SpecialAttackContextProvider({
     <SpecialAttackContext.Provider
       value={{
         selectSpecialAttack,
-        singleUnitOfRevealedGameCard,
+        singleUnitOfRevealedGameCard: firstUnitOfRevealedGameCard,
         chosenFireLineAttack,
         fireLineSelectedHexIDs,
         fireLineTargetableHexIDs,
@@ -401,6 +424,8 @@ export function SpecialAttackContextProvider({
         explosionSelectedUnitIDs,
         chosenExplosionAttack,
         chompableHexIDs,
+        chompSelectedHexIDs,
+        chosenChomp,
       }}
     >
       {children}
