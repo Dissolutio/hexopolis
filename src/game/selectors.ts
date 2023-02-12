@@ -519,10 +519,14 @@ export function selectIsClimbable(
   unit: GameUnit,
   armyCards: GameArmyCard[],
   startHex: BoardHex,
-  endHex: BoardHex
+  endHex: BoardHex,
+  // this is for grapple gun
+  overrideDelta?: number
 ) {
   const unitCard = selectGameCardByID(armyCards, unit.gameCardID)
   const unitHeight = unitCard?.height ?? 0
   const altitudeDelta = endHex.altitude - startHex.altitude
-  return altitudeDelta < unitHeight
+  return (
+    altitudeDelta < (overrideDelta !== undefined ? overrideDelta : unitHeight)
+  )
 }

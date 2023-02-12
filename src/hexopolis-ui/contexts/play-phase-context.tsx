@@ -155,9 +155,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     if (isMovementStage) {
       if (selectedUnitID && selectedUnit) {
         setSelectedUnitMoveRange(() =>
+          // TODO GRAPPLE GUN
           computeUnitMoveRange(
             selectedUnit,
             isFlying,
+            isGrappleGun,
             boardHexes,
             gameUnits,
             gameArmyCards
@@ -175,6 +177,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     gameUnits,
     selectedUnit,
     selectedUnitID,
+    isGrappleGun,
   ])
   // effect: update attack-range when selected unit changes (only necessary in attacking stage)
   useEffect(() => {

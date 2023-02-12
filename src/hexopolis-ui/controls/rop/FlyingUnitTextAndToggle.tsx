@@ -61,7 +61,7 @@ export const GrappleGunTextAndToggle = ({
   const revealedGameCardName = revealedGameCard?.name ?? ''
   return (
     <>
-      <StyledControlsP>{`${revealedGameCardName} has Grapple Gun, toggle it on below:`}</StyledControlsP>
+      <StyledControlsP>{`${revealedGameCardName} has Grapple Gun, they can use it so long as they have not moved, toggle it on below:`}</StyledControlsP>
       <StyledToggleWrapper>
         <span
           onChange={toggleIsGrappleGun}
