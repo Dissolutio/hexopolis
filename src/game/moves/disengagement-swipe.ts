@@ -253,7 +253,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
           newBoardHexes[endHexID].occupyingUnitID =
             unitAttemptingToDisengage.unitID
         }
-        /* START MOVE */
+        /* END MOVE */
+
         // update unit move-points
         const moveCost = selectMoveCostBetweenNeighbors(
           unitAttemptingToDisengageHex,
