@@ -104,6 +104,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
       if (isFatal) {
         killUnit_G({
           boardHexes: newBoardHexes,
+          gameArmyCards: G.gameArmyCards,
+          killedArmyCards: G.killedArmyCards,
           unitsKilled: G.unitsKilled,
           killedUnits: G.killedUnits,
           gameUnits: G.gameUnits,
@@ -112,25 +114,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
           defenderHexID: unitAttemptingToDisengageHex.id,
           defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
         })
-        // // remove  killed unit from hex
-        // newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-        // if (is2Hex) {
-        //   newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
-        //     ''
-        //   newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
-        // }
-        // kill unit
-        // G.killedUnits[unitAttemptingToDisengage.unitID] = {
-        //   ...G.gameUnits[unitAttemptingToDisengage.unitID],
-        // }
-        // delete newGameUnits[unitAttemptingToDisengage.unitID]
-        // G.unitsKilled = {
-        //   ...G.unitsKilled,
-        //   [unitID]: [
-        //     ...(G.unitsKilled?.[unitID] ?? []),
-        //     unitAttemptingToDisengage.unitID,
-        //   ],
-        // }
 
         // and reset disengagement state
         G.disengagesAttempting = undefined

@@ -32,6 +32,8 @@ export const chompAction: Move<GameState> = (
   if (isChompSuccessful) {
     killUnit_G({
       boardHexes: G.boardHexes,
+      gameArmyCards: G.gameArmyCards,
+      killedArmyCards: G.killedArmyCards,
       unitsKilled: G.unitsKilled,
       killedUnits: G.killedUnits,
       gameUnits: G.gameUnits,

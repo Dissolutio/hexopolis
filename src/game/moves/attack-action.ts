@@ -198,6 +198,8 @@ export const attackAction: Move<GameState> = {
     if (isFatal) {
       killUnit_G({
         boardHexes: G.boardHexes,
+        gameArmyCards: G.gameArmyCards,
+        killedArmyCards: G.killedArmyCards,
         unitsKilled: G.unitsKilled,
         killedUnits: G.killedUnits,
         gameUnits: G.gameUnits,
