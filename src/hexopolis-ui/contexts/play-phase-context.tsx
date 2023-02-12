@@ -48,6 +48,7 @@ type PlayContextValue = {
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
   isWalkingFlyer: boolean
+  isGrappleGun: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
   toggleDisengageConfirm: (endHexID: string) => void
@@ -67,6 +68,7 @@ type PlayContextValue = {
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
   toggleIsWalkingFlyer: () => void
+  toggleIsGrappleGun: () => void
 }
 
 export const PlayContextProvider = ({ children }: PropsWithChildren) => {
@@ -126,6 +128,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     })
   }
 
+  // toggle walking/grapple-gun for special-move units
+  const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
+  const toggleIsGrappleGun = () => {
+    setIsGrappleGun((s) => !s)
+  }
   // toggle flying/walking for flying units
   const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
   const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
@@ -448,6 +455,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         showDisengageConfirm,
         disengageAttempt,
         isWalkingFlyer,
+        isGrappleGun,
         confirmDisengageAttempt,
         cancelDisengageAttempt,
         toggleDisengageConfirm: onClickDisengageHex,
@@ -466,6 +474,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,
+        toggleIsGrappleGun,
       }}
     >
       {children}
