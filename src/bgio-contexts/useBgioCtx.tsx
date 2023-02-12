@@ -29,6 +29,7 @@ type BgioCtxValue = BoardProps['ctx'] & {
   isGrenadeSAStage: boolean
   isChompStage: boolean
   isBerserkerStage: boolean
+  isMindShackleStage: boolean
   isGameover: boolean
 }
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
@@ -79,6 +80,9 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const isBerserkerStage: boolean =
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.berserkerCharge
+  const isMindShackleStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.mindShackle
   const isGameover: boolean = Boolean(ctx.gameover)
   return (
     <BgioCtxContext.Provider
@@ -103,6 +107,7 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
         isGrenadeSAStage,
         isChompStage,
         isBerserkerStage,
+        isMindShackleStage,
         isGameover,
       }}
     >

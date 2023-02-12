@@ -176,6 +176,7 @@ export const HexedMeadow: Game<GameState> = {
           G.unitsAttacked = {}
           G.isCurrentPlayerAttacking = false
           G.chompsAttempted = []
+          G.mindShacklesAttempted = []
           G.grenadesThrown = []
           G.berserkerChargeRoll = undefined
           G.berserkerChargeSuccessCount = 0

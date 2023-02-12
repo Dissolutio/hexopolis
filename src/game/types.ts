@@ -47,6 +47,8 @@ export interface GameState {
   grenadesThrown: string[]
   // this marks grimnak as having chomped
   chompsAttempted: string[]
+  // this marks negoksa as having attempted mind shackle
+  mindShacklesAttempted: string[]
   // this is used to track results of Tarn Viking Warrior berserker charges
   berserkerChargeRoll: BerserkerChargeRoll | undefined
   berserkerChargeSuccessCount: number

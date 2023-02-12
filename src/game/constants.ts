@@ -22,6 +22,7 @@ export const stageNames = {
   disengagementSwipe: 'disengagementSwipe',
   waterClone: 'waterClone',
   berserkerCharge: 'berserkerCharge',
+  mindShackle: 'mindShackle',
   placingAttackSpirit: 'placingAttackSpirit',
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
   placingArmorSpirit: 'placingArmorSpirit',

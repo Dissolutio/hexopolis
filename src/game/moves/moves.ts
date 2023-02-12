@@ -12,6 +12,7 @@ import { placeAttackSpirit, placeArmorSpirit } from './place-spirits'
 import { rollForFireLineSpecialAttack } from './fire-line-SA'
 import { rollForExplosionSpecialAttack } from './explosion-SA'
 import { chompAction } from './chomp-action'
+import { mindShackleAction } from './mind-shackle-action'
 import { rollForBerserkerCharge } from './roll-berserker-charge'
 import {
   rollForWaterClone,

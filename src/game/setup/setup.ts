@@ -86,6 +86,7 @@ function makeTestScenario(): GameState {
     waterClonesPlaced: [],
     grenadesThrown: [],
     chompsAttempted: [],
+    mindShacklesAttempted: [],
     berserkerChargeRoll: undefined,
     berserkerChargeSuccessCount: 0,
     stageQueue: [],
