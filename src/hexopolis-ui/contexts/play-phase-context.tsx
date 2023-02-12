@@ -160,6 +160,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             selectedUnit,
             isFlying,
             isGrappleGun,
+            uniqUnitsMoved.length > 0,
             boardHexes,
             gameUnits,
             gameArmyCards
@@ -178,6 +179,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     selectedUnit,
     selectedUnitID,
     isGrappleGun,
+    uniqUnitsMoved.length,
   ])
   // effect: update attack-range when selected unit changes (only necessary in attacking stage)
   useEffect(() => {

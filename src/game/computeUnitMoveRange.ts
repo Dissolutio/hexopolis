@@ -39,6 +39,7 @@ export function computeUnitMoveRange(
   unit: GameUnit,
   isFlying: boolean,
   isGrappleGun: boolean,
+  hasMoved: boolean,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
@@ -127,7 +128,7 @@ export function computeUnitMoveRange(
         gameUnits,
       },
       startHex: startHex,
-      movePoints: isGrappleGun ? 1 : initialMovePoints,
+      movePoints: isGrappleGun ? (hasMoved ? 0 : 1) : initialMovePoints,
       initialMoveRange,
     })
   }
