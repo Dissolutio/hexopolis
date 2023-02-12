@@ -1,6 +1,6 @@
 import type { Move } from 'boardgame.io'
-import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
-import { selectUnitsForCard } from 'game/selectors'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
+import { selectUnitsForCard } from '../selectors'
 import { GameState } from '../types'
 import { assignCardMovePointsToUnit_G } from './G-mutators'
 

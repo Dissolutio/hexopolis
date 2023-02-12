@@ -25,17 +25,17 @@ export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
-  drake1ID,
+  negoksaID,
   zettianID,
-  syvarrisID,
   marroID,
-  airbornID,
+  // airbornID,
   deathwalker9000ID,
   finnID,
   tarnID,
-  negoksaID,
 ]
 const player2Ids = [
+  drake1ID,
+  syvarrisID,
   carrID,
   kravMagaID,
   thorgrimID,

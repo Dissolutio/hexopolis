@@ -1,8 +1,8 @@
 import type { Move } from 'boardgame.io'
-import { getActivePlayersIdleStage, stageNames } from 'game/constants'
-import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
-import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
-import { selectTailHexForUnit, selectUnitForHex } from 'game/selectors'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
+import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
+import { selectTailHexForUnit, selectUnitForHex } from '../selectors'
 import { GameState, PossibleChomp, StageQueueItem } from '../types'
 import { killUnit_G } from './G-mutators'
 

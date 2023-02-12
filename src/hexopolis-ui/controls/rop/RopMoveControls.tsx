@@ -12,7 +12,6 @@ import {
   StyledButtonWrapper,
 } from '../ConfirmOrResetButtons'
 import { uniq } from 'lodash'
-import { omToString } from 'app/utilities'
 import {
   FlyingUnitTextAndToggle,
   GrappleGunTextAndToggle,
@@ -25,6 +24,7 @@ import {
 } from 'game/selector/card-selectors'
 import { AbilityReadout } from './FireLineSAControls'
 import { AnimatePresence, motion } from 'framer-motion'
+import { omToString } from 'game/transformers'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,

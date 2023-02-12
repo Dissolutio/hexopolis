@@ -1,5 +1,5 @@
-import { generateBlankPlayersOrderMarkers } from 'game/constants'
-import { selectGameCardByID } from 'game/selectors'
+import { generateBlankPlayersOrderMarkers } from '../constants'
+import { selectGameCardByID } from '../selectors'
 import {
   BoardHexes,
   GameArmyCard,

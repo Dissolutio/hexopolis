@@ -1,6 +1,5 @@
-import { omToString } from 'app/utilities'
 import { Roll } from './rollInitiative'
-import { playerIDDisplay } from './transformers'
+import { omToString, playerIDDisplay } from './transformers'
 
 export type GameLogMessage = {
   type: string // gameLogTypes
