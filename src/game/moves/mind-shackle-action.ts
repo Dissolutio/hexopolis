@@ -31,8 +31,7 @@ export const mindShackleAction: Move<GameState> = {
       return
     }
     // UI tells us to only target unique cards, 20 takes it over
-    // const roll = random.Die(20)
-    const roll = 20
+    const roll = random.Die(20)
     const rollThreshold = 20
     const isSuccessful = roll >= rollThreshold
 
@@ -42,36 +41,12 @@ export const mindShackleAction: Move<GameState> = {
       console.error(`Mind Shackle action denied: missing targetPlayerID`)
       return
     }
-    // 1. wipe order markers from playerState
-    G.players[targetPlayerID].orderMarkers = Object.entries(
-      G.players[targetPlayerID].orderMarkers
-    ).reduce((acc: PlayerOrderMarkers, entry) => {
-      const [order, gameCardID] = entry
-      if (gameCardID === targetGameCard.gameCardID) {
-        return {
-          ...acc,
-          [order]: '',
-        }
-      }
-      return {
-        ...acc,
-        [order]: gameCardID,
-      }
-    }, {})
-    // 2. wipe order markers from public orderMarkers
-    const orderMarkersFilteredForCard = G.orderMarkers[targetPlayerID].map(
-      (order) => {
-        if (order.gameCardID === targetGameCard.gameCardID) {
-          return {
-            ...order,
-            gameCardID: '',
-          }
-        }
-        return order
-      }
-    )
-    // apply mutation to public orderMarkers
-    G.orderMarkers[targetPlayerID] = orderMarkersFilteredForCard
+    wipeCardOrderMarkers_G({
+      gameCardToWipeID: targetGameCard.gameCardID,
+      playerID: targetPlayerID,
+      playerState: G.players,
+      orderMarkers: G.orderMarkers,
+    })
 
     // write playerID of gameArmyCard and gameUnits
     const targetGameCardUnits = selectUnitsForCard(
