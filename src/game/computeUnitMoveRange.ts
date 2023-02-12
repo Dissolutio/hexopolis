@@ -38,6 +38,8 @@ const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
 export function computeUnitMoveRange(
   unit: GameUnit,
   isFlying: boolean,
+  isGrappleGun: boolean,
+  hasMoved: boolean,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
   armyCards: GameArmyCard[]
@@ -110,12 +112,14 @@ export function computeUnitMoveRange(
       })
     )
   } else {
+    // only passing isGrappleGun to one spacers because Sgt. Drake is a 1-space unit
     moveRange = recurseThroughMoves({
       unmutatedContext: {
         playerID,
         unit,
         isUnitEngaged,
         isFlying,
+        isGrappleGun,
         hasStealth,
         hasDisengage,
         hasGhostWalk,
@@ -124,7 +128,7 @@ export function computeUnitMoveRange(
         gameUnits,
       },
       startHex: startHex,
-      movePoints: initialMovePoints,
+      movePoints: isGrappleGun ? (hasMoved ? 0 : 1) : initialMovePoints,
       initialMoveRange,
     })
   }
@@ -142,6 +146,7 @@ function recurseThroughMoves({
     unit: GameUnit
     isUnitEngaged: boolean
     isFlying: boolean
+    isGrappleGun?: boolean
     hasDisengage: boolean
     hasGhostWalk: boolean
     hasStealth: boolean
@@ -159,6 +164,7 @@ function recurseThroughMoves({
     unit,
     isUnitEngaged,
     isFlying,
+    isGrappleGun,
     hasDisengage,
     hasGhostWalk,
     hasStealth,
@@ -189,13 +195,14 @@ function recurseThroughMoves({
       const isWaterStoppage =
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
         (!isUnit2Hex && isNeighborHexWater)
-      const fromCost = isFlying
-        ? // flying is just one point to go anywhere
-          1
-        : // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
-        isWaterStoppage
-        ? movePoints
-        : selectMoveCostBetweenNeighbors(startHex, neighbor)
+      const fromCost =
+        isFlying || isGrappleGun
+          ? // flying is just one point to go anywhere, so is grapple-gun up to 25-height
+            1
+          : // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
+          isWaterStoppage
+          ? movePoints
+          : selectMoveCostBetweenNeighbors(startHex, neighbor)
       const movePointsLeft = movePoints - fromCost
       const isVisitedAlready =
         initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
@@ -248,7 +255,9 @@ function recurseThroughMoves({
         unit,
         armyCards,
         startHex,
-        neighbor
+        neighbor,
+        // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
+        isGrappleGun ? 26 : undefined
       )
       const isUnpassable = isFlying
         ? isTooCostly

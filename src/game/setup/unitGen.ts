@@ -25,6 +25,7 @@ export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
+  drake1ID,
   // zettianID,
   // syvarrisID,
   // marroID,
@@ -32,17 +33,16 @@ const player1Ids = [
   // deathwalker9000ID,
   // finnID,
   // tarnID,
-  negoksaID,
+  // negoksaID,
 ]
 const player2Ids = [
-  // drake1ID,
   // carrID,
   // kravMagaID,
   // thorgrimID,
-  mimringID,
+  // mimringID,
   // grimnakID,
   izumiID,
-  // raelinOneID,
+  raelinOneID,
 ]
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${player1Ids[0]}`
