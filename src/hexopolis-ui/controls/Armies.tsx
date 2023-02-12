@@ -4,6 +4,7 @@ import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { playerIDDisplay } from 'game/transformers'
 import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexopolis-ui/unit-icons'
 import { selectedTileStyle } from 'hexopolis-ui/layout/styles'
+import { omToString } from 'app/utilities'
 
 export const Armies = () => {
   const { gameArmyCards } = useBgioG()
@@ -130,7 +131,7 @@ export const OMList = ({ orderMarkers }: { orderMarkers: OrderMarker[] }) => {
             }}
             key={i}
           >
-            {om.order || '?'}
+            {omToString(om.order) || '?'}
           </li>
         )
       })}
