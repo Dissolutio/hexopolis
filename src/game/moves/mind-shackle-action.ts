@@ -34,38 +34,40 @@ export const mindShackleAction: Move<GameState> = {
     const roll = random.Die(20)
     const rollThreshold = 20
     const isSuccessful = roll >= rollThreshold
+    // if successful, change playerID of target card and units, and remove all order markers
+    if (isSuccessful) {
+      // remove all order markers from the card, first
+      const targetPlayerID = targetGameCard.playerID
+      if (!targetPlayerID) {
+        console.error(`Mind Shackle action denied: missing targetPlayerID`)
+        return
+      }
+      wipeCardOrderMarkers_G({
+        gameCardToWipeID: targetGameCard.gameCardID,
+        playerID: targetPlayerID,
+        playerState: G.players,
+        orderMarkers: G.orderMarkers,
+      })
 
-    // remove all order markers from the card, first
-    const targetPlayerID = targetGameCard.playerID
-    if (!targetPlayerID) {
-      console.error(`Mind Shackle action denied: missing targetPlayerID`)
-      return
-    }
-    wipeCardOrderMarkers_G({
-      gameCardToWipeID: targetGameCard.gameCardID,
-      playerID: targetPlayerID,
-      playerState: G.players,
-      orderMarkers: G.orderMarkers,
-    })
-
-    // write playerID of gameArmyCard and gameUnits
-    const targetGameCardUnits = selectUnitsForCard(
-      targetUnit.gameCardID,
-      G.gameUnits
-    )
-    targetGameCardUnits.forEach((unit) => {
-      G.gameUnits[unit.unitID].playerID = sourcePlayerID
-    })
-    const indexOfMindShackledCard = G.gameArmyCards.findIndex((gc) => {
-      return gc.gameCardID === targetGameCard.gameCardID
-    })
-    if (indexOfMindShackledCard === -1) {
-      console.error(
-        `Mind Shackle action denied: could not find target card in gameArmyCards`
+      // write playerID of gameArmyCard and gameUnits
+      const targetGameCardUnits = selectUnitsForCard(
+        targetUnit.gameCardID,
+        G.gameUnits
       )
-      return
+      targetGameCardUnits.forEach((unit) => {
+        G.gameUnits[unit.unitID].playerID = sourcePlayerID
+      })
+      const indexOfMindShackledCard = G.gameArmyCards.findIndex((gc) => {
+        return gc.gameCardID === targetGameCard.gameCardID
+      })
+      if (indexOfMindShackledCard === -1) {
+        console.error(
+          `Mind Shackle action denied: could not find target card in gameArmyCards`
+        )
+        return
+      }
+      G.gameArmyCards[indexOfMindShackledCard].playerID = sourcePlayerID
     }
-    G.gameArmyCards[indexOfMindShackledCard].playerID = sourcePlayerID
     // add to game log
     const unitMindShackledName = targetGameCard.name
     const gameLogForMindShackle = encodeGameLogMessage({
