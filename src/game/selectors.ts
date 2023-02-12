@@ -148,7 +148,7 @@ export function selectHexesInLineFromHex(
   }
   let theoreticalHexes: string[] = [startHex.id]
   let lastHex = startCoord
-  for (let index = 0; index < n - 1; index++) {
+  for (let index = 0; index < n; index++) {
     const nextHex = hexUtilsNeighbor(lastHex, direction)
     const element = generateHexID(nextHex)
     theoreticalHexes.push(element)

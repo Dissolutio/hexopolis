@@ -35,12 +35,12 @@ const player1Ids = [
   tarnID,
 ]
 const player2Ids = [
+  mimringID,
   drake1ID,
   syvarrisID,
   carrID,
   kravMagaID,
   thorgrimID,
-  mimringID,
   grimnakID,
   izumiID,
   raelinOneID,
