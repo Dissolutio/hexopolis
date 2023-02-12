@@ -11,7 +11,7 @@ export const chompAction: Move<GameState> = (
   { chompingUnitID, targetHexID, isSquad }: PossibleChomp
 ) => {
   const targetUnit = selectUnitForHex(targetHexID, G.boardHexes, G.gameUnits)
-  // TODO: Currently, we know that the UI sends the head hex, so we are ok getting the tail here knowing we have the head
+  // TODO: Currently, we know that the UI sends the head hex, so we are ok getting the tail here knowing we have the head (but what if we MIGHT have the tail hex as targetHexID?)
   const targetTailHex = selectTailHexForUnit(targetUnit.unitID, G.boardHexes)
   const targetGameCard = G.gameArmyCards.find(
     (gc) => gc.gameCardID === targetUnit.gameCardID
