@@ -168,10 +168,12 @@ export const decodeGameLogMessage = (
         const msgNoUnitsOnTurn = isNoCard
           ? `${playerIDDisplay(
               playerID
-            )} has no army card for order ${omToString(currentOrderMarker)}`
+            )} has no army card for order #${omToString(currentOrderMarker)}`
           : `${playerIDDisplay(
               playerID
-            )} has no units left for ${cardNameWithNoUnits}, and skips their turn`
+            )} has no units left for ${cardNameWithNoUnits}, and skips their turn for order #${omToString(
+              currentOrderMarker
+            )}`
         return {
           type,
           id,
