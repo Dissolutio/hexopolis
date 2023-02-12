@@ -101,6 +101,7 @@ export const moves: MoveMap<GameState> = {
   finishWaterCloningAndEndTurn,
   placeWaterClone,
   chompAction,
+  mindShackleAction,
   attackAction,
   placeAttackSpirit,
   placeArmorSpirit,

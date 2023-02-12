@@ -22,7 +22,6 @@ export const MindShackleControls = () => {
     selectSpecialAttack,
     chosenMindShackle,
     singleUnitOfRevealedGameCard: negoksaUnit,
-    selectedSpecialAttackHexID,
   } = useSpecialAttackContext()
   const targetName = chosenMindShackle?.targetName ?? ''
   const goBackToAttack = () => {
@@ -32,9 +31,8 @@ export const MindShackleControls = () => {
   const confirmChosenAttack = () => {
     mindShackleAction({
       sourceUnitID: negoksaUnit?.unitID ?? '',
-      targetHexID: selectedSpecialAttackHexID,
+      sourcePlayerID: negoksaUnit?.playerID ?? '',
       targetUnitID: chosenMindShackle?.targetUnitID ?? '',
-      targetName,
     })
   }
 

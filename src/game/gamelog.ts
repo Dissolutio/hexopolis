@@ -55,6 +55,7 @@ export const gameLogTypes = {
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
   chomp: 'chomp',
+  mindShackle: 'mindShackle',
   berserkerCharge: 'berserkerCharge',
 }
 
@@ -178,6 +179,15 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: msggg,
+        }
+      case gameLogTypes.mindShackle:
+        const msgMindShackle = isRollSuccessful
+          ? `Ne-gok-sa has Mind Shackled ${defenderUnitName}! (rolled a ${roll})`
+          : `Ne-gok-sa attempted to Mind Shackle ${defenderUnitName}, but only rolled a ${roll}`
+        return {
+          type,
+          id,
+          msg: msgMindShackle,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`
