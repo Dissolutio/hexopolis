@@ -1,3 +1,4 @@
+import { omToString } from 'app/utilities'
 import { Roll } from './rollInitiative'
 import { playerIDDisplay } from './transformers'
 
@@ -7,6 +8,8 @@ export type GameLogMessage = {
   // for noUnitsOnTurn
   playerID?: string
   cardNameWithNoUnits?: string
+  currentOrderMarker?: string
+  isNoCard?: boolean
   // attack logs below
   unitID?: string
   unitName?: string
@@ -55,6 +58,7 @@ export const gameLogTypes = {
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
   chomp: 'chomp',
+  mindShackle: 'mindShackle',
   berserkerCharge: 'berserkerCharge',
 }
 
@@ -106,6 +110,8 @@ export const decodeGameLogMessage = (
       // NO UNITS ON TURN
       playerID,
       cardNameWithNoUnits,
+      currentOrderMarker,
+      isNoCard,
       // berserker charge
       roll,
       isRollSuccessful,
@@ -160,9 +166,13 @@ export const decodeGameLogMessage = (
             : msgBerserkerChargeFailure,
         }
       case gameLogTypes.noUnitsOnTurn:
-        const msgNoUnitsOnTurn = `${playerIDDisplay(
-          playerID
-        )} has no units left for ${cardNameWithNoUnits}, and skips their turn`
+        const msgNoUnitsOnTurn = isNoCard
+          ? `${playerIDDisplay(
+              playerID
+            )} has no army card for order ${omToString(currentOrderMarker)}`
+          : `${playerIDDisplay(
+              playerID
+            )} has no units left for ${cardNameWithNoUnits}, and skips their turn`
         return {
           type,
           id,
@@ -178,6 +188,15 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: msggg,
+        }
+      case gameLogTypes.mindShackle:
+        const msgMindShackle = isRollSuccessful
+          ? `Ne-gok-sa has Mind Shackled ${defenderUnitName}! (rolled a ${roll})`
+          : `Ne-gok-sa attempted to Mind Shackle ${defenderUnitName}, but only rolled a ${roll}`
+        return {
+          type,
+          id,
+          msg: msgMindShackle,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`

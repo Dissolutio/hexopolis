@@ -2,7 +2,7 @@ import {
   ArmyCard,
   ICoreHeroscapeCard,
   OrderMarkers,
-  PlayersState,
+  PlayerState,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
 
@@ -28,20 +28,20 @@ const player1Ids = [
   // zettianID,
   // syvarrisID,
   // marroID,
-  // mimringID,
   // airbornID,
   // deathwalker9000ID,
   // finnID,
-  tarnID,
+  // tarnID,
   negoksaID,
 ]
 const player2Ids = [
-  drake1ID,
+  // drake1ID,
   // carrID,
   // kravMagaID,
   // thorgrimID,
+  mimringID,
   // grimnakID,
-  // izumiID,
+  izumiID,
   // raelinOneID,
 ]
 // TEST SCENARIO ORDERMARKERS
@@ -119,7 +119,7 @@ export function generatePreplacedOrderMarkers(): OrderMarkers {
   }
   return orderMarkers
 }
-export function playersStateWithPrePlacedOMs(): PlayersState {
+export function playersStateWithPrePlacedOMs(): PlayerState {
   return {
     '0': {
       orderMarkers: {

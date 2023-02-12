@@ -26,6 +26,10 @@ export const RopAttackControls = () => {
     revealedGameCard
   )
   const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
+  const hasMindShackle = selectIfGameArmyCardHasAbility(
+    'Mind Shackle 20',
+    revealedGameCard
+  )
   const selectHasSpecialAttack = () => {
     return {
       hasFireLine: revealedGameCard
@@ -167,6 +171,17 @@ export const RopAttackControls = () => {
             }}
           >
             Use Chomp
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasMindShackle && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.mindShackle)
+            }}
+          >
+            Use Mind Shackle
           </GreenButton>
         </StyledButtonWrapper>
       )}

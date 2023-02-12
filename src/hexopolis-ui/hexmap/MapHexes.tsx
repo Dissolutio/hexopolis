@@ -43,6 +43,7 @@ export const MapHexes = () => {
     isMovementStage,
     isWaterCloneStage,
     isChompStage,
+    isMindShackleStage,
     isFireLineSAStage,
     isExplosionSAStage,
     isGrenadeSAStage,
@@ -75,6 +76,8 @@ export const MapHexes = () => {
     explosionSelectedUnitIDs,
     chompableHexIDs,
     chompSelectedHexIDs,
+    mindShackleTargetableHexIDs,
+    mindShackleSelectedHexIDs,
   } = useSpecialAttackContext()
 
   // handlers
@@ -85,6 +88,10 @@ export const MapHexes = () => {
 
     if (isFireLineSAStage) {
       if (fireLineTargetableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isMindShackleStage) {
+      if (mindShackleTargetableHexIDs.includes(sourceHex.id)) {
         selectSpecialAttack(sourceHex.id)
       }
     } else if (isChompStage) {
@@ -148,6 +155,7 @@ export const MapHexes = () => {
         isMovementStage,
         isWaterCloneStage,
         isChompStage,
+        isMindShackleStage,
         isFireLineSAStage,
         isExplosionSAStage,
         isGrenadeSAStage,
@@ -160,6 +168,8 @@ export const MapHexes = () => {
         clonePlaceableHexIDs,
         chompableHexIDs,
         chompSelectedHexIDs,
+        mindShackleTargetableHexIDs,
+        mindShackleSelectedHexIDs,
         fireLineTargetableHexIDs,
         fireLineAffectedHexIDs,
         fireLineSelectedHexIDs,

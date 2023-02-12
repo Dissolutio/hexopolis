@@ -1,5 +1,14 @@
+import { generateBlankPlayersOrderMarkers } from 'game/constants'
 import { selectGameCardByID } from 'game/selectors'
-import { BoardHexes, GameArmyCard, GameUnits, UnitsKilled } from '../types'
+import {
+  BoardHexes,
+  GameArmyCard,
+  GameUnits,
+  OrderMarkers,
+  PlayerOrderMarkers,
+  PlayerState,
+  UnitsKilled,
+} from '../types'
 
 export const killUnit_G = ({
   boardHexes,
@@ -60,3 +69,44 @@ export const assignCardMovePointsToUnit_G = ({
   }
   gameUnits[unitID] = unitWithMovePoints
 }
+export const wipeCardOrderMarkers_G = ({
+  gameCardToWipeID,
+  playerID,
+  playerState,
+  orderMarkers,
+}: {
+  gameCardToWipeID: string
+  playerID: string
+  playerState: PlayerState
+  orderMarkers: OrderMarkers
+}) => {
+  // 1. wipe order markers from playerState
+  const playerPrivateOrderMarkers = playerState[playerID].orderMarkers
+  const playerStateOrderMarkersFilteredForCard = Object.entries(
+    playerPrivateOrderMarkers
+  ).reduce((acc: PlayerOrderMarkers, entry) => {
+    const [order, gameCardID] = entry
+    if (gameCardID === gameCardToWipeID) {
+      return {
+        ...acc,
+        [order]: '',
+      }
+    }
+    return acc
+  }, generateBlankPlayersOrderMarkers())
+  // apply mutation to playerState
+  playerState[playerID].orderMarkers = playerStateOrderMarkersFilteredForCard
+  // 2. wipe order markers from public orderMarkers
+  const orderMarkersFilteredForCard = orderMarkers[playerID].map((order) => {
+    if (order.gameCardID === gameCardToWipeID) {
+      return {
+        ...order,
+        gameCardID: '',
+      }
+    }
+    return order
+  })
+  // apply mutation to public orderMarkers
+  orderMarkers[playerID] = orderMarkersFilteredForCard
+}
+// const entriesPS = Object.entries(playerPrivateOrderMarkers)

@@ -4,7 +4,7 @@ import {
   OrderMarker,
   OrderMarkers,
   PlayerOrderMarkers,
-  PlayersState,
+  PlayerState,
 } from './types'
 
 export const phaseNames = {
@@ -22,6 +22,7 @@ export const stageNames = {
   disengagementSwipe: 'disengagementSwipe',
   waterClone: 'waterClone',
   berserkerCharge: 'berserkerCharge',
+  mindShackle: 'mindShackle',
   placingAttackSpirit: 'placingAttackSpirit',
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
   placingArmorSpirit: 'placingArmorSpirit',
@@ -44,7 +45,7 @@ export function generateBlankOrderMarkers(): OrderMarkers {
     '1': blankOrderMarkers,
   }
 }
-export function generateBlankPlayersState(): PlayersState {
+export function generateBlankPlayersState(): PlayerState {
   return {
     '0': {
       orderMarkers: generateBlankPlayersOrderMarkers(),

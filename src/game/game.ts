@@ -176,6 +176,7 @@ export const HexedMeadow: Game<GameState> = {
           G.unitsAttacked = {}
           G.isCurrentPlayerAttacking = false
           G.chompsAttempted = []
+          G.mindShacklesAttempted = []
           G.grenadesThrown = []
           G.berserkerChargeRoll = undefined
           G.berserkerChargeSuccessCount = 0
@@ -184,12 +185,15 @@ export const HexedMeadow: Game<GameState> = {
             const revealedGameCard = G.gameArmyCards.find(
               (gc) => gc.gameCardID === revealedGameCardID
             )
+            const isNoCard = revealedGameCard === undefined
             const id = `r${G.currentRound}:om${G.currentOrderMarker}:p${ctx.currentPlayer}:${revealedGameCardID}:no-units-end-turn`
             const gameLogForNoUnitsOnTurn = encodeGameLogMessage({
               type: gameLogTypes.noUnitsOnTurn,
               id,
               playerID: ctx.currentPlayer,
               cardNameWithNoUnits: revealedGameCard?.name ?? '',
+              isNoCard,
+              currentOrderMarker: `${G.currentOrderMarker}`,
             })
             G.gameLog = [...G.gameLog, gameLogForNoUnitsOnTurn]
             events.endTurn()

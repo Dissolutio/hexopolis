@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import {
   selectHexForUnit,
@@ -7,7 +7,6 @@ import {
   selectHexesInLineFromHex,
   selectEngagementsForHex,
   selectIsInRangeOfAttack,
-  selectHexNeighbors,
   selectGameCardByID,
 } from '../../game/selectors'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
@@ -15,13 +14,11 @@ import { uniq } from 'lodash'
 import { usePlayContext } from './play-phase-context'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
-  BoardHex,
   GameUnit,
   PossibleChomp,
   PossibleExplosionAttack,
   PossibleFireLineAttack,
 } from 'game/types'
-import { useUIContext } from './ui-context'
 
 type SpecialAttackContextProviderProps = {
   children: React.ReactNode
@@ -30,6 +27,7 @@ type SpecialAttackContextProviderProps = {
 const SpecialAttackContext = React.createContext<
   | {
       selectSpecialAttack: (id: string) => void
+      selectedSpecialAttackHexID: string
       singleUnitOfRevealedGameCard: GameUnit | undefined
       chosenFireLineAttack: PossibleFireLineAttack | undefined
       fireLineTargetableHexIDs: string[]
@@ -43,6 +41,11 @@ const SpecialAttackContext = React.createContext<
       chompableHexIDs: string[]
       chompSelectedHexIDs: string[]
       chosenChomp: undefined | PossibleChomp
+      mindShackleTargetableHexIDs: string[]
+      mindShackleSelectedHexIDs: string[]
+      chosenMindShackle:
+        | { targetUnitID: string; targetName?: string }
+        | undefined
     }
   | undefined
 >(undefined)
@@ -52,20 +55,111 @@ export function SpecialAttackContextProvider({
 }: SpecialAttackContextProviderProps) {
   const { playerID } = useBgioClientInfo()
   const { boardHexes, gameUnits, gameArmyCards, unitsAttacked } = useBgioG()
-  const { isMyTurn, isGrenadeSAStage, isExplosionSAStage, isChompStage } =
-    useBgioCtx()
+  const {
+    isMyTurn,
+    isGrenadeSAStage,
+    isExplosionSAStage,
+    isChompStage,
+    isMindShackleStage,
+  } = useBgioCtx()
   const { revealedGameCard, revealedGameCardUnits, selectedUnit } =
     usePlayContext()
   const selectedUnitGameCard = gameArmyCards.find(
     (card) => card.gameCardID === selectedUnit?.gameCardID
   )
 
-  const [chosenSpecialAttack, setChosenSpecialAttack] = useState<string>('')
+  const [selectedSpecialAttackHexID, setSelectedSpecialAttackHexID] =
+    useState<string>('')
+  useEffect(() => {
+    if (!isMyTurn) {
+      setSelectedSpecialAttackHexID('')
+    }
+
+    // return () => {
+    // }
+  }, [isMyTurn])
   const selectSpecialAttack = (id: string) => {
-    setChosenSpecialAttack(id)
+    setSelectedSpecialAttackHexID(id)
   }
   const firstUnitOfRevealedGameCard = revealedGameCardUnits?.[0]
+  const headHexOfFirstRevealedUnit = selectHexForUnit(
+    firstUnitOfRevealedGameCard?.unitID ?? '',
+    boardHexes
+  )
+  // NEGOKSA MIND SHACKLE
+  const possibleMindShackles = useMemo(() => {
+    const hasMindShackle = selectIfGameArmyCardHasAbility(
+      'Mind Shackle 20',
+      revealedGameCard
+    )
+    if (!hasMindShackle || !isMindShackleStage) {
+      return {}
+    }
 
+    // TODO: Mind Shackle could be an ability on anybody's card
+    // const tailHex = selectTailHexForUnit(
+    //   firstUnitOfRevealedGameCard?.unitID ?? '',
+    //   boardHexes
+    // )
+    if (
+      !isMyTurn ||
+      !revealedGameCard ||
+      !firstUnitOfRevealedGameCard ||
+      !headHexOfFirstRevealedUnit
+    ) {
+      return {}
+    }
+    const result = selectEngagementsForHex({
+      // TODO: technically, you can chomp your own people
+      // all: true
+      hexID: headHexOfFirstRevealedUnit.id,
+      boardHexes,
+      gameUnits,
+      armyCards: gameArmyCards,
+    }).reduce(
+      (
+        acc: { [hexID: string]: { targetUnitID: string; targetName?: string } },
+        id
+      ) => {
+        const targetCard = selectGameCardByID(
+          gameArmyCards,
+          gameUnits?.[id]?.gameCardID ?? ''
+        )
+        if (!targetCard) {
+          return acc
+        }
+        const isUnique = targetCard.type.includes('unique')
+        const targetName = targetCard.name
+        // can only mind shackle unique cards
+        if (!isUnique) {
+          return acc
+        }
+        const hex = selectHexForUnit(id, boardHexes)
+        if (!hex) {
+          return acc
+        }
+        return { ...acc, [hex.id]: { targetUnitID: id, targetName } }
+      },
+      {}
+    )
+    return result
+  }, [
+    revealedGameCard,
+    isMindShackleStage,
+    isMyTurn,
+    firstUnitOfRevealedGameCard,
+    headHexOfFirstRevealedUnit,
+    boardHexes,
+    gameUnits,
+    gameArmyCards,
+  ])
+  const mindShackleTargetableHexIDs = Object.keys(possibleMindShackles)
+  const mindShackleSelectedHexIDs =
+    possibleMindShackles?.[selectedSpecialAttackHexID] !== undefined
+      ? [selectedSpecialAttackHexID]
+      : []
+
+  const chosenMindShackle = possibleMindShackles?.[selectedSpecialAttackHexID]
   // GRIMNAK CHOMP
   const possibleChomps: { [hexID: string]: { isSquad: boolean } } =
     useMemo(() => {
@@ -138,15 +232,15 @@ export function SpecialAttackContextProvider({
 
   const chompableHexIDs = Object.keys(possibleChomps)
   const chompSelectedHexIDs =
-    possibleChomps?.[chosenSpecialAttack] !== undefined
-      ? [chosenSpecialAttack]
+    possibleChomps?.[selectedSpecialAttackHexID] !== undefined
+      ? [selectedSpecialAttackHexID]
       : []
   const chosenChomp =
-    possibleChomps?.[chosenSpecialAttack] !== undefined
+    possibleChomps?.[selectedSpecialAttackHexID] !== undefined
       ? {
           chompingUnitID: firstUnitOfRevealedGameCard?.unitID ?? '',
-          targetHexID: chosenSpecialAttack,
-          isSquad: possibleChomps?.[chosenSpecialAttack]?.isSquad,
+          targetHexID: selectedSpecialAttackHexID,
+          isSquad: possibleChomps?.[selectedSpecialAttackHexID]?.isSquad,
         }
       : undefined
   // MIMRING FIRE LINE
@@ -257,7 +351,7 @@ export function SpecialAttackContextProvider({
   ])
   const chosenFireLineAttack = Object.values(possibleFireLineAttacks)?.find?.(
     (pa) => {
-      return pa.clickableHexID === chosenSpecialAttack
+      return pa.clickableHexID === selectedSpecialAttackHexID
     }
   )
   const { fireLineTargetableHexIDs, fireLineSecondaryHexIDs } = useMemo(() => {
@@ -401,7 +495,7 @@ export function SpecialAttackContextProvider({
   const explosionTargetableHexIDs =
     possibleExplosionAttacks?.map?.((pa) => pa.clickableHexID) ?? []
   const chosenExplosionAttack = possibleExplosionAttacks?.find?.((pa) => {
-    return pa.clickableHexID === chosenSpecialAttack
+    return pa.clickableHexID === selectedSpecialAttackHexID
   })
   // plural name, but it's an array of one unitID
   const explosionSelectedUnitIDs = chosenExplosionAttack
@@ -413,6 +507,7 @@ export function SpecialAttackContextProvider({
     <SpecialAttackContext.Provider
       value={{
         selectSpecialAttack,
+        selectedSpecialAttackHexID,
         singleUnitOfRevealedGameCard: firstUnitOfRevealedGameCard,
         chosenFireLineAttack,
         fireLineSelectedHexIDs,
@@ -426,6 +521,9 @@ export function SpecialAttackContextProvider({
         chompableHexIDs,
         chompSelectedHexIDs,
         chosenChomp,
+        mindShackleTargetableHexIDs,
+        mindShackleSelectedHexIDs,
+        chosenMindShackle,
       }}
     >
       {children}
