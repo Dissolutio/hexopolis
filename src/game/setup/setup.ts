@@ -56,14 +56,14 @@ function makeTestScenario(): GameState {
   //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
   //   flat: false,
   // })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
-  // })
-  const map = makeDevHexagonMap({
+  const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
     gameUnits,
   })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState,
     currentRound: 1,
