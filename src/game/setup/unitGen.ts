@@ -40,9 +40,9 @@ const player2Ids = [
   // kravMagaID,
   // thorgrimID,
   mimringID,
-  grimnakID,
+  // grimnakID,
   izumiID,
-  raelinOneID,
+  // raelinOneID,
 ]
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${player1Ids[0]}`
