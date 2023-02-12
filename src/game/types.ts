@@ -6,7 +6,7 @@ export interface GameState {
   killedUnits: GameUnits
   // annihilatedUnits would be units that were never killed, because they were never placed on the map (in placement, no room in start zone)
   // annihilatedUnits: GameUnits
-  players: PlayersState
+  players: PlayerState
   hexMap: HexMap
   boardHexes: BoardHexes
   startZones: StartZones
@@ -59,13 +59,8 @@ export type StageQueueItem = {
   stage: string
   playerID: string
 }
-// for secret state
+
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
-export type PlayersState = {
-  [playerID: string]: {
-    orderMarkers: PlayerOrderMarkers
-  }
-}
 export type GameMap = {
   boardHexes: BoardHexes
   startZones: StartZones
@@ -264,7 +259,12 @@ export type WaterCloneRoll = {
     }
   }
 }
-
+// for secret state
+export type PlayerState = {
+  [playerID: string]: {
+    orderMarkers: PlayerOrderMarkers
+  }
+}
 export type PlayerOrderMarkers = { [order: string]: string }
 
 export type OrderMarker = {
@@ -292,7 +292,7 @@ export type BaseGameOptions =
       initiative?: string[]
       unitsMoved?: string[]
       unitsAttacked?: {}
-      players?: PlayersState
+      players?: PlayerState
     }
   | undefined
 export type MapOptions = {

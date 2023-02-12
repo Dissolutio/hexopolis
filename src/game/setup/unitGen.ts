@@ -2,7 +2,7 @@ import {
   ArmyCard,
   ICoreHeroscapeCard,
   OrderMarkers,
-  PlayersState,
+  PlayerState,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
 
@@ -119,7 +119,7 @@ export function generatePreplacedOrderMarkers(): OrderMarkers {
   }
   return orderMarkers
 }
-export function playersStateWithPrePlacedOMs(): PlayersState {
+export function playersStateWithPrePlacedOMs(): PlayerState {
   return {
     '0': {
       orderMarkers: {

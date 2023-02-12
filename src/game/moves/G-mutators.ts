@@ -1,5 +1,11 @@
 import { selectGameCardByID } from 'game/selectors'
-import { BoardHexes, GameArmyCard, GameUnits, UnitsKilled } from '../types'
+import {
+  BoardHexes,
+  GameArmyCard,
+  GameUnits,
+  PlayerState,
+  UnitsKilled,
+} from '../types'
 
 export const killUnit_G = ({
   boardHexes,

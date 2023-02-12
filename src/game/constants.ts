@@ -4,7 +4,7 @@ import {
   OrderMarker,
   OrderMarkers,
   PlayerOrderMarkers,
-  PlayersState,
+  PlayerState,
 } from './types'
 
 export const phaseNames = {
@@ -45,7 +45,7 @@ export function generateBlankOrderMarkers(): OrderMarkers {
     '1': blankOrderMarkers,
   }
 }
-export function generateBlankPlayersState(): PlayersState {
+export function generateBlankPlayersState(): PlayerState {
   return {
     '0': {
       orderMarkers: generateBlankPlayersOrderMarkers(),
