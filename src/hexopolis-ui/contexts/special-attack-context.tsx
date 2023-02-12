@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import {
   selectHexForUnit,
@@ -70,6 +70,14 @@ export function SpecialAttackContextProvider({
 
   const [selectedSpecialAttackHexID, setSelectedSpecialAttackHexID] =
     useState<string>('')
+  useEffect(() => {
+    if (!isMyTurn) {
+      setSelectedSpecialAttackHexID('')
+    }
+
+    // return () => {
+    // }
+  }, [isMyTurn])
   const selectSpecialAttack = (id: string) => {
     setSelectedSpecialAttackHexID(id)
   }
