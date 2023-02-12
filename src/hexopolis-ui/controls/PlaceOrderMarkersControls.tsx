@@ -7,7 +7,6 @@ import {
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { OrderMarkerArmyCards } from './order-markers/OrderMarkerArmyCards'
-import { omToString } from 'app/utilities'
 import { selectedTileStyle } from 'hexopolis-ui/layout/styles'
 import {
   ConfirmOrResetButtons,
@@ -20,6 +19,7 @@ import {
   generateBlankOrderMarkers,
   generateBlankPlayersOrderMarkers,
 } from 'game/constants'
+import { omToString } from 'game/transformers'
 export const selectedOrderMarkerStyle = (
   activeMarker: string,
   orderMarker: string

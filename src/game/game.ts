@@ -5,7 +5,7 @@ import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
 import { GameState, OrderMarker, GameUnit } from './types'
 import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
-import { testScenario } from './setup/setup'
+import { gameSetupInitialGameState } from './setup/setup'
 import { encodeGameLogMessage, gameLogTypes } from './gamelog'
 import {
   phaseNames,
@@ -14,6 +14,7 @@ import {
   generateBlankOrderMarkers,
   generateBlankPlayersOrderMarkers,
 } from './constants'
+import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
 export const defaultSetupData = {
   score: { '0': 0, '1': 0 },
@@ -28,7 +29,7 @@ export const HexedMeadow: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    return testScenario
+    return gameSetupInitialGameState
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
@@ -129,12 +130,17 @@ export const HexedMeadow: Game<GameState> = {
           currentPlayer: stageNames.movement,
         },
         // reveal order marker, assign move-points/move-ranges to eligible units
-        onBegin: ({ G, ctx }) => {
+        onBegin: ({ G, ctx, events }) => {
           // Reveal order marker
           const currentPlayersOrderMarkers =
             G.players[ctx.currentPlayer].orderMarkers
           const revealedGameCardID =
             currentPlayersOrderMarkers[G.currentOrderMarker.toString()]
+          const revealedGameCardUnits = Object.values(G.gameUnits).filter(
+            (u: GameUnit) => u?.gameCardID === revealedGameCardID
+          )
+          const isRevealedGameCardCompletelyOutOfUnits =
+            revealedGameCardUnits.length === 0
           const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
             (om: OrderMarker) =>
               om.gameCardID === revealedGameCardID && om.order === ''
@@ -153,28 +159,55 @@ export const HexedMeadow: Game<GameState> = {
             unrevealedGameCard?.gameCardID ?? '',
             G.gameUnits
           )
-          const movePoints = unrevealedGameCard?.move ?? 0
           // loop thru this turns units
-          let mutatedGameUnits = { ...G.gameUnits }
           currentTurnUnits.length &&
             currentTurnUnits.forEach((unit: GameUnit) => {
               const { unitID } = unit
-              // move-points
-              const unitWithMovePoints = {
-                ...unit,
-                movePoints,
-              }
-              mutatedGameUnits[unitID] = unitWithMovePoints
+              // G mutator
+              assignCardMovePointsToUnit_G({
+                gameArmyCards: G.gameArmyCards,
+                gameUnits: G.gameUnits,
+                unitID,
+              })
             })
 
-          // finally, update state
-          G.gameUnits = mutatedGameUnits
+          // finally, reset state for the turn about to be taken
           G.unitsMoved = []
           G.unitsAttacked = {}
           G.isCurrentPlayerAttacking = false
+          G.chompsAttempted = []
+          G.mindShacklesAttempted = []
+          G.grenadesThrown = []
+          G.berserkerChargeRoll = undefined
+          G.berserkerChargeSuccessCount = 0
+          // if no units, end turn
+          if (isRevealedGameCardCompletelyOutOfUnits) {
+            const revealedGameCard = G.gameArmyCards.find(
+              (gc) => gc.gameCardID === revealedGameCardID
+            )
+            const isNoCard = revealedGameCard === undefined
+            const id = `r${G.currentRound}:om${G.currentOrderMarker}:p${ctx.currentPlayer}:${revealedGameCardID}:no-units-end-turn`
+            const gameLogForNoUnitsOnTurn = encodeGameLogMessage({
+              type: gameLogTypes.noUnitsOnTurn,
+              id,
+              playerID: ctx.currentPlayer,
+              cardNameWithNoUnits: revealedGameCard?.name ?? '',
+              isNoCard,
+              currentOrderMarker: `${G.currentOrderMarker}`,
+            })
+            G.gameLog = [...G.gameLog, gameLogForNoUnitsOnTurn]
+            events.endTurn()
+          }
         },
         // clear move-points,  update currentOrderMarker, end round after last turn (go to place order-markers)
         onEnd: ({ G, ctx, events }) => {
+          // if any card threw grenades, mark them as used
+          ;[...new Set(G.grenadesThrown)].forEach((cardID) => {
+            const indexToUpdate = G.gameArmyCards.findIndex(
+              (card) => card.gameCardID === cardID
+            )
+            G.gameArmyCards[indexToUpdate].hasThrownGrenade = true
+          })
           // reset unit move-points
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0

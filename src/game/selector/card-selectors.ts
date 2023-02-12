@@ -15,7 +15,7 @@ import {
   selectTailHexForUnit,
   selectUnitsForCard,
 } from '../selectors'
-import { finnID, raelinOneID, thorgrimID } from '../setup/unitGen'
+import { finnID, grimnakID, raelinOneID, thorgrimID } from '../setup/unitGen'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
@@ -68,7 +68,7 @@ export const selectUnitRange = ({
         hex.occupyingUnitID &&
         neighborUnitCard &&
         neighborUnitCard.playerID === attackingUnit.playerID &&
-        selectIfGameArmyCardHasSoulBorgRangeEnhancement(neighborUnitCard) &&
+        selectIfGameArmyCardHasAbility('Range Enhancement', neighborUnitCard) &&
         selectAreTwoAdjacentUnitsEngaged({
           aHeight: attackerGameCard.height,
           aAltitude: attackerHex.altitude,
@@ -118,34 +118,6 @@ export function selectIfGameArmyCardHasDisengage(
   return { hasDisengage, hasGhostWalk }
 }
 // abilities:
-export function selectIfGameArmyCardHasCounterStrike(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Counter Strike')
-    : false
-}
-export function selectIfGameArmyCardHasThorianSpeed(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Thorian Speed')
-    : false
-}
-export function selectIfGameArmyCardHasZettianTargeting(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Zettian Targeting')
-    : false
-}
-export function selectIfGameArmyCardHasSwordOfReckoning(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Sword of Reckoning')
-    : false
-}
 export function selectIfGameArmyCardHasAbility(
   abilityName: string,
   gameArmyCard?: GameArmyCard
@@ -154,24 +126,13 @@ export function selectIfGameArmyCardHasAbility(
     ? gameArmyCard.abilities.some((a) => a.name === abilityName)
     : false
 }
-export function selectIfGameArmyCardHasDoubleAttack(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Double Attack')
-    : false
-}
-export function selectIfGameArmyCardHasSoulBorgRangeEnhancement(
-  gameArmyCard?: GameArmyCard
-): boolean {
-  return gameArmyCard
-    ? gameArmyCard.abilities.some((a) => a.name === 'Range Enhancement')
-    : false
-}
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
+// attackerHex and defenderHex can be head or tail here, does not matter, they only have same altitude for head/tail, and also yield same engagements
 export const selectUnitAttackDiceForAttack = ({
+  // since attackerHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   attackerHex,
+  // since defenderHex can only have same altitude for head/tail, and also yields same engagements as tail hex, we can use either
   defenderHex,
   defender,
   attackerArmyCard,
@@ -196,13 +157,16 @@ export const selectUnitAttackDiceForAttack = ({
   let dice = attackerArmyCard.attack
   const heightBonus = attackerHex.altitude > defenderHex.altitude ? 1 : 0
   const zettianTargetingBonus =
-    selectIfGameArmyCardHasZettianTargeting(attackerArmyCard) &&
+    selectIfGameArmyCardHasAbility('Zettian Targeting', attackerArmyCard) &&
     // if second zettian attacks same unit as first, +1
     Object.values(unitsAttacked).flat().includes(defender.unitID)
       ? 1
       : 0
   const swordOfReckoningBonus =
-    isMelee && selectIfGameArmyCardHasSwordOfReckoning(attackerArmyCard) ? 4 : 0
+    isMelee &&
+    selectIfGameArmyCardHasAbility('Sword of Reckoning', attackerArmyCard)
+      ? 4
+      : 0
   const finnsAttackAura = () => {
     const finnCard = gameArmyCards.filter(
       (c) => c.playerID === attackerArmyCard.playerID && c.armyCardID === finnID
@@ -213,19 +177,11 @@ export const selectUnitAttackDiceForAttack = ({
     ) {
       return 0
     }
-    console.log(
-      '🚀 ~ file: card-selectors.ts:210 ~ finnsAttackAura ~ finnCard',
-      finnCard.name
-    )
     const finnUnit = selectUnitsForCard(finnCard.gameCardID, gameUnits)?.[0]
     if (!finnUnit) {
       return 0
     }
-    console.log(
-      '🚀 ~ file: card-selectors.ts:217 ~ finnsAttackAura ~ finnUnit',
-      finnUnit.unitID
-    )
-    return isMelee &&
+    return attackerArmyCard.range === 1 &&
       selectEngagementsForHex({
         hexID: attackerHex.id,
         boardHexes,
@@ -236,15 +192,47 @@ export const selectUnitAttackDiceForAttack = ({
       ? 1
       : 0
   }
+  const grimnaksOrcEnhancement = () => {
+    const grimnakCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === attackerArmyCard.playerID && c.armyCardID === grimnakID
+    )?.[0]
+    if (
+      !grimnakCard ||
+      !selectIfGameArmyCardHasAbility('Orc Warrior Enhancement', grimnakCard)
+    ) {
+      return 0
+    }
+    const grimnakUnit = selectUnitsForCard(
+      grimnakCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!grimnakUnit) {
+      return 0
+    }
+    return attackerArmyCard.race === 'orc' &&
+      attackerArmyCard.cardClass === 'warriors' &&
+      selectEngagementsForHex({
+        hexID: attackerHex.id,
+        boardHexes,
+        gameUnits,
+        armyCards: gameArmyCards,
+        friendly: true,
+      }).includes(grimnakUnit.unitID)
+      ? 1
+      : 0
+  }
   return (
     dice +
     heightBonus +
     zettianTargetingBonus +
     swordOfReckoningBonus +
-    finnsAttackAura()
+    finnsAttackAura() +
+    grimnaksOrcEnhancement()
   )
 }
 // DEFENSE DICE FOR SPECIFIC ATTACK:
+// attackerHex and defenderHex can be head or tail here, does not matter, they only have same altitude for head/tail, and also yield same engagements
 export const selectUnitDefenseDiceForAttack = ({
   defenderArmyCard,
   defenderUnit,
@@ -256,7 +244,9 @@ export const selectUnitDefenseDiceForAttack = ({
 }: {
   defenderArmyCard: GameArmyCard
   defenderUnit: GameUnit
+  // head or tail, same results
   attackerHex: BoardHex
+  // head or tail, same results
   defenderHex: BoardHex
   boardHexes: BoardHexes
   gameArmyCards: GameArmyCard[]
@@ -279,12 +269,14 @@ export const selectUnitDefenseDiceForAttack = ({
     if (!theirRaelinUnit) {
       return 0
     }
-    return selectIsUnitWithinNHexesOfUnit({
-      startUnitID: theirRaelinUnit.unitID,
-      endUnitID: defenderUnit.unitID,
-      boardHexes,
-      n: 4,
-    })
+    // raelin does benefit from her own defensive aura
+    return theirRaelinUnit.unitID !== defenderUnit.unitID &&
+      selectIsUnitWithinNHexesOfUnit({
+        startUnitID: theirRaelinUnit.unitID,
+        endUnitID: defenderUnit.unitID,
+        boardHexes,
+        n: 4,
+      })
       ? 2
       : 0
   }
@@ -316,7 +308,43 @@ export const selectUnitDefenseDiceForAttack = ({
       ? 1
       : 0
   }
-  return dice + heightBonus + raelinDefensiveAura() + thorgrimDefensiveAura()
+  const grimnaksOrcEnhancement = () => {
+    const grimnakCard = gameArmyCards.filter(
+      (c) =>
+        c.playerID === defenderArmyCard.playerID && c.armyCardID === grimnakID
+    )?.[0]
+    if (
+      !grimnakCard ||
+      !selectIfGameArmyCardHasAbility('Orc Warrior Enhancement', grimnakCard)
+    ) {
+      return 0
+    }
+    const grimnakUnit = selectUnitsForCard(
+      grimnakCard.gameCardID,
+      gameUnits
+    )?.[0]
+    if (!grimnakUnit) {
+      return 0
+    }
+    return defenderArmyCard.race === 'orc' &&
+      defenderArmyCard.cardClass === 'warriors' &&
+      selectEngagementsForHex({
+        hexID: defenderHex.id,
+        boardHexes,
+        gameUnits,
+        armyCards: gameArmyCards,
+        friendly: true,
+      }).includes(grimnakUnit.unitID)
+      ? 1
+      : 0
+  }
+  return (
+    dice +
+    heightBonus +
+    raelinDefensiveAura() +
+    thorgrimDefensiveAura() +
+    grimnaksOrcEnhancement()
+  )
 }
 
 // attacks allowed
@@ -324,7 +352,8 @@ export const selectGameArmyCardAttacksAllowed = (
   gameArmyCard: GameArmyCard
 ) => {
   const numberOfAttackingFigures = gameArmyCard.figures
-  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasAbility(
+    'Double Attack',
     gameArmyCard
   )
     ? 2

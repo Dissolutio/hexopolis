@@ -24,6 +24,12 @@ type BgioCtxValue = BoardProps['ctx'] & {
   isPlacingArmorSpiritStage: boolean
   isIdlePlacingArmorSpiritStage: boolean
   isAttackingStage: boolean
+  isFireLineSAStage: boolean
+  isExplosionSAStage: boolean
+  isGrenadeSAStage: boolean
+  isChompStage: boolean
+  isBerserkerStage: boolean
+  isMindShackleStage: boolean
   isGameover: boolean
 }
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
@@ -61,6 +67,22 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
   const isDisengagementSwipeStage: boolean =
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.disengagementSwipe
+  const isFireLineSAStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.fireLineSA
+  const isExplosionSAStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.explosionSA
+  const isGrenadeSAStage: boolean =
+    isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.grenadeSA
+  const isChompStage: boolean =
+    isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.chomp
+  const isBerserkerStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.berserkerCharge
+  const isMindShackleStage: boolean =
+    isRoundOfPlayPhase &&
+    ctx.activePlayers?.[playerID] === stageNames.mindShackle
   const isGameover: boolean = Boolean(ctx.gameover)
   return (
     <BgioCtxContext.Provider
@@ -80,6 +102,12 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
         isPlacingArmorSpiritStage,
         isIdlePlacingArmorSpiritStage,
         isAttackingStage,
+        isFireLineSAStage,
+        isExplosionSAStage,
+        isGrenadeSAStage,
+        isChompStage,
+        isBerserkerStage,
+        isMindShackleStage,
         isGameover,
       }}
     >

@@ -8,7 +8,12 @@ import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
-import { placeAttackSpirit, placeArmorSpirit } from './buff-card'
+import { placeAttackSpirit, placeArmorSpirit } from './place-spirits'
+import { rollForFireLineSpecialAttack } from './fire-line-SA'
+import { rollForExplosionSpecialAttack } from './explosion-SA'
+import { chompAction } from './chomp-action'
+import { mindShackleAction } from './mind-shackle-action'
+import { rollForBerserkerCharge } from './roll-berserker-charge'
 import {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
@@ -91,10 +96,15 @@ export const moves: MoveMap<GameState> = {
   moveAction,
   attemptDisengage,
   takeDisengagementSwipe,
+  rollForBerserkerCharge,
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  chompAction,
+  mindShackleAction,
   attackAction,
   placeAttackSpirit,
   placeArmorSpirit,
+  rollForFireLineSpecialAttack,
+  rollForExplosionSpecialAttack,
 }

@@ -1,22 +1,13 @@
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
-import { hexUtilsDistance } from 'game/hex-utils'
-import {
-  selectGameCardByID,
-  selectHexForUnit,
-  selectIsInRangeOfAttack,
-  selectTailHexForUnit,
-} from 'game/selectors'
+import { selectHexForUnit } from 'game/selectors'
 import {
   BoardHex,
   BoardHexes,
   BoardHexesUnitDeployment,
-  GameArmyCard,
   GameUnit,
   GameUnits,
-  HexCoordinates,
   MoveRange,
   StartZones,
-  WaterCloneRoll,
 } from 'game/types'
 
 export function calcPlacementHexClassNames({
@@ -124,21 +115,9 @@ export function calcPlacementHexClassNames({
   return classNames
 }
 
-export function calcOrderMarkerHexClassNames({
-  selectedMapHex,
-  hex,
-}: {
-  selectedMapHex: string
-  hex: BoardHex
-}) {
-  const isSelectedHex = hex.id === selectedMapHex
+export function calcOrderMarkerHexClassNames({ terrain }: { terrain: string }) {
   // Start: Paint Terrain
-  let classNames = `maphex__terrain--${hex.terrain}`
-
-  // highlight active hex
-  if (isSelectedHex) {
-    classNames = classNames.concat(' maphex__selected--active ')
-  }
+  let classNames = `maphex__terrain--${terrain}`
   return classNames
 }
 
@@ -147,44 +126,68 @@ export function calcRopHexClassNames({
   isAttackingStage,
   isMovementStage,
   isWaterCloneStage,
+  isChompStage,
+  isMindShackleStage,
+  isFireLineSAStage,
+  isExplosionSAStage,
+  isGrenadeSAStage,
   selectedUnitID,
   hex,
-  playerID,
   revealedGameCardUnits,
   revealedGameCardUnitIDs,
-  revealedGameCard,
   boardHexes,
-  gameArmyCards,
   gameUnits,
   unitsMoved,
   selectedUnitMoveRange,
   selectedUnitAttackRange,
   clonerHexIDs,
   clonePlaceableHexIDs,
+  chompableHexIDs,
+  chompSelectedHexIDs,
+  mindShackleTargetableHexIDs,
+  mindShackleSelectedHexIDs,
+  fireLineTargetableHexIDs,
+  fireLineAffectedHexIDs,
+  fireLineSelectedHexIDs,
+  explosionTargetableHexIDs,
+  explosionAffectedUnitIDs,
+  explosionSelectedUnitIDs,
 }: {
   isMyTurn: boolean
   isAttackingStage: boolean
   isMovementStage: boolean
   isWaterCloneStage: boolean
+  isChompStage: boolean
+  isMindShackleStage: boolean
+  isFireLineSAStage: boolean
+  isExplosionSAStage: boolean
+  isGrenadeSAStage: boolean
   selectedUnitID: string
   hex: BoardHex
-  playerID: string
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
-  revealedGameCard: GameArmyCard | undefined
   boardHexes: BoardHexes
   gameUnits: GameUnits
-  gameArmyCards: GameArmyCard[]
   unitsMoved: string[]
   selectedUnitMoveRange: MoveRange
   selectedUnitAttackRange: string[]
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
+  chompableHexIDs: string[]
+  chompSelectedHexIDs: string[]
+  mindShackleTargetableHexIDs: string[]
+  mindShackleSelectedHexIDs: string[]
+  fireLineTargetableHexIDs: string[]
+  fireLineAffectedHexIDs: string[]
+  fireLineSelectedHexIDs: string[]
+  explosionTargetableHexIDs: string[]
+  explosionAffectedHexIDs: string[]
+  explosionAffectedUnitIDs: string[]
+  explosionSelectedUnitIDs: string[]
 }) {
   const hexUnitID = hex.occupyingUnitID
   const hexUnit = gameUnits[hexUnitID]
   const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
-  const selectedUnit = gameUnits[selectedUnitID]
   const isSelectedCard = (hex: BoardHex) => {
     return revealedGameCardUnitIDs.includes(hexUnitID)
   }
@@ -195,17 +198,17 @@ export function calcRopHexClassNames({
   const isOpponentsActiveUnitHex = (hex: BoardHex) => {
     return activeEnemyUnitIDs.includes(hexUnitID)
   }
+  //phase: ROP-All??
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
-  //phase: ROP
-  // Highlight selected card units
-  // TODO Color selectable units based on if they have moved, have not moved, or have finished moving
+
   const isSelectableUnit = isSelectedCard(hex) && !isSelectedUnitHex(hex)
+  //phase: ROP-All??  Highlight selected card units
   if (isSelectableUnit) {
     classNames = classNames.concat(' maphex__selected-card-unit--selectable ')
   }
 
-  // NOT MY TURN
+  // phase: ROP-idle
   // Highlight opponents active units on their turn
   if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
     classNames = classNames.concat(' maphex__opponents-active-unit ')
@@ -213,17 +216,13 @@ export function calcRopHexClassNames({
 
   //phase: ROP-attack
   if (isAttackingStage) {
-    const isEndHexOccupied = Boolean(hexUnitID)
-    const endHexUnitPlayerID = hexUnit?.playerID
-    const isEndHexEnemyOccupied =
-      isEndHexOccupied && endHexUnitPlayerID !== playerID // TODO: make this work for however many players AKA isFriendlyUnit
     // Highlight selected unit
     if (selectedUnitID && isSelectedUnitHex(hex)) {
       classNames = classNames.concat(' maphex__selected-card-unit--active ')
     }
     // Highlight targetable enemy units
     if (selectedUnitAttackRange.includes(hex.id)) {
-      classNames = classNames.concat(' maphex__targetable-enemy ')
+      classNames = classNames.concat(' hexagon-attack-selectable ')
     }
   }
 
@@ -266,12 +265,70 @@ export function calcRopHexClassNames({
       }
     }
   }
+
+  //  phase: ROP-water-clone
   if (isWaterCloneStage) {
     if (clonerHexIDs.includes(hex.id)) {
       classNames = classNames.concat(' maphex__cloner-hexes ')
     }
     if (clonePlaceableHexIDs.includes(hex.id)) {
-      classNames = classNames.concat(' maphex__clone-placeable ')
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+  }
+  if (isChompStage) {
+    // TODO: Selected hex red?
+    if (chompableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (chompSelectedHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
+    }
+  }
+  if (isMindShackleStage) {
+    // TODO: Selected hex red?
+    if (mindShackleTargetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (mindShackleSelectedHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
+    }
+  }
+  //  phase: ROP-fire-line Special Attack
+  if (isFireLineSAStage) {
+    if (fireLineTargetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (fireLineAffectedHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-malaffected ')
+    }
+    if (fireLineSelectedHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
+    }
+  }
+  if (isExplosionSAStage) {
+    if (explosionTargetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-malaffected ')
+    }
+    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
+    }
+  }
+  if (isGrenadeSAStage) {
+    // Highlight selected unit
+    if (selectedUnitID && isSelectedUnitHex(hex)) {
+      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    }
+    if (explosionTargetableHexIDs.includes(hex.id)) {
+      classNames = classNames.concat(' hexagon-selectable ')
+    }
+    if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-malaffected ')
+    }
+    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
+      classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
   return classNames

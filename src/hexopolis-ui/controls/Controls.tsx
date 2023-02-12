@@ -2,7 +2,7 @@ import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
 import React from 'react'
 import { PlacementControls } from './PlacementControls'
 import { PlaceOrderMarkersControls } from './PlaceOrderMarkersControls'
-import { RoundOfPlayControls } from './RoundOfPlayControls'
+import { RopControls } from './RopControls'
 export const Controls = () => {
   const { playerID } = useBgioClientInfo()
   const {
@@ -19,7 +19,7 @@ export const Controls = () => {
     return <PlaceOrderMarkersControls />
   }
   if (isRoundOfPlayPhase) {
-    return <RoundOfPlayControls />
+    return <RopControls />
   }
   if (isGameover) {
     const winnerID = gameover.winner

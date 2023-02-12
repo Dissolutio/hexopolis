@@ -2,7 +2,7 @@ import { HEXGRID_SPACING } from 'app/constants'
 import { useBgioG } from 'bgio-contexts'
 import { MapShapes } from 'game/types'
 import { useMapContext } from 'hexopolis-ui/contexts'
-import { Notifications } from 'hexopolis-ui/controls/Notifications'
+import { Notifications } from 'hexopolis-ui/notifications/Notifications'
 import React, { useEffect } from 'react'
 import { HexgridLayout } from './HexgridLayout'
 import { MapHexes } from './MapHexes'
@@ -32,7 +32,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
   }, [mapId])
 
   //! ZOOM FEATURE
-  const zoomSeed = 10
+  const zoomSeed = 5
   const zoomInterval = mapSize * zoomSeed
   const handleClickZoomIn = () => {
     // increases width and height by zoom interval, attempts scroll correction afterwards
@@ -90,7 +90,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
         >
           <g className="hexgrid-layout">
-            <MapHexes hexSize={hexSize} />
+            <MapHexes />
           </g>
         </svg>
       </HexgridLayout>

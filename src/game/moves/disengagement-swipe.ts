@@ -11,6 +11,7 @@ import {
 } from '../selectors'
 import { BoardHexes, GameState, GameUnits } from '../types'
 import { rollHeroscapeDice } from './attack-action'
+import { killUnit_G } from './G-mutators'
 
 // This move is either fatal, not fatal, or denied
 
@@ -101,25 +102,36 @@ export const takeDisengagementSwipe: Move<GameState> = {
     // ALLOWED
     if (isTaking) {
       if (isFatal) {
-        // remove  killed unit from hex
-        newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-        if (is2Hex) {
-          newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
-            ''
-          newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
-        }
+        killUnit_G({
+          boardHexes: newBoardHexes,
+          unitsKilled: G.unitsKilled,
+          killedUnits: G.killedUnits,
+          gameUnits: G.gameUnits,
+          unitToKillID: unitAttemptingToDisengage.unitID,
+          killerUnitID: unitID,
+          defenderHexID: unitAttemptingToDisengageHex.id,
+          defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
+        })
+        // // remove  killed unit from hex
+        // newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+        // if (is2Hex) {
+        //   newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
+        //     ''
+        //   newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
+        // }
         // kill unit
-        G.killedUnits[unitAttemptingToDisengage.unitID] = {
-          ...G.gameUnits[unitAttemptingToDisengage.unitID],
-        }
-        delete newGameUnits[unitAttemptingToDisengage.unitID]
-        G.unitsKilled = {
-          ...G.unitsKilled,
-          [unitID]: [
-            ...(G.unitsKilled?.[unitID] ?? []),
-            unitAttemptingToDisengage.unitID,
-          ],
-        }
+        // G.killedUnits[unitAttemptingToDisengage.unitID] = {
+        //   ...G.gameUnits[unitAttemptingToDisengage.unitID],
+        // }
+        // delete newGameUnits[unitAttemptingToDisengage.unitID]
+        // G.unitsKilled = {
+        //   ...G.unitsKilled,
+        //   [unitID]: [
+        //     ...(G.unitsKilled?.[unitID] ?? []),
+        //     unitAttemptingToDisengage.unitID,
+        //   ],
+        // }
+
         // and reset disengagement state
         G.disengagesAttempting = undefined
         G.disengagedUnitIds = []

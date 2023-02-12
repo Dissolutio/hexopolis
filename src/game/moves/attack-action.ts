@@ -8,15 +8,15 @@ import {
   selectTailHexForUnit,
   selectAttackerHasAttacksAllowed,
 } from '../selectors'
-import { GameState, BoardHex, GameUnit } from '../types'
+import { GameState, BoardHex, GameUnit, StageQueueItem } from '../types'
 import { encodeGameLogMessage } from '../gamelog'
 import {
   selectIfGameArmyCardHasAbility,
-  selectIfGameArmyCardHasCounterStrike,
   selectUnitAttackDiceForAttack,
   selectUnitDefenseDiceForAttack,
 } from '../selector/card-selectors'
-import { stageNames } from '../constants'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
+import { killUnit_G } from './G-mutators'
 
 type HeroscapeDieRoll = {
   skulls: number
@@ -55,12 +55,12 @@ export const attackAction: Move<GameState> = {
     attackingUnit: GameUnit,
     defenderHex: BoardHex
   ) => {
+    let newStageQueue: StageQueueItem[] = []
     const { unitID: attackerUnitID } = attackingUnit
     const attackerGameCard = selectGameCardByID(
       G.gameArmyCards,
       attackingUnit.gameCardID
     )
-    const unitName = attackerGameCard?.name ?? ''
     const attackerHex = selectHexForUnit(attackingUnit.unitID, G.boardHexes)
     const attackingUnitTailHex = selectTailHexForUnit(
       attackingUnit.unitID,
@@ -155,10 +155,8 @@ export const attackAction: Move<GameState> = {
     })
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds
-    const attackRoll = rollHeroscapeDice(attackRolled, random)
-    const skulls = attackRoll.skulls
-    const defenseRoll = rollHeroscapeDice(defenseRolled, random)
-    const shields = defenseRoll.shields
+    const { skulls } = rollHeroscapeDice(attackRolled, random)
+    const { shields } = rollHeroscapeDice(defenseRolled, random)
 
     // SPECIAL ABILITIES TIME XD
     const isStealthDodge =
@@ -185,7 +183,8 @@ export const attackAction: Move<GameState> = {
     const indexOfThisAttack = Object.values(unitsAttacked).flat().length
     const attackId = `r${currentRound}:om${currentOrderMarker}:${attackerUnitID}:a${indexOfThisAttack}`
     const counterStrikeWounds =
-      selectIfGameArmyCardHasCounterStrike(defenderGameCard) && isMelee
+      selectIfGameArmyCardHasAbility('Counter Strike', defenderGameCard) &&
+      isMelee
         ? shields - skulls
         : 0
     const isCounterStrikeWounds = counterStrikeWounds > 0
@@ -197,23 +196,16 @@ export const attackAction: Move<GameState> = {
     }
     // kill unit, clear hex
     if (isFatal) {
-      G.unitsKilled = {
-        ...G.unitsKilled,
-        [attackerUnitID]: [
-          ...(G.unitsKilled?.[attackerUnitID] ?? []),
-          defenderGameUnit.unitID,
-        ],
-      }
-      G.killedUnits[defenderGameUnit.unitID] = {
-        ...G.gameUnits[defenderGameUnit.unitID],
-      }
-      delete G.gameUnits[defenderGameUnit.unitID]
-      // remove from hex, and tail if applicable
-      G.boardHexes[defenderHexID].occupyingUnitID = ''
-      if (defenderGameUnit.is2Hex && defenderTailHex) {
-        G.boardHexes[defenderTailHex.id].occupyingUnitID = ''
-        G.boardHexes[defenderTailHex.id].isUnitTail = false
-      }
+      killUnit_G({
+        boardHexes: G.boardHexes,
+        unitsKilled: G.unitsKilled,
+        killedUnits: G.killedUnits,
+        gameUnits: G.gameUnits,
+        unitToKillID: defenderHexUnitID,
+        killerUnitID: attackerUnitID,
+        defenderHexID: defenderHexID,
+        defenderTailHexID: defenderTailHex?.id,
+      })
     }
     // apply counter-strike if applicable
     if (isCounterStrikeWounds) {
@@ -238,7 +230,6 @@ export const attackAction: Move<GameState> = {
       } else {
         G.gameUnits[attackingUnit.unitID].wounds += counterStrikeWounds
       }
-      // TODO: add counter-strike to game log
     }
     // update units attacked
     unitsAttacked[attackerUnitID] = [
@@ -252,7 +243,7 @@ export const attackAction: Move<GameState> = {
       type: 'attack',
       id: attackId,
       unitID: attackerUnitID,
-      unitName,
+      unitName: attackerGameCard.name,
       targetHexID: defenderHexID,
       defenderUnitName,
       attackRolled,
@@ -267,26 +258,36 @@ export const attackAction: Move<GameState> = {
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
     if (isWarriorSpirit) {
-      // mark this so after placing spirit we can get back to it
-      G.isCurrentPlayerAttacking = true
-      // TODO: Multiplayer, set stages for all other players to idle
+      // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
+      newStageQueue.push({
+        playerID: attackerGameCard.playerID,
+        stage: stageNames.attacking,
+      })
+      const activePlayers = getActivePlayersIdleStage({
+        activePlayerID: defenderGameCard.playerID,
+        activeStage: stageNames.placingAttackSpirit,
+        idleStage: stageNames.idlePlacingAttackSpirit,
+      })
       events.setActivePlayers({
-        value: {
-          [defenderGameCard.playerID]: stageNames.placingAttackSpirit,
-          [attackerGameCard.playerID]: stageNames.idlePlacingAttackSpirit,
-        },
+        value: activePlayers,
       })
     }
     if (isArmorSpirit) {
-      // mark this so after placing spirit we can get back to it
-      G.isCurrentPlayerAttacking = true
-      // TODO: Multiplayer, set stages for all other players to idle
+      // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
+      newStageQueue.push({
+        playerID: attackerGameCard.playerID,
+        stage: stageNames.attacking,
+      })
+      const activePlayers = getActivePlayersIdleStage({
+        activePlayerID: defenderGameCard.playerID,
+        activeStage: stageNames.placingArmorSpirit,
+        idleStage: stageNames.idlePlacingArmorSpirit,
+      })
       events.setActivePlayers({
-        value: {
-          [defenderGameCard.playerID]: stageNames.placingArmorSpirit,
-          [attackerGameCard.playerID]: stageNames.idlePlacingArmorSpirit,
-        },
+        value: activePlayers,
       })
     }
+    // This update of G.stageQueue technically happens before the events.setActivePlayers above
+    G.stageQueue = newStageQueue
   },
 }

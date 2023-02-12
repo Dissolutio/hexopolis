@@ -12,10 +12,14 @@ import {
   RangeScan,
 } from './types'
 import { generateHexID } from './constants'
-import { hexUtilsDistance, hexUtilsNeighbors } from './hex-utils'
 import {
-  selectIfGameArmyCardHasDoubleAttack,
-  selectIfGameArmyCardHasThorianSpeed,
+  hexUtilsDistance,
+  hexUtilsNeighbor,
+  hexUtilsNeighbors,
+  hexUtilsNeighborsWithDirections,
+} from './hex-utils'
+import {
+  selectIfGameArmyCardHasAbility,
   selectUnitRange,
 } from './selector/card-selectors'
 
@@ -32,14 +36,27 @@ export function selectTailHexForUnit(unitID: string, boardHexes: BoardHexes) {
 }
 export function selectUnitForHex(
   hexID: string,
-  gameUnits: GameUnits,
-  boardHexes: BoardHexes
+  boardHexes: BoardHexes,
+  gameUnits: GameUnits
 ): GameUnit {
   const hex = boardHexes?.[hexID]
   const unitID = hex?.occupyingUnitID
   const unit = gameUnits?.[unitID]
   return unit
 }
+export function selectUnitGameCardForHex(
+  hexID: string,
+  boardHexes: BoardHexes,
+  gameArmyCards: GameArmyCard[],
+  gameUnits: GameUnits
+): GameArmyCard | undefined {
+  const hex = boardHexes?.[hexID]
+  const unitID = hex?.occupyingUnitID
+  const unit = gameUnits?.[unitID]
+  const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
+  return card
+}
+// TODO: the params on this fn are backwards by my convention of most specific to least, then G in usual order
 export function selectGameCardByID(
   gameArmyCards: GameArmyCard[],
   gameCardID: string
@@ -92,6 +109,56 @@ export function selectHexNeighbors(
       return exists ? { ...boardHexes[generateHexID(hex)] } : null
     })
     .filter((item) => Boolean(item)) as BoardHex[]
+}
+
+export function selectHexNeighborsWithDirections(
+  // this fn actually returns an array of arrays, [string, number] where the string is the hexID and the number is the direction
+  // the any[] is to get around a Typescript error I don't understand
+  startHexID: string,
+  boardHexes: BoardHexes
+): any[] {
+  const startHex = boardHexes?.[startHexID]
+  if (!startHex) return []
+  const neighborsWithDirections = hexUtilsNeighborsWithDirections(startHex)
+  const initialThing = Object.entries(neighborsWithDirections)
+  const result: any[] = initialThing.reduce((acc: any[], entry) => {
+    const isExistingBoardHex = Object.keys(boardHexes).includes(entry[0])
+    const newEntry = [entry[0], entry[1]]
+    return isExistingBoardHex ? [...acc, newEntry] : acc
+  }, [])
+  return result
+}
+export function selectHexesInLineFromHex(
+  // this fn actually returns an array of arrays, [string, number] where the string is the hexID and the number is the direction
+  // the any[] is to get around a Typescript error I don't understand
+  startHexID: string,
+  direction: number, // 0-5 NE-E-SE-SW-E-NW
+  n: number, // the number of hexes in a line
+  boardHexes: BoardHexes
+): BoardHex[] {
+  const startHex = boardHexes?.[startHexID]
+  if (!startHex) return []
+  const startCoord: HexCoordinates = {
+    q: startHex.q,
+    r: startHex.r,
+    s: startHex.s,
+  }
+  if (n <= 1) {
+    return [startHex]
+  }
+  let theoreticalHexes: string[] = [startHex.id]
+  let lastHex = startCoord
+  for (let index = 0; index < n - 1; index++) {
+    const nextHex = hexUtilsNeighbor(lastHex, direction)
+    const element = generateHexID(nextHex)
+    theoreticalHexes.push(element)
+    lastHex = nextHex
+  }
+  const firstOneThatsNotARealHex = theoreticalHexes.findIndex(
+    (hexID) => !boardHexes[hexID]
+  )
+  theoreticalHexes = theoreticalHexes.slice(0, firstOneThatsNotARealHex)
+  return theoreticalHexes.map((hexID) => boardHexes[hexID])
 }
 export function selectIsUnitWithinNHexesOfUnit({
   startUnitID,
@@ -169,7 +236,8 @@ export const selectAttackerHasAttacksAllowed = ({
     attackingUnit.gameCardID
   )
   const numberOfAttackingFigures = attackerGameCard?.figures ?? 0
-  const attacksAllowedPerFigure = selectIfGameArmyCardHasDoubleAttack(
+  const attacksAllowedPerFigure = selectIfGameArmyCardHasAbility(
+    'Double Attack',
     attackerGameCard
   )
     ? 2
@@ -207,12 +275,16 @@ export const selectIsInRangeOfAttack = ({
   gameArmyCards,
   boardHexes,
   gameUnits,
+  isSpecialAttack,
+  overrideUnitRange,
 }: {
   attackingUnit: GameUnit
   defenderHex: BoardHex
   gameArmyCards: GameArmyCard[]
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  isSpecialAttack?: boolean
+  overrideUnitRange?: number
 }): RangeScan => {
   const { unitID } = attackingUnit
   const isUnit2Hex = attackingUnit.is2Hex
@@ -221,12 +293,14 @@ export const selectIsInRangeOfAttack = ({
     attackingUnit.gameCardID
   )
   // const unitRange = attackerGameCard?.range ?? 0
-  let unitRange = selectUnitRange({
-    attackingUnit,
-    gameArmyCards,
-    boardHexes,
-    gameUnits,
-  })
+  let unitRange = overrideUnitRange
+    ? overrideUnitRange
+    : selectUnitRange({
+        attackingUnit,
+        gameArmyCards,
+        boardHexes,
+        gameUnits,
+      })
   const attackerHex = selectHexForUnit(unitID, boardHexes)
   const attackerTailHex = selectTailHexForUnit(unitID, boardHexes)
   const { occupyingUnitID: defenderHexUnitID } = defenderHex
@@ -264,10 +338,13 @@ export const selectIsInRangeOfAttack = ({
   // This totally ignores line of sight
   const isInRangedRange = isInTailRange || isInHeadHexRange
   const isRangeOneWhichRequiresEngagement = unitRange === 1
-  const isThorianSpeedDefender =
-    selectIfGameArmyCardHasThorianSpeed(defenderGameCard)
+  const isThorianSpeedDefender = selectIfGameArmyCardHasAbility(
+    'Thorian Speed',
+    defenderGameCard
+  )
   const isAttackerRequiredToBeEngagedToDefender =
-    isRangeOneWhichRequiresEngagement || isThorianSpeedDefender
+    isRangeOneWhichRequiresEngagement ||
+    (!isSpecialAttack && isThorianSpeedDefender)
   const isInRange = isAttackerRequiredToBeEngagedToDefender
     ? isInMeleeRange
     : isInRangedRange
@@ -285,6 +362,7 @@ export function selectEngagementsForHex({
   gameUnits,
   armyCards,
   friendly,
+  all,
   override,
 }: {
   hexID: string
@@ -292,9 +370,9 @@ export function selectEngagementsForHex({
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
   friendly?: boolean // if true, then only return friendly units
+  all?: boolean // if true, then return all units, regardless of friendly or not
   override?: {
     overrideUnitID: string
-    // probably a problem that this is optional
     overrideTailHexID?: string
   }
 }) {
@@ -311,7 +389,11 @@ export function selectEngagementsForHex({
   }
   const tailHexID = overrideUnitID
     ? overrideTailHexID || ''
-    : selectTailHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? '' // we could auto select a tail spot too?
+    : selectTailHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
+  // refetch the head in case we had the tail to start with
+  const headHexID = overrideUnitID
+    ? hexID
+    : selectHexForUnit(unitOnHex.unitID, boardHexes)?.id ?? ''
   const isUnit2Hex = unitOnHex.is2Hex
   // mutate/expand tailNeighbors if unit is 2 hex
   let tailNeighbors: BoardHex[] = []
@@ -324,7 +406,7 @@ export function selectEngagementsForHex({
     unitOnHex?.gameCardID
   )
   const allNeighborsToUnitOnHex = [
-    ...selectHexNeighbors(hexID, boardHexes),
+    ...selectHexNeighbors(headHexID, boardHexes),
     ...tailNeighbors,
   ]
   const engagedUnitIDs = uniq(
@@ -336,7 +418,9 @@ export function selectEngagementsForHex({
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
           // TODO: account for team play here, where adjacent units may be friendly
-          (friendly
+          (all
+            ? true
+            : friendly
             ? gameUnits[h.occupyingUnitID].playerID === playerID
             : gameUnits[h.occupyingUnitID].playerID !== playerID) &&
           // filter for engaged units
@@ -421,6 +505,7 @@ export function selectMoveEngagedUnitIDs({
   const newEngagements = selectEngagementsForHex({
     override: {
       overrideUnitID: unit.unitID,
+      overrideTailHexID: startHexID,
     },
     hexID: neighborHexID,
     boardHexes,
@@ -434,10 +519,14 @@ export function selectIsClimbable(
   unit: GameUnit,
   armyCards: GameArmyCard[],
   startHex: BoardHex,
-  endHex: BoardHex
+  endHex: BoardHex,
+  // this is for grapple gun
+  overrideDelta?: number
 ) {
   const unitCard = selectGameCardByID(armyCards, unit.gameCardID)
   const unitHeight = unitCard?.height ?? 0
   const altitudeDelta = endHex.altitude - startHex.altitude
-  return altitudeDelta < unitHeight
+  return (
+    altitudeDelta < (overrideDelta !== undefined ? overrideDelta : unitHeight)
+  )
 }

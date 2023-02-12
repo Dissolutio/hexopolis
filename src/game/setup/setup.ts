@@ -19,7 +19,7 @@ const isDevOverrideState =
   process.env.NODE_ENV === 'production'
     ? false
     : // toggle this one to test the game with pre-placed units
-      false
+      true
 const frequentlyChangedDevState = isDevOverrideState
   ? {
       placementReady: {
@@ -42,7 +42,7 @@ const frequentlyChangedDevState = isDevOverrideState
       players: generateBlankPlayersState(),
     }
 //!! TEST SCENARIO
-export const testScenario = makeTestScenario()
+export const gameSetupInitialGameState = makeTestScenario()
 function makeTestScenario(): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
@@ -50,16 +50,16 @@ function makeTestScenario(): GameState {
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  // const map = makeHexagonShapedMap({
-  //   mapSize: 6,
-  //   withPrePlacedUnits: isDevOverrideState,
-  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-  //   flat: false,
-  // })
-  const map = makeGiantsTableMap({
-    withPrePlacedUnits: true,
-    gameUnits,
+  const map = makeHexagonShapedMap({
+    mapSize: 6,
+    withPrePlacedUnits: isDevOverrideState,
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+    flat: false,
   })
+  // const map = makeGiantsTableMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
@@ -84,5 +84,11 @@ function makeTestScenario(): GameState {
     boardHexes: map.boardHexes,
     startZones: map.startZones,
     waterClonesPlaced: [],
+    grenadesThrown: [],
+    chompsAttempted: [],
+    mindShacklesAttempted: [],
+    berserkerChargeRoll: undefined,
+    berserkerChargeSuccessCount: 0,
+    stageQueue: [],
   }
 }

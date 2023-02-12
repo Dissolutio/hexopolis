@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { useBgioClientInfo } from 'bgio-contexts'
+import { playerIDDisplay } from 'game/transformers'
 
 export const HeaderNav = ({
   isLocalOrDemoGame,
@@ -53,21 +54,33 @@ const PlayerTeamLogo = ({
     if (isLocalOrDemoGame) {
       return (
         <a href="#player1">
-          <PlayerTeamLogoH1>Hexopolis: Player 1</PlayerTeamLogoH1>
+          <PlayerTeamLogoH1>
+            Hexopolis: {playerIDDisplay(playerID)}
+          </PlayerTeamLogoH1>
         </a>
       )
     }
-    return <PlayerTeamLogoH1>Hexopolis: Player 1</PlayerTeamLogoH1>
+    return (
+      <PlayerTeamLogoH1>
+        Hexopolis: {playerIDDisplay(playerID)}
+      </PlayerTeamLogoH1>
+    )
   }
   if (playerID === '1') {
     if (isLocalOrDemoGame) {
       return (
         <a href="#player0">
-          <PlayerTeamLogoH1>Hexopolis: Player 2</PlayerTeamLogoH1>
+          <PlayerTeamLogoH1>
+            Hexopolis: {playerIDDisplay(playerID)}
+          </PlayerTeamLogoH1>
         </a>
       )
     }
-    return <PlayerTeamLogoH1>Hexopolis: Player 2</PlayerTeamLogoH1>
+    return (
+      <PlayerTeamLogoH1>
+        Hexopolis: {playerIDDisplay(playerID)}
+      </PlayerTeamLogoH1>
+    )
   }
   return null
 }

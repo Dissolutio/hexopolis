@@ -1,3 +1,5 @@
+import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { GameArmyCard } from 'game/types'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { StyledControlsP } from 'hexopolis-ui/layout/Typography'
 import styled from 'styled-components'
@@ -24,10 +26,7 @@ export const FlyingUnitTextAndToggle = ({
       <>
         <StyledControlsP>{`${revealedGameCardName} has ${abilityText}, but may walk:`}</StyledControlsP>
         <StyledToggleWrapper>
-          <span
-            onChange={toggleIsWalkingFlyer}
-            style={!isWalkingFlyer ? { color: 'var(--muted-text)' } : {}}
-          >
+          <span style={!isWalkingFlyer ? { color: 'var(--muted-text)' } : {}}>
             Walking
           </span>
           <div className="switch">
@@ -47,6 +46,44 @@ export const FlyingUnitTextAndToggle = ({
     )
   }
   return null
+}
+export const GrappleGunTextAndToggle = ({
+  revealedGameCard,
+}: {
+  revealedGameCard?: GameArmyCard
+}) => {
+  const { isGrappleGun, toggleIsGrappleGun } = usePlayContext()
+  const hasGrappleGun = selectIfGameArmyCardHasAbility(
+    'Grapple Gun 25',
+    revealedGameCard
+  )
+  if (!revealedGameCard || !hasGrappleGun) return null
+  const revealedGameCardName = revealedGameCard?.name ?? ''
+  return (
+    <>
+      <StyledControlsP>{`${revealedGameCardName} has Grapple Gun, they can use it so long as they have not moved, toggle it on below:`}</StyledControlsP>
+      <StyledToggleWrapper>
+        <span
+          onChange={toggleIsGrappleGun}
+          style={isGrappleGun ? { color: 'var(--muted-text)' } : {}}
+        >
+          Normal
+        </span>
+        <div className="switch">
+          <input
+            type="checkbox"
+            id="toggleAll"
+            checked={isGrappleGun}
+            onChange={toggleIsGrappleGun}
+          />
+          <label htmlFor="toggleAll"></label>
+        </div>
+        <span style={!isGrappleGun ? { color: 'var(--muted-text)' } : {}}>
+          Grapple Gun
+        </span>
+      </StyledToggleWrapper>
+    </>
+  )
 }
 
 const StyledToggleWrapper = styled.div`

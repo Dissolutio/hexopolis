@@ -48,6 +48,7 @@ type PlayContextValue = {
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
   isWalkingFlyer: boolean
+  isGrappleGun: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
   toggleDisengageConfirm: (endHexID: string) => void
@@ -67,6 +68,7 @@ type PlayContextValue = {
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
   toggleIsWalkingFlyer: () => void
+  toggleIsGrappleGun: () => void
 }
 
 export const PlayContextProvider = ({ children }: PropsWithChildren) => {
@@ -89,6 +91,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isMovementStage,
     isAttackingStage,
     isWaterCloneStage,
+    isMyTurn,
+    isGrenadeSAStage,
   } = useBgioCtx()
   const {
     moves: { moveAction, attackAction, attemptDisengage, placeWaterClone },
@@ -124,6 +128,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     })
   }
 
+  // toggle walking/grapple-gun for special-move units
+  const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
+  const toggleIsGrappleGun = () => {
+    setIsGrappleGun((s) => !s)
+  }
   // toggle flying/walking for flying units
   const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
   const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
@@ -146,9 +155,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     if (isMovementStage) {
       if (selectedUnitID && selectedUnit) {
         setSelectedUnitMoveRange(() =>
+          // TODO GRAPPLE GUN
           computeUnitMoveRange(
             selectedUnit,
             isFlying,
+            isGrappleGun,
+            uniqUnitsMoved.length > 0,
             boardHexes,
             gameUnits,
             gameArmyCards
@@ -166,6 +178,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     gameUnits,
     selectedUnit,
     selectedUnitID,
+    isGrappleGun,
+    uniqUnitsMoved.length,
   ])
   // effect: update attack-range when selected unit changes (only necessary in attacking stage)
   useEffect(() => {
@@ -400,8 +414,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         }
       }
     }
-    // ATTACK STAGE
-    if (isAttackingStage) {
+    // ATTACK STAGE / Grenade SA is stowing-away on the selection/deselection logic
+    if (isAttackingStage || isGrenadeSAStage) {
       // select unit
       if (isUnitOnHexReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
@@ -411,16 +425,19 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         setSelectedUnitID('')
       }
       // attack with selected unit
-      if (selectedUnit && isEndHexEnemyOccupied) {
-        const { isInRange } = selectIsInRangeOfAttack({
-          attackingUnit: selectedUnit,
-          defenderHex: sourceHex,
-          gameArmyCards: gameArmyCards,
-          boardHexes: boardHexes,
-          gameUnits: gameUnits,
-        })
-        if (isInRange) {
-          attackAction(selectedUnit, boardHexes[sourceHex.id])
+      // the selecting of a special attack is split off in MapHexes, weird but let's GrenadeSA reuse some stuff
+      if (isAttackingStage) {
+        if (selectedUnit && isEndHexEnemyOccupied) {
+          const { isInRange } = selectIsInRangeOfAttack({
+            attackingUnit: selectedUnit,
+            defenderHex: sourceHex,
+            gameArmyCards: gameArmyCards,
+            boardHexes: boardHexes,
+            gameUnits: gameUnits,
+          })
+          if (isInRange) {
+            attackAction(selectedUnit, boardHexes[sourceHex.id])
+          }
         }
       }
     }
@@ -443,6 +460,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         showDisengageConfirm,
         disengageAttempt,
         isWalkingFlyer,
+        isGrappleGun,
         confirmDisengageAttempt,
         cancelDisengageAttempt,
         toggleDisengageConfirm: onClickDisengageHex,
@@ -461,6 +479,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,
+        toggleIsGrappleGun,
       }}
     >
       {children}

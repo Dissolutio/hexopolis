@@ -69,9 +69,9 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     image: 'izumisamurai.jpg',
     portraitPattern: 'izumisamurai-portrait',
     general: 'einar',
-    race: 'human',
+    race: 'orc',
     type: 'unique squad',
-    cardClass: 'samurai',
+    cardClass: 'warriors',
     personality: 'disciplined',
     height: '5',
     heightClass: 'medium',
@@ -208,6 +208,10 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
       {
         name: 'Berserker Charge',
         desc: 'After moving and before attacking, roll the 20-sided die. If you roll a 15 or higher, you may move all Tarn Viking Warriors again.',
+        // Unlimited Berserker Charge
+        // If I move once and am successful rolling for Berserker Charge, can I roll for it again after I'm done moving a second time?
+        // Yes. You can keep rolling for Berserker Charge until you roll less than a 15 or choose not to roll any more. Once you attack though, you cannot roll for Berserker Charge that turn. (Hasbro FAQ)
+        // https://heroscape.fandom.com/wiki/Tarn_Viking_Warriors
       },
     ],
   },

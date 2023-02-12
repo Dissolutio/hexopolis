@@ -1,9 +1,14 @@
 import { Roll } from './rollInitiative'
+import { omToString, playerIDDisplay } from './transformers'
 
 export type GameLogMessage = {
-  type: string // 'roundBegin' 'attack'
+  type: string // gameLogTypes
   id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
-
+  // for noUnitsOnTurn
+  playerID?: string
+  cardNameWithNoUnits?: string
+  currentOrderMarker?: string
+  isNoCard?: boolean
   // attack logs below
   unitID?: string
   unitName?: string
@@ -29,8 +34,20 @@ export type GameLogMessage = {
   endHexID?: string
   // disengage attempts below
   unitIdsToAttemptToDisengage?: string[]
+  // berserker charge logs, going to try and make a generalized roll log
+  roll?: number
+  isRollSuccessful?: boolean
+  rollThreshold?: number
+  // chomp logs
+  isChompSuccessful?: boolean
+  chompingUnitID?: string
+  chompRoll?: number
+  unitChompedName?: string
+  unitChompedSingleName?: string
+  isChompedUnitSquad?: boolean
 }
 export const gameLogTypes = {
+  noUnitsOnTurn: 'noUnitsOnTurn',
   move: 'move',
   attack: 'attack',
   roundBegin: 'roundBegin',
@@ -39,6 +56,9 @@ export const gameLogTypes = {
   disengageSwipeMiss: 'disengageSwipeMiss',
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
+  chomp: 'chomp',
+  mindShackle: 'mindShackle',
+  berserkerCharge: 'berserkerCharge',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -74,17 +94,27 @@ export const decodeGameLogMessage = (
       isFatalCounterStrike,
       isStealthDodge,
       counterStrikeWounds,
-      // roundBegin
       initiativeRolls,
-      // moves
       unitSingleName,
       startHexID,
       endHexID,
-      // disengage attempts
-      // unitID,
-      // endHexID,
-      // unitSingleName,
       unitIdsToAttemptToDisengage,
+      // CHOMP
+      isChompSuccessful,
+      chompRoll,
+      chompingUnitID,
+      unitChompedName,
+      unitChompedSingleName,
+      isChompedUnitSquad,
+      // NO UNITS ON TURN
+      playerID,
+      cardNameWithNoUnits,
+      currentOrderMarker,
+      isNoCard,
+      // berserker charge
+      roll,
+      isRollSuccessful,
+      rollThreshold,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -123,6 +153,49 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.berserkerCharge:
+        const msgBerserkerChargeSuccess = `${unitName} move again with Berserker Charge! (rolled ${roll}/${rollThreshold})`
+        const msgBerserkerChargeFailure = `${unitName} have failed their Berserker Charge roll (rolled ${roll}/${rollThreshold})`
+        return {
+          type,
+          id,
+          msg: isRollSuccessful
+            ? msgBerserkerChargeSuccess
+            : msgBerserkerChargeFailure,
+        }
+      case gameLogTypes.noUnitsOnTurn:
+        const msgNoUnitsOnTurn = isNoCard
+          ? `${playerIDDisplay(
+              playerID
+            )} has no army card for order ${omToString(currentOrderMarker)}`
+          : `${playerIDDisplay(
+              playerID
+            )} has no units left for ${cardNameWithNoUnits}, and skips their turn`
+        return {
+          type,
+          id,
+          msg: msgNoUnitsOnTurn,
+        }
+      case gameLogTypes.chomp:
+        const msggg = isChompSuccessful
+          ? `Grimnak chomped ${
+              isChompedUnitSquad ? unitChompedSingleName : unitChompedName
+            }! ${isChompedUnitSquad ? '' : `(rolled a ${chompRoll})`}`
+          : `Grimnak attempted to chomp ${unitChompedName}, but only rolled a ${chompRoll}`
+        return {
+          type,
+          id,
+          msg: msggg,
+        }
+      case gameLogTypes.mindShackle:
+        const msgMindShackle = isRollSuccessful
+          ? `Ne-gok-sa has Mind Shackled ${defenderUnitName}! (rolled a ${roll})`
+          : `Ne-gok-sa attempted to Mind Shackle ${defenderUnitName}, but only rolled a ${roll}`
+        return {
+          type,
+          id,
+          msg: msgMindShackle,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`

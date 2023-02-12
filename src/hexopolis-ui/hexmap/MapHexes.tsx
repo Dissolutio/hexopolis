@@ -8,7 +8,7 @@ import {
   usePlayContext,
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
-import { selectGameCardByID, selectValidTailHexes } from 'game/selectors'
+import { selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
@@ -19,15 +19,18 @@ import {
 import Hexagon from './Hexagon'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { HexIDText } from './HexIDText'
+import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 
-type MapHexesProps = {
-  hexSize: number
-}
-
-export const MapHexes = ({ hexSize }: MapHexesProps) => {
+export const MapHexes = () => {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameArmyCards, startZones, gameUnits, unitsMoved } =
-    useBgioG()
+  const {
+    boardHexes,
+    hexMap: { hexSize },
+    gameArmyCards,
+    startZones,
+    gameUnits,
+    unitsMoved,
+  } = useBgioG()
   const { selectedUnitID } = useUIContext()
   const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
@@ -39,35 +42,85 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isAttackingStage,
     isMovementStage,
     isWaterCloneStage,
+    isChompStage,
+    isMindShackleStage,
+    isFireLineSAStage,
+    isExplosionSAStage,
+    isGrenadeSAStage,
   } = useBgioCtx()
   const {
     onClickPlacementHex,
     editingBoardHexes,
     activeTailPlacementUnitID,
     tailPlaceables,
+    startZoneForMy2HexUnits,
   } = usePlacementContext()
   const {
     selectedUnitMoveRange,
     selectedUnitAttackRange,
     onClickTurnHex,
-    revealedGameCard,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
+    currentTurnGameCardID,
     clonerHexIDs,
     clonePlaceableHexIDs,
   } = usePlayContext()
+  const {
+    selectSpecialAttack,
+    fireLineTargetableHexIDs,
+    fireLineAffectedHexIDs,
+    fireLineSelectedHexIDs,
+    explosionTargetableHexIDs,
+    explosionAffectedHexIDs,
+    explosionAffectedUnitIDs,
+    explosionSelectedUnitIDs,
+    chompableHexIDs,
+    chompSelectedHexIDs,
+    mindShackleTargetableHexIDs,
+    mindShackleSelectedHexIDs,
+  } = useSpecialAttackContext()
 
-  // computed
-  const startZoneForMy2HexUnits = startZones[playerID].filter((sz) => {
-    return selectValidTailHexes(sz, boardHexes).length > 0
-  })
   // handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
     }
-    if (isRoundOfPlayPhase) {
-      onClickTurnHex?.(event, sourceHex)
+
+    if (isFireLineSAStage) {
+      if (fireLineTargetableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isMindShackleStage) {
+      if (mindShackleTargetableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isChompStage) {
+      if (chompableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isExplosionSAStage) {
+      if (explosionTargetableHexIDs.includes(sourceHex.id)) {
+        selectSpecialAttack(sourceHex.id)
+      }
+    } else if (isRoundOfPlayPhase) {
+      if (
+        isGrenadeSAStage &&
+        explosionTargetableHexIDs.includes(sourceHex.id)
+      ) {
+        // this is a weird splitting off to select a grenade hex, part of hacky GrenadeSA implementation
+        selectSpecialAttack(sourceHex.id)
+      } else {
+        // if we clicked a grenade unit, we need to deselect the attack (if any) of the previously selected grenade unit
+        if (
+          isGrenadeSAStage &&
+          sourceHex.occupyingUnitID !== selectedUnitID &&
+          gameUnits[sourceHex.occupyingUnitID]?.gameCardID ===
+            currentTurnGameCardID
+        ) {
+          selectSpecialAttack('')
+        }
+        onClickTurnHex?.(event, sourceHex)
+      }
     }
   }
   // classnames
@@ -88,30 +141,42 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     }
     if (isOrderMarkerPhase) {
       return calcOrderMarkerHexClassNames({
-        selectedMapHex,
-        hex,
+        terrain: hex.terrain,
       })
     }
     if (isRoundOfPlayPhase) {
       return calcRopHexClassNames({
         selectedUnitID,
         hex,
-        playerID,
-        revealedGameCard,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         isMyTurn,
         isAttackingStage,
         isMovementStage,
         isWaterCloneStage,
+        isChompStage,
+        isMindShackleStage,
+        isFireLineSAStage,
+        isExplosionSAStage,
+        isGrenadeSAStage,
         boardHexes,
         gameUnits,
-        gameArmyCards,
         unitsMoved,
         selectedUnitMoveRange,
         selectedUnitAttackRange,
         clonerHexIDs,
         clonePlaceableHexIDs,
+        chompableHexIDs,
+        chompSelectedHexIDs,
+        mindShackleTargetableHexIDs,
+        mindShackleSelectedHexIDs,
+        fireLineTargetableHexIDs,
+        fireLineAffectedHexIDs,
+        fireLineSelectedHexIDs,
+        explosionTargetableHexIDs,
+        explosionAffectedHexIDs,
+        explosionAffectedUnitIDs,
+        explosionSelectedUnitIDs,
       })
     }
   }

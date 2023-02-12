@@ -6,7 +6,7 @@ export interface GameState {
   killedUnits: GameUnits
   // annihilatedUnits would be units that were never killed, because they were never placed on the map (in placement, no room in start zone)
   // annihilatedUnits: GameUnits
-  players: PlayersState
+  players: PlayerState
   hexMap: HexMap
   boardHexes: BoardHexes
   startZones: StartZones
@@ -23,7 +23,7 @@ export interface GameState {
   // These 2 booleans are for shuffling the stage of the current player, so say, if finn dies, after placing his spirit the activePlayers can be updated to the right thing (w/e current player was doing before finn died)
   isCurrentPlayerAttacking: boolean
   // unitsKilled does not get erased or updated when killed units are resurrected/cloned
-  unitsKilled: { [unitID: string]: string[] }
+  unitsKilled: UnitsKilled
   gameLog: string[]
   /* 
     START 
@@ -43,14 +43,24 @@ export interface GameState {
   /* END */
   waterCloneRoll?: WaterCloneRoll
   waterClonesPlaced: WaterClonesPlaced
+  // This is an array of gameCardIDs, it gets added to whenever a grenade gets thrown, and then at end of turn, in game.ts file,  we can mark that card true for hasThrownGrenade
+  grenadesThrown: string[]
+  // this marks grimnak as having chomped
+  chompsAttempted: string[]
+  // this marks negoksa as having attempted mind shackle
+  mindShacklesAttempted: string[]
+  // this is used to track results of Tarn Viking Warrior berserker charges
+  berserkerChargeRoll: BerserkerChargeRoll | undefined
+  berserkerChargeSuccessCount: number
+  // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
+  stageQueue: StageQueueItem[]
 }
-// for secret state
+export type StageQueueItem = {
+  stage: string
+  playerID: string
+}
+
 // PlayersState keys are playerIDS, players only see their slice of it at G.players
-export type PlayersState = {
-  [playerID: string]: {
-    orderMarkers: PlayerOrderMarkers
-  }
-}
 export type GameMap = {
   boardHexes: BoardHexes
   startZones: StartZones
@@ -178,6 +188,8 @@ export type GameArmyCard = ArmyCard & {
   playerID: string
   gameCardID: string
   cardQuantity: number
+  // this is for the airborn elite ability, which is a one time use
+  hasThrownGrenade?: boolean
 }
 
 export type GameUnit = {
@@ -247,7 +259,12 @@ export type WaterCloneRoll = {
     }
   }
 }
-
+// for secret state
+export type PlayerState = {
+  [playerID: string]: {
+    orderMarkers: PlayerOrderMarkers
+  }
+}
 export type PlayerOrderMarkers = { [order: string]: string }
 
 export type OrderMarker = {
@@ -275,7 +292,7 @@ export type BaseGameOptions =
       initiative?: string[]
       unitsMoved?: string[]
       unitsAttacked?: {}
-      players?: PlayersState
+      players?: PlayerState
     }
   | undefined
 export type MapOptions = {
@@ -299,4 +316,28 @@ export type LayoutDimension = {
   origin: Point
   spacing: number
 }
-export type PlayerIdToUnitsMap = { [playerID: string]: GameUnit[] }
+
+export type HexNeighborsWithDirections = { [hexID: string]: number }
+
+export type PossibleFireLineAttack = {
+  affectedUnitIDs: string[]
+  clickableHexID: string
+  direction: number
+  line: BoardHex[]
+}
+export type PossibleExplosionAttack = {
+  clickableHexID: string
+  clickableHexUnitID: string
+  affectedUnitIDs: string[]
+  affectedHexIDs: string[]
+}
+export type PossibleChomp = {
+  chompingUnitID: string
+  targetHexID: string
+  isSquad: boolean
+}
+export type BerserkerChargeRoll = {
+  roll: number
+  isSuccessful: boolean
+}
+export type UnitsKilled = { [unitID: string]: string[] }

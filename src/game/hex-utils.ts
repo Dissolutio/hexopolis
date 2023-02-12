@@ -1,4 +1,10 @@
-import { HexCoordinates, LayoutDimension, Point } from './types'
+import {
+  BoardHex,
+  HexCoordinates,
+  HexNeighborsWithDirections,
+  LayoutDimension,
+  Point,
+} from './types'
 
 const DIRECTIONS: HexCoordinates[] = [
   { q: 1, r: -1, s: 0 }, // NE +q -r
@@ -74,6 +80,17 @@ export const hexUtilsNeighbors = (hex: HexCoordinates): HexCoordinates[] => {
     array.push(hexUtilsNeighbor(hex, i))
   }
   return array
+}
+export const hexUtilsNeighborsWithDirections = (
+  hex: HexCoordinates
+): HexNeighborsWithDirections => {
+  const obj: HexNeighborsWithDirections = {}
+  for (let i = 0; i < DIRECTIONS.length; i += 1) {
+    const hexNeighbor = hexUtilsNeighbor(hex, i)
+    const id = hexUtilsGetID(hexNeighbor)
+    obj[id] = i
+  }
+  return obj
 }
 export const hexUtilsRound = (hex: HexCoordinates): HexCoordinates => {
   let rq = Math.round(hex.q)

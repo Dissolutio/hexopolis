@@ -12,11 +12,19 @@ import {
   StyledButtonWrapper,
 } from '../ConfirmOrResetButtons'
 import { uniq } from 'lodash'
-import { omToString } from 'app/utilities'
-import { FlyingUnitTextAndToggle } from './FlyingUnitTextAndToggle'
+import {
+  FlyingUnitTextAndToggle,
+  GrappleGunTextAndToggle,
+} from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
-import { selectIfGameArmyCardHasFlying } from 'game/selector/card-selectors'
+import {
+  selectIfGameArmyCardHasAbility,
+  selectIfGameArmyCardHasFlying,
+} from 'game/selector/card-selectors'
+import { AbilityReadout } from './FireLineSAControls'
+import { AnimatePresence, motion } from 'framer-motion'
+import { omToString } from 'game/transformers'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -34,14 +42,20 @@ export const RopAttackMoveHeader = ({
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { events } = useBgioEvents()
-  const { selectedUnit, revealedGameCard, revealedGameCardUnitIDs } =
-    usePlayContext()
+  const {
+    selectedUnit,
+    revealedGameCard,
+    revealedGameCardUnitIDs,
+    isGrappleGun,
+  } = usePlayContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
   const unitsAliveCount = revealedGameCardUnitIDs.length
   const { hasFlying, hasStealth } =
     selectIfGameArmyCardHasFlying(revealedGameCard)
+  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
   const revealedGameCardName = revealedGameCard?.name ?? ''
+
   const movesAvailable =
     Math.min(allowedMoveCount, unitsAliveCount) - movedUnitsCount
   const isAllMovesUsed = movesAvailable <= 0
@@ -70,15 +84,43 @@ export const RopMoveControls = () => {
             hasStealth={hasStealth}
             revealedGameCardName={revealedGameCardName}
           />
+          <GrappleGunTextAndToggle revealedGameCard={revealedGameCard} />
+          <AnimatePresence>
+            {isGrappleGun && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <AbilityReadout cardAbility={revealedGameCard?.abilities[1]} />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <StyledControlsP>
             Selected unit move points remaining:{' '}
-            {selectedUnit?.movePoints ?? '-'}
+            {/* grapple gun is just 0 or 1, but otherwise show the normal move point */}
+            {isGrappleGun
+              ? movedUnitsCount > 0
+                ? '0'
+                : '1'
+              : selectedUnit?.movePoints ?? '-'}
           </StyledControlsP>
           <StyledControlsP>
             {movedUnitsCount} / {allowedMoveCount} units moved
           </StyledControlsP>
 
           <UndoRedoButtons />
+          {hasChomp && (
+            <StyledButtonWrapper>
+              <GreenButton
+                onClick={() => {
+                  events?.setStage?.(stageNames.chomp)
+                }}
+              >
+                Use Chomp
+              </GreenButton>
+            </StyledButtonWrapper>
+          )}
         </>
       )}
       {unitsAliveCount === 0 ? (

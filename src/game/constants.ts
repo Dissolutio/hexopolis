@@ -4,7 +4,7 @@ import {
   OrderMarker,
   OrderMarkers,
   PlayerOrderMarkers,
-  PlayersState,
+  PlayerState,
 } from './types'
 
 export const phaseNames = {
@@ -21,10 +21,16 @@ export const stageNames = {
   waitingForDisengageSwipe: 'waitingForDisengageSwipe',
   disengagementSwipe: 'disengagementSwipe',
   waterClone: 'waterClone',
+  berserkerCharge: 'berserkerCharge',
+  mindShackle: 'mindShackle',
   placingAttackSpirit: 'placingAttackSpirit',
   idlePlacingAttackSpirit: 'idlePlacingAttackSpirit',
   placingArmorSpirit: 'placingArmorSpirit',
   idlePlacingArmorSpirit: 'idlePlacingArmorSpirit',
+  chomp: 'chomp',
+  fireLineSA: 'fireLineSA',
+  explosionSA: 'explosionSA',
+  grenadeSA: 'grenadeSA',
 }
 
 export const OM_COUNT = 3
@@ -39,7 +45,7 @@ export function generateBlankOrderMarkers(): OrderMarkers {
     '1': blankOrderMarkers,
   }
 }
-export function generateBlankPlayersState(): PlayersState {
+export function generateBlankPlayersState(): PlayerState {
   return {
     '0': {
       orderMarkers: generateBlankPlayersOrderMarkers(),
@@ -80,4 +86,25 @@ export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
       (hexID) => moveRange[hexID].isDisengage
     ),
   }
+}
+const gamePlayerIDs = ['0', '1']
+const selectAllOtherGamePlayerIDs = (playerID: string) => {
+  return gamePlayerIDs.filter((id) => id !== playerID)
+}
+// Use this when you know the playerID and stage to put one player in, and need the rest to go to an idle stage
+export function getActivePlayersIdleStage({
+  activePlayerID,
+  activeStage,
+  idleStage,
+}: {
+  activePlayerID: string
+  activeStage: string
+  idleStage: string
+}) {
+  return gamePlayerIDs.reduce((prev, curr) => {
+    if (curr === activePlayerID) {
+      return { ...prev, [curr]: activeStage }
+    }
+    return { ...prev, [curr]: idleStage }
+  }, {})
 }

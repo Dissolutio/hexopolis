@@ -2,7 +2,7 @@ import {
   ArmyCard,
   ICoreHeroscapeCard,
   OrderMarkers,
-  PlayersState,
+  PlayerState,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
 
@@ -21,28 +21,29 @@ export const thorgrimID = 'hs1011'
 export const raelinOneID = 'hs1012'
 const mimringID = 'hs1013'
 const negoksaID = 'hs1014'
-const grimnakID = 'hs1015'
+export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const player1Ids = [
-  marroID,
+  negoksaID,
   zettianID,
   syvarrisID,
   airbornID,
   raelinOneID,
   deathwalker9000ID,
-  mimringID,
-  drake1ID,
+  finnID,
+  tarnID,
 ]
 const player2Ids = [
+  drake1ID,
+  syvarrisID,
   carrID,
-  izumiID,
   kravMagaID,
-  tarnID,
-  finnID,
   thorgrimID,
-  negoksaID,
+  mimringID,
   grimnakID,
+  izumiID,
+  raelinOneID,
 ]
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${player1Ids[0]}`
@@ -51,8 +52,8 @@ const p0_2 = `p0_${player1Ids[0]}`
 const p0_X = `p0_${player1Ids[0]}`
 
 const p1_0 = `p1_${player2Ids[0]}`
-const p1_1 = `p1_${player2Ids[0]}`
-const p1_2 = `p1_${player2Ids[0]}`
+const p1_1 = `p1_${player2Ids[1]}`
+const p1_2 = `p1_${player2Ids[1]}`
 const p1_X = `p1_${player2Ids[0]}`
 
 const armyCardsDevving = hsCardsToArmyCards(MS1Cards).filter((c) => {
@@ -119,7 +120,7 @@ export function generatePreplacedOrderMarkers(): OrderMarkers {
   }
   return orderMarkers
 }
-export function playersStateWithPrePlacedOMs(): PlayersState {
+export function playersStateWithPrePlacedOMs(): PlayerState {
   return {
     '0': {
       orderMarkers: {

@@ -10,7 +10,10 @@ import {
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
-import { selectGameArmyCardAttacksAllowed } from 'game/selector/card-selectors'
+import {
+  selectGameArmyCardAttacksAllowed,
+  selectIfGameArmyCardHasAbility,
+} from 'game/selector/card-selectors'
 
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
@@ -18,8 +21,42 @@ export const RopAttackControls = () => {
   const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
     usePlayContext()
   const revealedGameCardName = revealedGameCard?.name ?? ''
-  const hasWaterClone = (revealedGameCard?.abilities ?? []).some(
-    (ability) => ability.name === 'Water Clone'
+  const hasWaterClone = selectIfGameArmyCardHasAbility(
+    'Water Clone',
+    revealedGameCard
+  )
+  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
+  const hasMindShackle = selectIfGameArmyCardHasAbility(
+    'Mind Shackle 20',
+    revealedGameCard
+  )
+  const selectHasSpecialAttack = () => {
+    return {
+      hasFireLine: revealedGameCard
+        ? selectIfGameArmyCardHasAbility(
+            'Fire Line Special Attack',
+            revealedGameCard
+          )
+        : false,
+      hasExplosion: revealedGameCard
+        ? selectIfGameArmyCardHasAbility(
+            'Explosion Special Attack',
+            revealedGameCard
+          )
+        : false,
+      hasGrenade:
+        revealedGameCard && !revealedGameCard.hasThrownGrenade
+          ? selectIfGameArmyCardHasAbility(
+              'Grenade Special Attack',
+              revealedGameCard
+            )
+          : false,
+    }
+  }
+  const { hasFireLine, hasExplosion, hasGrenade } = selectHasSpecialAttack()
+  const hasBerserkerCharge = selectIfGameArmyCardHasAbility(
+    'Berserker Charge',
+    revealedGameCard
   )
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
@@ -32,7 +69,8 @@ export const RopAttackControls = () => {
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
-  const isAllAttacksUsed = totalNumberOfAttacksAllowed <= 0
+  const attacksLeft = totalNumberOfAttacksAllowed - attacksUsed
+  const isAllAttacksUsed = attacksLeft <= 0
   const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
@@ -81,18 +119,84 @@ export const RopAttackControls = () => {
           </GreenButton>
         </StyledButtonWrapper>
       )}
+      {isNoAttacksUsed && hasFireLine && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.fireLineSA)
+            }}
+          >
+            Use Fire Line Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasExplosion && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.explosionSA)
+            }}
+          >
+            Use Explosion Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasGrenade && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.grenadeSA)
+            }}
+          >
+            Use Grenade Special Attack
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasBerserkerCharge && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.berserkerCharge)
+            }}
+          >
+            Use Berserker Charge
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasChomp && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.chomp)
+            }}
+          >
+            Use Chomp
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
+      {isNoAttacksUsed && hasMindShackle && (
+        <StyledButtonWrapper>
+          <GreenButton
+            onClick={() => {
+              events?.setStage?.(stageNames.mindShackle)
+            }}
+          >
+            Use Mind Shackle
+          </GreenButton>
+        </StyledButtonWrapper>
+      )}
 
       {isAllAttacksUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndTurnButtonClick}
-          confirmText={'End Turn'}
+          confirmText={'All attacks used, end turn'}
           noResetButton
         />
       ) : (
         <ConfirmOrResetButtons
           reset={handleEndTurnButtonClick}
-          resetText={`End Turn, skip my ${totalNumberOfAttacksAllowed} attack${
-            totalNumberOfAttacksAllowed !== 1 ? 's' : ''
+          resetText={`End Turn, skip my ${attacksLeft} attack${
+            attacksLeft !== 1 ? 's' : ''
           }`}
           noConfirmButton
         />

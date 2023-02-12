@@ -4,6 +4,7 @@ import { LobbyAPI } from 'boardgame.io'
 import { useBgioLobbyApi } from '../bgio-contexts/useBgioLobbyApi'
 import { useAuth } from 'hooks'
 import { defaultSetupData, MYGAME_NUMPLAYERS } from 'game/game'
+import { gameSetupInitialGameState } from 'game/setup/setup'
 
 type MultiplayerLobbyCtxValue = {
   // lobby state
@@ -168,7 +169,7 @@ export function MultiplayerLobbyProvider({
     }
     try {
       const { matchID } = await createMatch(`${selectedGame}`, {
-        setupData: defaultSetupData,
+        setupData: gameSetupInitialGameState,
         numPlayers: MYGAME_NUMPLAYERS,
         unlisted: false,
       })
