@@ -32,7 +32,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
   }, [mapId])
 
   //! ZOOM FEATURE
-  const zoomSeed = 10
+  const zoomSeed = 5
   const zoomInterval = mapSize * zoomSeed
   const handleClickZoomIn = () => {
     // increases width and height by zoom interval, attempts scroll correction afterwards
