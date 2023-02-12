@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import { usePlayContext } from '../contexts'
 import {
@@ -11,7 +12,10 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexopolis-ui/layout/Typography'
-import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
+import {
+  ConfirmOrResetButtons,
+  StyledButtonWrapper,
+} from './ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { selectGameCardByID } from 'game/selectors'
 import { playerIDDisplay } from 'game/transformers'
@@ -302,13 +306,25 @@ const RopDisengagementSwipeControls = () => {
          to wound them as they disengage. For each unit below, either confirm or deny your attacks, until 
          they are all done or ${unitAttemptingCard?.singleName} is destroyed`}
       </StyledControlsP>
-      <ul>
+      <AnimatePresence>
         {transformedMyFiguresThatGetASwipe
           .filter((u) => !disengagedUnitIds.includes(u.unitID))
           .map((unit) => {
             return (
-              <li key={unit.unitID}>
-                Unit: {unit.singleName}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                key={unit.unitID}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0.5rem',
+                }}
+              >
+                <h5>Unit: {unit.singleName}</h5>
                 <GreenButton
                   onClick={() =>
                     takeDisengagementSwipe({
@@ -317,7 +333,7 @@ const RopDisengagementSwipeControls = () => {
                     })
                   }
                 >
-                  Take swipe
+                  Swipe them!
                 </GreenButton>
                 <RedButton
                   onClick={() =>
@@ -327,12 +343,12 @@ const RopDisengagementSwipeControls = () => {
                     })
                   }
                 >
-                  Deny
+                  Let them go...
                 </RedButton>
-              </li>
+              </motion.div>
             )
           })}
-      </ul>
+      </AnimatePresence>
     </>
   )
 }
