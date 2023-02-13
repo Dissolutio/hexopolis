@@ -151,7 +151,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
           events.setActivePlayers({
             currentPlayer: stageNames.movement,
           })
-          // end disengagement swipe stage (unsure if this should also be done when we setActivePlayers for all players?)
           events.endStage()
         }
       } else if (!isFatal) {
