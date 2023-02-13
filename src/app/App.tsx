@@ -20,7 +20,7 @@ const reduxDevTools =
 const hexedMeadowClientOptions = {
   game: HexedMeadow,
   board: Board,
-  numPlayers: 2,
+  numPlayers: 6,
 }
 export const specialMatchIdToTellHeaderNavThisMatchIsLocal = 'localGameId'
 const DemoGameClient = Client({
@@ -106,6 +106,22 @@ const LocalApp = () => {
       <DemoGameClient
         matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
         playerID="1"
+      />
+      <DemoGameClient
+        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+        playerID="2"
+      />
+      <DemoGameClient
+        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+        playerID="3"
+      />
+      <DemoGameClient
+        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+        playerID="4"
+      />
+      <DemoGameClient
+        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
+        playerID="5"
       />
     </>
   )

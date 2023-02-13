@@ -16,7 +16,7 @@ import {
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
-export const MYGAME_NUMPLAYERS = 2
+export const MYGAME_NUMPLAYERS = 6
 
 export const HexedMeadow: Game<GameState> = {
   name: 'HexedMeadow',
@@ -33,7 +33,7 @@ export const HexedMeadow: Game<GameState> = {
   seed: `${Math.random()}`,
   // The minimum and maximum number of players supported (this is only enforced when using the Lobby server component)
   minPlayers: 2,
-  maxPlayers: 2,
+  maxPlayers: 6,
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
     //PHASE: PLACEMENT

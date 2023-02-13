@@ -29,7 +29,7 @@ const playerColorsUrlEncoded: StringKeyedObj = {
 
 export const playerColors: StringKeyedObj = {
   '0': colors.beeYellow,
-  '1': colors.jasmine,
+  '1': colors.butterflyPurple,
   '2': colors.waspGreen,
   '3': colors.beetleBlue,
   '4': colors.hummingbirdGreen,

@@ -51,7 +51,10 @@ const PlayerTeamLogo = ({
   if (isLocalOrDemoGame) {
     return (
       // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
-      <a href={`#player${parseInt(playerID) + 1}`}>
+      <a
+        // this will make it so player 0-4 will link to player 1-5, and player 5 will link to player 0
+        href={`#player${parseInt(playerID) === 5 ? 0 : parseInt(playerID) + 1}`}
+      >
         <PlayerTeamLogoH1>
           Hexopolis: {playerIDDisplay(playerID)}
         </PlayerTeamLogoH1>
