@@ -1,6 +1,6 @@
 import { Route, Link, Routes } from 'react-router-dom'
 import { Client } from 'boardgame.io/react'
-import { Local, SocketIO } from 'boardgame.io/multiplayer'
+import { SocketIO } from 'boardgame.io/multiplayer'
 import { Debug } from 'boardgame.io/debug'
 import { Helmet } from 'react-helmet'
 import { BgioLobbyApiProvider } from 'bgio-contexts'

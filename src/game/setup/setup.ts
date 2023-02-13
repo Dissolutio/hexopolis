@@ -41,8 +41,8 @@ const frequentlyChangedDevState = (numPlayers: number) =>
           numPlayers,
           true
         ),
-        players: playersStateWithPrePlacedOMs(),
-        orderMarkers: generatePreplacedOrderMarkers(),
+        players: playersStateWithPrePlacedOMs(numPlayers),
+        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
       }
     : {
         placementReady: generateReadyStateForNumPlayers(numPlayers, false),

@@ -131,7 +131,9 @@ export function armyCardsToGameArmyCardsForTest(
   return Object.values(theArmiesTurnedIntoGameArmyCards(numPlayers)).flat()
 }
 
-export function generatePreplacedOrderMarkers(): OrderMarkers {
+export function generatePreplacedOrderMarkers(
+  numPlayers: number
+): OrderMarkers {
   const orderMarkers: OrderMarkers = {
     '0': [
       { order: '0', gameCardID: p0_0 },
@@ -170,57 +172,54 @@ export function generatePreplacedOrderMarkers(): OrderMarkers {
       { order: 'X', gameCardID: p5_X },
     ],
   }
+  const result: OrderMarkers = {}
+  for (let index = 0; index < numPlayers; index++) {
+    result[index] = orderMarkers[index]
+  }
   return orderMarkers
 }
-export function playersStateWithPrePlacedOMs(): PlayerState {
-  return {
-    '0': {
-      orderMarkers: {
-        '0': p0_0,
-        '1': p0_1,
-        '2': p0_2,
-        X: p0_X,
-      },
+export function playersStateWithPrePlacedOMs(numPlayers: number): PlayerState {
+  const orderMarkers: { [key: number]: any } = {
+    0: {
+      '0': p0_0,
+      '1': p0_1,
+      '2': p0_2,
+      X: p0_X,
     },
-    '1': {
-      orderMarkers: {
-        '0': p1_0,
-        '1': p1_1,
-        '2': p1_2,
-        X: p1_X,
-      },
+    1: {
+      '0': p1_0,
+      '1': p1_1,
+      '2': p1_2,
+      X: p1_X,
     },
-    '2': {
-      orderMarkers: {
-        '0': p2_0,
-        '1': p2_1,
-        '2': p2_2,
-        X: p2_X,
-      },
+    2: {
+      '0': p2_0,
+      '1': p2_1,
+      '2': p2_2,
+      X: p2_X,
     },
-    '3': {
-      orderMarkers: {
-        '0': p3_0,
-        '1': p3_1,
-        '2': p3_2,
-        X: p3_X,
-      },
+    3: {
+      '0': p3_0,
+      '1': p3_1,
+      '2': p3_2,
+      X: p3_X,
     },
-    '4': {
-      orderMarkers: {
-        '0': p4_0,
-        '1': p4_1,
-        '2': p4_2,
-        X: p4_X,
-      },
+    4: {
+      '0': p4_0,
+      '1': p4_1,
+      '2': p4_2,
+      X: p4_X,
     },
-    '5': {
-      orderMarkers: {
-        '0': p5_0,
-        '1': p5_1,
-        '2': p5_2,
-        X: p5_X,
-      },
+    5: {
+      '0': p5_0,
+      '1': p5_1,
+      '2': p5_2,
+      X: p5_X,
     },
   }
+  const result: PlayerState = {}
+  for (let index = 0; index < numPlayers; index++) {
+    result[index] = { orderMarkers: orderMarkers[index] }
+  }
+  return result
 }
