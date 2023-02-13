@@ -41,8 +41,6 @@ const StyledNavbar = styled.nav`
   }
 `
 
-// for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
-
 const PlayerTeamLogo = ({
   playerID,
   isLocalOrDemoGame,
@@ -50,39 +48,19 @@ const PlayerTeamLogo = ({
   playerID: string
   isLocalOrDemoGame: boolean
 }) => {
-  if (playerID === '0') {
-    if (isLocalOrDemoGame) {
-      return (
-        <a href="#player1">
-          <PlayerTeamLogoH1>
-            Hexopolis: {playerIDDisplay(playerID)}
-          </PlayerTeamLogoH1>
-        </a>
-      )
-    }
+  if (isLocalOrDemoGame) {
     return (
-      <PlayerTeamLogoH1>
-        Hexopolis: {playerIDDisplay(playerID)}
-      </PlayerTeamLogoH1>
+      // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
+      <a href={`#player${parseInt(playerID) + 1}`}>
+        <PlayerTeamLogoH1>
+          Hexopolis: {playerIDDisplay(playerID)}
+        </PlayerTeamLogoH1>
+      </a>
     )
   }
-  if (playerID === '1') {
-    if (isLocalOrDemoGame) {
-      return (
-        <a href="#player0">
-          <PlayerTeamLogoH1>
-            Hexopolis: {playerIDDisplay(playerID)}
-          </PlayerTeamLogoH1>
-        </a>
-      )
-    }
-    return (
-      <PlayerTeamLogoH1>
-        Hexopolis: {playerIDDisplay(playerID)}
-      </PlayerTeamLogoH1>
-    )
-  }
-  return null
+  return (
+    <PlayerTeamLogoH1>Hexopolis: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
+  )
 }
 
 const PlayerTeamLogoH1 = styled.h1`

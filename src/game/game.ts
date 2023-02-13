@@ -16,11 +16,6 @@ import {
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
-export const defaultSetupData = {
-  score: { '0': 0, '1': 0 },
-  lobbyDisplayName: '',
-}
-
 export const MYGAME_NUMPLAYERS = 2
 
 export const HexedMeadow: Game<GameState> = {

@@ -1,3 +1,4 @@
+import { playerColors } from 'hexopolis-ui/theme'
 import React from 'react'
 import { IconBaseProps } from 'react-icons'
 import {
@@ -36,10 +37,6 @@ import {
   GiAnubis,
 } from 'react-icons/gi'
 
-export const playerIconColors: { [key: string]: string } = {
-  '0': 'var(--bee-yellow)',
-  '1': 'var(--butterfly-purple)',
-}
 type Props = IconBaseProps & {
   armyCardID: string
   iconPlayerID?: String
@@ -67,7 +64,7 @@ export const UnitIcon = ({
     x: iconProps?.x ?? `${iconXShift}px`,
     y: iconProps?.x ?? `${iconYShift}px`,
     style: {
-      fill: `${playerIconColors?.[iconPlayerID as string] ?? 'var(--white)'}`,
+      fill: `${playerColors?.[iconPlayerID as string] ?? 'var(--white)'}`,
       fontSize: iconProps?.x ?? `${iconSize}px`,
     },
     ...rest,

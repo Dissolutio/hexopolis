@@ -2,7 +2,7 @@ import { useBgioCtx, useBgioG } from 'bgio-contexts'
 import { hexUtilsGetTailCoordinates } from 'game/hex-utils'
 import { BoardHex } from 'game/types'
 import { usePlacementContext } from 'hexopolis-ui/contexts'
-import { playerIconColors } from './UnitIcon'
+import { playerColors } from 'hexopolis-ui/theme'
 
 type Props = {
   hex: BoardHex
@@ -24,7 +24,7 @@ export const UnitTail = ({ hex, iconPlayerID }: Props) => {
   const headCoordinates = (headHex &&
     hexUtilsGetTailCoordinates(hex, headHex)) || { x: 0, y: 0 }
   const lineStyle = {
-    stroke: `${playerIconColors?.[iconPlayerID as string] ?? 'var(--white)'}`,
+    stroke: `${playerColors?.[iconPlayerID as string] ?? 'var(--white)'}`,
     // stroke: `url(#lingrad-${hex.id})`,
     strokeWidth: 2,
   }

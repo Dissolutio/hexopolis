@@ -76,21 +76,30 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
 
   // PHASE: PLACEMENT
   // Startzone hexagons: stroke,  stroke-width
-  .maphex__startzone--player0 > g polygon {
-    stroke: ${(props) => props.theme.playerColors[props.playerID]};
+  .maphex__startzone > g polygon {
     stroke-width: 0.3;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
       stroke-width: 0.4;
     }
   }
+  .maphex__startzone--player0 > g polygon {
+    stroke: ${(props) => props.theme.playerColors['0']};
+  }
   .maphex__startzone--player1 > g polygon {
-    stroke: var(--butterfly-purple);
-    stroke-width: 0.3;
-    // style stroke width a little thicker on mobile so you can see it
-    @media screen and (max-width: 1100px) {
-      stroke-width: 0.4;
-    }
+    stroke: ${(props) => props.theme.playerColors['1']};
+  }
+  .maphex__startzone--player2 > g polygon {
+    stroke: ${(props) => props.theme.playerColors['2']};
+  }
+  .maphex__startzone--player3 > g polygon {
+    stroke: ${(props) => props.theme.playerColors['3']};
+  }
+  .maphex__startzone--player4 > g polygon {
+    stroke: ${(props) => props.theme.playerColors['4']};
+  }
+  .maphex__startzone--player5 > g polygon {
+    stroke: ${(props) => props.theme.playerColors['5']};
   }
   // empty placeable hexagons: stroke, stroke-width, fill, fill-opacity
   .maphex__start-zone--placement > g polygon {

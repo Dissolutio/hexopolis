@@ -3,7 +3,7 @@ import { LobbyAPI } from 'boardgame.io'
 
 import { useBgioLobbyApi } from '../bgio-contexts/useBgioLobbyApi'
 import { useAuth } from 'hooks'
-import { defaultSetupData, MYGAME_NUMPLAYERS } from 'game/game'
+import { MYGAME_NUMPLAYERS } from 'game/game'
 import { gameSetupInitialGameState } from 'game/setup/setup'
 
 type MultiplayerLobbyCtxValue = {
