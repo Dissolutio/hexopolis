@@ -238,7 +238,7 @@ export const MapHexes = () => {
               // text={`${hex.altitude}`}
               // textLine2={`${unitName}`}
             />
-            {gameUnitCard && isUnitAHeroOrMultiLife && (
+            {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
               <UnitLifeText
                 unit={gameUnit}
                 card={gameUnitCard}
