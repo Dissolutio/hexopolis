@@ -7,7 +7,7 @@ const isDeploymentEnv = process.env.NODE_ENV === 'production'
 const isDevEnv = process.env.NODE_ENV === 'development'
 const isSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER)
 export const isLocalApp = isDevEnv && !isSeparateServer
-
+export const specialMatchIdToTellHeaderNavThisMatchIsLocal = 'localGameId'
 // use appropriate address for server
 const hostname = window?.location?.hostname ?? ''
 const protocol = window?.location?.protocol ?? ''

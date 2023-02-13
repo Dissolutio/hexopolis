@@ -24,7 +24,7 @@ export const HexedMeadow: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    return gameSetupInitialGameState
+    return gameSetupInitialGameState(ctx.ctx.numPlayers)
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',

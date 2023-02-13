@@ -1,5 +1,4 @@
 import {
-  ArmyCard,
   GameArmyCard,
   ICoreHeroscapeCard,
   OrderMarkers,
@@ -27,69 +26,69 @@ export const grimnakID = 'hs1015'
 // TEST SCENARIO ARMYCARDS
 const theArmies = {
   '0': [deathwalker9000ID, negoksaID],
-  '1': [mimringID, drake1ID, syvarrisID],
+  '1': [mimringID, drake1ID, marroID],
   '2': [zettianID, syvarrisID, airbornID],
-  '3': [raelinOneID, finnID, tarnID],
+  '3': [finnID, tarnID],
   '4': [thorgrimID, izumiID, raelinOneID],
   '5': [grimnakID, carrID, kravMagaID],
 }
-const player0Ids = [deathwalker9000ID, negoksaID]
-const player1Ids = [mimringID, drake1ID, syvarrisID]
-const player2Ids = [zettianID, syvarrisID, airbornID]
-const player3Ids = [raelinOneID, finnID, tarnID]
-const player4Ids = [thorgrimID, izumiID, raelinOneID]
-const player5Ids = [grimnakID, carrID, kravMagaID]
 // TEST SCENARIO ORDERMARKERS
-const p0_0 = `p0_${player0Ids[0]}`
-const p0_1 = `p0_${player0Ids[0]}`
-const p0_2 = `p0_${player0Ids[0]}`
-const p0_X = `p0_${player0Ids[0]}`
+const p0_0 = `p0_${theArmies['0'][0]}`
+const p0_1 = `p0_${theArmies['0'][0]}`
+const p0_2 = `p0_${theArmies['0'][0]}`
+const p0_X = `p0_${theArmies['0'][0]}`
 
-const p1_0 = `p1_${player1Ids[0]}`
-const p1_1 = `p1_${player1Ids[0]}`
-const p1_2 = `p1_${player1Ids[0]}`
-const p1_X = `p1_${player1Ids[0]}`
+const p1_0 = `p1_${theArmies['1'][0]}`
+const p1_1 = `p1_${theArmies['1'][0]}`
+const p1_2 = `p1_${theArmies['1'][0]}`
+const p1_X = `p1_${theArmies['1'][0]}`
 
-const p2_0 = `p2_${player2Ids[0]}`
-const p2_1 = `p2_${player2Ids[1]}`
-const p2_2 = `p2_${player2Ids[1]}`
-const p2_X = `p2_${player2Ids[0]}`
+const p2_0 = `p2_${theArmies['2'][0]}`
+const p2_1 = `p2_${theArmies['2'][1]}`
+const p2_2 = `p2_${theArmies['2'][1]}`
+const p2_X = `p2_${theArmies['2'][0]}`
 
-const p3_0 = `p3_${player3Ids[0]}`
-const p3_1 = `p3_${player3Ids[1]}`
-const p3_2 = `p3_${player3Ids[1]}`
-const p3_X = `p3_${player3Ids[0]}`
+const p3_0 = `p3_${theArmies['3'][0]}`
+const p3_1 = `p3_${theArmies['3'][1]}`
+const p3_2 = `p3_${theArmies['3'][1]}`
+const p3_X = `p3_${theArmies['3'][0]}`
 
-const p4_0 = `p4_${player4Ids[0]}`
-const p4_1 = `p4_${player4Ids[1]}`
-const p4_2 = `p4_${player4Ids[1]}`
-const p4_X = `p4_${player4Ids[0]}`
+const p4_0 = `p4_${theArmies['4'][0]}`
+const p4_1 = `p4_${theArmies['4'][1]}`
+const p4_2 = `p4_${theArmies['4'][1]}`
+const p4_X = `p4_${theArmies['4'][0]}`
 
-const p5_0 = `p5_${player5Ids[0]}`
-const p5_1 = `p5_${player5Ids[1]}`
-const p5_2 = `p5_${player5Ids[1]}`
-const p5_X = `p5_${player5Ids[0]}`
+const p5_0 = `p5_${theArmies['5'][0]}`
+const p5_1 = `p5_${theArmies['5'][1]}`
+const p5_2 = `p5_${theArmies['5'][1]}`
+const p5_X = `p5_${theArmies['5'][0]}`
 
-const armyCardsDevving: { [pid: string]: GameArmyCard[] } = Object.entries(
-  theArmies
-).reduce((acc, [playerID, playerHSCardIDs]) => {
-  const playerArmyCards = playerHSCardIDs
-    .filter((hsCardID) => {
-      return MS1Cards.find((card) => card.armyCardID === hsCardID)
-    })
-    .map((hsCardID) => {
-      return MS1Cards.find((card) => card.armyCardID === hsCardID)
-    })
-  return {
-    ...acc,
-    [playerID]: [
-      ...hsCardsToArmyCards(
-        playerArmyCards as Array<ICoreHeroscapeCard>,
-        playerID
-      ),
-    ].filter((c) => c !== undefined),
-  }
-}, {})
+const theArmiesTurnedIntoGameArmyCards = (
+  numPlayers: number
+): { [pid: string]: GameArmyCard[] } =>
+  Object.entries(theArmies).reduce((acc, [playerID, playerHSCardIDs]) => {
+    // bail early for non-existent players
+    if (parseInt(playerID) >= numPlayers) {
+      return acc
+    }
+
+    const playerArmyCards = playerHSCardIDs
+      .filter((hsCardID) => {
+        return MS1Cards.find((card) => card.armyCardID === hsCardID)
+      })
+      .map((hsCardID) => {
+        return MS1Cards.find((card) => card.armyCardID === hsCardID)
+      })
+    return {
+      ...acc,
+      [playerID]: [
+        ...hsCardsToArmyCards(
+          playerArmyCards as Array<ICoreHeroscapeCard>,
+          playerID
+        ),
+      ].filter((c) => c !== undefined),
+    }
+  }, {})
 function hsCardsToArmyCards(
   params: Array<ICoreHeroscapeCard>,
   playerID: string
@@ -126,8 +125,10 @@ function hsCardsToArmyCards(
 function makeGameCardID(playerID: string, armyCardID: string) {
   return `p${playerID}_${armyCardID}`
 }
-export function armyCardsToGameArmyCardsForTest(): GameArmyCard[] {
-  return Object.values(armyCardsDevving).flat()
+export function armyCardsToGameArmyCardsForTest(
+  numPlayers: number
+): GameArmyCard[] {
+  return Object.values(theArmiesTurnedIntoGameArmyCards(numPlayers)).flat()
 }
 
 export function generatePreplacedOrderMarkers(): OrderMarkers {

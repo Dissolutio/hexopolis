@@ -20,9 +20,9 @@ import {
 } from 'bgio-contexts'
 import { ChatMessage } from 'boardgame.io'
 import { GameState } from 'game/types'
-import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/App'
 import { TabsComponent } from './controls/TabsComponent'
 import { SpecialAttackContextProvider } from './contexts/special-attack-context'
+import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/constants'
 
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
