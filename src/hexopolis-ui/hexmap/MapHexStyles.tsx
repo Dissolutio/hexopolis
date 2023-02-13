@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 type MapHexStylesProps = {
   hexSize: number
+  playerID: string
 }
 
 export const MapHexStyles = styled.div<MapHexStylesProps>`
@@ -76,7 +77,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   // PHASE: PLACEMENT
   // Startzone hexagons: stroke,  stroke-width
   .maphex__startzone--player0 > g polygon {
-    stroke: var(--bee-yellow);
+    stroke: ${(props) => props.theme.playerColors[props.playerID]};
     stroke-width: 0.3;
     // style stroke width a little thicker on mobile so you can see it
     @media screen and (max-width: 1100px) {
