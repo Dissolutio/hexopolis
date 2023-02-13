@@ -444,6 +444,7 @@ export function selectMoveDisengagedUnitIDs({
   unit,
   isFlying,
   startHexID,
+  startTailHexID,
   neighborHexID,
   boardHexes,
   gameUnits,
@@ -452,17 +453,21 @@ export function selectMoveDisengagedUnitIDs({
   unit: GameUnit
   isFlying: boolean
   startHexID: string
+  startTailHexID?: string
   neighborHexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
 }) {
-  const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
   const initialEngagements: string[] = selectEngagementsForHex({
-    hexID: hexForUnit?.id ?? '',
+    hexID: startHexID,
     boardHexes,
     gameUnits,
     armyCards,
+    override: {
+      overrideUnitID: unit.unitID,
+      overrideTailHexID: startTailHexID,
+    },
   })
   const engagementsForCurrentHex = selectEngagementsForHex({
     override: {
@@ -483,6 +488,7 @@ export function selectMoveDisengagedUnitIDs({
 export function selectMoveEngagedUnitIDs({
   unit,
   startHexID,
+  startTailHexID,
   neighborHexID,
   boardHexes,
   gameUnits,
@@ -490,17 +496,21 @@ export function selectMoveEngagedUnitIDs({
 }: {
   unit: GameUnit
   startHexID: string
+  startTailHexID?: string
   neighborHexID: string
   boardHexes: BoardHexes
   gameUnits: GameUnits
   armyCards: GameArmyCard[]
 }) {
-  const hexForUnit = selectHexForUnit(unit.unitID, boardHexes)
   const initialEngagements: string[] = selectEngagementsForHex({
-    hexID: hexForUnit?.id ?? '',
+    hexID: startHexID,
     boardHexes,
     gameUnits,
     armyCards,
+    override: {
+      overrideUnitID: unit.unitID,
+      overrideTailHexID: startTailHexID,
+    },
   })
   const newEngagements = selectEngagementsForHex({
     override: {

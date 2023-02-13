@@ -1,4 +1,4 @@
-import { GameArmyCard, GameState, GameUnits } from '../types'
+import { GameArmyCard, GameState, GameUnits, PlayerStateToggle } from '../types'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
@@ -20,52 +20,66 @@ const isDevOverrideState =
     ? false
     : // toggle this one to test the game with pre-placed units
       true
-const frequentlyChangedDevState = isDevOverrideState
-  ? {
-      placementReady: {
-        '0': true,
-        '1': true,
-      },
-      orderMarkersReady: { '0': true, '1': true },
-      roundOfPlayStartReady: { '0': true, '1': true },
-      players: playersStateWithPrePlacedOMs(),
-      orderMarkers: generatePreplacedOrderMarkers(),
-    }
-  : {
-      placementReady: {
-        '0': false,
-        '1': false,
-      },
-      orderMarkersReady: { '0': false, '1': false },
-      roundOfPlayStartReady: { '0': false, '1': false },
-      orderMarkers: generateBlankOrderMarkers(),
-      players: generateBlankPlayersState(),
-    }
+
+function generateReadyStateForNumPlayers(
+  numPlayers: number,
+  defaultValue: boolean
+): PlayerStateToggle {
+  let rdyState: { [key: string]: boolean } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    rdyState[index] = defaultValue
+  }
+  const result = rdyState
+  return result
+}
+const frequentlyChangedDevState = (numPlayers: number) =>
+  isDevOverrideState
+    ? {
+        placementReady: generateReadyStateForNumPlayers(numPlayers, true),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        roundOfPlayStartReady: generateReadyStateForNumPlayers(
+          numPlayers,
+          true
+        ),
+        players: playersStateWithPrePlacedOMs(numPlayers),
+        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+      }
+    : {
+        placementReady: generateReadyStateForNumPlayers(numPlayers, false),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        roundOfPlayStartReady: generateReadyStateForNumPlayers(
+          numPlayers,
+          false
+        ),
+        orderMarkers: generateBlankOrderMarkers(),
+        players: generateBlankPlayersState(),
+      }
 //!! TEST SCENARIO
-export const gameSetupInitialGameState = makeTestScenario()
-function makeTestScenario(): GameState {
+export const gameSetupInitialGameState = (numPlayers: number) =>
+  makeTestScenario(numPlayers)
+function makeTestScenario(numPlayers: number): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest()
+  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  // const map = makeHexagonShapedMap({
-  //   mapSize: 6,
-  //   withPrePlacedUnits: isDevOverrideState,
-  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-  //   flat: false,
-  // })
-  const map = makeGiantsTableMap({
-    withPrePlacedUnits: true,
-    gameUnits,
+  const map = makeHexagonShapedMap({
+    mapSize: 5,
+    withPrePlacedUnits: isDevOverrideState,
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+    flat: false,
   })
+  // const map = makeGiantsTableMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
   // })
   return {
-    ...frequentlyChangedDevState,
+    ...frequentlyChangedDevState(numPlayers),
     currentRound: 1,
     currentOrderMarker: 0,
     initiative: [],

@@ -5,10 +5,11 @@ import {
   GameUnits,
   MapOptions,
   StartZones,
+  StringKeyedObj,
 } from '../types'
 import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
-import { selectValidTailHexes } from '../selectors'
+import { selectHexNeighbors, selectValidTailHexes } from '../selectors'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -153,26 +154,56 @@ function transformBoardHexesWithPrePlacedUnits(
 }
 
 const transformBoardHexesToHaveStartZones = (
-  map: BoardHexes,
+  boardHexes: BoardHexes,
   mapSize: number
 ): BoardHexes => {
   let result: BoardHexes = {}
-  for (const hexID in map) {
-    if (Object.prototype.hasOwnProperty.call(map, hexID)) {
-      const p1 = map[hexID].s >= Math.max(mapSize - 1, 1) ? '0' : ''
-      const p2 = map[hexID].s <= -1 * Math.max(mapSize - 1, 1) ? '1' : ''
-      const p3 = map[hexID].r >= Math.max(mapSize - 1, 1) ? '2' : ''
-      const p4 = map[hexID].r <= -1 * Math.max(mapSize - 1, 1) ? '3' : ''
-      const p5 = map[hexID].q >= Math.max(mapSize - 1, 1) ? '4' : ''
-      const p6 = map[hexID].q <= -1 * Math.max(mapSize - 1, 1) ? '5' : ''
-
-      result[hexID] = {
-        ...map[hexID],
-        startzonePlayerIDs: [p1, p2, p3, p4, p5, p6].filter((s) => s !== ''),
-      }
-    }
+  const cornersIDs = [
+    `0,-${mapSize},${mapSize}`,
+    `0,${mapSize},-${mapSize}`,
+    `-${mapSize},0,${mapSize}`,
+    `${mapSize},0,-${mapSize}`,
+    `-${mapSize},${mapSize},0`,
+    `${mapSize},-${mapSize},0`,
+  ]
+  const maxSpreadToAvoidOverlapping = Math.floor(mapSize / 2)
+  let startZones: {
+    [key: string]: string[]
+  } = {
+    '0': [`0,-${mapSize},${mapSize}`],
+    '1': [`0,${mapSize},-${mapSize}`],
+    '2': [`-${mapSize},0,${mapSize}`],
+    '3': [`${mapSize},0,-${mapSize}`],
+    '4': [`-${mapSize},${mapSize},0`],
+    '5': [`${mapSize},-${mapSize},0`],
   }
-  return result
+  for (let index = 0; index < maxSpreadToAvoidOverlapping; index++) {
+    Object.entries(startZones).forEach(([playerID, hexIDArr]) => {
+      const newHexes = hexIDArr.flatMap((hexID) => {
+        return selectHexNeighbors(hexID, boardHexes).map((h) => h.id)
+      })
+      startZones[playerID] = [...startZones[playerID], ...newHexes]
+    })
+  }
+  return Object.entries(boardHexes).reduce((acc: BoardHexes, [hexID, hex]) => {
+    const startzonePlayerIDs = Object.entries(startZones).reduce(
+      (acc: string[], [playerID, hexIDs]) => {
+        if (hexIDs.includes(hexID)) {
+          return [...acc, playerID]
+        } else {
+          return acc
+        }
+      },
+      []
+    )
+    return {
+      ...acc,
+      [hexID]: {
+        ...hex,
+        startzonePlayerIDs,
+      },
+    }
+  }, {})
 }
 const getStartZonesFromBoardHexes = (map: BoardHexes): StartZones => {
   let result: StartZones = {}

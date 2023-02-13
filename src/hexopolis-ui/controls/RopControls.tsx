@@ -180,11 +180,12 @@ export const RopControls = () => {
 
 const RopIdleControls = () => {
   const { currentOrderMarker } = useBgioG()
+  const { currentPlayer } = useBgioCtx()
   const { revealedGameCard } = usePlayContext()
   return (
     <>
       <StyledControlsHeaderH2 style={{ color: 'var(--muted-text)' }}>
-        {`Opponent's #${currentOrderMarker + 1} is ${
+        {`${playerIDDisplay(currentPlayer)} order #${currentOrderMarker + 1}: ${
           revealedGameCard?.name ?? '...'
         }`}
       </StyledControlsHeaderH2>

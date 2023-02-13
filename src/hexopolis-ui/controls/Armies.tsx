@@ -64,7 +64,7 @@ const StyledOrderMarkerArmyCardsUl = styled.ul<{ playerID: string }>`
   list-style-type: none;
   margin: 0;
   padding: 5px;
-  color: ${(props) => `var(--player${props.playerID})`};
+  color: ${(props) => `${props.theme.playerColors[props.playerID]}`};
 `
 export const ArmyCard = ({
   card,

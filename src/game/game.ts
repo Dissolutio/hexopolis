@@ -16,7 +16,7 @@ import {
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
-export const MYGAME_NUMPLAYERS = 2
+export const MYGAME_NUMPLAYERS = 6
 
 export const HexedMeadow: Game<GameState> = {
   name: 'HexedMeadow',
@@ -24,7 +24,7 @@ export const HexedMeadow: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    return gameSetupInitialGameState
+    return gameSetupInitialGameState(ctx.ctx.numPlayers)
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
@@ -33,7 +33,7 @@ export const HexedMeadow: Game<GameState> = {
   seed: `${Math.random()}`,
   // The minimum and maximum number of players supported (this is only enforced when using the Lobby server component)
   minPlayers: 2,
-  maxPlayers: 2,
+  maxPlayers: 6,
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
     //PHASE: PLACEMENT
@@ -99,8 +99,9 @@ export const HexedMeadow: Game<GameState> = {
     //PHASE-ROUND OF PLAY -
     [phaseNames.roundOfPlay]: {
       // roll initiative
-      onBegin: ({ G }) => {
-        const initiativeRoll = rollD20Initiative(['0', '1'])
+      onBegin: ({ G, ctx }) => {
+        const playerIDs = Object.keys(G.players)
+        const initiativeRoll = rollD20Initiative(playerIDs)
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,

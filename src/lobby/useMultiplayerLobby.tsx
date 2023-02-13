@@ -169,8 +169,9 @@ export function MultiplayerLobbyProvider({
     }
     try {
       const { matchID } = await createMatch(`${selectedGame}`, {
-        setupData: gameSetupInitialGameState,
-        numPlayers: MYGAME_NUMPLAYERS,
+        // TODO: Match creation options
+        setupData: gameSetupInitialGameState(2),
+        numPlayers: 2,
         unlisted: false,
       })
       if (matchID) {
