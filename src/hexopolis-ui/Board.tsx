@@ -53,8 +53,10 @@ export const Board = ({
   isConnected,
   credentials,
 }: MyGameProps) => {
-  const isLocalOrDemoGame =
-    matchID === specialMatchIdToTellHeaderNavThisMatchIsLocal
+  const isLocalOrDemoGame = matchID.startsWith(
+    specialMatchIdToTellHeaderNavThisMatchIsLocal
+  )
+  const localOrDemoGameNumPlayers = parseInt(matchID.split(':')[1])
   const mapWrapperRef = React.useRef<HTMLDivElement>(null)
   return (
     <>
@@ -86,6 +88,9 @@ export const Board = ({
                               <Layout mapWrapperRef={mapWrapperRef}>
                                 <HeaderNav
                                   isLocalOrDemoGame={isLocalOrDemoGame}
+                                  localOrDemoGameNumPlayers={
+                                    localOrDemoGameNumPlayers
+                                  }
                                 />
                                 <MapDisplay mapWrapperRef={mapWrapperRef} />
                                 <TabsComponent />

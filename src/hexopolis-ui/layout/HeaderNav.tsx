@@ -6,8 +6,10 @@ import { playerIDDisplay } from 'game/transformers'
 
 export const HeaderNav = ({
   isLocalOrDemoGame,
+  localOrDemoGameNumPlayers,
 }: {
   isLocalOrDemoGame: boolean
+  localOrDemoGameNumPlayers: number
 }) => {
   const { playerID } = useBgioClientInfo()
   return (
@@ -15,6 +17,7 @@ export const HeaderNav = ({
       <PlayerTeamLogo
         playerID={playerID}
         isLocalOrDemoGame={isLocalOrDemoGame}
+        localOrDemoGameNumPlayers={localOrDemoGameNumPlayers}
       />
     </StyledNavbar>
   )
@@ -44,16 +47,22 @@ const StyledNavbar = styled.nav`
 const PlayerTeamLogo = ({
   playerID,
   isLocalOrDemoGame,
+  localOrDemoGameNumPlayers,
 }: {
   playerID: string
   isLocalOrDemoGame: boolean
+  localOrDemoGameNumPlayers: number
 }) => {
   if (isLocalOrDemoGame) {
     return (
       // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
       <a
         // this will make it so player 0-4 will link to player 1-5, and player 5 will link to player 0
-        href={`#player${parseInt(playerID) === 5 ? 0 : parseInt(playerID) + 1}`}
+        href={`#player${
+          parseInt(playerID) === localOrDemoGameNumPlayers - 1
+            ? 0
+            : parseInt(playerID) + 1
+        }`}
       >
         <PlayerTeamLogoH1>
           Hexopolis: {playerIDDisplay(playerID)}
