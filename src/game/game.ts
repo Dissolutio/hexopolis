@@ -100,14 +100,14 @@ export const HexedMeadow: Game<GameState> = {
     [phaseNames.roundOfPlay]: {
       // roll initiative
       onBegin: ({ G, ctx }) => {
-        const playerIDs = Object.keys(G.players).filter((id) => id !== '4')
+        const playerIDs = Object.keys(G.players)
         const initiativeRoll = rollD20Initiative(playerIDs)
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,
           initiativeRolls: initiativeRoll.rolls,
         })
-        G.initiative = ['4', ...initiativeRoll.initiative]
+        G.initiative = initiativeRoll.initiative
         G.currentOrderMarker = 0
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },
