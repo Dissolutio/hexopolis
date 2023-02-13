@@ -4,6 +4,8 @@ type UIContextProviderProps = {
   children: React.ReactNode
 }
 
+export const modalStates = { off: 'off', ability: 'ability' }
+
 const UIContext = React.createContext<
   | {
       selectedUnitID: string
