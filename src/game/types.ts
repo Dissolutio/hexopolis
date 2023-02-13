@@ -1,6 +1,7 @@
 export interface GameState {
   initialArmyCards: GameArmyCard[]
   gameArmyCards: GameArmyCard[]
+  killedArmyCards: GameArmyCard[]
   gameUnits: GameUnits
   // killedUnits is updated when units die, and when units are resurrected/cloned
   killedUnits: GameUnits

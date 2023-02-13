@@ -15,15 +15,20 @@ export const killUnit_G = ({
   unitsKilled,
   killedUnits,
   gameUnits,
+  gameArmyCards,
+  killedArmyCards,
   unitToKillID,
   killerUnitID,
   defenderHexID,
   defenderTailHexID,
 }: {
   boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  killedArmyCards: GameArmyCard[]
   unitsKilled: UnitsKilled
   killedUnits: GameUnits
   gameUnits: GameUnits
+
   unitToKillID: string
   killerUnitID: string
   defenderHexID: string
@@ -44,7 +49,19 @@ export const killUnit_G = ({
     boardHexes[defenderTailHexID].occupyingUnitID = ''
     boardHexes[defenderTailHexID].isUnitTail = false
   }
+  // remove the game army card if all units for it are dead
+  const isNoMoreUnitsForCard = !Object.values(gameUnits).find(
+    (u) => u.gameCardID === killedUnits[unitToKillID].gameCardID
+  )
+  if (isNoMoreUnitsForCard) {
+    const indexOfGameArmyCardToRemove = gameArmyCards.findIndex(
+      (c) => c.gameCardID === killedUnits[unitToKillID].gameCardID
+    )
+    killedArmyCards.push(gameArmyCards[indexOfGameArmyCardToRemove])
+    gameArmyCards.splice(indexOfGameArmyCardToRemove, 1)
+  }
 }
+
 export const assignCardMovePointsToUnit_G = ({
   gameArmyCards,
   gameUnits,

@@ -77,6 +77,7 @@ function makeTestScenario(): GameState {
     unitsKilled: {},
     gameLog: [],
     gameArmyCards: armyCards,
+    killedArmyCards: [],
     initialArmyCards: [...armyCards],
     gameUnits,
     killedUnits: {},

@@ -13,6 +13,7 @@ import { GameState, PossibleExplosionAttack, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { encodeGameLogMessage } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
+import { killUnit_G } from './G-mutators'
 
 export const rollForExplosionSpecialAttack: Move<GameState> = (
   { G, events, random },
@@ -127,26 +128,18 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     }
     // kill unit, clear hex
     if (isFatal) {
-      G.unitsKilled = {
-        ...G.unitsKilled,
-        [attackerUnitID]: [
-          ...(G.unitsKilled?.[attackerUnitID] ?? []),
-          defenderGameUnit.unitID,
-        ],
-      }
-      G.killedUnits[defenderGameUnit.unitID] = {
-        ...G.gameUnits[defenderGameUnit.unitID],
-      }
-      delete G.gameUnits[defenderGameUnit.unitID]
-      // remove from hex, and tail if applicable
-      if (defenderHeadHex) {
-        // this should always be true, only needed because of TS
-        G.boardHexes[defenderHeadHex.id].occupyingUnitID = ''
-      }
-      if (defenderGameUnit.is2Hex && defenderTailHex) {
-        G.boardHexes[defenderTailHex.id].occupyingUnitID = ''
-        G.boardHexes[defenderTailHex.id].isUnitTail = false
-      }
+      killUnit_G({
+        boardHexes: G.boardHexes,
+        gameArmyCards: G.gameArmyCards,
+        killedArmyCards: G.killedArmyCards,
+        unitsKilled: G.unitsKilled,
+        killedUnits: G.killedUnits,
+        gameUnits: G.gameUnits,
+        unitToKillID: defenderGameUnit.unitID,
+        killerUnitID: attackerUnitID,
+        defenderHexID: defenderHeadHex?.id,
+        defenderTailHexID: defenderTailHex?.id,
+      })
     }
     // update units attacked
     unitsAttacked[attackerUnitID] = [
