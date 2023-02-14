@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { useUIContext } from 'hexopolis-ui/contexts'
 import { decodeGameLogMessage, gameLogTypes } from 'game/gamelog'
 import { uniqBy } from 'lodash'
+import { playerColors } from 'hexopolis-ui/theme'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
@@ -19,12 +20,33 @@ export const Notifications = () => {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
         const gameLogString = gameLog[i]
         const gameLogMessage = decodeGameLogMessage(gameLogString)
-        const duration =
-          gameLogMessage?.type === gameLogTypes.move ? 5000 : 20000
-        toast(gameLogMessage?.msg ?? '', {
-          duration,
-          id: gameLogMessage?.id,
-        })
+        const type = gameLogMessage?.type
+        const playerID = gameLogMessage?.playerID ?? ''
+        switch (type) {
+          case gameLogTypes.move:
+            toast(
+              <span style={{ color: playerColors[playerID] }}>
+                gameLogMessage?.msg ?? ''
+              </span>,
+              {
+                duration: 5000,
+                id: gameLogMessage?.id,
+              }
+            )
+            break
+          case gameLogTypes.attack:
+            break
+          default:
+            toast(
+              <span style={{ color: playerColors[playerID] }}>
+                gameLogMessage?.msg ?? ''
+              </span>,
+              {
+                duration: 20000,
+                id: gameLogMessage?.id,
+              }
+            )
+        }
       }
     }
     setIndexOfLastShownToast(gameLog.length)

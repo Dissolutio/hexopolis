@@ -13,6 +13,7 @@ export type GameLogMessage = {
   unitName?: string
   targetHexID?: string
   defenderUnitName?: string
+  defenderPlayerID?: string
   attackRolled?: number
   defenseRolled?: number
   skulls?: number
@@ -94,6 +95,7 @@ export const decodeGameLogMessage = (
       unitName,
       targetHexID,
       defenderUnitName,
+      defenderPlayerID,
       attackRolled,
       defenseRolled,
       skulls,
