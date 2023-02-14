@@ -118,6 +118,7 @@ function hsCardsToArmyCards(
       type: hsCard.type,
       cardClass: hsCard.cardClass,
       personality: hsCard.personality,
+      image: hsCard.image,
     }
   })
 }

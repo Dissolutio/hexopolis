@@ -177,9 +177,9 @@ export type ArmyCard = {
   personality: string // valiant, relentless etc
   height: number // 3-14
   heightClass: string // small medium large huge
+  image: string
   // CURRENTLY, THESE ARE OMITTED UNTIL WE USE THEM
   // setWave: string
-  // image: string
   // portraitPattern: string
 }
 export type GameArmyCardsState = {

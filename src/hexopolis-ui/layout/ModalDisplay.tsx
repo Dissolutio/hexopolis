@@ -1,10 +1,15 @@
-import { useUIContext } from 'hexopolis-ui/contexts'
+import { GameArmyCard } from 'game/types'
+import { modalStates, useUIContext } from 'hexopolis-ui/contexts'
+import { OpenAbilityModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
+import { UnitIcon } from 'hexopolis-ui/unit-icons'
 import React from 'react'
 import styled from 'styled-components'
+import { CardGridStyle } from './CardGridStyle'
 type Props = {}
 
 export const ModalDisplay = (props: Props) => {
-  const { modalAbility, closeModal } = useUIContext()
+  const { modalAbility, modalState, modalCard, closeModal, backModal } =
+    useUIContext()
   React.useEffect(() => {
     const keyDownHandler = (event: {
       key: string
@@ -21,21 +26,192 @@ export const ModalDisplay = (props: Props) => {
       document.removeEventListener('keydown', keyDownHandler)
     }
   }, [])
-  return (
-    <>
-      <StyledModalBackdrop onClick={closeModal} />
-      <StyledModalDiv>
-        <button className="close-button" onClick={closeModal}>
-          Close
-        </button>
-        <div className="modal-guts">
-          <h1>{modalAbility.name}</h1>
-          <p>{modalAbility.desc}</p>
-        </div>
-      </StyledModalDiv>
-    </>
-  )
+  if (modalState === modalStates.ability && modalAbility) {
+    return (
+      <>
+        <StyledModalBackdrop onClick={closeModal} />
+        <StyledModalDiv>
+          {modalCard && (
+            <StyledModalNavButton
+              style={{ right: '110px' }}
+              onClick={backModal}
+            >
+              Back
+            </StyledModalNavButton>
+          )}
+          <StyledModalNavButton style={{ right: '20px' }} onClick={closeModal}>
+            Close
+          </StyledModalNavButton>
+          <div className="modal-guts">
+            <h2 style={{ fontSize: '1.4rem' }}>{modalAbility.name}</h2>
+            <p style={{ fontSize: '1rem' }}>{modalAbility.desc}</p>
+          </div>
+        </StyledModalDiv>
+      </>
+    )
+  } else if (modalState === modalStates.card && modalCard) {
+    const {
+      name,
+      image,
+      type,
+      singleName,
+      general,
+      race,
+      cardClass,
+      personality,
+      height,
+      heightClass,
+      life,
+      move,
+      range,
+      attack,
+      defense,
+      points,
+      figures,
+      hexes,
+    } = modalCard
+    return (
+      <>
+        <StyledModalBackdrop onClick={closeModal} />
+        <StyledModalDiv>
+          <StyledModalNavButton style={{ right: '20px' }} onClick={closeModal}>
+            Close
+          </StyledModalNavButton>
+          <div className="modal-guts">
+            <h2 style={{ fontSize: '1.7rem' }}>{modalCard.name}</h2>
+            <CardGridStyle>
+              <div className="cardgrid_portrait">
+                <img
+                  src={`/heroscape-portraits/${image}`}
+                  alt={'Portrait of ' + name}
+                  style={{ textAlign: 'center', height: '100%' }}
+                />
+              </div>
+
+              <div className="cardgrid_points" style={{ fontSize: '0.8rem' }}>
+                <div style={{ textTransform: 'capitalize' }}>{type}</div>
+                <div>
+                  {points}
+                  <span>{` points`}</span>
+                </div>
+                {type.includes('hero') && (
+                  <div>
+                    {life}
+                    <span>{` life`}</span>
+                  </div>
+                )}
+                {type.includes('squad') && (
+                  <div>
+                    <span>
+                      {figures}
+                      <span>{` figures`}</span>
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="cardgrid_stats">
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    maxWidth: '300px',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    <span style={{ textTransform: 'capitalize' }}>{race}</span>
+                    <span style={{ textTransform: 'capitalize' }}>
+                      {cardClass}
+                    </span>
+                    <span style={{ textTransform: 'capitalize' }}>
+                      {personality}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    <span>Move: {move}</span>
+
+                    <span>Range: {range}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    <span>Attack: {attack}</span>
+
+                    <span>Defense: {defense}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    <span>
+                      Height: {height}{' '}
+                      <span style={{ textTransform: 'capitalize' }}>
+                        {heightClass}
+                      </span>
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span style={{ paddingRight: '20px' }}>Icon:</span>
+                    <UnitIcon
+                      hexSize={40}
+                      armyCardID={modalCard.armyCardID}
+                      iconPlayerID={modalCard.playerID}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="cardgrid_abilities">
+                <h4 style={{ borderBottom: '1px solid var(--gray)' }}>
+                  Abilities
+                </h4>
+                {/* <AbilitiesBadges card={card} /> */}
+                {modalCard.abilities.map((ability) => {
+                  return <OpenAbilityModalButton cardAbility={ability} />
+                })}
+              </div>
+              {/* <div className="cardgrid_buttons"> */}
+              {/* <AddRemoveButtonToolbar card={card} /> */}
+              {/* <button>And and remove stuff</button>
+              </div> */}
+            </CardGridStyle>
+          </div>
+        </StyledModalDiv>
+      </>
+    )
+  } else return null
 }
+
 // Thanks Chris Coyier, you're awesome: https://codepen.io/chriscoyier/pen/MeJWoM
 const StyledModalBackdrop = styled.div`
   position: fixed;
@@ -72,17 +248,15 @@ const StyledModalDiv = styled.div`
     height: 100%;
     overflow: auto;
     padding: 20px 0px 20px 20px;
+    background: var(--black);
   }
-  .close-button {
-    position: absolute;
-    top: 10px;
-    /* needs to look OK with or without scrollbar */
-    right: 20px;
-    border: 0;
-    padding: 5px 10px;
-    color: white;
-    background: black;
-    font-size: 1.3rem;
-    z-index: 1;
-  }
+`
+const StyledModalNavButton = styled.button`
+  position: absolute;
+  top: 10px;
+  padding: 5px 10px;
+  color: white;
+  background: black;
+  font-size: 1.1rem;
+  z-index: 1;
 `

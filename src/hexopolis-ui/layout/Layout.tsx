@@ -19,7 +19,7 @@ export const Layout = ({
   const { modalState } = useUIContext()
   return (
     <>
-      {modalState === modalStates.ability && <ModalDisplay />}
+      {modalState !== modalStates.off && <ModalDisplay />}
       <LayoutContainer
         id={`player${playerID}`} // for linking to this player view (useful in local dev, implemented in HeaderNav logo link)
         playerID={playerID}

@@ -4,6 +4,8 @@ import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { omToString, playerIDDisplay } from 'game/transformers'
 import { PlaceOrderMarkersArmyCardUnitIcon } from 'hexopolis-ui/unit-icons'
 import { selectedTileStyle } from 'hexopolis-ui/layout/styles'
+import { OpenCardModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
+import { StyledButtonWrapper } from './ConfirmOrResetButtons'
 
 export const Armies = () => {
   const { gameArmyCards } = useBgioG()
@@ -101,6 +103,9 @@ export const ArmyCard = ({
         playerID={card.playerID}
       />
       <span>{card.name}</span>
+      <StyledButtonWrapper>
+        <OpenCardModalButton card={card} />
+      </StyledButtonWrapper>
       <OMList orderMarkers={orderMarkersOnThisCard} />
     </StyledOrderMarkerArmyCardsLi>
   )
