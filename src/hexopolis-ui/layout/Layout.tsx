@@ -16,11 +16,7 @@ export const Layout = ({
   mapWrapperRef: React.RefObject<HTMLDivElement>
 }) => {
   const { playerID } = useBgioClientInfo()
-  const { isWaitingForPlayersToJoin } = useBgioCtx()
   const { modalState } = useUIContext()
-  if (isWaitingForPlayersToJoin) {
-    return <div>Waiting for all players to join</div>
-  }
   return (
     <>
       {modalState !== modalStates.off && <ModalDisplay />}

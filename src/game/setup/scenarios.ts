@@ -2,7 +2,7 @@ import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { makeGiantsTableMap } from './mapGen'
 import { armyCardsToGameArmyCardsForTest } from './unitGen'
 
-export const scenarnioNames = {
+export const scenarioNames = {
   clashingFrontsAtTableOfTheGiants: 'clashingFrontsAtTableOfTheGiants',
 }
 

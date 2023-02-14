@@ -3,14 +3,11 @@ import styled from 'styled-components'
 
 import { useAuth } from 'hooks'
 import { useMultiplayerLobby } from './useMultiplayerLobby'
-import {
-  Create4PlayerMatchButton,
-  CreateMatchButton,
-} from './CreateMatchButton'
 import { SelectedGameMatchList, MatchListItem } from './SelectedGameMatchList'
 import { GameSelect } from './GameSelect'
 import { Login } from './Login'
 import { LeaveJoinedMatchButton } from './LeaveJoinedMatchButton'
+import { CreateMatchForm } from './CreateMatchForm'
 
 export const MultiplayerLobby = () => {
   const {
@@ -108,9 +105,11 @@ export const MultiplayerLobby = () => {
             </>
           ) : (
             <>
+              <details>
+                <summary>{`Create new match`}</summary>
+                <CreateMatchForm />
+              </details>
               <h2>{`Matches for ${selectedGame} (total: ${numCurrentMatches})`}</h2>
-              <CreateMatchButton />
-              <Create4PlayerMatchButton />
               <SelectedGameMatchList />
             </>
           )}

@@ -92,7 +92,7 @@ export function BgioCtxProvider({
   const isGameover: boolean = Boolean(ctx.gameover)
   const isWaitingForPlayersToJoin: boolean = isLocalOrDemoGame
     ? false
-    : isAllPlayerSlotsFilled
+    : !isAllPlayerSlotsFilled
   return (
     <BgioCtxContext.Provider
       value={{

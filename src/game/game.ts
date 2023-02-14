@@ -15,7 +15,7 @@ import {
   generateBlankPlayersOrderMarkers,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
-import { scenarnioNames } from './setup/scenarios'
+import { scenarioNames } from './setup/scenarios'
 
 const isDevOverrideState =
   process.env.NODE_ENV === 'production'

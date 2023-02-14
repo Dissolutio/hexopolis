@@ -14,7 +14,7 @@ import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
 } from './unitGen'
-import { scenarnioNames } from './scenarios'
+import { scenarioNames } from './scenarios'
 
 function generateReadyStateForNumPlayers(
   numPlayers: number,
@@ -89,7 +89,7 @@ export const gameSetupInitialGameState = ({
   scenarioName?: string
   withPrePlacedUnits?: boolean
 }) => {
-  if (scenarioName === scenarnioNames.clashingFrontsAtTableOfTheGiants) {
+  if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   if (numPlayers === 2) {
@@ -139,7 +139,7 @@ function makeTestScenario(
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
   const map = makeHexagonShapedMap({
-    mapSize: 7,
+    mapSize: 12,
     withPrePlacedUnits,
     gameUnits: transformGameArmyCardsToGameUnits(armyCards),
     flat: false,

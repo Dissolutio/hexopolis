@@ -3,7 +3,7 @@ import { LobbyAPI } from 'boardgame.io'
 
 import { useBgioLobbyApi } from '../bgio-contexts/useBgioLobbyApi'
 import { useAuth } from 'hooks'
-import { scenarnioNames } from 'game/setup/scenarios'
+import { scenarioNames } from 'game/setup/scenarios'
 import { SetupData } from 'game/types'
 
 type MultiplayerLobbyCtxValue = {
@@ -207,7 +207,7 @@ export function MultiplayerLobbyProvider({
         // TODO: Match creation options
         setupData: {
           numPlayers,
-          scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
+          scenarioName: scenarioNames.clashingFrontsAtTableOfTheGiants,
           withPrePlacedUnits: false,
         } as SetupData,
         numPlayers,
