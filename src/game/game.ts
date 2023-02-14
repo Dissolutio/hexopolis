@@ -187,7 +187,7 @@ export const HexedMeadow: Game<GameState> = {
               type: gameLogTypes.noUnitsOnTurn,
               id,
               playerID: ctx.currentPlayer,
-              cardNameWithNoUnits: revealedGameCard?.name ?? '',
+              unitName: revealedGameCard?.name ?? '',
               isNoCard,
               currentOrderMarker: `${G.currentOrderMarker}`,
             })

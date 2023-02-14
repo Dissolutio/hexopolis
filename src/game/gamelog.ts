@@ -6,10 +6,9 @@ export type GameLogMessage = {
   id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
   // for noUnitsOnTurn
   playerID?: string
-  cardNameWithNoUnits?: string
   currentOrderMarker?: string
   isNoCard?: boolean
-  // attack logs below
+  // attack logs below (as much re-used as possible)
   unitID?: string
   unitName?: string
   targetHexID?: string
@@ -45,6 +44,9 @@ export type GameLogMessage = {
   unitChompedName?: string
   unitChompedSingleName?: string
   isChompedUnitSquad?: boolean
+  // place spirits
+  initialValue?: number
+  newValue?: number
 }
 export const gameLogTypes = {
   noUnitsOnTurn: 'noUnitsOnTurn',
@@ -56,6 +58,7 @@ export const gameLogTypes = {
   disengageSwipeMiss: 'disengageSwipeMiss',
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
+  placeAttackSpirit: 'placeAttackSpirit',
   waterClone: 'waterClone',
   chomp: 'chomp',
   mindShackle: 'mindShackle',
@@ -84,10 +87,8 @@ export const decodeGameLogMessage = (
       id,
       // for noUnitsOnTurn
       playerID,
-      cardNameWithNoUnits,
       currentOrderMarker,
       isNoCard,
-      // NO UNITS ON TURN
       // attack logs below
       unitID,
       unitName,
@@ -123,6 +124,9 @@ export const decodeGameLogMessage = (
       unitChompedName,
       unitChompedSingleName,
       isChompedUnitSquad,
+      // placeAttackSpirit
+      initialValue,
+      newValue,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -162,6 +166,14 @@ export const decodeGameLogMessage = (
           id,
           msg: roundBeginMsgText,
         }
+      case gameLogTypes.placeAttackSpirit:
+        return {
+          type,
+          id,
+          msg: `${playerIDDisplay(
+            playerID
+          )} has placed Finn's Attack Spirit on ${unitName}, raising their attack from ${initialValue} to ${newValue}!`,
+        }
       case gameLogTypes.waterClone:
         const isWaterCloneSuccessful = cloneCount > 0
         const waterCloneSuccessMsg = `${unitName} have cloned ${cloneCount} more ${unitName}! (rolled ${rollsAndThreshholds
@@ -194,7 +206,7 @@ export const decodeGameLogMessage = (
             )} has no army card for order #${omToString(currentOrderMarker)}`
           : `${playerIDDisplay(
               playerID
-            )} has no units left for ${cardNameWithNoUnits}, and skips their turn for order #${omToString(
+            )} has no units left for ${unitName}, and skips their turn for order #${omToString(
               currentOrderMarker
             )}`
         return {

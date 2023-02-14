@@ -1,4 +1,5 @@
 import type { Move } from 'boardgame.io'
+import { encodeGameLogMessage } from 'game/gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { GameState } from '../types'
 
@@ -16,7 +17,21 @@ export const placeAttackSpirit: Move<GameState> = (
       'Placing attack spirit denied: gameCardID chosen not found in gameArmyCards'
     )
   }
+  const initialAttack = G.gameArmyCards[indexToUpdate].attack
+  const newAttack = initialAttack + 1
+  const cardToPlaceSpiritOn = G.gameArmyCards[indexToUpdate]
+  const unitName = cardToPlaceSpiritOn.name
   G.gameArmyCards[indexToUpdate].attack++
+  const id = `r${G.currentRound}:om${G.currentOrderMarker}:finnspirit:${gameCardID}`
+  const gamelog = encodeGameLogMessage({
+    type: 'placeAttackSpirit',
+    id,
+    playerID: cardToPlaceSpiritOn.playerID,
+    unitName,
+    initialValue: initialAttack,
+    newValue: newAttack,
+  })
+  G.gameLog = [...G.gameLog, gamelog]
   // Next stage
   const nextStage = newStageQueue.shift()
   G.stageQueue = newStageQueue
@@ -47,9 +62,9 @@ export const placeAttackSpirit: Move<GameState> = (
   }
   // Disabling this for now, because it's causing a bug where the no-units-end-turn is being unnecessarily triggered
   // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
-  // else {
-  //   events.endTurn()
-  // }
+  else {
+    events.endTurn()
+  }
 }
 export const placeArmorSpirit: Move<GameState> = (
   { G, events },
