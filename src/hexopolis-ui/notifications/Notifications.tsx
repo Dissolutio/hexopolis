@@ -85,28 +85,65 @@ export const Notifications = () => {
             break
           case gameLogTypes.attack:
             const isCounterStrike = counterStrikeWounds ?? 0 > 0
-            const counterStrikeMsg = isFatalCounterStrike
-              ? `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was defeated by counter strike!`
-              : `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was hit by counter strike for ${counterStrikeWounds} wounds!`
-            const stealthDodgeMsgText = `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields), but the attack was evaded with Stealth Dodge!`
+            const counterStrikeMsg = isFatalCounterStrike ? (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} attacked{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>{' '}
+                ({skulls}/{attackRolled} skulls, {shields}/{defenseRolled}{' '}
+                shields) and was defeated by counter strike!
+              </span>
+            ) : (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} attacked{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>{' '}
+                ({skulls}/{attackRolled} skulls, {shields}/{defenseRolled}{' '}
+                shields) and was hit by counter strike for {counterStrikeWounds}{' '}
+                wounds!
+              </span>
+            )
+            const stealthDodgeMsgText = (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} attacked{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>{' '}
+                ({skulls}/{attackRolled} skulls, {shields}/{defenseRolled}{' '}
+                shields), but the attack was evaded with Stealth Dodge!
+              </span>
+            )
 
-            const attackMsgText = isFatal
-              ? `${unitName} destroyed ${defenderUnitName} with a ${wounds}-wound attack (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
-              : `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
+            const attackMsgText = isFatal ? (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} destroyed{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>{' '}
+                with a {wounds}-wound attack ({skulls}/{attackRolled} skulls,{' '}
+                {shields}/{defenseRolled} shields)
+              </span>
+            ) : (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} attacked{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>{' '}
+                for {wounds} wounds ({skulls}/{attackRolled} skulls, {shields}/
+                {defenseRolled} shields)
+              </span>
+            )
             const attackToast = isCounterStrike
               ? counterStrikeMsg
               : isStealthDodge
               ? stealthDodgeMsgText
               : attackMsgText
-            toast(
-              <span style={{ color: playerColors[playerID] }}>
-                {attackToast}
-              </span>,
-              {
-                duration: 5000,
-                id: gameLogMessage?.id,
-              }
-            )
+            toast(attackToast, {
+              duration: 20000,
+              id: gameLogMessage?.id,
+            })
             break
           default:
             toast(
