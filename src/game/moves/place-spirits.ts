@@ -21,7 +21,6 @@ export const placeAttackSpirit: Move<GameState> = (
   const newAttack = initialAttack + 1
   const cardToPlaceSpiritOn = G.gameArmyCards[indexToUpdate]
   const unitName = cardToPlaceSpiritOn.name
-  G.gameArmyCards[indexToUpdate].attack++
   const id = `r${G.currentRound}:om${G.currentOrderMarker}:finnspirit:${gameCardID}`
   const gamelog = encodeGameLogMessage({
     type: 'placeAttackSpirit',
@@ -32,6 +31,8 @@ export const placeAttackSpirit: Move<GameState> = (
     newValue: newAttack,
   })
   G.gameLog = [...G.gameLog, gamelog]
+  // Apply attack spirit to chosen card
+  G.gameArmyCards[indexToUpdate].attack++
   // Next stage
   const nextStage = newStageQueue.shift()
   G.stageQueue = newStageQueue
@@ -60,8 +61,7 @@ export const placeAttackSpirit: Move<GameState> = (
       value: { [nextStage?.playerID]: stageNames.movement },
     })
   }
-  // Disabling this for now, because it's causing a bug where the no-units-end-turn is being unnecessarily triggered
-  // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
+  // we died from disengagement
   else {
     events.endTurn()
   }
@@ -80,6 +80,20 @@ export const placeArmorSpirit: Move<GameState> = (
       'Placing armor spirit denied: gameCardID chosen not found in gameArmyCards'
     )
   }
+  const initialDefense = G.gameArmyCards[indexToUpdate].defense
+  const newDefense = initialDefense + 1
+  const cardToPlaceSpiritOn = G.gameArmyCards[indexToUpdate]
+  const unitName = cardToPlaceSpiritOn.name
+  const id = `r${G.currentRound}:om${G.currentOrderMarker}:thorgrimspirit:${gameCardID}`
+  const gamelog = encodeGameLogMessage({
+    type: 'placeArmorSpirit',
+    id,
+    playerID: cardToPlaceSpiritOn.playerID,
+    unitName,
+    initialValue: initialDefense,
+    newValue: newDefense,
+  })
+  G.gameLog = [...G.gameLog, gamelog]
   // Apply armor spirit to chosen card
   G.gameArmyCards[indexToUpdate].defense++
 
@@ -109,7 +123,7 @@ export const placeArmorSpirit: Move<GameState> = (
   } else if (nextStage?.stage === stageNames.movement) {
     events.setActivePlayers({ currentPlayer: stageNames.movement })
   }
-  // Either we died from disengagement, or we died in fire line attack (because normal attack reverts back to attacker)
+  // we died from disengagement
   else {
     events.endTurn()
   }

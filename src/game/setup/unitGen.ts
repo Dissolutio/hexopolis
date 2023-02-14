@@ -30,7 +30,7 @@ const theArmies = {
     // airbornID, tarnID, deathwalker9000ID,
     negoksaID,
   ],
-  '1': [finnID, marroID, grimnakID, mimringID],
+  '1': [thorgrimID, marroID, grimnakID, mimringID],
   '2': [zettianID, syvarrisID],
   '3': [finnID, tarnID],
   '4': [thorgrimID, izumiID, raelinOneID],
