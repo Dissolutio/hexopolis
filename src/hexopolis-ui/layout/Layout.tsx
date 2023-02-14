@@ -1,7 +1,9 @@
 import { useBgioClientInfo } from 'bgio-contexts'
+import { modalStates, useUIContext } from 'hexopolis-ui/contexts'
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import { LayoutContainer } from './LayoutContainerBrokenLint'
+import { ModalDisplay } from './ModalDisplay'
 
 // This component is where a player's theme is set to their player color
 // ? perhaps this could be move into theme.js, but the playerID will still be dynamic....
@@ -14,8 +16,10 @@ export const Layout = ({
   mapWrapperRef: React.RefObject<HTMLDivElement>
 }) => {
   const { playerID } = useBgioClientInfo()
+  const { modalState } = useUIContext()
   return (
     <>
+      {modalState === modalStates.ability && <ModalDisplay />}
       <LayoutContainer
         id={`player${playerID}`} // for linking to this player view (useful in local dev, implemented in HeaderNav logo link)
         playerID={playerID}

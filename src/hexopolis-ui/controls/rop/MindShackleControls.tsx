@@ -5,10 +5,10 @@ import {
 } from 'hexopolis-ui/layout/Typography'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
-import { AbilityReadout } from './FireLineSAControls'
 import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
+import { OpenAbilityModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
 
 export const MindShackleControls = () => {
   const {
@@ -17,7 +17,8 @@ export const MindShackleControls = () => {
   const { events } = useBgioEvents()
   const { mindShacklesAttempted } = useBgioG()
   const alreadyAttempted = mindShacklesAttempted.length > 0
-  const { revealedGameCard: mindShacklerCard } = usePlayContext()
+  const { revealedGameCard } = usePlayContext()
+  const ability = revealedGameCard?.abilities[0]
   const {
     selectSpecialAttack,
     chosenMindShackle,
@@ -46,8 +47,10 @@ export const MindShackleControls = () => {
         <StyledButtonWrapper>
           <GreenButton onClick={goBackToAttack}>Go back to attack</GreenButton>
         </StyledButtonWrapper>
-        {mindShacklerCard?.abilities?.[0] && (
-          <AbilityReadout cardAbility={mindShacklerCard.abilities[0]} />
+        {ability && (
+          <StyledButtonWrapper>
+            <OpenAbilityModalButton cardAbility={ability} />
+          </StyledButtonWrapper>
         )}
       </>
     )
@@ -61,8 +64,10 @@ export const MindShackleControls = () => {
           {`Your mind is mine, ${targetName}! (confirm selected target)`}
         </RedButton>
       </StyledButtonWrapper>
-      {mindShacklerCard?.abilities?.[0] && (
-        <AbilityReadout cardAbility={mindShacklerCard.abilities[0]} />
+      {ability && (
+        <StyledButtonWrapper>
+          <OpenAbilityModalButton cardAbility={ability} />
+        </StyledButtonWrapper>
       )}
     </>
   )

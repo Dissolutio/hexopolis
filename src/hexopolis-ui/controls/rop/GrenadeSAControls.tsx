@@ -8,9 +8,9 @@ import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
-import { AbilityReadout } from './FireLineSAControls'
 import { selectGameCardByID, selectUnitForHex } from 'game/selectors'
-import { noop, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
+import { OpenAbilityModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
 
 export const GrenadeSAControls = () => {
   const {
@@ -18,7 +18,8 @@ export const GrenadeSAControls = () => {
   } = useBgioMoves()
   const { events } = useBgioEvents()
   const { boardHexes, gameUnits, gameArmyCards, unitsAttacked } = useBgioG()
-  const { revealedGameCard: attackersCard } = usePlayContext()
+  const { revealedGameCard } = usePlayContext()
+  const ability = revealedGameCard?.abilities[0]
   const { selectedUnit, revealedGameCardUnitIDs } = usePlayContext()
   const {
     selectSpecialAttack,
@@ -67,7 +68,7 @@ export const GrenadeSAControls = () => {
     rollForExplosionSpecialAttack({
       attackerUnitID: selectedUnit.unitID,
       chosenExplosionAttack,
-      grenadeThrowingGameCardID: attackersCard?.gameCardID ?? '',
+      grenadeThrowingGameCardID: revealedGameCard?.gameCardID ?? '',
       isStillAttacksLeft: attacksUsed + 1 < unitsAliveCount,
     })
   }
@@ -108,8 +109,10 @@ export const GrenadeSAControls = () => {
           Grenade out! (confirm selected target)
         </RedButton>
       </StyledButtonWrapper>
-      {attackersCard?.abilities?.[0] && (
-        <AbilityReadout cardAbility={attackersCard.abilities[0]} />
+      {ability && (
+        <StyledButtonWrapper>
+          <OpenAbilityModalButton cardAbility={ability} />
+        </StyledButtonWrapper>
       )}
     </>
   )

@@ -64,20 +64,20 @@ function makeTestScenario(numPlayers: number): GameState {
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  const map = makeHexagonShapedMap({
-    mapSize: 5,
-    withPrePlacedUnits: isDevOverrideState,
-    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-    flat: false,
-  })
+  // const map = makeHexagonShapedMap({
+  //   mapSize: 3,
+  //   withPrePlacedUnits: isDevOverrideState,
+  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+  //   flat: false,
+  // })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
   // })
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
-  // })
+  const map = makeDevHexagonMap({
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
   return {
     ...frequentlyChangedDevState(numPlayers),
     currentRound: 1,
