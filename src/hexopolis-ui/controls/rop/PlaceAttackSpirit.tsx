@@ -19,7 +19,7 @@ import { finnID } from 'game/setup/unitGen'
 import { Army } from '../Armies'
 
 export const PlaceAttackSpiritControls = () => {
-  const { myAliveCards, gameArmyCards } = useBgioG()
+  const { myAliveCards, gameArmyCards, killedArmyCards } = useBgioG()
   const {
     moves: { placeAttackSpirit },
   } = useBgioMoves()
@@ -27,7 +27,9 @@ export const PlaceAttackSpiritControls = () => {
   const myAliveUniqueCards = myAliveCards?.filter((c) =>
     startsWith(c.type, 'unique')
   )
-  const finnsCard = gameArmyCards?.find((c) => c.armyCardID === finnID)
+  const finnsCard = [...gameArmyCards, ...killedArmyCards]?.find(
+    (c) => c.armyCardID === finnID
+  )
   const [receiverGameCardID, setReceiverGameCardID] = useState<string>('')
   const receiverGameCard = gameArmyCards?.find(
     (gc) => gc.gameCardID === receiverGameCardID
