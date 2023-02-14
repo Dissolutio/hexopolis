@@ -48,6 +48,7 @@ export const WaterCloneControls = () => {
   const doWaterClone = () => {
     rollForWaterClone({
       unitsCloning,
+      unitName: revealedGameCard?.name ?? '',
     })
   }
   const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
@@ -61,6 +62,7 @@ export const WaterCloneControls = () => {
     const isOnWater = boardHexes[uc.clonerHexID].terrain === 'water'
     return isOnWater ? 10 : 15
   })
+  const isCloneSuccess = (waterCloneRoll?.cloneCount ?? 0) > 0
 
   /* RENDER
     0. You have no dead units to clone
@@ -85,7 +87,7 @@ export const WaterCloneControls = () => {
       </>
     )
   }
-  // 1. You rolled some clones, place them
+  // 1. You rolled some clones, place them (or you rolled none, move on)
   if (waterCloneRoll) {
     return (
       <>
@@ -97,12 +99,16 @@ export const WaterCloneControls = () => {
         <StyledControlsP>{`You needed to roll: ${threshholds.join(
           ', '
         )}`}</StyledControlsP>
-        <StyledControlsP>{`${clonesLeftToPlaceCount} clones remaining to be placed`}</StyledControlsP>
+        {isCloneSuccess && (
+          <StyledControlsP>{`${clonesLeftToPlaceCount} clones remaining to be placed`}</StyledControlsP>
+        )}
         <UndoRedoButtons />
         {clonesLeftToPlaceCount < 1 && (
           <StyledButtonWrapper>
             <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>
-              OK, all clones placed, end my turn
+              {isCloneSuccess
+                ? `OK, all clones placed, end my turn`
+                : `Perhaps they need more moisture, end my turn`}
             </GreenButton>
           </StyledButtonWrapper>
         )}

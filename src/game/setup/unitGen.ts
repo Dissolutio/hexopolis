@@ -25,8 +25,8 @@ export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 const theArmies = {
-  '0': [tarnID, airbornID, deathwalker9000ID, negoksaID],
-  '1': [grimnakID, marroID, mimringID],
+  '0': [airbornID, tarnID, deathwalker9000ID, negoksaID],
+  '1': [marroID, grimnakID, mimringID],
   '2': [zettianID, syvarrisID],
   '3': [finnID, tarnID, drake1ID],
   '4': [thorgrimID, izumiID, raelinOneID],

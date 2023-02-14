@@ -34,6 +34,9 @@ export type GameLogMessage = {
   endHexID?: string
   // disengage attempts below
   unitIdsToAttemptToDisengage?: string[]
+  // water clone logs
+  cloneCount?: number
+  rollsAndThreshholds?: number[][]
   // berserker charge logs, going to try and make a generalized roll log
   roll?: number
   isRollSuccessful?: boolean
@@ -56,6 +59,7 @@ export const gameLogTypes = {
   disengageSwipeMiss: 'disengageSwipeMiss',
   disengageSwipeFatal: 'disengageSwipeFatal',
   disengageSwipeNonFatal: 'disengageSwipeNonFatal',
+  waterClone: 'waterClone',
   chomp: 'chomp',
   mindShackle: 'mindShackle',
   berserkerCharge: 'berserkerCharge',
@@ -99,6 +103,9 @@ export const decodeGameLogMessage = (
       startHexID,
       endHexID,
       unitIdsToAttemptToDisengage,
+      // water clone
+      rollsAndThreshholds,
+      cloneCount,
       // CHOMP
       isChompSuccessful,
       chompRoll,
@@ -153,6 +160,21 @@ export const decodeGameLogMessage = (
           type,
           id,
           msg: roundBeginMsgText,
+        }
+      case gameLogTypes.waterClone:
+        const isWaterCloneSuccessful = cloneCount > 0
+        const waterCloneSuccessMsg = `${unitName} have cloned ${cloneCount} more ${unitName}! (rolled ${rollsAndThreshholds
+          .map((rat: number[][]) => rat.join('/'))
+          .join(', ')})`
+        const waterCloneFailureMsg = `${unitName} have failed their WaterClone roll (rolled ${rollsAndThreshholds
+          .map((rat: number[][]) => rat.join('/'))
+          .join(', ')})`
+        return {
+          type,
+          id,
+          msg: isWaterCloneSuccessful
+            ? waterCloneSuccessMsg
+            : waterCloneFailureMsg,
         }
       case gameLogTypes.berserkerCharge:
         const msgBerserkerChargeSuccess = `${unitName} move again with Berserker Charge! (rolled ${roll}/${rollThreshold})`
