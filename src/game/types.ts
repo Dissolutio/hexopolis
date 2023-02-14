@@ -1,5 +1,4 @@
 export interface GameState {
-  initialArmyCards: GameArmyCard[]
   gameArmyCards: GameArmyCard[]
   killedArmyCards: GameArmyCard[]
   gameUnits: GameUnits
@@ -55,6 +54,11 @@ export interface GameState {
   berserkerChargeSuccessCount: number
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
+}
+export type SetupData = {
+  numPlayers: number
+  scenarioName: string
+  withPrePlacedUnits: boolean
 }
 export type StageQueueItem = {
   stage: string

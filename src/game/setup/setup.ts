@@ -14,12 +14,7 @@ import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
 } from './unitGen'
-
-const isDevOverrideState =
-  process.env.NODE_ENV === 'production'
-    ? false
-    : // toggle this one to test the game with pre-placed units
-      true
+import { scenarnioNames } from './scenarios'
 
 function generateReadyStateForNumPlayers(
   numPlayers: number,
@@ -32,7 +27,35 @@ function generateReadyStateForNumPlayers(
   const result = rdyState
   return result
 }
-const frequentlyChangedDevState = (numPlayers: number) =>
+const someInitialGameState = {
+  currentRound: 1,
+  currentOrderMarker: 0,
+  initiative: [],
+  unitsMoved: [],
+  disengagesAttempting: undefined,
+  disengagedUnitIds: [],
+  unitsAttacked: {},
+  isCurrentPlayerAttacking: false,
+  unitsKilled: {},
+  gameLog: [],
+  killedArmyCards: [],
+  // gameUnits,
+  killedUnits: {},
+  // hexMap: map.hexMap,
+  // boardHexes: map.boardHexes,
+  // startZones: map.startZones,
+  waterClonesPlaced: [],
+  grenadesThrown: [],
+  chompsAttempted: [],
+  mindShacklesAttempted: [],
+  berserkerChargeRoll: undefined,
+  berserkerChargeSuccessCount: 0,
+  stageQueue: [],
+}
+const frequentlyChangedDevState = (
+  numPlayers: number,
+  isDevOverrideState?: boolean
+) =>
   isDevOverrideState
     ? {
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
@@ -43,6 +66,7 @@ const frequentlyChangedDevState = (numPlayers: number) =>
         ),
         players: playersStateWithPrePlacedOMs(numPlayers),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        ...someInitialGameState,
       }
     : {
         placementReady: generateReadyStateForNumPlayers(numPlayers, false),
@@ -53,11 +77,42 @@ const frequentlyChangedDevState = (numPlayers: number) =>
         ),
         orderMarkers: generateBlankOrderMarkers(),
         players: generateBlankPlayersState(),
+        ...someInitialGameState,
       }
 //!! TEST SCENARIO
-export const gameSetupInitialGameState = (numPlayers: number) =>
-  makeTestScenario(numPlayers)
-function makeTestScenario(numPlayers: number): GameState {
+export const gameSetupInitialGameState = ({
+  numPlayers,
+  scenarioName,
+  withPrePlacedUnits,
+}: {
+  numPlayers: number
+  scenarioName?: string
+  withPrePlacedUnits?: boolean
+}) => {
+  if (scenarioName === scenarnioNames.clashingFrontsAtTableOfTheGiants) {
+    return makeTestScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (numPlayers === 2) {
+    return makeTestScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (numPlayers === 3) {
+    return makeTestScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (numPlayers === 4) {
+    return makeTestScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (numPlayers === 5) {
+    return makeTestScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (numPlayers === 6) {
+    return makeTestScenario(numPlayers, withPrePlacedUnits)
+  }
+  return makeTestScenario(numPlayers, withPrePlacedUnits)
+}
+function makeTestScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
   // ArmyCards to GameArmyCards
   // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
@@ -79,31 +134,11 @@ function makeTestScenario(numPlayers: number): GameState {
     gameUnits,
   })
   return {
-    ...frequentlyChangedDevState(numPlayers),
-    currentRound: 1,
-    currentOrderMarker: 0,
-    initiative: [],
-    unitsMoved: [],
-    disengagesAttempting: undefined,
-    disengagedUnitIds: [],
-    unitsAttacked: {},
-    isCurrentPlayerAttacking: false,
-    unitsKilled: {},
-    gameLog: [],
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
-    killedArmyCards: [],
-    initialArmyCards: [...armyCards],
     gameUnits,
-    killedUnits: {},
     hexMap: map.hexMap,
     boardHexes: map.boardHexes,
     startZones: map.startZones,
-    waterClonesPlaced: [],
-    grenadesThrown: [],
-    chompsAttempted: [],
-    mindShacklesAttempted: [],
-    berserkerChargeRoll: undefined,
-    berserkerChargeSuccessCount: 0,
-    stageQueue: [],
   }
 }

@@ -53,7 +53,7 @@ export const Board = ({
   isConnected,
   credentials,
 }: MyGameProps) => {
-  const isLocalOrDemoGame = matchID.startsWith(
+  const isLocalOrDemoGame = matchID.includes(
     specialMatchIdToTellHeaderNavThisMatchIsLocal
   )
   const localOrDemoGameNumPlayers = parseInt(matchID.split(':')[1])

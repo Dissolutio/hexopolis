@@ -10,7 +10,7 @@ import { MultiplayerNav } from './MultiplayerNav'
 import { Hexoscape } from 'game/game'
 import { isLocalApp, SERVER } from './constants'
 import { Board } from 'hexopolis-ui/Board'
-import { LocalApp, LocalDemoClients } from './LocalApp'
+import { DemoLocalGameLinks, LocalApp, LocalDemoClients } from './LocalApp'
 
 const MultiplayerGameClient = Client({
   game: Hexoscape,
@@ -42,21 +42,42 @@ export const App = () => {
                 }
               />
               <Route
-                path="/demo"
-                element={
-                  <>
-                    <MultiplayerNav />
-                    <LocalDemoClients numPlayers={2} />
-                  </>
-                }
-              />
-              <Route
                 path="/play"
                 element={
                   <>
                     <PlayPage />
                   </>
                 }
+              />
+              <Route
+                path="/demo"
+                element={
+                  <>
+                    <MultiplayerNav />
+                    <DemoLocalGameLinks />
+                  </>
+                }
+              />
+              {/* Copied from Local App, because Routes can't handle a non-Route child */}
+              <Route
+                path="/local2"
+                element={<LocalDemoClients numPlayers={2} />}
+              />
+              <Route
+                path="/local3"
+                element={<LocalDemoClients numPlayers={3} />}
+              />
+              <Route
+                path="/local4"
+                element={<LocalDemoClients numPlayers={4} />}
+              />
+              <Route
+                path="/local5"
+                element={<LocalDemoClients numPlayers={5} />}
+              />
+              <Route
+                path="/local6"
+                element={<LocalDemoClients numPlayers={6} />}
               />
             </Routes>
           </MultiplayerLobbyProvider>

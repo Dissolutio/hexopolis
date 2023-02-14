@@ -15,8 +15,13 @@ import {
   generateBlankPlayersOrderMarkers,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
+import { scenarnioNames } from './setup/scenarios'
 
-export const MYGAME_NUMPLAYERS = 6
+const isDevOverrideState =
+  process.env.NODE_ENV === 'production'
+    ? false
+    : // toggle this one to test the game with pre-placed units
+      true
 
 export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
@@ -24,7 +29,13 @@ export const Hexoscape: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API.
   setup: (ctx, setupData) => {
-    return gameSetupInitialGameState(ctx.ctx.numPlayers)
+    const numPlayers = setupData?.numPlayers || ctx.ctx.numPlayers
+    console.log('🚀 ~ file: game.ts:35 ~ numPlayers', numPlayers)
+    return gameSetupInitialGameState({
+      numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
+      scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
+      withPrePlacedUnits: isDevOverrideState,
+    })
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',

@@ -28,15 +28,35 @@ const theArmies = {
   '0': [
     grimnakID,
     // drake1ID,
-    airbornID,
-    tarnID,
-    negoksaID,
+    // airbornID,
+    // tarnID,
+    // negoksaID,
   ],
-  '1': [negoksaID, thorgrimID, marroID, grimnakID],
-  '2': [negoksaID, zettianID, syvarrisID],
-  '3': [finnID, tarnID],
-  '4': [thorgrimID, izumiID, raelinOneID],
-  '5': [grimnakID, carrID, kravMagaID],
+  '1': [
+    negoksaID,
+    //  thorgrimID,
+    //   grimnakID,
+  ],
+  '2': [
+    negoksaID,
+    //  zettianID,
+    //   syvarrisID,
+  ],
+  '3': [
+    // finnID,
+    tarnID,
+  ],
+  '4': [
+    thorgrimID,
+    //  izumiID,
+    raelinOneID,
+  ],
+  '5': [
+    grimnakID,
+    // carrID,
+    //  kravMagaID,
+    marroID,
+  ],
 }
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${theArmies['0'][0]}`

@@ -3,8 +3,8 @@ import { LobbyAPI } from 'boardgame.io'
 
 import { useBgioLobbyApi } from '../bgio-contexts/useBgioLobbyApi'
 import { useAuth } from 'hooks'
-import { MYGAME_NUMPLAYERS } from 'game/game'
-import { gameSetupInitialGameState } from 'game/setup/setup'
+import { scenarnioNames } from 'game/setup/scenarios'
+import { SetupData } from 'game/types'
 
 type MultiplayerLobbyCtxValue = {
   // lobby state
@@ -168,10 +168,15 @@ export function MultiplayerLobbyProvider({
       return
     }
     try {
+      const numPlayers = 4
       const { matchID } = await createMatch(`${selectedGame}`, {
         // TODO: Match creation options
-        setupData: gameSetupInitialGameState(2),
-        numPlayers: 2,
+        setupData: {
+          numPlayers: 4,
+          scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
+          withPrePlacedUnits: false,
+        } as SetupData,
+        numPlayers: 4,
         unlisted: false,
       })
       if (matchID) {

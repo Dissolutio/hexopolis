@@ -24,23 +24,7 @@ export const LocalApp = () => {
           element={
             <>
               <h1>Choose a game:</h1>
-              <ul>
-                <li>
-                  <Link to="/local2">2-Player Game</Link>
-                </li>
-                <li>
-                  <Link to="/local3">3-Player Game</Link>
-                </li>
-                <li>
-                  <Link to="/local4">4-Player Game</Link>
-                </li>
-                <li>
-                  <Link to="/local5">5-Player Game</Link>
-                </li>
-                <li>
-                  <Link to="/local6">6-Player Game</Link>
-                </li>
-              </ul>
+              <DemoLocalGameLinks />
             </>
           }
         />
@@ -53,6 +37,38 @@ export const LocalApp = () => {
     </>
   )
 }
+export const DemoLocalGameLinks = () => (
+  <>
+    <ul>
+      <li>
+        <Link reloadDocument to="/local2">
+          2-Player Game
+        </Link>
+      </li>
+      <li>
+        <Link reloadDocument to="/local3">
+          3-Player Game
+        </Link>
+      </li>
+      <li>
+        <Link reloadDocument to="/local4">
+          4-Player Game
+        </Link>
+      </li>
+      <li>
+        <Link reloadDocument to="/local5">
+          5-Player Game
+        </Link>
+      </li>
+      <li>
+        <Link reloadDocument to="/local6">
+          6-Player Game
+        </Link>
+      </li>
+    </ul>
+  </>
+)
+
 const Local2PlayerClient = Client({
   game: Hexoscape,
   board: Board,
@@ -99,109 +115,50 @@ const Local6PlayerClient = Client({
   debug: false,
 })
 export const LocalDemoClients = ({ numPlayers }: { numPlayers: number }) => {
+  const matchID = `${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${numPlayers}`
   if (numPlayers === 2)
     return (
       <>
-        <Local2PlayerClient
-          playerID={'0'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${2}`}
-        />
-        <Local2PlayerClient
-          playerID={'1'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${2}`}
-        />
+        <Local2PlayerClient playerID={'0'} matchID={matchID} />
+        <Local2PlayerClient playerID={'1'} matchID={matchID} />
       </>
     )
   if (numPlayers === 3)
     return (
       <>
-        <Local3PlayerClient
-          playerID={'0'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${3}`}
-        />
-        <Local3PlayerClient
-          playerID={'1'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${3}`}
-        />
-        <Local3PlayerClient
-          playerID={'2'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${3}`}
-        />
+        <Local3PlayerClient playerID={'0'} matchID={matchID} />
+        <Local3PlayerClient playerID={'1'} matchID={matchID} />
+        <Local3PlayerClient playerID={'2'} matchID={matchID} />
       </>
     )
   if (numPlayers === 4)
     return (
       <>
-        <Local4PlayerClient
-          playerID={'0'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${4}`}
-        />
-        <Local4PlayerClient
-          playerID={'1'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${4}`}
-        />
-        <Local4PlayerClient
-          playerID={'2'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${4}`}
-        />
-        <Local4PlayerClient
-          playerID={'3'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${4}`}
-        />
+        <Local4PlayerClient playerID={'0'} matchID={matchID} />
+        <Local4PlayerClient playerID={'1'} matchID={matchID} />
+        <Local4PlayerClient playerID={'2'} matchID={matchID} />
+        <Local4PlayerClient playerID={'3'} matchID={matchID} />
       </>
     )
   if (numPlayers === 5)
     return (
       <>
-        <Local5PlayerClient
-          playerID={'0'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${5}`}
-        />
-        <Local5PlayerClient
-          playerID={'1'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${5}`}
-        />
-        <Local5PlayerClient
-          playerID={'2'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${5}`}
-        />
-        <Local5PlayerClient
-          playerID={'3'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${5}`}
-        />
-        <Local5PlayerClient
-          playerID={'4'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${5}`}
-        />
+        <Local5PlayerClient playerID={'0'} matchID={matchID} />
+        <Local5PlayerClient playerID={'1'} matchID={matchID} />
+        <Local5PlayerClient playerID={'2'} matchID={matchID} />
+        <Local5PlayerClient playerID={'3'} matchID={matchID} />
+        <Local5PlayerClient playerID={'4'} matchID={matchID} />
       </>
     )
   if (numPlayers === 6)
     return (
       <>
-        <Local6PlayerClient
-          playerID={'0'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${6}`}
-        />
-        <Local6PlayerClient
-          playerID={'1'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${6}`}
-        />
-        <Local6PlayerClient
-          playerID={'2'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${6}`}
-        />
-        <Local6PlayerClient
-          playerID={'3'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${6}`}
-        />
-        <Local6PlayerClient
-          playerID={'4'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${6}`}
-        />
-        <Local6PlayerClient
-          playerID={'5'}
-          matchID={`${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${6}`}
-        />
+        <Local6PlayerClient playerID={'0'} matchID={matchID} />
+        <Local6PlayerClient playerID={'1'} matchID={matchID} />
+        <Local6PlayerClient playerID={'2'} matchID={matchID} />
+        <Local6PlayerClient playerID={'3'} matchID={matchID} />
+        <Local6PlayerClient playerID={'4'} matchID={matchID} />
+        <Local6PlayerClient playerID={'5'} matchID={matchID} />
       </>
     )
   return null
