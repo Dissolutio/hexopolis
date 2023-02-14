@@ -73,6 +73,7 @@ export type GameMap = {
 }
 export type HexMap = {
   mapShape: string // 'hexagon' | 'rectangle'
+  mapName: string
   mapSize: number // for hexagon shaped maps
   mapHeight: number // for rectangle shaped maps
   mapWidth: number // for rectangle shaped maps

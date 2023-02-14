@@ -1,34 +1,58 @@
+import { scenarioNames } from 'game/setup/scenarios'
 import { useState } from 'react'
-import { CreateMatchButton } from './CreateMatchButton'
+import { useMultiplayerLobby } from './useMultiplayerLobby'
 
 export function CreateMatchForm() {
-  const [matchName, setMatchName] = useState('')
-  const [numPlayers, setNumPlayers] = useState(2)
+  const { handleCreateMatch } = useMultiplayerLobby()
+  //   const [matchName, setMatchName] = useState('')
+  const [scenarioName, setScenarioName] = useState(
+    scenarioNames.clashingFrontsAtTableOfTheGiants2
+  )
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    handleCreateMatch(scenarioName)
     event.preventDefault()
-    alert(`The name you entered was: ${matchName}`)
   }
-
+  const handleChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    setScenarioName(event.target.value)
+  }
   return (
     <form onSubmit={handleSubmit} id="createMatchForm">
-      <label>
-        Enter your name:
+      {/* <label>
+        Enter a name for your match:
         <input
           type="text"
           value={matchName}
           onChange={(e) => setMatchName(e.target.value)}
         />
-      </label>
+      </label> */}
 
-      <label htmlFor="numPlayersSelect">Number of players:</label>
-      <select name="pets" id="numPlayersSelect">
-        <option value={2}>2 players</option>
-        {/* <option value={3}>3 players</option> */}
-        <option value={4}>4 players</option>
-        {/* <option value={5}>5 players</option> */}
-        {/* <option value={6}>6 players</option> */}
+      <label htmlFor="numPlayersSelect">Select number of players:</label>
+      <select
+        name="numPlayers"
+        value={scenarioName}
+        onChange={handleChange}
+        id="numPlayersSelect"
+      >
+        <option value={scenarioNames.clashingFrontsAtTableOfTheGiants2}>
+          2 players: Clashing Fronts at The Table of the Giants
+        </option>
+        <option value={scenarioNames.theBigHexagon2}>
+          2 players: The Big Hexagon
+        </option>
+        <option value={scenarioNames.theBigHexagon3}>
+          3 players: The Big Hexagon
+        </option>
+        <option value={scenarioNames.theBigHexagon4}>
+          4 players: The Big Hexagon
+        </option>
+        <option value={scenarioNames.theBigHexagon5}>
+          5 players: The Big Hexagon
+        </option>
+        <option value={scenarioNames.theBigHexagon6}>
+          6 players: The Big Hexagon
+        </option>
       </select>
-      <CreateMatchButton />
+      <button type="submit">Create Match</button>
     </form>
   )
 }

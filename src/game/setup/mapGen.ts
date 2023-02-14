@@ -97,6 +97,7 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     hexMap: {
       mapId: generateUID(),
       mapShape: 'hexagon',
+      mapName: 'The Big Hexagon',
       flat,
       mapSize,
       mapHeight: mapSize,

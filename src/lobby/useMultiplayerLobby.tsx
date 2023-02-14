@@ -3,8 +3,8 @@ import { LobbyAPI } from 'boardgame.io'
 
 import { useBgioLobbyApi } from '../bgio-contexts/useBgioLobbyApi'
 import { useAuth } from 'hooks'
-import { scenarioNames } from 'game/setup/scenarios'
 import { SetupData } from 'game/types'
+import { hexoscapeScenarios } from 'game/setup/scenarios'
 
 type MultiplayerLobbyCtxValue = {
   // lobby state
@@ -19,8 +19,7 @@ type MultiplayerLobbyCtxValue = {
   updateLobbyMatchesForSelectedGame: () => Promise<LobbyAPI.MatchList>
   updateLobbyGames: () => Promise<void>
   handleSelectGameChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  handleCreateMatchButton: () => Promise<void>
-  handleCreate4PlayerMatchButton: () => Promise<void>
+  handleCreateMatch: (scenarioName: string) => Promise<void>
   handleJoinMatch: (params: {
     playerID: string
     matchID: string
@@ -162,7 +161,7 @@ export function MultiplayerLobbyProvider({
   }, [storedCredentials, handleVerifyJoinedMatch])
 
   // handler createMatch- create a match, then select it (which refreshes the match), then join it
-  async function handleCreate4PlayerMatchButton() {
+  async function handleCreateMatch(scenarioName: string) {
     // requires a username first
     if (!isAuthenticated) {
       setCreateMatchError(
@@ -171,43 +170,12 @@ export function MultiplayerLobbyProvider({
       return
     }
     try {
-      const numPlayers = 4
+      const numPlayers = hexoscapeScenarios[scenarioName].numPlayers
       const { matchID } = await createMatch(`${selectedGame}`, {
         // TODO: Match creation options
         setupData: {
           numPlayers,
-          // this scenario is not ready for 4 players yet
-          // scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
-          withPrePlacedUnits: false,
-        } as SetupData,
-        numPlayers,
-        unlisted: false,
-      })
-      if (matchID) {
-        setCreateMatchError('')
-        await handleJoinMatch({ playerID: '0', matchID })
-        await updateLobbyMatchesForSelectedGame()
-      }
-    } catch (error: any) {
-      setCreateMatchError(error?.message ?? 'Error creating match')
-      console.log(`🚀 ~ createMatch ~ error`, error)
-    }
-  }
-  async function handleCreateMatchButton() {
-    // requires a username first
-    if (!isAuthenticated) {
-      setCreateMatchError(
-        'You must login with a username before you can create a game'
-      )
-      return
-    }
-    try {
-      const numPlayers = 2
-      const { matchID } = await createMatch(`${selectedGame}`, {
-        // TODO: Match creation options
-        setupData: {
-          numPlayers,
-          scenarioName: scenarioNames.clashingFrontsAtTableOfTheGiants,
+          scenarioName: scenarioName,
           withPrePlacedUnits: false,
         } as SetupData,
         numPlayers,
@@ -270,6 +238,7 @@ export function MultiplayerLobbyProvider({
   // handle leave current match
   async function handleLeaveJoinedMatch() {
     const { gameName, matchID, playerID, playerCredentials } = storedCredentials
+    // UNSURE WHY WE DID THIS IN THE PAST, BUT IT'S ANNOYING IF NOT NEEDED (you leave a game and have to re-enter your name)
     // updateCredentials({
     //   playerName: '',
     //   gameName: '',
@@ -309,8 +278,7 @@ export function MultiplayerLobbyProvider({
         updateLobbyGames,
         updateLobbyMatchesForSelectedGame,
         handleSelectGameChange,
-        handleCreateMatchButton,
-        handleCreate4PlayerMatchButton,
+        handleCreateMatch,
         handleJoinMatch,
         handleLeaveJoinedMatch,
         leaveMatchAndSignout,

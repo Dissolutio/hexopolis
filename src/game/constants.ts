@@ -5,6 +5,7 @@ import {
   OrderMarkers,
   PlayerOrderMarkers,
   PlayerState,
+  PlayerStateToggle,
 } from './types'
 
 export const phaseNames = {
@@ -107,4 +108,16 @@ export function getActivePlayersIdleStage({
     }
     return { ...prev, [curr]: idleStage }
   }, {})
+}
+
+export function generateReadyStateForNumPlayers(
+  numPlayers: number,
+  defaultValue: boolean
+): PlayerStateToggle {
+  let rdyState: { [key: string]: boolean } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    rdyState[index] = defaultValue
+  }
+  const result = rdyState
+  return result
 }

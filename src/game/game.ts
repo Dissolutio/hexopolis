@@ -15,7 +15,6 @@ import {
   generateBlankPlayersOrderMarkers,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
-import { scenarioNames } from './setup/scenarios'
 
 const isDevOverrideState =
   process.env.NODE_ENV === 'production'
@@ -27,11 +26,10 @@ export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
   // setup: Function that returns the initial value of G.
   // setupData is an optional custom object that is
-  // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatchButton()
+  // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatch()
   setup: (ctx, setupData) => {
-    const numPlayers = setupData?.numPlayers || ctx.ctx.numPlayers
-    console.log('🚀 ~ file: game.ts:35 ~ numPlayers', numPlayers)
     return gameSetupInitialGameState({
+      // numPlayers is decided either by createMatch, or what was passed to Bgio-Client (for local and demo games)
       numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
       scenarioName: setupData?.scenarioName || '',
       withPrePlacedUnits: isDevOverrideState,

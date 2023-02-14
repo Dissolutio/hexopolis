@@ -4128,6 +4128,7 @@ export const giantsTable = {
   },
   hexMap: {
     mapId: 'giantsTable',
+    mapName: 'The Table of the Giants',
     mapShape: 'rectangle',
     flat: false,
     mapSize: 25,
