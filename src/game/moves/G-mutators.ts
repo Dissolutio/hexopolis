@@ -109,7 +109,10 @@ export const wipeCardOrderMarkers_G = ({
         [order]: '',
       }
     }
-    return acc
+    return {
+      ...acc,
+      [order]: gameCardID,
+    }
   }, generateBlankPlayersOrderMarkers())
   // apply mutation to playerState
   playerState[playerID].orderMarkers = playerStateOrderMarkersFilteredForCard
@@ -121,7 +124,10 @@ export const wipeCardOrderMarkers_G = ({
         gameCardID: '',
       }
     }
-    return order
+    return {
+      ...order,
+      gameCardID: order.gameCardID,
+    }
   })
   // apply mutation to public orderMarkers
   orderMarkers[playerID] = orderMarkersFilteredForCard
