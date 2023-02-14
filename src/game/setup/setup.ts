@@ -90,7 +90,7 @@ export const gameSetupInitialGameState = ({
   withPrePlacedUnits?: boolean
 }) => {
   if (scenarioName === scenarnioNames.clashingFrontsAtTableOfTheGiants) {
-    return makeTestScenario(numPlayers, withPrePlacedUnits)
+    return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   if (numPlayers === 2) {
     return makeTestScenario(numPlayers, withPrePlacedUnits)
@@ -109,6 +109,25 @@ export const gameSetupInitialGameState = ({
   }
   return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
+function makeGiantsTable2PlayerScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
+  return {
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
 function makeTestScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
@@ -119,20 +138,20 @@ function makeTestScenario(
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  // const map = makeHexagonShapedMap({
-  //   mapSize: 3,
-  //   withPrePlacedUnits: isDevOverrideState,
-  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-  //   flat: false,
-  // })
+  const map = makeHexagonShapedMap({
+    mapSize: 7,
+    withPrePlacedUnits,
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+    flat: false,
+  })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
   // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: true,
-    gameUnits,
-  })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,

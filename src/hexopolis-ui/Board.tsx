@@ -62,6 +62,7 @@ export const Board = ({
     <>
       <ThemeProvider theme={theme(playerID ?? '')}>
         <BgioClientInfoProvider
+          isLocalOrDemoGame={isLocalOrDemoGame}
           log={log}
           playerID={playerID || ''}
           matchID={matchID}
@@ -72,7 +73,7 @@ export const Board = ({
           isActive={isActive}
         >
           <BgioGProvider G={G}>
-            <BgioCtxProvider ctx={ctx}>
+            <BgioCtxProvider isLocalOrDemoGame={isLocalOrDemoGame} ctx={ctx}>
               <BgioMovesProvider moves={moves} undo={undo} redo={redo}>
                 <BgioEventsProvider reset={reset} events={events}>
                   <BgioChatProvider

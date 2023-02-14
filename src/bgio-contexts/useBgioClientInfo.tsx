@@ -15,16 +15,20 @@ type BgioClientInfo = {
 // add a handy utility property
 type BgioClientInfoCtxValue = BgioClientInfo & {
   belongsToPlayer: (thing: any) => boolean
+  isAllPlayerSlotsFilled: boolean
 }
-type BgioClientInfoProviderProps = BgioClientInfo & {
-  children: React.ReactNode
-}
+
 const BgioClientInfoContext = React.createContext<
   BgioClientInfoCtxValue | undefined
 >(undefined)
 
+type BgioClientInfoProviderProps = BgioClientInfo & {
+  children: React.ReactNode
+  isLocalOrDemoGame: boolean
+}
 export function BgioClientInfoProvider(props: BgioClientInfoProviderProps) {
   const {
+    isLocalOrDemoGame,
     children,
     playerID,
     log,
@@ -37,6 +41,10 @@ export function BgioClientInfoProvider(props: BgioClientInfoProviderProps) {
   } = props
   const belongsToPlayer = (thing: any): boolean =>
     thing && thing?.playerID ? thing.playerID === playerID : false
+  const isAllPlayerSlotsFilled =
+    !isLocalOrDemoGame &&
+    (matchData?.every((player) => player.isConnected) ?? false) &&
+    (matchData?.length ?? 0) > 0
   return (
     <BgioClientInfoContext.Provider
       value={{
@@ -47,6 +55,7 @@ export function BgioClientInfoProvider(props: BgioClientInfoProviderProps) {
         matchData,
         isActive,
         isMultiplayer,
+        isAllPlayerSlotsFilled,
         isConnected,
         credentials,
       }}

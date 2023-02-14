@@ -14,11 +14,13 @@ type MultiplayerLobbyCtxValue = {
     [gameName: string]: string
   }
   selectedGame: string
+  leaveMatchAndSignout: () => void
   // requests
   updateLobbyMatchesForSelectedGame: () => Promise<LobbyAPI.MatchList>
   updateLobbyGames: () => Promise<void>
   handleSelectGameChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   handleCreateMatchButton: () => Promise<void>
+  handleCreate4PlayerMatchButton: () => Promise<void>
   handleJoinMatch: (params: {
     playerID: string
     matchID: string
@@ -42,7 +44,8 @@ const MultiplayerLobbyContext = React.createContext<
 export function MultiplayerLobbyProvider({
   children,
 }: MultiplayerLobbyProviderProps) {
-  const { updateCredentials, storedCredentials, isAuthenticated } = useAuth()
+  const { updateCredentials, storedCredentials, isAuthenticated, signout } =
+    useAuth()
   const {
     getLobbyGames,
     getLobbyMatches,
@@ -159,7 +162,7 @@ export function MultiplayerLobbyProvider({
   }, [storedCredentials, handleVerifyJoinedMatch])
 
   // handler createMatch- create a match, then select it (which refreshes the match), then join it
-  async function handleCreateMatchButton() {
+  async function handleCreate4PlayerMatchButton() {
     // requires a username first
     if (!isAuthenticated) {
       setCreateMatchError(
@@ -172,11 +175,42 @@ export function MultiplayerLobbyProvider({
       const { matchID } = await createMatch(`${selectedGame}`, {
         // TODO: Match creation options
         setupData: {
-          numPlayers: 4,
+          numPlayers,
+          // this scenario is not ready for 4 players yet
+          // scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
+          withPrePlacedUnits: false,
+        } as SetupData,
+        numPlayers,
+        unlisted: false,
+      })
+      if (matchID) {
+        setCreateMatchError('')
+        await handleJoinMatch({ playerID: '0', matchID })
+        await updateLobbyMatchesForSelectedGame()
+      }
+    } catch (error: any) {
+      setCreateMatchError(error?.message ?? 'Error creating match')
+      console.log(`🚀 ~ createMatch ~ error`, error)
+    }
+  }
+  async function handleCreateMatchButton() {
+    // requires a username first
+    if (!isAuthenticated) {
+      setCreateMatchError(
+        'You must login with a username before you can create a game'
+      )
+      return
+    }
+    try {
+      const numPlayers = 2
+      const { matchID } = await createMatch(`${selectedGame}`, {
+        // TODO: Match creation options
+        setupData: {
+          numPlayers,
           scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
           withPrePlacedUnits: false,
         } as SetupData,
-        numPlayers: 4,
+        numPlayers,
         unlisted: false,
       })
       if (matchID) {
@@ -236,27 +270,31 @@ export function MultiplayerLobbyProvider({
   // handle leave current match
   async function handleLeaveJoinedMatch() {
     const { gameName, matchID, playerID, playerCredentials } = storedCredentials
-    updateCredentials({
-      playerName: '',
-      gameName: '',
-      matchID: '',
-      playerID: '',
-      playerCredentials: '',
-    })
+    // updateCredentials({
+    //   playerName: '',
+    //   gameName: '',
+    //   matchID: '',
+    //   playerID: '',
+    //   playerCredentials: '',
+    // })
     setVerifyMatchSuccess('')
     setVerifyMatchError('')
     try {
-      await leaveMatch({
-        gameName,
-        matchID,
-        options: { playerID, credentials: playerCredentials },
-      })
+      if (gameName && matchID)
+        await leaveMatch({
+          gameName,
+          matchID,
+          options: { playerID, credentials: playerCredentials },
+        })
     } catch (error) {
       console.log(`🚀 ~ handleLeaveJoinedMatch ~ error`, error)
     }
     await updateLobbyMatchesForSelectedGame()
   }
-
+  const leaveMatchAndSignout = () => {
+    handleLeaveJoinedMatch()
+    signout()
+  }
   return (
     <MultiplayerLobbyContext.Provider
       value={{
@@ -272,8 +310,10 @@ export function MultiplayerLobbyProvider({
         updateLobbyMatchesForSelectedGame,
         handleSelectGameChange,
         handleCreateMatchButton,
+        handleCreate4PlayerMatchButton,
         handleJoinMatch,
         handleLeaveJoinedMatch,
+        leaveMatchAndSignout,
         handleVerifyJoinedMatch,
       }}
     >

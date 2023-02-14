@@ -25,15 +25,15 @@ const isDevOverrideState =
 
 export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
-  // Function that returns the initial value of G.
+  // setup: Function that returns the initial value of G.
   // setupData is an optional custom object that is
-  // passed through the Game Creation API.
+  // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatchButton()
   setup: (ctx, setupData) => {
     const numPlayers = setupData?.numPlayers || ctx.ctx.numPlayers
     console.log('🚀 ~ file: game.ts:35 ~ numPlayers', numPlayers)
     return gameSetupInitialGameState({
       numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
-      scenarioName: scenarnioNames.clashingFrontsAtTableOfTheGiants,
+      scenarioName: setupData?.scenarioName || '',
       withPrePlacedUnits: isDevOverrideState,
     })
   },

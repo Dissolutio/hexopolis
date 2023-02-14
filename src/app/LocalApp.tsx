@@ -38,6 +38,8 @@ export const LocalApp = () => {
   )
 }
 export const DemoLocalGameLinks = () => (
+  // if we don't use the reloadDocument prop, then some state seems to be shared or reused between the different games, resulting in crashes
+  // magically, and wonderfully, this prop fixes the problem so a user can demo the different multiplayer games in rapid (enough) succession by clicking the links back to back
   <>
     <ul>
       <li>

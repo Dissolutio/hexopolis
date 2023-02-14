@@ -1,26 +1,26 @@
-import { useAuth } from "hooks";
-import { NavLink } from "react-router-dom";
+import { useAuth } from 'hooks'
+import { NavLink } from 'react-router-dom'
 
 export const MultiplayerNav = () => {
-  const { storedCredentials } = useAuth();
-  const isJoinedInMatch = Boolean(storedCredentials.matchID);
+  const { storedCredentials } = useAuth()
+  const isJoinedInMatch = Boolean(storedCredentials.matchID)
   return (
     <nav>
       <ul>
         <li>
-          <NavLink to="/">
-            Multiplayer Lobby
-          </NavLink>
+          <NavLink to="/">Multiplayer Lobby</NavLink>
         </li>
         <li>
           <NavLink to="/demo">Demo</NavLink>
         </li>
         {isJoinedInMatch ? (
           <li>
-            <NavLink to="/play">Play</NavLink>
+            <NavLink to="/play" reloadDocument>
+              Play
+            </NavLink>
           </li>
         ) : null}
       </ul>
     </nav>
-  );
-};
+  )
+}

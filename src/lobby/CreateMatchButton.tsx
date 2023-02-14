@@ -6,7 +6,24 @@ export function CreateMatchButton() {
   return (
     <div>
       {/* // NOTE: This will create a game with 2 players, for now, using a const named MYGAME_NUMPLAYERS */}
-      <button onClick={handleCreateMatchButton}>Create new match</button>
+      <button onClick={handleCreateMatchButton}>Create 2-player match</button>
+      {createMatchError && (
+        <span style={{ color: 'red' }}>
+          Sorry! Failed to create match: {`${createMatchError}`}
+        </span>
+      )}
+    </div>
+  )
+}
+export function Create4PlayerMatchButton() {
+  // NOTE: This will create a game with 2 players, for now, using a const named MYGAME_NUMPLAYERS
+  const { createMatchError, handleCreate4PlayerMatchButton } =
+    useMultiplayerLobby()
+  return (
+    <div>
+      <button onClick={handleCreate4PlayerMatchButton}>
+        Create new 4-player match
+      </button>
       {createMatchError && (
         <span style={{ color: 'red' }}>
           Sorry! Failed to create match: {`${createMatchError}`}

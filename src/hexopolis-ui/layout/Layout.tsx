@@ -1,4 +1,4 @@
-import { useBgioClientInfo } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
 import { modalStates, useUIContext } from 'hexopolis-ui/contexts'
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
@@ -16,7 +16,11 @@ export const Layout = ({
   mapWrapperRef: React.RefObject<HTMLDivElement>
 }) => {
   const { playerID } = useBgioClientInfo()
+  const { isWaitingForPlayersToJoin } = useBgioCtx()
   const { modalState } = useUIContext()
+  if (isWaitingForPlayersToJoin) {
+    return <div>Waiting for all players to join</div>
+  }
   return (
     <>
       {modalState !== modalStates.off && <ModalDisplay />}
