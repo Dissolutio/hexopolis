@@ -34,11 +34,11 @@ const tabs: Tab[] = [
     icon: <GiChatBubble />,
     id: 'tab3',
   },
-  {
-    title: 'Settings',
-    id: 'tab4',
-    icon: <GiAutoRepair />,
-  },
+  // {
+  //   title: 'Settings',
+  //   id: 'tab4',
+  //   icon: <GiAutoRepair />,
+  // },
 ]
 
 enum tabVariantNames {
@@ -104,6 +104,7 @@ export const TabsComponent = () => {
           >
             <StyledClickableButtonThing
               onClick={() => setActiveTabIndex(index)}
+              title={tab.title}
             >
               {tab.icon}
               <motion.span variants={tabTextVariant}>{tab.title}</motion.span>
@@ -137,13 +138,14 @@ const StyledMotionLi = styled(motion.li)`
   }
 `
 const StyledClickableButtonThing = styled.span`
-  text-decoration: none;
-  padding: 16px;
+  position: relative;
   display: flex;
   align-items: center;
-  font-size: 20px;
+  padding: 16px;
   overflow: hidden;
-  position: relative;
+  font-size: 20px;
+  text-decoration: none;
+  cursor: pointer;
   svg {
     height: 30px;
     width: 30px;
@@ -153,16 +155,16 @@ const StyledClickableButtonThing = styled.span`
     transition: fill 0.5s ease;
   }
   span {
-    font-weight: 700;
     margin-left: 10px;
+    font-weight: 700;
     transition: color 0.5s ease;
   }
 `
 const StyledLinkList = styled.ul`
-  padding: 0;
-  margin: 0 auto 20px;
-  list-style: none;
-  max-width: 400px;
   display: flex;
   justify-content: space-between;
+  padding: 0;
+  margin: 0 auto 20px;
+  max-width: 400px;
+  list-style: none;
 `
