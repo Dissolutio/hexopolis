@@ -50,7 +50,6 @@ export const chompAction: Move<GameState> = (
     type: gameLogTypes.chomp,
     id: `r${G.currentRound}:om${G.currentOrderMarker}:${chompingUnitID}:chomp:${chompedUnitID}`,
     isChompSuccessful,
-    chompingUnitID,
     unitChompedName,
     unitChompedSingleName,
     isChompedUnitSquad: isSquad,

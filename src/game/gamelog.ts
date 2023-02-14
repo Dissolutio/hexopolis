@@ -23,27 +23,24 @@ export type GameLogMessage = {
   counterStrikeWounds?: number
   isFatalCounterStrike?: boolean
   isStealthDodge?: boolean
-
-  // roundBegin logs below
+  // roundBegin
   initiativeRolls?: Roll[][]
-
-  // move logs below
-  // unitID?: string
+  // move logs
   unitSingleName?: string
   startHexID?: string
   endHexID?: string
-  // disengage attempts below
+  isGrappleGun?: boolean
+  // disengage attempts
   unitIdsToAttemptToDisengage?: string[]
-  // water clone logs
-  cloneCount?: number
-  rollsAndThreshholds?: number[][]
-  // berserker charge logs, going to try and make a generalized roll log
+  // berserker charge logs, most generic roll format
   roll?: number
   isRollSuccessful?: boolean
   rollThreshold?: number
-  // chomp logs
+  // water clone
+  cloneCount?: number
+  rollsAndThreshholds?: number[][]
+  // chomp
   isChompSuccessful?: boolean
-  chompingUnitID?: string
   chompRoll?: number
   unitChompedName?: string
   unitChompedSingleName?: string
@@ -85,6 +82,13 @@ export const decodeGameLogMessage = (
     const {
       type,
       id,
+      // for noUnitsOnTurn
+      playerID,
+      cardNameWithNoUnits,
+      currentOrderMarker,
+      isNoCard,
+      // NO UNITS ON TURN
+      // attack logs below
       unitID,
       unitName,
       targetHexID,
@@ -98,30 +102,27 @@ export const decodeGameLogMessage = (
       isFatalCounterStrike,
       isStealthDodge,
       counterStrikeWounds,
+      // roundBegin
       initiativeRolls,
+      // move logs
       unitSingleName,
+      isGrappleGun,
       startHexID,
       endHexID,
       unitIdsToAttemptToDisengage,
-      // water clone
-      rollsAndThreshholds,
-      cloneCount,
-      // CHOMP
-      isChompSuccessful,
-      chompRoll,
-      chompingUnitID,
-      unitChompedName,
-      unitChompedSingleName,
-      isChompedUnitSquad,
-      // NO UNITS ON TURN
-      playerID,
-      cardNameWithNoUnits,
-      currentOrderMarker,
-      isNoCard,
-      // berserker charge
+      // berserker charge: most generic roll format
       roll,
       isRollSuccessful,
       rollThreshold,
+      // water clone
+      rollsAndThreshholds,
+      cloneCount,
+      // chomp
+      isChompSuccessful,
+      chompRoll,
+      unitChompedName,
+      unitChompedSingleName,
+      isChompedUnitSquad,
     } = gameLog
     switch (type) {
       case gameLogTypes.attack:
@@ -223,10 +224,11 @@ export const decodeGameLogMessage = (
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`
+        const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
         return {
           type,
           id,
-          msg: moveMsgText,
+          msg: isGrappleGun ? grappleGunMoveMsg : moveMsgText,
         }
       case gameLogTypes.disengageAttempt:
         const disengageAttemptMsgText = `${unitSingleName} is attempting to disengage from ${
