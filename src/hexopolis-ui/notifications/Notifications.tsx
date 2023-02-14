@@ -62,7 +62,6 @@ export const Notifications = () => {
           cloneCount,
           // chomp
           isChompSuccessful,
-          chompRoll,
           unitChompedName,
           unitChompedSingleName,
           isChompedUnitSquad,
@@ -82,6 +81,52 @@ export const Notifications = () => {
                 id: gameLogMessage?.id,
               }
             )
+            break
+          case gameLogTypes.mindShackle:
+            const msgMindShackle = isRollSuccessful ? (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} has Mind Shackled{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>
+                ! (rolled a {roll})
+              </span>
+            ) : (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} attempted to Mind Shackle{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {defenderUnitName}
+                </span>{' '}
+                but only rolled a {roll} / {rollThreshold}
+              </span>
+            )
+            toast(msgMindShackle, {
+              duration: 20000,
+              id: gameLogMessage?.id,
+            })
+            break
+          case gameLogTypes.chomp:
+            const chompMsg = isChompSuccessful ? (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} Chomped{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {isChompedUnitSquad ? unitChompedSingleName : unitChompedName}
+                </span>
+                ! {isChompedUnitSquad ? '' : `(rolled a ${roll})`}
+              </span>
+            ) : (
+              <span style={{ color: playerColors[playerID] }}>
+                {unitName} attempted to Chomp{' '}
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {unitChompedName}
+                </span>{' '}
+                but only rolled a {roll} / {rollThreshold}
+              </span>
+            )
+            toast(chompMsg, {
+              duration: 20000,
+              id: gameLogMessage?.id,
+            })
             break
           case gameLogTypes.attack:
             const isCounterStrike = counterStrikeWounds ?? 0 > 0

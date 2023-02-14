@@ -41,7 +41,6 @@ export type GameLogMessage = {
   rollsAndThreshholds?: number[][]
   // chomp
   isChompSuccessful?: boolean
-  chompRoll?: number
   unitChompedName?: string
   unitChompedSingleName?: string
   isChompedUnitSquad?: boolean
@@ -122,7 +121,6 @@ export const decodeGameLogMessage = (
       cloneCount,
       // chomp
       isChompSuccessful,
-      chompRoll,
       unitChompedName,
       unitChompedSingleName,
       isChompedUnitSquad,
@@ -192,22 +190,12 @@ export const decodeGameLogMessage = (
           msg: msgNoUnitsOnTurn,
         }
       case gameLogTypes.chomp:
-        const msggg = isChompSuccessful
-          ? `Grimnak chomped ${
-              isChompedUnitSquad ? unitChompedSingleName : unitChompedName
-            }! ${isChompedUnitSquad ? '' : `(rolled a ${chompRoll})`}`
-          : `Grimnak attempted to chomp ${unitChompedName}, but only rolled a ${chompRoll}`
         return {
-          ...basic,
-          msg: msggg,
+          ...gameLog,
         }
       case gameLogTypes.mindShackle:
-        const msgMindShackle = isRollSuccessful
-          ? `Ne-gok-sa has Mind Shackled ${defenderUnitName}! (rolled a ${roll})`
-          : `Ne-gok-sa attempted to Mind Shackle ${defenderUnitName}, but only rolled a ${roll}`
         return {
-          ...basic,
-          msg: msgMindShackle,
+          ...gameLog,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`

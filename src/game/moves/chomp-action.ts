@@ -23,9 +23,11 @@ export const chompAction: Move<GameState> = (
     )
     return
   }
+  const defenderPlayerID = targetGameCard.playerID
   // unconditional success for squads, roll for it if it's a hero
-  const chompRoll = random.Die(20)
-  const isSuccessfulAndNecessaryRoll = chompRoll >= 16 && !isSquad
+  const roll = random.Die(20)
+  const rollThreshold = 16
+  const isSuccessfulAndNecessaryRoll = roll >= rollThreshold && !isSquad
   const isChompSuccessful = isSuccessfulAndNecessaryRoll || isSquad
   const chompedUnitID = targetUnit.unitID
   // if it works, kill the unit
@@ -50,12 +52,13 @@ export const chompAction: Move<GameState> = (
     type: gameLogTypes.chomp,
     id: `r${G.currentRound}:om${G.currentOrderMarker}:${chompingUnitID}:chomp:${chompedUnitID}`,
     playerID: G.gameUnits[chompingUnitID].playerID,
-    defenderPlayerID: G.gameUnits[chompedUnitID].playerID,
+    defenderPlayerID,
+    roll: roll,
+    rollThreshold,
     isChompSuccessful,
     unitChompedName,
     unitChompedSingleName,
     isChompedUnitSquad: isSquad,
-    chompRoll,
   })
   G.gameLog.push(gameLogForChomp)
   // mark grimnak as having chomped
