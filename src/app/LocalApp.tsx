@@ -3,7 +3,7 @@ import { Client } from 'boardgame.io/react'
 import { Local } from 'boardgame.io/multiplayer'
 import { Debug } from 'boardgame.io/debug'
 import { Helmet } from 'react-helmet'
-import { HexedMeadow } from 'game/game'
+import { Hexoscape } from 'game/game'
 import { Board } from 'hexopolis-ui/Board'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from './constants'
 
@@ -54,7 +54,7 @@ export const LocalApp = () => {
   )
 }
 const Local2PlayerClient = Client({
-  game: HexedMeadow,
+  game: Hexoscape,
   board: Board,
   numPlayers: 2,
   multiplayer: Local(),
@@ -63,7 +63,7 @@ const Local2PlayerClient = Client({
   debug: false,
 })
 const Local3PlayerClient = Client({
-  game: HexedMeadow,
+  game: Hexoscape,
   board: Board,
   numPlayers: 3,
   multiplayer: Local(),
@@ -72,7 +72,7 @@ const Local3PlayerClient = Client({
   debug: false,
 })
 const Local4PlayerClient = Client({
-  game: HexedMeadow,
+  game: Hexoscape,
   board: Board,
   numPlayers: 4,
   multiplayer: Local(),
@@ -81,7 +81,7 @@ const Local4PlayerClient = Client({
   debug: false,
 })
 const Local5PlayerClient = Client({
-  game: HexedMeadow,
+  game: Hexoscape,
   board: Board,
   numPlayers: 5,
   multiplayer: Local(),
@@ -90,7 +90,7 @@ const Local5PlayerClient = Client({
   debug: false,
 })
 const Local6PlayerClient = Client({
-  game: HexedMeadow,
+  game: Hexoscape,
   board: Board,
   numPlayers: 6,
   multiplayer: Local(),

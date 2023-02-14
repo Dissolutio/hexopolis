@@ -18,8 +18,8 @@ import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
 export const MYGAME_NUMPLAYERS = 6
 
-export const HexedMeadow: Game<GameState> = {
-  name: 'HexedMeadow',
+export const Hexoscape: Game<GameState> = {
+  name: 'Hexoscape',
   // Function that returns the initial value of G.
   // setupData is an optional custom object that is
   // passed through the Game Creation API.

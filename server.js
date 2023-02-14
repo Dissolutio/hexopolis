@@ -1,10 +1,10 @@
 import { Origins, Server } from 'boardgame.io/server'
 import path from 'path'
 import serve from 'koa-static'
-import { HexedMeadow } from './server/game'
+import { Hexoscape } from './server/game'
 
 const server = Server({
-  games: [HexedMeadow],
+  games: [Hexoscape],
   origins: [
     // Allow your game site to connect.
     // 'https://www.mygame.domain',

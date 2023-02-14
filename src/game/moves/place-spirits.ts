@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { encodeGameLogMessage } from 'game/gamelog'
+import { encodeGameLogMessage } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { GameState } from '../types'
 

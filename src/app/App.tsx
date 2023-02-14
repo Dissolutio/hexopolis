@@ -7,13 +7,13 @@ import { BgioLobbyApiProvider } from 'bgio-contexts'
 import { AuthProvider, useAuth } from 'hooks/useAuth'
 import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
 import { MultiplayerNav } from './MultiplayerNav'
-import { HexedMeadow } from 'game/game'
+import { Hexoscape } from 'game/game'
 import { isLocalApp, SERVER } from './constants'
 import { Board } from 'hexopolis-ui/Board'
 import { LocalApp, LocalDemoClients } from './LocalApp'
 
 const MultiplayerGameClient = Client({
-  game: HexedMeadow,
+  game: Hexoscape,
   board: Board,
   numPlayers: 2,
   multiplayer: SocketIO({ server: SERVER }),

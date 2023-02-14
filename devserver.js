@@ -1,9 +1,9 @@
 const Server = require('boardgame.io/server').Server
 const Origins = require('boardgame.io/server').Origins
-const hexedMeadowGame = require('./server/game').HexedMeadow
+const Hexoscape = require('./server/game').Hexoscape
 
 const server = Server({
-  games: [hexedMeadowGame],
+  games: [Hexoscape],
   origins: [
     // Allow your game site to connect.
     // 'https://www.mygame.domain',

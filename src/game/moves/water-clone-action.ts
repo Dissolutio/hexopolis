@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { GameState, UnitsCloning, WaterCloneRoll } from '../types'
 
 export const rollForWaterClone: Move<GameState> = (
