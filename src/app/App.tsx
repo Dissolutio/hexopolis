@@ -54,7 +54,6 @@ export const App = () => {
                 path="/play"
                 element={
                   <>
-                    <MultiplayerNav />
                     <PlayPage />
                   </>
                 }

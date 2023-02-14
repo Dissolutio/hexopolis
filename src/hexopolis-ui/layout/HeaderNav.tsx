@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { useBgioClientInfo } from 'bgio-contexts'
 import { playerIDDisplay } from 'game/transformers'
+import { Link } from 'react-router-dom'
 
 export const HeaderNav = ({
   isLocalOrDemoGame,
@@ -34,14 +35,6 @@ const StyledNavbar = styled.nav`
   a {
     color: var(--player-color) !important ;
   }
-  .navbar-toggler {
-    color: var(--player-color) !important ;
-    border-color: var(--player-color) !important ;
-    padding: 0.25rem;
-  }
-  .dropdown-menu {
-    background-color: var(--black);
-  }
 `
 
 const PlayerTeamLogo = ({
@@ -54,24 +47,29 @@ const PlayerTeamLogo = ({
   localOrDemoGameNumPlayers: number
 }) => {
   if (isLocalOrDemoGame) {
+    // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
+    // this will make it so player 0-4 will link to player 1-5, and player 5 will link to player 0 (or for however many players you have)
+    const localLink = `#player${
+      parseInt(playerID) === localOrDemoGameNumPlayers - 1
+        ? 0
+        : parseInt(playerID) + 1
+    }`
     return (
-      // for pass-and-play / development, making the logo a link to the other players screens is helpful (see Layout.tsx for the html-id we link to)
-      <a
-        // this will make it so player 0-4 will link to player 1-5, and player 5 will link to player 0
-        href={`#player${
-          parseInt(playerID) === localOrDemoGameNumPlayers - 1
-            ? 0
-            : parseInt(playerID) + 1
-        }`}
-      >
+      <a href={localLink}>
         <PlayerTeamLogoH1>
           Hexopolis: {playerIDDisplay(playerID)}
         </PlayerTeamLogoH1>
       </a>
     )
   }
+  // for multiplayer, it will be a link back to the lobby
+  const lobbyLink = `/`
   return (
-    <PlayerTeamLogoH1>Hexopolis: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
+    <Link to={lobbyLink}>
+      <PlayerTeamLogoH1>
+        Hexopolis: {playerIDDisplay(playerID)}
+      </PlayerTeamLogoH1>
+    </Link>
   )
 }
 
