@@ -298,6 +298,7 @@ function recurseThroughMoves({
           acc[neighborHexID] = {
             ...moveRangeData,
             isDisengage: true,
+            isGrappleGun,
           }
         }
         return {
@@ -317,6 +318,7 @@ function recurseThroughMoves({
           acc[neighborHexID] = {
             ...moveRangeData,
             isEngage: true,
+            isGrappleGun,
           }
         }
         // walking does not recurse past engagement hexes
@@ -340,6 +342,7 @@ function recurseThroughMoves({
           acc[neighborHexID] = {
             ...moveRangeData,
             isSafe: true,
+            isGrappleGun,
           }
         }
         // walking and flying both recurse past safe hexes
