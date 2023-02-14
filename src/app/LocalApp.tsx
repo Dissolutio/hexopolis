@@ -40,6 +40,7 @@ export const LocalApp = () => {
 export const DemoLocalGameLinks = () => (
   // if we don't use the reloadDocument prop, then some state seems to be shared or reused between the different games, resulting in crashes
   // magically, and wonderfully, this prop fixes the problem so a user can demo the different multiplayer games in rapid (enough) succession by clicking the links back to back
+  // NOTE ^^ this bug may be caused by mapGen, which may have mutated some unforeseen shared state
   <>
     <ul>
       <li>
@@ -71,50 +72,33 @@ export const DemoLocalGameLinks = () => (
   </>
 )
 
-const Local2PlayerClient = Client({
+const bgioLocalClientParams = {
   game: Hexoscape,
   board: Board,
-  numPlayers: 2,
   multiplayer: Local(),
   enhancer: reduxDevTools,
   // debug: { impl: Debug },
   debug: false,
+}
+const Local2PlayerClient = Client({
+  ...bgioLocalClientParams,
+  numPlayers: 2,
 })
 const Local3PlayerClient = Client({
-  game: Hexoscape,
-  board: Board,
+  ...bgioLocalClientParams,
   numPlayers: 3,
-  multiplayer: Local(),
-  enhancer: reduxDevTools,
-  // debug: { impl: Debug },
-  debug: false,
 })
 const Local4PlayerClient = Client({
-  game: Hexoscape,
-  board: Board,
+  ...bgioLocalClientParams,
   numPlayers: 4,
-  multiplayer: Local(),
-  enhancer: reduxDevTools,
-  // debug: { impl: Debug },
-  debug: false,
 })
 const Local5PlayerClient = Client({
-  game: Hexoscape,
-  board: Board,
+  ...bgioLocalClientParams,
   numPlayers: 5,
-  multiplayer: Local(),
-  enhancer: reduxDevTools,
-  // debug: { impl: Debug },
-  debug: false,
 })
 const Local6PlayerClient = Client({
-  game: Hexoscape,
-  board: Board,
+  ...bgioLocalClientParams,
   numPlayers: 6,
-  multiplayer: Local(),
-  enhancer: reduxDevTools,
-  // debug: { impl: Debug },
-  debug: false,
 })
 export const LocalDemoClients = ({ numPlayers }: { numPlayers: number }) => {
   const matchID = `${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${numPlayers}`
