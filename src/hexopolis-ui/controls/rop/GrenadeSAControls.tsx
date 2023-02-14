@@ -27,10 +27,10 @@ export const GrenadeSAControls = () => {
     explosionAffectedHexIDs,
   } = useSpecialAttackContext()
   const unitsAliveCount = revealedGameCardUnitIDs.length
-  const attacksUsed = Object.values(unitsAttacked).flat().length
+  const attacksUsed = Object.keys(unitsAttacked).length
   const isNoAttacksUsed = attacksUsed <= 0
   const unitAlreadyAttacked = Object.keys(unitsAttacked).includes(
-    selectedUnit.unitID
+    selectedUnit?.unitID
   )
   const affectedUnits = uniqBy(
     explosionAffectedHexIDs
