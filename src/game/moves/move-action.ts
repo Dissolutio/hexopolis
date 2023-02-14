@@ -35,9 +35,6 @@ export const moveAction: Move<GameState> = {
     const startTailHexID = startTailHex?.id ?? ''
     const { safeMoves, engageMoves, disengageMoves } =
       transformMoveRangeToArraysOfIds(currentMoveRange)
-    const isEndHexOutOfRange = ![...safeMoves, ...engageMoves].includes(
-      endHexID
-    )
     // TODO: MoveRange Move Cost
     const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
     const revealedGameCard = selectRevealedGameCard(
@@ -55,9 +52,9 @@ export const moveAction: Move<GameState> = {
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
     // DISALLOW - move not in move range
-    if (isEndHexOutOfRange) {
+    if (!unitGameCard) {
       console.error(
-        `Move action denied:The end hex is not in the unit's move range`
+        `Move action denied: missing needed ingredients to calculate move`
       )
       return
     }
@@ -101,6 +98,7 @@ export const moveAction: Move<GameState> = {
     const gameLogForThisMove = encodeGameLogMessage({
       type: 'move',
       id: moveId,
+      playerID: unitGameCard?.playerID ?? '',
       unitID: unitID,
       unitSingleName: unitGameCard?.singleName ?? '',
       startHexID,

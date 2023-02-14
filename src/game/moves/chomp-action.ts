@@ -49,6 +49,8 @@ export const chompAction: Move<GameState> = (
   const gameLogForChomp = encodeGameLogMessage({
     type: gameLogTypes.chomp,
     id: `r${G.currentRound}:om${G.currentOrderMarker}:${chompingUnitID}:chomp:${chompedUnitID}`,
+    playerID: G.gameUnits[chompingUnitID].playerID,
+    defenderPlayerID: G.gameUnits[chompedUnitID].playerID,
     isChompSuccessful,
     unitChompedName,
     unitChompedSingleName,

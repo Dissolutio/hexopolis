@@ -155,6 +155,8 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
     const gameLogForThisAttack = encodeGameLogMessage({
       type: 'attack',
       id: attackId,
+      playerID: attackerGameCard.playerID,
+      defenderPlayerID: defenderGameCard.playerID,
       unitID: attackerUnitID,
       unitName: attackerGameCard.name,
       targetHexID: defenderHex.id,

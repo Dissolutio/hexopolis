@@ -3,7 +3,7 @@ import { encodeGameLogMessage, gameLogTypes } from 'game/gamelog'
 import { GameState, UnitsCloning, WaterCloneRoll } from '../types'
 
 export const rollForWaterClone: Move<GameState> = (
-  { G, random },
+  { G, ctx, random },
   { unitsCloning, unitName }: { unitsCloning: UnitsCloning; unitName: string }
 ) => {
   const blankWaterCloneRoll = {
@@ -64,6 +64,7 @@ export const rollForWaterClone: Move<GameState> = (
   const gameLogForThisMove = encodeGameLogMessage({
     type: gameLogTypes.waterClone,
     id,
+    playerID: ctx.currentPlayer,
     rollsAndThreshholds,
     cloneCount,
     unitName,

@@ -153,6 +153,8 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
     const gameLogForThisAttack = encodeGameLogMessage({
       type: 'attack',
       id: attackId,
+      playerID: attackerGameCard.playerID,
+      defenderPlayerID: defenderGameCard.playerID,
       unitID: attackerUnitID,
       unitName: attackerGameCard.name,
       targetHexID: defenderHeadHex.id,

@@ -127,6 +127,10 @@ export const takeDisengagementSwipe: Move<GameState> = {
         const gameLogForThisMove = encodeGameLogMessage({
           type: gameLogTypes.disengageSwipeFatal,
           id,
+          playerID: unitSwipingCard.playerID,
+          unitName: unitSwipingCard.name,
+          defenderUnitName: unitAttemptingCard.name,
+          defenderPlayerID: unitAttemptingCard.playerID,
         })
         G.gameLog.push(gameLogForThisMove)
         if (isWarriorSpirit) {
@@ -167,6 +171,11 @@ export const takeDisengagementSwipe: Move<GameState> = {
         const gameLogForThisMove = encodeGameLogMessage({
           type,
           id,
+          playerID: unitSwipingCard.playerID,
+          unitName: unitSwipingCard.name,
+          defenderUnitName: unitAttemptingCard.name,
+          defenderPlayerID: unitAttemptingCard.playerID,
+          wounds: numberOfWounds,
         })
         G.gameLog.push(gameLogForThisMove)
         // if this is the last disengagement, actually move the unit
@@ -228,6 +237,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
       const gameLogForThisMove = encodeGameLogMessage({
         type: gameLogTypes.disengageSwipeDenied,
         id,
+        playerID: unitSwiping.playerID,
+        defenderPlayerID: unitAttemptingToDisengage.playerID,
       })
       G.gameLog.push(gameLogForThisMove)
       if (isAllEngagementsSettled) {

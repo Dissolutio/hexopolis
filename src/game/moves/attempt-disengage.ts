@@ -38,6 +38,7 @@ export const attemptDisengage: Move<GameState> = {
     const gameLogForThisMove = encodeGameLogMessage({
       type: gameLogTypes.disengageAttempt,
       id,
+      playerID: unit.playerID,
       unitID,
       unitSingleName: singleName,
       endHexID,

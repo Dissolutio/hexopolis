@@ -20,13 +20,62 @@ export const Notifications = () => {
       for (let i = indexOfLastShownToast; i < gameLog.length; i++) {
         const gameLogString = gameLog[i]
         const gameLogMessage = decodeGameLogMessage(gameLogString)
-        const type = gameLogMessage?.type
-        const playerID = gameLogMessage?.playerID ?? ''
+        if (!gameLogMessage) {
+          continue
+        }
+        const {
+          type,
+          id,
+          // for noUnitsOnTurn
+          playerID,
+          currentOrderMarker,
+          isNoCard,
+          // attack logs below
+          unitID,
+          unitName,
+          targetHexID,
+          defenderUnitName,
+          defenderPlayerID,
+          attackRolled,
+          defenseRolled,
+          skulls,
+          shields,
+          wounds,
+          isFatal,
+          isFatalCounterStrike,
+          isStealthDodge,
+          counterStrikeWounds,
+          // roundBegin
+          initiativeRolls,
+          // move logs
+          unitSingleName,
+          isGrappleGun,
+          startHexID,
+          endHexID,
+          unitIdsToAttemptToDisengage,
+          // berserker charge: most generic roll format
+          roll,
+          isRollSuccessful,
+          rollThreshold,
+          // water clone
+          rollsAndThreshholds,
+          cloneCount,
+          // chomp
+          isChompSuccessful,
+          chompRoll,
+          unitChompedName,
+          unitChompedSingleName,
+          isChompedUnitSquad,
+          // placeAttackSpirit
+          initialValue,
+          newValue,
+          msg,
+        } = gameLogMessage
         switch (type) {
           case gameLogTypes.move:
             toast(
               <span style={{ color: playerColors[playerID] }}>
-                gameLogMessage?.msg ?? ''
+                {gameLogMessage?.msg ?? ''}
               </span>,
               {
                 duration: 5000,
@@ -35,12 +84,33 @@ export const Notifications = () => {
             )
             break
           case gameLogTypes.attack:
+            const isCounterStrike = counterStrikeWounds ?? 0 > 0
+            const counterStrikeMsg = isFatalCounterStrike
+              ? `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was defeated by counter strike!`
+              : `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was hit by counter strike for ${counterStrikeWounds} wounds!`
+            const stealthDodgeMsgText = `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields), but the attack was evaded with Stealth Dodge!`
+
+            const attackMsgText = isFatal
+              ? `${unitName} destroyed ${defenderUnitName} with a ${wounds}-wound attack (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
+              : `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
+            const attackToast = isCounterStrike
+              ? counterStrikeMsg
+              : isStealthDodge
+              ? stealthDodgeMsgText
+              : attackMsgText
+            toast(
+              <span style={{ color: playerColors[playerID] }}>
+                {attackToast}
+              </span>,
+              {
+                duration: 5000,
+                id: gameLogMessage?.id,
+              }
+            )
             break
           default:
             toast(
-              <span style={{ color: playerColors[playerID] }}>
-                gameLogMessage?.msg ?? ''
-              </span>,
+              <span style={{ color: playerColors[playerID] }}>{`${msg}`}</span>,
               {
                 duration: 20000,
                 id: gameLogMessage?.id,

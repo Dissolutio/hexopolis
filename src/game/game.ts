@@ -105,6 +105,7 @@ export const HexedMeadow: Game<GameState> = {
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,
+          playerID: '',
           initiativeRolls: initiativeRoll.rolls,
         })
         G.initiative = initiativeRoll.initiative

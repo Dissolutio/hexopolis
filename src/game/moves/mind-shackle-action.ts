@@ -73,6 +73,8 @@ export const mindShackleAction: Move<GameState> = {
     const gameLogForMindShackle = encodeGameLogMessage({
       type: gameLogTypes.mindShackle,
       id: `r${G.currentRound}:om${G.currentOrderMarker}:${sourceUnitID}:mindshackle:${targetUnitID}`,
+      playerID: sourcePlayerID,
+      defenderPlayerID: targetGameCard.playerID,
       isRollSuccessful: isSuccessful,
       roll,
       // rollThreshold,

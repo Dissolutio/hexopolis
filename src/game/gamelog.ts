@@ -5,7 +5,7 @@ export type GameLogMessage = {
   type: string // gameLogTypes
   id: string // formatted for attacks & moves, just plain round number for roundBegin, tbd how helpful it is
   // for noUnitsOnTurn
-  playerID?: string
+  playerID: string
   currentOrderMarker?: string
   isNoCard?: boolean
   // attack logs below (as much re-used as possible)
@@ -130,48 +130,26 @@ export const decodeGameLogMessage = (
       initialValue,
       newValue,
     } = gameLog
+    const basic = {
+      type,
+      id,
+      playerID,
+    }
     switch (type) {
       case gameLogTypes.attack:
-        const isCounterStrike = counterStrikeWounds > 0
-        const counterStrikeMsg = isFatalCounterStrike
-          ? `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was defeated by counter strike!`
-          : `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields) and was hit by counter strike for ${counterStrikeWounds} wounds!`
-        const stealthDodgeMsgText = `${unitName} attacked ${defenderUnitName} (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields), but the attack was evaded with Stealth Dodge!`
-
-        const attackMsgText = isFatal
-          ? `${unitName} destroyed ${defenderUnitName} with a ${wounds}-wound attack (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
-          : `${unitName} attacked ${defenderUnitName} for ${wounds} wounds (${skulls}/${attackRolled} skulls, ${shields}/${defenseRolled} shields)`
         return {
-          type,
-          id,
-          unitID,
-          unitName,
-          targetHexID,
-          defenderUnitName,
-          attackRolled,
-          defenseRolled,
-          skulls,
-          shields,
-          wounds,
-          isFatal,
-          msg: isCounterStrike
-            ? counterStrikeMsg
-            : isStealthDodge
-            ? stealthDodgeMsgText
-            : attackMsgText,
+          ...gameLog,
         }
       case gameLogTypes.roundBegin:
         // TODO display initiative rolls
         const roundBeginMsgText = `Round ${id} has begun!`
         return {
-          type,
-          id,
+          ...basic,
           msg: roundBeginMsgText,
         }
       case gameLogTypes.placeAttackSpirit:
         return {
-          type,
-          id,
+          ...basic,
           msg: `${playerIDDisplay(
             playerID
           )} has placed Finn's Attack Spirit on ${unitName}, raising their attack from ${initialValue} to ${newValue}!`,
@@ -185,8 +163,7 @@ export const decodeGameLogMessage = (
           .map((rat: number[][]) => rat.join('/'))
           .join(', ')})`
         return {
-          type,
-          id,
+          ...basic,
           msg: isWaterCloneSuccessful
             ? waterCloneSuccessMsg
             : waterCloneFailureMsg,
@@ -195,8 +172,7 @@ export const decodeGameLogMessage = (
         const msgBerserkerChargeSuccess = `${unitName} move again with Berserker Charge! (rolled ${roll}/${rollThreshold})`
         const msgBerserkerChargeFailure = `${unitName} have failed their Berserker Charge roll (rolled ${roll}/${rollThreshold})`
         return {
-          type,
-          id,
+          ...basic,
           msg: isRollSuccessful
             ? msgBerserkerChargeSuccess
             : msgBerserkerChargeFailure,
@@ -212,8 +188,7 @@ export const decodeGameLogMessage = (
               currentOrderMarker
             )}`
         return {
-          type,
-          id,
+          ...basic,
           msg: msgNoUnitsOnTurn,
         }
       case gameLogTypes.chomp:
@@ -223,8 +198,7 @@ export const decodeGameLogMessage = (
             }! ${isChompedUnitSquad ? '' : `(rolled a ${chompRoll})`}`
           : `Grimnak attempted to chomp ${unitChompedName}, but only rolled a ${chompRoll}`
         return {
-          type,
-          id,
+          ...basic,
           msg: msggg,
         }
       case gameLogTypes.mindShackle:
@@ -232,16 +206,14 @@ export const decodeGameLogMessage = (
           ? `Ne-gok-sa has Mind Shackled ${defenderUnitName}! (rolled a ${roll})`
           : `Ne-gok-sa attempted to Mind Shackle ${defenderUnitName}, but only rolled a ${roll}`
         return {
-          type,
-          id,
+          ...basic,
           msg: msgMindShackle,
         }
       case gameLogTypes.move:
         const moveMsgText = `${unitSingleName} is on the move`
         const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
         return {
-          type,
-          id,
+          ...basic,
           msg: isGrappleGun ? grappleGunMoveMsg : moveMsgText,
         }
       case gameLogTypes.disengageAttempt:
@@ -249,36 +221,31 @@ export const decodeGameLogMessage = (
           unitIdsToAttemptToDisengage.length
         } unit${unitIdsToAttemptToDisengage.length === 1 ? 's' : ''}`
         return {
-          type,
-          id,
+          ...basic,
           msg: disengageAttemptMsgText,
         }
       case gameLogTypes.disengageSwipeFatal:
         const disengageSwipeFatalMsgText = `A unit was defeated while disengaging!`
         return {
-          type,
-          id,
+          ...basic,
           msg: disengageSwipeFatalMsgText,
         }
       case gameLogTypes.disengageSwipeNonFatal:
         const disengageSwipeNonFatalMsgText = `A unit was wounded while disengaging!`
         return {
-          type,
-          id,
+          ...basic,
           msg: disengageSwipeNonFatalMsgText,
         }
       case gameLogTypes.disengageSwipeDenied:
         const disengageSwipeDeniedMsgText = `A unit denied their disengagement swipe!`
         return {
-          type,
-          id,
+          ...basic,
           msg: disengageSwipeDeniedMsgText,
         }
       case gameLogTypes.disengageSwipeMiss:
         const disengageSwipeMissMsgText = `A unit missed their disengagement swipe!`
         return {
-          type,
-          id,
+          ...basic,
           msg: disengageSwipeMissMsgText,
         }
       default:
