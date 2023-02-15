@@ -6,7 +6,7 @@ export const selectPointsOnBoard = ({
 }: {
   myCards: GameArmyCard[]
 }) => {
-  myCards.reduce((acc: number, curr) => {
+  return myCards.reduce((acc: number, curr) => {
     return acc + curr.points
   }, 0)
 }

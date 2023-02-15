@@ -118,14 +118,14 @@ function makeTestScenario(
   //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
   //   flat: false,
   // })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
-  // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
     gameUnits,
   })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
