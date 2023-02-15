@@ -320,13 +320,16 @@ export const selectIsInRangeOfAttack = ({
       isRanged: false,
     }
   }
-  // SHOULD HAVE DONE IT THIS WAY:
-  const isInMeleeRange = selectEngagementsForHex({
+  const attackersEngagemedUnitIDs = selectEngagementsForHex({
     hexID: attackerHex.id,
     boardHexes,
     gameUnits,
     armyCards: gameArmyCards,
-  }).includes(defenderHexUnitID)
+  })
+  const isAttackerEngaged = attackersEngagemedUnitIDs.length > 0
+  // if two units are engaged, they are in melee range
+  const isInMeleeRange = attackersEngagemedUnitIDs.includes(defenderHexUnitID)
+  // TODO: LOS / RUINS / BARRIERS
   const isInTailRange =
     isUnit2Hex && attackerTailHex
       ? hexUtilsDistance(attackerTailHex as HexCoordinates, defenderHex) <=
@@ -335,15 +338,17 @@ export const selectIsInRangeOfAttack = ({
   const isInHeadHexRange = attackerHex
     ? hexUtilsDistance(attackerHex as HexCoordinates, defenderHex) <= unitRange
     : false
-  // This totally ignores line of sight
-  const isInRangedRange = isInTailRange || isInHeadHexRange
-  const isRangeOneWhichRequiresEngagement = unitRange === 1
+  const isInRangedRange =
+    // a normal attack cannot be a ranged attack if the attacker is engaged
+    !isAttackerEngaged || isInTailRange || isInHeadHexRange
+  const isAttackerRangeOneWhichRequiresEngagement = unitRange === 1
   const isThorianSpeedDefender = selectIfGameArmyCardHasAbility(
+    // thorian speed means cannot be targeted by a normal ranged attack
     'Thorian Speed',
     defenderGameCard
   )
   const isAttackerRequiredToBeEngagedToDefender =
-    isRangeOneWhichRequiresEngagement ||
+    isAttackerRangeOneWhichRequiresEngagement ||
     (!isSpecialAttack && isThorianSpeedDefender)
   const isInRange = isAttackerRequiredToBeEngagedToDefender
     ? isInMeleeRange
@@ -351,8 +356,7 @@ export const selectIsInRangeOfAttack = ({
   return {
     isInRange,
     isMelee: isInMeleeRange,
-    // a normal attack cannot be a ranged attack if the unit is engaged
-    isRanged: isInRangedRange && !isInMeleeRange,
+    isRanged: isInRangedRange,
   }
 }
 // this function will lookup the unit on the hex, OR you can pass an override unit to place on the hex to predict engagements
