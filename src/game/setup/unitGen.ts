@@ -27,36 +27,28 @@ export const grimnakID = 'hs1015'
 const theArmies = {
   '0': [
     grimnakID,
-    // drake1ID,
-    // airbornID,
-    // tarnID,
-    // negoksaID,
-  ],
-  '1': [
+    drake1ID,
+    airbornID,
     negoksaID,
-    //  thorgrimID,
-    //   grimnakID,
-  ],
-  '2': [
-    negoksaID,
-    //  zettianID,
-    //   syvarrisID,
-  ],
-  '3': [
-    // finnID,
+    carrID,
+    kravMagaID,
+    thorgrimID,
     tarnID,
   ],
-  '4': [
-    thorgrimID,
-    //  izumiID,
-    raelinOneID,
-  ],
-  '5': [
-    grimnakID,
-    // carrID,
-    //  kravMagaID,
+  '1': [
+    deathwalker9000ID,
+    mimringID,
+    finnID,
     marroID,
+    izumiID,
+    raelinOneID,
+    zettianID,
+    syvarrisID,
   ],
+  '2': [mimringID, tarnID],
+  '3': [mimringID, tarnID],
+  '4': [mimringID, tarnID],
+  '5': [mimringID, tarnID],
 }
 // TEST SCENARIO ORDERMARKERS
 const p0_0 = `p0_${theArmies['0'][0]}`

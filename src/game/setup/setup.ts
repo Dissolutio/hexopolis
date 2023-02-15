@@ -107,21 +107,22 @@ function makeTestScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
 ): GameState {
+  console.log('🚀 ~ file: setup.ts:110 ~ numPlayers', numPlayers)
   // ArmyCards to GameArmyCards
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  const map = makeHexagonShapedMap({
-    mapSize: numPlayers * 2,
-    withPrePlacedUnits,
-    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-    flat: false,
-  })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
+  // const map = makeHexagonShapedMap({
+  //   mapSize: Math.max(numPlayers * 2, 8),
+  //   withPrePlacedUnits,
+  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+  //   flat: false,
   // })
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
   //   gameUnits,

@@ -233,10 +233,10 @@ export const MapHexes = () => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              text={`${hex.id}`}
-              textLine2={`${hex.altitude}`}
-              // text={`${hex.altitude}`}
-              // textLine2={`${unitName}`}
+              // text={`${hex.id}`}
+              // textLine2={`${hex.altitude}`}
+              text={`${hex.altitude}`}
+              textLine2={`${unitName}`}
             />
             {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
               <UnitLifeText
