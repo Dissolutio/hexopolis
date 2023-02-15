@@ -171,16 +171,16 @@ export const RopAttackControls = () => {
         </StyledButtonWrapper>
       )}
 
-      {isNoTargetsAtAll ? (
-        <ConfirmOrResetButtons
-          confirm={handleEndTurnButtonClick}
-          confirmText={'No possible attacks, end turn'}
-          noResetButton
-        />
-      ) : isAllAttacksUsed ? (
+      {isAllAttacksUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndTurnButtonClick}
           confirmText={'All attacks used, end turn'}
+          noResetButton
+        />
+      ) : isNoTargetsAtAll ? (
+        <ConfirmOrResetButtons
+          confirm={handleEndTurnButtonClick}
+          confirmText={`No possible attacks, end turn (lose remaining ${attacksLeft} attacks)`}
           noResetButton
         />
       ) : (
