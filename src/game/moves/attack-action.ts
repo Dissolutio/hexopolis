@@ -52,8 +52,15 @@ export const attackAction: Move<GameState> = {
   undoable: false,
   move: (
     { G, random, events },
-    attackingUnit: GameUnit,
-    defenderHex: BoardHex
+    {
+      attackingUnit,
+      defenderHex,
+      isStillAttacksLeft,
+    }: {
+      attackingUnit: GameUnit
+      defenderHex: BoardHex
+      isStillAttacksLeft: boolean
+    }
   ) => {
     let newStageQueue: StageQueueItem[] = []
     const { unitID: attackerUnitID } = attackingUnit
@@ -262,11 +269,13 @@ export const attackAction: Move<GameState> = {
     })
     G.gameLog = [...G.gameLog, gameLogForThisAttack]
     if (isWarriorSpirit) {
-      // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
-      newStageQueue.push({
-        playerID: attackerGameCard.playerID,
-        stage: stageNames.attacking,
-      })
+      if (isStillAttacksLeft) {
+        // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
+        newStageQueue.push({
+          playerID: attackerGameCard.playerID,
+          stage: stageNames.attacking,
+        })
+      }
       const activePlayers = getActivePlayersIdleStage({
         activePlayerID: defenderGameCard.playerID,
         activeStage: stageNames.placingAttackSpirit,
@@ -278,10 +287,12 @@ export const attackAction: Move<GameState> = {
     }
     if (isArmorSpirit) {
       // mark this so after placing spirit we can get back to attacking (or ending turn if we're out of attacks)
-      newStageQueue.push({
-        playerID: attackerGameCard.playerID,
-        stage: stageNames.attacking,
-      })
+      if (isStillAttacksLeft) {
+        newStageQueue.push({
+          playerID: attackerGameCard.playerID,
+          stage: stageNames.attacking,
+        })
+      }
       const activePlayers = getActivePlayersIdleStage({
         activePlayerID: defenderGameCard.playerID,
         activeStage: stageNames.placingArmorSpirit,

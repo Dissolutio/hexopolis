@@ -8,14 +8,14 @@ import {
   makeDevHexagonMap,
   makeGiantsTableMap,
   makeHexagonShapedMap,
-} from './mapGen'
+} from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
+import { armyCardsToGameArmyCardsForTest } from './unit-gen'
+import { scenarioNames } from './scenarios'
 import {
-  armyCardsToGameArmyCardsForTest,
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
-} from './unitGen'
-import { scenarioNames } from './scenarios'
+} from './om-gen'
 
 const someInitialGameState = {
   currentRound: 1,

@@ -1,4 +1,4 @@
-import { generateHexagon } from './hexGen'
+import { generateHexagon } from './hex-gen'
 import {
   BoardHexes,
   GameMap,

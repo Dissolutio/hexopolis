@@ -70,6 +70,8 @@ export const Notifications = () => {
           newValue,
           msg,
         } = gameLogMessage
+        const defaultDuration = 20000
+        const moreRepetitiveMsgDuration = 5000
         switch (type) {
           case gameLogTypes.move:
             toast(
@@ -77,7 +79,7 @@ export const Notifications = () => {
                 {gameLogMessage?.msg ?? ''}
               </span>,
               {
-                duration: 5000,
+                duration: moreRepetitiveMsgDuration,
                 id: gameLogMessage?.id,
               }
             )
@@ -101,7 +103,7 @@ export const Notifications = () => {
               </span>
             )
             toast(msgMindShackle, {
-              duration: 20000,
+              duration: defaultDuration,
               id: gameLogMessage?.id,
             })
             break
@@ -124,7 +126,7 @@ export const Notifications = () => {
               </span>
             )
             toast(chompMsg, {
-              duration: 20000,
+              duration: defaultDuration,
               id: gameLogMessage?.id,
             })
             break
@@ -186,7 +188,7 @@ export const Notifications = () => {
               ? stealthDodgeMsgText
               : attackMsgText
             toast(attackToast, {
-              duration: 20000,
+              duration: defaultDuration,
               id: gameLogMessage?.id,
             })
             break
@@ -194,7 +196,7 @@ export const Notifications = () => {
             toast(
               <span style={{ color: playerColors[playerID] }}>{`${msg}`}</span>,
               {
-                duration: 20000,
+                duration: defaultDuration,
                 id: gameLogMessage?.id,
               }
             )

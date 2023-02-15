@@ -15,7 +15,7 @@ import {
   selectTailHexForUnit,
   selectUnitsForCard,
 } from '../selectors'
-import { finnID, grimnakID, raelinOneID, thorgrimID } from '../setup/unitGen'
+import { finnID, grimnakID, raelinOneID, thorgrimID } from '../setup/unit-gen'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
@@ -125,6 +125,20 @@ export function selectIfGameArmyCardHasAbility(
   return gameArmyCard
     ? gameArmyCard.abilities.some((a) => a.name === abilityName)
     : false
+}
+export const selectHasSpecialAttack = (gameArmyCard?: GameArmyCard) => {
+  return {
+    hasFireLine: gameArmyCard
+      ? selectIfGameArmyCardHasAbility('Fire Line Special Attack', gameArmyCard)
+      : false,
+    hasExplosion: gameArmyCard
+      ? selectIfGameArmyCardHasAbility('Explosion Special Attack', gameArmyCard)
+      : false,
+    hasGrenade:
+      gameArmyCard && !gameArmyCard.hasThrownGrenade
+        ? selectIfGameArmyCardHasAbility('Grenade Special Attack', gameArmyCard)
+        : false,
+  }
 }
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
@@ -349,8 +363,14 @@ export const selectUnitDefenseDiceForAttack = ({
 
 // attacks allowed
 export const selectGameArmyCardAttacksAllowed = (
-  gameArmyCard: GameArmyCard
+  gameArmyCard?: GameArmyCard
 ) => {
+  if (!gameArmyCard)
+    return {
+      numberOfAttackingFigures: 0,
+      attacksAllowedPerFigure: 0,
+      totalNumberOfAttacksAllowed: 0,
+    }
   const numberOfAttackingFigures = gameArmyCard.figures
   const attacksAllowedPerFigure = selectIfGameArmyCardHasAbility(
     'Double Attack',

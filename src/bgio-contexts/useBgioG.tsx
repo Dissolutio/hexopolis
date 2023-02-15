@@ -1,3 +1,4 @@
+import { selectPointsOnBoard } from 'game/selector/stats-selectors'
 import { selectUnitsForCard } from 'game/selectors'
 import {
   GameArmyCard,
@@ -27,14 +28,7 @@ const BgioGContext = React.createContext<
 export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const { playerID, belongsToPlayer } = useBgioClientInfo()
   const myCards: GameArmyCard[] = G.gameArmyCards.filter(belongsToPlayer)
-  const myPointsOnBoard = myCards.reduce((acc: number, curr) => {
-    return acc + curr.points
-  }, 0)
-  console.log(
-    '🚀 ~ file: useBgioG.tsx:33 ~ myPointsOnBoard ~ myPointsOnBoard, pid',
-    myPointsOnBoard,
-    playerID
-  )
+  const myPointsOnBoard = selectPointsOnBoard({ myCards })
   const myAliveCards: GameArmyCard[] = myCards.filter(
     (c) => selectUnitsForCard(c.gameCardID, G.gameUnits).length > 0
   )

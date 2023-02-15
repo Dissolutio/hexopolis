@@ -15,8 +15,8 @@ import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { playerIDDisplay } from 'game/transformers'
-import { thorgrimID } from 'game/setup/unitGen'
 import { Army } from '../Armies'
+import { thorgrimID } from 'game/setup/unit-gen'
 
 export const PlaceArmorSpiritControls = () => {
   const { myAliveCards, gameArmyCards, killedArmyCards } = useBgioG()
@@ -78,9 +78,11 @@ export const PlaceArmorSpiritControls = () => {
   )
 }
 export const IdlePlaceArmorSpiritControls = () => {
-  const { gameArmyCards } = useBgioG()
+  const { gameArmyCards, killedArmyCards } = useBgioG()
   const { activePlayers } = useBgioCtx()
-  const thorgrimsCard = gameArmyCards?.find((c) => c.armyCardID === thorgrimID)
+  const thorgrimsCard = [...gameArmyCards, ...killedArmyCards]?.find(
+    (c) => c.armyCardID === thorgrimID
+  )
   const playerPlacingSpirit =
     Object.keys(activePlayers ?? {}).find(
       (k) => activePlayers?.[k] === stageNames.placingArmorSpirit
