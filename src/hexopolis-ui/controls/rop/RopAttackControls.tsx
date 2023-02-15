@@ -18,8 +18,13 @@ import {
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
   const { events } = useBgioEvents()
-  const { revealedGameCard, unitsWithTargets, freeAttacksAvailable } =
-    usePlayContext()
+  const {
+    revealedGameCard,
+    unitsWithTargets,
+    freeAttacksAvailable,
+    revealedGameCardUnits,
+  } = usePlayContext()
+  const unitsAlive = revealedGameCardUnits.length
   const revealedGameCardName = revealedGameCard?.name ?? ''
   const hasWaterClone = selectIfGameArmyCardHasAbility(
     'Water Clone',
@@ -69,7 +74,8 @@ export const RopAttackControls = () => {
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
-  const attacksLeft = totalNumberOfAttacksAllowed - attacksUsed
+  const attacksLeft =
+    Math.min(totalNumberOfAttacksAllowed, unitsAlive) - attacksUsed
   const isAllAttacksUsed = attacksLeft <= 0
   const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
