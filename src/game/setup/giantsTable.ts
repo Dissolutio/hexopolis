@@ -1197,7 +1197,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '7,4,-11': {
       q: 7,
@@ -1208,7 +1208,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '8,4,-12': {
       q: 8,
@@ -1219,7 +1219,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '9,4,-13': {
       q: 9,
@@ -1230,7 +1230,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '10,4,-14': {
       q: 10,
@@ -1241,7 +1241,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '11,4,-15': {
       q: 11,
@@ -1252,7 +1252,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '12,4,-16': {
       q: 12,
@@ -1263,7 +1263,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '13,4,-17': {
       q: 13,
@@ -1274,7 +1274,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '14,4,-18': {
       q: 14,
@@ -1285,7 +1285,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '15,4,-19': {
       q: 15,
@@ -1461,7 +1461,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '6,5,-11': {
       q: 6,
@@ -1472,7 +1472,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '7,5,-12': {
       q: 7,
@@ -1483,7 +1483,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '8,5,-13': {
       q: 8,
@@ -1494,7 +1494,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '9,5,-14': {
       q: 9,
@@ -1505,7 +1505,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '10,5,-15': {
       q: 10,
@@ -1516,7 +1516,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '11,5,-16': {
       q: 11,
@@ -1527,7 +1527,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '12,5,-17': {
       q: 12,
@@ -1538,7 +1538,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '13,5,-18': {
       q: 13,
@@ -1549,7 +1549,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '14,5,-19': {
       q: 14,
@@ -1560,7 +1560,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '15,5,-20': {
       q: 15,
@@ -1846,7 +1846,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '15,6,-21': {
       q: 15,
@@ -2121,7 +2121,7 @@ export const giantsTable = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 1,
+      altitude: 0,
     },
     '15,7,-22': {
       q: 15,
