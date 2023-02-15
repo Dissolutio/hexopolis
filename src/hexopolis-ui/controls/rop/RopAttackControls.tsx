@@ -22,11 +22,16 @@ export const RopAttackControls = () => {
   const {
     revealedGameCard,
     unitsWithTargets,
-    freeAttacksAvailable,
-    revealedGameCardUnits,
+    countOfUnmovedFiguresThatCanAttack,
+    attacksLeft,
   } = usePlayContext()
-  const unitsAlive = revealedGameCardUnits.length
   const revealedGameCardName = revealedGameCard?.name ?? ''
+  const { totalNumberOfAttacksAllowed } =
+    selectGameArmyCardAttacksAllowed(revealedGameCard)
+  const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
+  const isAllAttacksUsed = attacksLeft <= 0
+  const isNoAttacksUsed = attacksUsed <= 0
+
   const hasWaterClone = selectIfGameArmyCardHasAbility(
     'Water Clone',
     revealedGameCard
@@ -78,8 +83,8 @@ export const RopAttackControls = () => {
         } moved`}
       </StyledControlsP>
       <StyledControlsP>
-        {`${freeAttacksAvailable} attack${
-          freeAttacksAvailable !== 1 ? 's' : ''
+        {`${countOfUnmovedFiguresThatCanAttack} attack${
+          countOfUnmovedFiguresThatCanAttack !== 1 ? 's' : ''
         } available for unmoved units`}
       </StyledControlsP>
 
@@ -166,6 +171,12 @@ export const RopAttackControls = () => {
       )}
 
       {isAllAttacksUsed ? (
+        <ConfirmOrResetButtons
+          confirm={handleEndTurnButtonClick}
+          confirmText={'All attacks used, end turn'}
+          noResetButton
+        />
+      ) : isAllAttacksUsed ? (
         <ConfirmOrResetButtons
           confirm={handleEndTurnButtonClick}
           confirmText={'All attacks used, end turn'}

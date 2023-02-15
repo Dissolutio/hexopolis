@@ -64,8 +64,9 @@ type PlayContextValue = {
   revealedGameCardUnitIDs: string[]
   revealedGameCardTargetsInRange: TargetsInRange
   revealedGameCardKilledUnits: GameUnit[]
+  attacksLeft: number
   unitsWithTargets: number
-  freeAttacksAvailable: number
+  countOfUnmovedFiguresThatCanAttack: number
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
   // handlers
@@ -128,8 +129,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     )
   })
 
-  const { numberOfAttackingFigures, totalNumberOfAttacksAllowed } =
-    selectGameArmyCardAttacksAllowed(revealedGameCard)
+  const {
+    numberOfAttackingFigures,
+    totalNumberOfAttacksAllowed,
+    attacksAllowedPerFigure,
+  } = selectGameArmyCardAttacksAllowed(revealedGameCard)
   const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
   const attacksLeft =
     Math.min(totalNumberOfAttacksAllowed, unitsAliveCount) - attacksUsed
@@ -138,37 +142,47 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     (u) => u.unitID
   )
 
-  const attacksAllowed = revealedGameCard?.figures ?? 0
   const countOfUnitsThatMoved = uniqUnitsMoved.length
-  const initialFreeAttacksAvailable = attacksAllowed - countOfUnitsThatMoved
-  const unitsThatAttackedButDidNotMove = Object.keys(unitsAttacked).filter(
-    (id) => !uniqUnitsMoved.includes(id)
+  const unitIDsThatHaveAttacked = Object.keys(unitsAttacked)
+  const unitIDsThatHaveExpendedAllAttacks = unitIDsThatHaveAttacked.filter(
+    (id) => {
+      const attacksUsed = unitsAttacked[id].length
+      return attacksUsed <= attacksAllowedPerFigure
+    }
   )
-  const countFreeAttacksUsed = unitsThatAttackedButDidNotMove.length
-  const freeAttacksAvailable =
-    initialFreeAttacksAvailable - countFreeAttacksUsed
+  const initialCountOfUnmovedFiguresThatCanAttack =
+    numberOfAttackingFigures - countOfUnitsThatMoved
+  const countFreeAttacksUsed = unitIDsThatHaveAttacked.filter(
+    (id) => !uniqUnitsMoved.includes(id)
+  ).length
+  const countOfUnmovedFiguresThatCanAttack =
+    initialCountOfUnmovedFiguresThatCanAttack - countFreeAttacksUsed
+  const canUnMovedFiguresAttack = countOfUnmovedFiguresThatCanAttack > 0
+  const unitsThatCanAttack = revealedGameCardUnits
+    .filter((u) => !unitIDsThatHaveExpendedAllAttacks.includes(u.unitID))
+    .filter((u) =>
+      canUnMovedFiguresAttack ? true : uniqUnitsMoved.includes(u.unitID)
+    )
+  const unitIDsThatCanAttack = unitsThatCanAttack.map((u) => u.unitID)
 
-  // OBSOLETE TARGETS IN RANGE
-  const getRevealedGameCardTargetsInRange = (): TargetsInRange => {
+  // TARGETS IN RANGE
+  const revealedGameCardTargetsInRange = React.useMemo((): TargetsInRange => {
     if (!revealedGameCard) {
       return {}
     }
-    // first, we need to account for which units moved (if all moves were used, only those units can attack)
-    const countOfUnitsThatMoved = uniqUnitsMoved.length
-    const isAttackAvailableToUnmovedUnits =
-      countOfUnitsThatMoved < numberOfAttackingFigures
-    const unitsThatCanAttack = isAttackAvailableToUnmovedUnits
-      ? revealedGameCardUnits
-      : revealedGameCardUnits.filter((u) => uniqUnitsMoved.includes(u.unitID))
-    // for each unit, go through all hexes and count how many are in range
-    const result: TargetsInRange = unitsThatCanAttack.reduce(
-      (resultTargetsInRange, unit) => {
-        const attackerHex = selectHexForUnit(unit.unitID, boardHexes)
+    const targetsInRange: TargetsInRange = unitsThatCanAttack.reduce(
+      (resultTargetsInRange, attackingUnit) => {
+        const attackerHex = selectHexForUnit(attackingUnit.unitID, boardHexes)
+        const attackerTailHex = selectHexForUnit(
+          attackingUnit.unitID,
+          boardHexes
+        )
+
         if (!attackerHex) {
           // the unit
           return resultTargetsInRange
         }
-        const attackerPlayerID = unit.playerID
+        const attackerPlayerID = attackingUnit.playerID
         const numberUnitsInRangeForThisUnit = Object.values(boardHexes).reduce(
           (resultHexIDs: string[], iteratedHex) => {
             const endHexUnitID = iteratedHex?.occupyingUnitID ?? ''
@@ -197,18 +211,70 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         )
         return {
           ...resultTargetsInRange,
-          [unit.unitID]: numberUnitsInRangeForThisUnit,
+          [attackingUnit.unitID]: numberUnitsInRangeForThisUnit,
         }
       },
       {}
     )
-    return result
-  }
-  const revealedGameCardTargetsInRange: TargetsInRange =
-    getRevealedGameCardTargetsInRange()
+    return targetsInRange
+  }, [boardHexes, gameUnits, revealedGameCard, unitsThatCanAttack])
+  console.log(
+    '🚀 ~ file: play-phase-context.tsx:221 ~ revealedGameCardTargetsInRange ~ revealedGameCardTargetsInRange',
+    revealedGameCardTargetsInRange
+  )
   const unitsWithTargets = Object.entries(
     revealedGameCardTargetsInRange
   ).filter((e) => e[1].length > 0).length
+  // ATTACK RANGE: wip merging into targets in range
+  const [selectedUnitAttackRange, setSelectedUnitAttackRange] = useState<
+    string[]
+  >([])
+  console.log(
+    '🚀 ~ file: play-phase-context.tsx:227 ~ PlayContextProvider ~ selectedUnitAttackRange',
+    selectedUnitAttackRange
+  )
+  // effect: update attack-range when selected unit changes (only necessary in attacking stage)
+  useEffect(() => {
+    if (isAttackingStage) {
+      if (
+        selectedUnitID &&
+        selectedUnit &&
+        unitIDsThatCanAttack.includes(selectedUnitID)
+      ) {
+        const idsInRange = Object.values(boardHexes)
+          .filter((hex) => {
+            // only hexes occupied by enemy units
+            // TODO: team games
+            if (
+              !hex.occupyingUnitID ||
+              !gameUnits[hex.occupyingUnitID] ||
+              gameUnits[hex.occupyingUnitID].playerID === playerID
+            ) {
+              return false
+            }
+            const { isInRange } = selectIsInRangeOfAttack({
+              attackingUnit: selectedUnit,
+              defenderHex: hex,
+              gameArmyCards: gameArmyCards,
+              boardHexes: boardHexes,
+              gameUnits: gameUnits,
+            })
+            return isInRange
+          })
+          .map((hex) => hex.id)
+        setSelectedUnitAttackRange(idsInRange)
+      }
+    }
+  }, [
+    boardHexes,
+    gameArmyCards,
+    gameUnits,
+    isAttackingStage,
+    playerID,
+    selectedUnit,
+    selectedUnitID,
+    unitIDsThatCanAttack,
+  ])
 
   // DISENGAGE CONFIRM AND DISENGAGE RELATED
   const [disengageAttempt, setDisengageAttempt] = useState<
@@ -248,13 +314,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     setIsWalkingFlyer((s) => !s)
   }
 
-  // MOVE AND ATTACK RANGE
+  // MOVE RANGE
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
   )
-  const [selectedUnitAttackRange, setSelectedUnitAttackRange] = useState<
-    string[]
-  >([])
+
   const { safeMoves, engageMoves, disengageMoves } =
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
   // effect: update moverange when selected unit changes (only necessary in movement stage)
@@ -287,42 +351,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     selectedUnitID,
     isGrappleGun,
     uniqUnitsMoved.length,
-  ])
-  // effect: update attack-range when selected unit changes (only necessary in attacking stage)
-  useEffect(() => {
-    if (isAttackingStage) {
-      if (selectedUnitID && selectedUnit) {
-        const idsInRange = Object.values(boardHexes)
-          .filter((hex) => {
-            // if hex is not occupied by enemy unit, return false
-            if (
-              !hex.occupyingUnitID ||
-              !gameUnits[hex.occupyingUnitID] ||
-              gameUnits[hex.occupyingUnitID].playerID === playerID
-            ) {
-              return false
-            }
-            const { isInRange } = selectIsInRangeOfAttack({
-              attackingUnit: selectedUnit,
-              defenderHex: hex,
-              gameArmyCards: gameArmyCards,
-              boardHexes: boardHexes,
-              gameUnits: gameUnits,
-            })
-            return isInRange
-          })
-          .map((hex) => hex.id)
-        setSelectedUnitAttackRange(idsInRange)
-      }
-    }
-  }, [
-    boardHexes,
-    gameArmyCards,
-    gameUnits,
-    isAttackingStage,
-    playerID,
-    selectedUnit,
-    selectedUnitID,
   ])
 
   // WATER CLONE
@@ -441,7 +469,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         setSelectedUnitID('')
       }
       // attack with selected unit
-      // the selecting of a special attack is split off in MapHexes, weird but let's GrenadeSA reuse some stuff
+      // the selecting of a special attack is split off in MapHexes, weird but lets GrenadeSA reuse some stuff
       if (isAttackingStage) {
         if (selectedUnit && isEndHexEnemyOccupied) {
           const { isInRange } = selectIsInRangeOfAttack({
@@ -493,7 +521,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCardTargetsInRange,
         revealedGameCardKilledUnits,
         unitsWithTargets,
-        freeAttacksAvailable,
+        attacksLeft,
+        countOfUnmovedFiguresThatCanAttack,
         clonerHexIDs: clonerHexes,
         clonePlaceableHexIDs: clonePlaceableHexIDs,
         // HANDLERS
