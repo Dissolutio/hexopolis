@@ -25,8 +25,38 @@ export function CreateMatchForm() {
           onChange={(e) => setMatchName(e.target.value)}
         />
       </label> */}
-
-      <label htmlFor="numPlayersSelect">Select number of players:</label>
+      <p>
+        Currently there is only one cool map/scenario, it's the one already
+        selected, Clashing Fronts for 2 Players at Table of the Giants. Whoever
+        joins the match first will be Player 1.
+      </p>
+      These are the starting armies:
+      <h3>Player 1</h3>
+      <ul>
+        <li>Krav Maga</li>
+        <li>Tarn Viking Warriors</li>
+        <li>Grimnak</li>
+        <li>
+          Airborn Elite ("The Drop" Ability not yet functional, but "Grenade"
+          works!)
+        </li>
+        <li>Ne-Gok-Sa</li>
+        <li>Agent Carr</li>
+        <li>Thorgrim</li>
+        <li>Syvarris</li>
+      </ul>
+      <h3>Player 2</h3>
+      <ul>
+        <li>Sgt. Drake Alexander</li>
+        <li>Izumi Samurari</li>
+        <li>Zettian Guards</li>
+        <li>Deathwalker 9000</li>
+        <li>Marro Warriors</li>
+        <li>Mimring</li>
+        <li>Finn the Viking Champion</li>
+        <li>Raelin the Kyrie Warrior</li>
+      </ul>
+      <label htmlFor="numPlayersSelect">Select map/scenario:</label>
       <select
         name="numPlayers"
         value={scenarioName}
