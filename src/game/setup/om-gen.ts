@@ -1,4 +1,4 @@
-import { OrderMarkers, PlayerState } from 'game/types'
+import { OrderMarkers, PlayerState } from '../types'
 import { startingArmies } from './unit-gen'
 
 // TEST SCENARIO ORDER MARKERS
