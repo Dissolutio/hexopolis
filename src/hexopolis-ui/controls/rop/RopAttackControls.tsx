@@ -21,6 +21,7 @@ export const RopAttackControls = () => {
   const { events } = useBgioEvents()
   const {
     revealedGameCard,
+    revealedGameCardTargetsInRange,
     unitsWithTargets,
     countOfUnmovedFiguresThatCanAttack,
     attacksLeft,
@@ -52,7 +53,7 @@ export const RopAttackControls = () => {
   if (!revealedGameCard) {
     return null
   }
-
+  const isNoTargetsAtAll = unitsWithTargets === 0
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
@@ -170,10 +171,10 @@ export const RopAttackControls = () => {
         </StyledButtonWrapper>
       )}
 
-      {isAllAttacksUsed ? (
+      {isNoTargetsAtAll ? (
         <ConfirmOrResetButtons
           confirm={handleEndTurnButtonClick}
-          confirmText={'All attacks used, end turn'}
+          confirmText={'No possible attacks, end turn'}
           noResetButton
         />
       ) : isAllAttacksUsed ? (
