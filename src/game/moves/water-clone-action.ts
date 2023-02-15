@@ -49,9 +49,10 @@ export const rollForWaterClone: Move<GameState> = (
       delete waterCloneRoll?.placements[keyOfPlacements]
     }
   })
+  const cloneCount = Object.values(waterCloneRoll?.placements ?? {}).length
+  waterCloneRoll.cloneCount = cloneCount
   G.waterCloneRoll = waterCloneRoll
   // add to game log
-  const cloneCount = Object.values(waterCloneRoll?.placements ?? {}).length
   const rollsAndThreshholds = Object.keys(waterCloneRoll?.diceRolls ?? {}).map(
     (gameUnitID) => {
       return [
@@ -60,7 +61,7 @@ export const rollForWaterClone: Move<GameState> = (
       ]
     }
   )
-  const id = `r${G.currentRound}:om${G.currentOrderMarker}:waterClonse`
+  const id = `r${G.currentRound}:om${G.currentOrderMarker}:waterClone`
   const gameLogForThisMove = encodeGameLogMessage({
     type: gameLogTypes.waterClone,
     id,

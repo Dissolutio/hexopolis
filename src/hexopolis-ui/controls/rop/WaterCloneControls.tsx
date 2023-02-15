@@ -91,7 +91,7 @@ export const WaterCloneControls = () => {
   if (waterCloneRoll) {
     return (
       <>
-        <StyledControlsHeaderH2>Water Clone</StyledControlsHeaderH2>
+        <StyledControlsHeaderH2>Place your Water Clones</StyledControlsHeaderH2>
         <StyledControlsP>{`${cloningsWon} of your clones were successful.`}</StyledControlsP>
         <StyledControlsP>{`You rolled: ${Object.values(
           waterCloneRoll.diceRolls
