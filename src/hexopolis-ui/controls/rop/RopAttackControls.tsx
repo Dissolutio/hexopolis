@@ -12,6 +12,7 @@ import { stageNames } from 'game/constants'
 import { RopAttackMoveHeader } from './RopMoveControls'
 import {
   selectGameArmyCardAttacksAllowed,
+  selectHasSpecialAttack,
   selectIfGameArmyCardHasAbility,
 } from 'game/selector/card-selectors'
 
@@ -35,49 +36,21 @@ export const RopAttackControls = () => {
     'Mind Shackle 20',
     revealedGameCard
   )
-  const selectHasSpecialAttack = () => {
-    return {
-      hasFireLine: revealedGameCard
-        ? selectIfGameArmyCardHasAbility(
-            'Fire Line Special Attack',
-            revealedGameCard
-          )
-        : false,
-      hasExplosion: revealedGameCard
-        ? selectIfGameArmyCardHasAbility(
-            'Explosion Special Attack',
-            revealedGameCard
-          )
-        : false,
-      hasGrenade:
-        revealedGameCard && !revealedGameCard.hasThrownGrenade
-          ? selectIfGameArmyCardHasAbility(
-              'Grenade Special Attack',
-              revealedGameCard
-            )
-          : false,
-    }
-  }
-  const { hasFireLine, hasExplosion, hasGrenade } = selectHasSpecialAttack()
+  const { hasFireLine, hasExplosion, hasGrenade } =
+    selectHasSpecialAttack(revealedGameCard)
   const hasBerserkerCharge = selectIfGameArmyCardHasAbility(
     'Berserker Charge',
     revealedGameCard
   )
+
   // Early return if no card is revealed, this should not happen!
   if (!revealedGameCard) {
     return null
   }
-  const { totalNumberOfAttacksAllowed } =
-    selectGameArmyCardAttacksAllowed(revealedGameCard)
 
-  const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
-  const attacksLeft =
-    Math.min(totalNumberOfAttacksAllowed, unitsAlive) - attacksUsed
-  const isAllAttacksUsed = attacksLeft <= 0
-  const isNoAttacksUsed = attacksUsed <= 0
   const onClickUseWaterClone = () => {
     events?.setStage?.(stageNames.waterClone)
   }

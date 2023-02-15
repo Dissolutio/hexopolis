@@ -126,6 +126,20 @@ export function selectIfGameArmyCardHasAbility(
     ? gameArmyCard.abilities.some((a) => a.name === abilityName)
     : false
 }
+export const selectHasSpecialAttack = (gameArmyCard?: GameArmyCard) => {
+  return {
+    hasFireLine: gameArmyCard
+      ? selectIfGameArmyCardHasAbility('Fire Line Special Attack', gameArmyCard)
+      : false,
+    hasExplosion: gameArmyCard
+      ? selectIfGameArmyCardHasAbility('Explosion Special Attack', gameArmyCard)
+      : false,
+    hasGrenade:
+      gameArmyCard && !gameArmyCard.hasThrownGrenade
+        ? selectIfGameArmyCardHasAbility('Grenade Special Attack', gameArmyCard)
+        : false,
+  }
+}
 
 // ATTACK DICE FOR SPECIFIC ATTACK:
 // attackerHex and defenderHex can be head or tail here, does not matter, they only have same altitude for head/tail, and also yield same engagements
