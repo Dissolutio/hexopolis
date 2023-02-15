@@ -349,8 +349,14 @@ export const selectUnitDefenseDiceForAttack = ({
 
 // attacks allowed
 export const selectGameArmyCardAttacksAllowed = (
-  gameArmyCard: GameArmyCard
+  gameArmyCard?: GameArmyCard
 ) => {
+  if (!gameArmyCard)
+    return {
+      numberOfAttackingFigures: 0,
+      attacksAllowedPerFigure: 0,
+      totalNumberOfAttacksAllowed: 0,
+    }
   const numberOfAttackingFigures = gameArmyCard.figures
   const attacksAllowedPerFigure = selectIfGameArmyCardHasAbility(
     'Double Attack',

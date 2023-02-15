@@ -70,7 +70,7 @@ export const RopAttackControls = () => {
   const { totalNumberOfAttacksAllowed } =
     selectGameArmyCardAttacksAllowed(revealedGameCard)
 
-  const attacksUsed = Object.values(unitsAttacked).flat().length
+  const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
   const handleEndTurnButtonClick = () => {
     events?.endTurn?.()
   }
