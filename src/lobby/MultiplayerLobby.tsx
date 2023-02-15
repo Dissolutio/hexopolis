@@ -3,10 +3,11 @@ import styled from 'styled-components'
 
 import { useAuth } from 'hooks'
 import { useMultiplayerLobby } from './useMultiplayerLobby'
-import { CreateMatchButton } from './CreateMatchButton'
 import { SelectedGameMatchList, MatchListItem } from './SelectedGameMatchList'
 import { GameSelect } from './GameSelect'
 import { Login } from './Login'
+import { LeaveJoinedMatchButton } from './LeaveJoinedMatchButton'
+import { CreateMatchForm } from './CreateMatchForm'
 
 export const MultiplayerLobby = () => {
   const {
@@ -99,15 +100,16 @@ export const MultiplayerLobby = () => {
                 </LinkAsButton>
               </p>
               <div>
-                <button onClick={handleLeaveJoinedMatch}>
-                  Leave Joined Game
-                </button>
+                <LeaveJoinedMatchButton />
               </div>
             </>
           ) : (
             <>
+              <details>
+                <summary>{`Create new match`}</summary>
+                <CreateMatchForm />
+              </details>
               <h2>{`Matches for ${selectedGame} (total: ${numCurrentMatches})`}</h2>
-              <CreateMatchButton />
               <SelectedGameMatchList />
             </>
           )}

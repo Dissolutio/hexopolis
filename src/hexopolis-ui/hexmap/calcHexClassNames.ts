@@ -44,10 +44,34 @@ export function calcPlacementHexClassNames({
 
   // highlight all player startzones
   if (startZones?.['0'].includes(hex.id)) {
-    classNames = classNames.concat(` maphex__startzone--player0 `)
+    classNames = classNames.concat(
+      ` maphex__startzone maphex__startzone--player0 `
+    )
   }
   if (startZones?.['1'].includes(hex.id)) {
-    classNames = classNames.concat(` maphex__startzone--player1 `)
+    classNames = classNames.concat(
+      ` maphex__startzone maphex__startzone--player1 `
+    )
+  }
+  if (startZones?.['2'].includes(hex.id)) {
+    classNames = classNames.concat(
+      ` maphex__startzone maphex__startzone--player2`
+    )
+  }
+  if (startZones?.['3'].includes(hex.id)) {
+    classNames = classNames.concat(
+      ` maphex__startzone maphex__startzone--player3`
+    )
+  }
+  if (startZones?.['4'].includes(hex.id)) {
+    classNames = classNames.concat(
+      ` maphex__startzone maphex__startzone--player4`
+    )
+  }
+  if (startZones?.['5'].includes(hex.id)) {
+    classNames = classNames.concat(
+      ` maphex__startzone maphex__startzone--player5`
+    )
   }
 
   // if we have a unit selected, highlight the unit and placeable hexes

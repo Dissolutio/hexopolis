@@ -2,6 +2,7 @@ import { GameArmyCard, GameState, GameUnits } from '../types'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
+  generateReadyStateForNumPlayers,
 } from '../constants'
 import {
   makeDevHexagonMap,
@@ -14,82 +15,123 @@ import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
 } from './unitGen'
+import { scenarioNames } from './scenarios'
 
-const isDevOverrideState =
-  process.env.NODE_ENV === 'production'
-    ? false
-    : // toggle this one to test the game with pre-placed units
-      true
-const frequentlyChangedDevState = isDevOverrideState
-  ? {
-      placementReady: {
-        '0': true,
-        '1': true,
-      },
-      orderMarkersReady: { '0': true, '1': true },
-      roundOfPlayStartReady: { '0': true, '1': true },
-      players: playersStateWithPrePlacedOMs(),
-      orderMarkers: generatePreplacedOrderMarkers(),
-    }
-  : {
-      placementReady: {
-        '0': false,
-        '1': false,
-      },
-      orderMarkersReady: { '0': false, '1': false },
-      roundOfPlayStartReady: { '0': false, '1': false },
-      orderMarkers: generateBlankOrderMarkers(),
-      players: generateBlankPlayersState(),
-    }
+const someInitialGameState = {
+  currentRound: 1,
+  currentOrderMarker: 0,
+  initiative: [],
+  unitsMoved: [],
+  disengagesAttempting: undefined,
+  disengagedUnitIds: [],
+  unitsAttacked: {},
+  isCurrentPlayerAttacking: false,
+  unitsKilled: {},
+  gameLog: [],
+  killedArmyCards: [],
+  // gameUnits,
+  killedUnits: {},
+  // hexMap: map.hexMap,
+  // boardHexes: map.boardHexes,
+  // startZones: map.startZones,
+  waterClonesPlaced: [],
+  grenadesThrown: [],
+  chompsAttempted: [],
+  mindShacklesAttempted: [],
+  berserkerChargeRoll: undefined,
+  berserkerChargeSuccessCount: 0,
+  stageQueue: [],
+}
+const frequentlyChangedDevState = (
+  numPlayers: number,
+  isDevOverrideState?: boolean
+) =>
+  isDevOverrideState
+    ? {
+        placementReady: generateReadyStateForNumPlayers(numPlayers, true),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        roundOfPlayStartReady: generateReadyStateForNumPlayers(
+          numPlayers,
+          true
+        ),
+        players: playersStateWithPrePlacedOMs(numPlayers),
+        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        ...someInitialGameState,
+      }
+    : {
+        placementReady: generateReadyStateForNumPlayers(numPlayers, false),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        roundOfPlayStartReady: generateReadyStateForNumPlayers(
+          numPlayers,
+          false
+        ),
+        orderMarkers: generateBlankOrderMarkers(),
+        players: generateBlankPlayersState(),
+        ...someInitialGameState,
+      }
 //!! TEST SCENARIO
-export const gameSetupInitialGameState = makeTestScenario()
-function makeTestScenario(): GameState {
-  // ArmyCards to GameArmyCards
-  // These are the cards that deploy normally, during the placement phase (Todo: handle any other summoned or non-deployed units i.e. The Airborne Elite, Rechets of Bogdan...)
-  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest()
-  // GameUnits
+export const gameSetupInitialGameState = ({
+  numPlayers,
+  scenarioName,
+  withPrePlacedUnits,
+}: {
+  numPlayers: number
+  scenarioName?: string
+  withPrePlacedUnits?: boolean
+}) => {
+  if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants2) {
+    return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  }
+  return makeTestScenario(numPlayers, withPrePlacedUnits)
+}
+function makeGiantsTable2PlayerScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
-  // Map
-  // const map = makeHexagonShapedMap({
-  //   mapSize: 6,
-  //   withPrePlacedUnits: isDevOverrideState,
-  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-  //   flat: false,
-  // })
   const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
     gameUnits,
   })
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnits,
-  // })
   return {
-    ...frequentlyChangedDevState,
-    currentRound: 1,
-    currentOrderMarker: 0,
-    initiative: [],
-    unitsMoved: [],
-    disengagesAttempting: undefined,
-    disengagedUnitIds: [],
-    unitsAttacked: {},
-    isCurrentPlayerAttacking: false,
-    unitsKilled: {},
-    gameLog: [],
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
-    killedArmyCards: [],
-    initialArmyCards: [...armyCards],
     gameUnits,
-    killedUnits: {},
     hexMap: map.hexMap,
     boardHexes: map.boardHexes,
     startZones: map.startZones,
-    waterClonesPlaced: [],
-    grenadesThrown: [],
-    chompsAttempted: [],
-    mindShacklesAttempted: [],
-    berserkerChargeRoll: undefined,
-    berserkerChargeSuccessCount: 0,
-    stageQueue: [],
+  }
+}
+function makeTestScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  // GameUnits
+  const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  // Map
+  const map = makeHexagonShapedMap({
+    mapSize: numPlayers * 2,
+    withPrePlacedUnits,
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+    flat: false,
+  })
+  // const map = makeGiantsTableMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnits,
+  // })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits,
+  // })
+  return {
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
   }
 }

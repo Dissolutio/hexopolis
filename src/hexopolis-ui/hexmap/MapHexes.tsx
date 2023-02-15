@@ -18,7 +18,7 @@ import {
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
-import { HexIDText } from './HexIDText'
+import { HexIDText, UnitLifeText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 
 export const MapHexes = () => {
@@ -202,6 +202,8 @@ export const MapHexes = () => {
       const isUnitTail = isPlacementPhase
         ? editingBoardHexes?.[hex.id]?.isUnitTail
         : hex.isUnitTail
+      const isUnitAHeroOrMultiLife =
+        gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
       return (
         <Hexagon
           key={i}
@@ -231,11 +233,18 @@ export const MapHexes = () => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              // text={`${hex.id}`}
-              // textLine2={`${hex.altitude}`}
-              text={`${hex.altitude}`}
-              textLine2={`${unitName}`}
+              text={`${hex.id}`}
+              textLine2={`${hex.altitude}`}
+              // text={`${hex.altitude}`}
+              // textLine2={`${unitName}`}
             />
+            {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
+              <UnitLifeText
+                unit={gameUnit}
+                card={gameUnitCard}
+                hexSize={hexSize}
+              />
+            )}
           </g>
         </Hexagon>
       )

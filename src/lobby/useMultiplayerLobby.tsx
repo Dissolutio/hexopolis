@@ -3,8 +3,8 @@ import { LobbyAPI } from 'boardgame.io'
 
 import { useBgioLobbyApi } from '../bgio-contexts/useBgioLobbyApi'
 import { useAuth } from 'hooks'
-import { defaultSetupData, MYGAME_NUMPLAYERS } from 'game/game'
-import { gameSetupInitialGameState } from 'game/setup/setup'
+import { SetupData } from 'game/types'
+import { hexoscapeScenarios } from 'game/setup/scenarios'
 
 type MultiplayerLobbyCtxValue = {
   // lobby state
@@ -14,11 +14,12 @@ type MultiplayerLobbyCtxValue = {
     [gameName: string]: string
   }
   selectedGame: string
+  leaveMatchAndSignout: () => void
   // requests
   updateLobbyMatchesForSelectedGame: () => Promise<LobbyAPI.MatchList>
   updateLobbyGames: () => Promise<void>
   handleSelectGameChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  handleCreateMatchButton: () => Promise<void>
+  handleCreateMatch: (scenarioName: string) => Promise<void>
   handleJoinMatch: (params: {
     playerID: string
     matchID: string
@@ -42,7 +43,8 @@ const MultiplayerLobbyContext = React.createContext<
 export function MultiplayerLobbyProvider({
   children,
 }: MultiplayerLobbyProviderProps) {
-  const { updateCredentials, storedCredentials, isAuthenticated } = useAuth()
+  const { updateCredentials, storedCredentials, isAuthenticated, signout } =
+    useAuth()
   const {
     getLobbyGames,
     getLobbyMatches,
@@ -159,7 +161,7 @@ export function MultiplayerLobbyProvider({
   }, [storedCredentials, handleVerifyJoinedMatch])
 
   // handler createMatch- create a match, then select it (which refreshes the match), then join it
-  async function handleCreateMatchButton() {
+  async function handleCreateMatch(scenarioName: string) {
     // requires a username first
     if (!isAuthenticated) {
       setCreateMatchError(
@@ -168,9 +170,15 @@ export function MultiplayerLobbyProvider({
       return
     }
     try {
+      const numPlayers = hexoscapeScenarios[scenarioName].numPlayers
       const { matchID } = await createMatch(`${selectedGame}`, {
-        setupData: gameSetupInitialGameState,
-        numPlayers: MYGAME_NUMPLAYERS,
+        // TODO: Match creation options
+        setupData: {
+          numPlayers,
+          scenarioName: scenarioName,
+          withPrePlacedUnits: false,
+        } as SetupData,
+        numPlayers,
         unlisted: false,
       })
       if (matchID) {
@@ -230,27 +238,32 @@ export function MultiplayerLobbyProvider({
   // handle leave current match
   async function handleLeaveJoinedMatch() {
     const { gameName, matchID, playerID, playerCredentials } = storedCredentials
-    updateCredentials({
-      playerName: '',
-      gameName: '',
-      matchID: '',
-      playerID: '',
-      playerCredentials: '',
-    })
+    // UNSURE WHY WE DID THIS IN THE PAST, BUT IT'S ANNOYING IF NOT NEEDED (you leave a game and have to re-enter your name)
+    // updateCredentials({
+    //   playerName: '',
+    //   gameName: '',
+    //   matchID: '',
+    //   playerID: '',
+    //   playerCredentials: '',
+    // })
     setVerifyMatchSuccess('')
     setVerifyMatchError('')
     try {
-      await leaveMatch({
-        gameName,
-        matchID,
-        options: { playerID, credentials: playerCredentials },
-      })
+      if (gameName && matchID)
+        await leaveMatch({
+          gameName,
+          matchID,
+          options: { playerID, credentials: playerCredentials },
+        })
     } catch (error) {
       console.log(`🚀 ~ handleLeaveJoinedMatch ~ error`, error)
     }
     await updateLobbyMatchesForSelectedGame()
   }
-
+  const leaveMatchAndSignout = () => {
+    handleLeaveJoinedMatch()
+    signout()
+  }
   return (
     <MultiplayerLobbyContext.Provider
       value={{
@@ -265,9 +278,10 @@ export function MultiplayerLobbyProvider({
         updateLobbyGames,
         updateLobbyMatchesForSelectedGame,
         handleSelectGameChange,
-        handleCreateMatchButton,
+        handleCreateMatch,
         handleJoinMatch,
         handleLeaveJoinedMatch,
+        leaveMatchAndSignout,
         handleVerifyJoinedMatch,
       }}
     >

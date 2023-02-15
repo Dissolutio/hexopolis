@@ -6,6 +6,7 @@ import { AbilityReadout } from './FireLineSAControls'
 import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
+import { OpenAbilityModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
 
 export const ChompControls = () => {
   const {
@@ -14,7 +15,8 @@ export const ChompControls = () => {
   const { events } = useBgioEvents()
   const { chompsAttempted } = useBgioG()
   const alreadyChomped = chompsAttempted.length > 0
-  const { revealedGameCard: grimnaksCard } = usePlayContext()
+  const { revealedGameCard } = usePlayContext()
+  const ability = revealedGameCard?.abilities?.[0]
   const { selectSpecialAttack, chosenChomp } = useSpecialAttackContext()
   const goBackToMove = () => {
     selectSpecialAttack('')
@@ -32,8 +34,10 @@ export const ChompControls = () => {
             You already chomped this turn, go back to movement
           </GreenButton>
         </StyledButtonWrapper>
-        {grimnaksCard?.abilities?.[0] && (
-          <AbilityReadout cardAbility={grimnaksCard.abilities[0]} />
+        {ability && (
+          <StyledButtonWrapper>
+            <OpenAbilityModalButton cardAbility={ability} />
+          </StyledButtonWrapper>
         )}
       </>
     )
@@ -49,8 +53,10 @@ export const ChompControls = () => {
           Bon Apetit! (confirm selected target)
         </RedButton>
       </StyledButtonWrapper>
-      {grimnaksCard?.abilities?.[0] && (
-        <AbilityReadout cardAbility={grimnaksCard.abilities[0]} />
+      {ability && (
+        <StyledButtonWrapper>
+          <OpenAbilityModalButton cardAbility={ability} />
+        </StyledButtonWrapper>
       )}
     </>
   )

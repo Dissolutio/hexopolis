@@ -23,8 +23,11 @@ export const mindShackleAction: Move<GameState> = {
     const targetGameCard = G.gameArmyCards.find(
       (gc) => gc.gameCardID === targetUnit.gameCardID
     )
+    const sourceGameCard = G.gameArmyCards.find(
+      (gc) => gc.gameCardID === G.gameUnits[sourceUnitID].gameCardID
+    )
     // DISALLOW - missing needed ingredients
-    if (!targetUnit || !targetGameCard) {
+    if (!targetUnit || !targetGameCard || !sourceGameCard) {
       console.error(
         `Mind Shackle action denied: missing needed ingredients to calculate action`
       )
@@ -73,10 +76,13 @@ export const mindShackleAction: Move<GameState> = {
     const gameLogForMindShackle = encodeGameLogMessage({
       type: gameLogTypes.mindShackle,
       id: `r${G.currentRound}:om${G.currentOrderMarker}:${sourceUnitID}:mindshackle:${targetUnitID}`,
+      playerID: sourcePlayerID,
+      unitName: sourceGameCard.name,
+      defenderPlayerID: targetGameCard.playerID,
+      defenderUnitName: unitMindShackledName,
       isRollSuccessful: isSuccessful,
       roll,
-      // rollThreshold,
-      defenderUnitName: unitMindShackledName,
+      rollThreshold,
     })
     G.gameLog.push(gameLogForMindShackle)
 

@@ -1,38 +1,21 @@
-import { BrowserRouter, Route, Link, Routes } from 'react-router-dom'
+import { Route, Link, Routes } from 'react-router-dom'
 import { Client } from 'boardgame.io/react'
-import { Local, SocketIO } from 'boardgame.io/multiplayer'
+import { SocketIO } from 'boardgame.io/multiplayer'
 import { Debug } from 'boardgame.io/debug'
 import { Helmet } from 'react-helmet'
 import { BgioLobbyApiProvider } from 'bgio-contexts'
 import { AuthProvider, useAuth } from 'hooks/useAuth'
 import { MultiplayerLobby, MultiplayerLobbyProvider } from 'lobby'
 import { MultiplayerNav } from './MultiplayerNav'
-import { HexedMeadow } from 'game/game'
+import { Hexoscape } from 'game/game'
 import { isLocalApp, SERVER } from './constants'
 import { Board } from 'hexopolis-ui/Board'
-
-// Enable Redux DevTools in development
-const reduxDevTools =
-  window &&
-  (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-  (window as any).__REDUX_DEVTOOLS_EXTENSION__()
-
-const hexedMeadowClientOptions = {
-  game: HexedMeadow,
-  board: Board,
-  numPlayers: 2,
-}
-export const specialMatchIdToTellHeaderNavThisMatchIsLocal = 'localGameId'
-const DemoGameClient = Client({
-  ...hexedMeadowClientOptions,
-  multiplayer: Local(),
-  enhancer: reduxDevTools,
-  // debug: { impl: Debug },
-  debug: false,
-})
+import { DemoLocalGameLinks, LocalApp, LocalDemoClients } from './LocalApp'
 
 const MultiplayerGameClient = Client({
-  ...hexedMeadowClientOptions,
+  game: Hexoscape,
+  board: Board,
+  numPlayers: 2,
   multiplayer: SocketIO({ server: SERVER }),
   debug: false,
 })
@@ -48,67 +31,60 @@ export const App = () => {
             <Helmet>
               <title>Hexoscape</title>
             </Helmet>
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <>
-                      <MultiplayerNav />
-                      <MultiplayerLobby />
-                    </>
-                  }
-                />
-                <Route
-                  path="/demo"
-                  element={
-                    <>
-                      <MultiplayerNav />
-                      <DemoGameClient
-                        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
-                        playerID="0"
-                      />
-                      <DemoGameClient
-                        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
-                        playerID="1"
-                      />
-                    </>
-                  }
-                />
-                <Route
-                  path="/play"
-                  element={
-                    <>
-                      <MultiplayerNav />
-                      <PlayPage />
-                    </>
-                  }
-                />
-              </Routes>
-            </BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <MultiplayerNav />
+                    <MultiplayerLobby />
+                  </>
+                }
+              />
+              <Route
+                path="/play"
+                element={
+                  <>
+                    <PlayPage />
+                  </>
+                }
+              />
+              <Route
+                path="/demo"
+                element={
+                  <>
+                    <MultiplayerNav />
+                    <DemoLocalGameLinks />
+                  </>
+                }
+              />
+              {/* Copied from Local App, because Routes can't handle a non-Route child */}
+              <Route
+                path="/local2"
+                element={<LocalDemoClients numPlayers={2} />}
+              />
+              <Route
+                path="/local3"
+                element={<LocalDemoClients numPlayers={3} />}
+              />
+              <Route
+                path="/local4"
+                element={<LocalDemoClients numPlayers={4} />}
+              />
+              <Route
+                path="/local5"
+                element={<LocalDemoClients numPlayers={5} />}
+              />
+              <Route
+                path="/local6"
+                element={<LocalDemoClients numPlayers={6} />}
+              />
+            </Routes>
           </MultiplayerLobbyProvider>
         </BgioLobbyApiProvider>
       </AuthProvider>
     )
   }
-}
-
-const LocalApp = () => {
-  return (
-    <>
-      <Helmet>
-        <title>Hexoscape - Local Game</title>
-      </Helmet>
-      <DemoGameClient
-        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
-        playerID="0"
-      />
-      <DemoGameClient
-        matchID={specialMatchIdToTellHeaderNavThisMatchIsLocal}
-        playerID="1"
-      />
-    </>
-  )
 }
 
 const PlayPage = () => {

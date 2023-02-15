@@ -8,16 +8,17 @@ import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
-import { AbilityReadout } from './FireLineSAControls'
 import { selectGameCardByID, selectUnitForHex } from 'game/selectors'
 import { uniqBy } from 'lodash'
+import { OpenAbilityModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
 
 export const ExplosionSAControls = () => {
   const {
     moves: { rollForExplosionSpecialAttack },
   } = useBgioMoves()
   const { events } = useBgioEvents()
-  const { revealedGameCard: attackersCard } = usePlayContext()
+  const { revealedGameCard } = usePlayContext()
+  const ability = revealedGameCard?.abilities[0]
   const { boardHexes, gameArmyCards, gameUnits } = useBgioG()
   const {
     selectSpecialAttack,
@@ -90,8 +91,10 @@ export const ExplosionSAControls = () => {
           Launch payload! (confirm selected target)
         </RedButton>
       </StyledButtonWrapper>
-      {attackersCard?.abilities?.[0] && (
-        <AbilityReadout cardAbility={attackersCard.abilities[0]} />
+      {ability && (
+        <StyledButtonWrapper>
+          <OpenAbilityModalButton cardAbility={ability} />
+        </StyledButtonWrapper>
       )}
     </>
   )

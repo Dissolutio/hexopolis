@@ -7,8 +7,8 @@ import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { usePlayContext } from 'hexopolis-ui/contexts'
-import { AbilityReadout } from './FireLineSAControls'
 import { useState } from 'react'
+import { OpenAbilityModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
 
 export const BerserkerChargeControls = () => {
   const {
@@ -16,6 +16,7 @@ export const BerserkerChargeControls = () => {
   } = useBgioMoves()
   const { events } = useBgioEvents()
   const { revealedGameCard } = usePlayContext()
+  const ability = revealedGameCard?.abilities?.[0]
   // The idea here is we render with isJustRolled=false, player rolls and succeeds (toggles to true), and then their unitsMoved will be empty, but we don't yet want to show the NoUnitsMoved view, so we have this toggle to keep the view on the JustRolled view and not yet the NoUnitsMoved view, but once they navigate to move/attack and come back, the toggle will be false and we'll show the NoUnitsMoved view if applicable
   const [isJustRolled, setIsJustRolled] = useState<boolean>(false)
   const { unitsMoved, berserkerChargeRoll, berserkerChargeSuccessCount } =
@@ -49,7 +50,11 @@ export const BerserkerChargeControls = () => {
           <GreenButton onClick={goBackToAttack}>Go to attack</GreenButton>
           <GreenButton onClick={goBackToMove}>Go to move</GreenButton>
         </StyledButtonWrapper>
-        <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
+        {ability && (
+          <StyledButtonWrapper>
+            <OpenAbilityModalButton cardAbility={ability} />
+          </StyledButtonWrapper>
+        )}
       </>
     )
   }
@@ -69,7 +74,11 @@ export const BerserkerChargeControls = () => {
               I see, begin the raid! (go to attack)
             </GreenButton>
           </StyledButtonWrapper>
-          <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
+          {ability && (
+            <StyledButtonWrapper>
+              <OpenAbilityModalButton cardAbility={ability} />
+            </StyledButtonWrapper>
+          )}
         </>
       )
     }
@@ -105,7 +114,11 @@ export const BerserkerChargeControls = () => {
         </GreenButton>
         <RedButton onClick={doRoll}>Roll for Berserker Charge!</RedButton>
       </StyledButtonWrapper>
-      <AbilityReadout cardAbility={revealedGameCard?.abilities?.[0]} />
+      {ability && (
+        <StyledButtonWrapper>
+          <OpenAbilityModalButton cardAbility={ability} />
+        </StyledButtonWrapper>
+      )}
     </>
   )
 }

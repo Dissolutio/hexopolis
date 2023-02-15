@@ -1,9 +1,10 @@
 import type { Move } from 'boardgame.io'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { GameState, UnitsCloning, WaterCloneRoll } from '../types'
 
 export const rollForWaterClone: Move<GameState> = (
-  { G, random },
-  { unitsCloning }: { unitsCloning: UnitsCloning }
+  { G, ctx, random },
+  { unitsCloning, unitName }: { unitsCloning: UnitsCloning; unitName: string }
 ) => {
   const blankWaterCloneRoll = {
     diceRolls: {},
@@ -14,23 +15,23 @@ export const rollForWaterClone: Move<GameState> = (
   const waterCloneRoll: WaterCloneRoll = unitsCloning.reduce(
     (result, current) => {
       const isOnWater = G.boardHexes[current.clonerHexID].terrain === 'water'
-      const threshhold = isOnWater ? 10 : 15
+      const rollThreshhold = isOnWater ? 10 : 15
       // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
-      const dieRoll = random.Die(20)
-      const isSuccess = dieRoll >= threshhold
+      const roll = random.Die(20)
+      const isRollSuccessful = roll >= rollThreshhold
       return {
         ...result,
         threshholds: {
           ...result.threshholds,
-          [current.clonerID]: threshhold,
+          [current.clonerID]: rollThreshhold,
         },
         diceRolls: {
           ...result.diceRolls,
-          [current.clonerID]: dieRoll,
+          [current.clonerID]: roll,
         },
         placements: {
           ...result.placements,
-          [current.clonerID]: isSuccess
+          [current.clonerID]: isRollSuccessful
             ? {
                 clonerID: current.clonerID,
                 clonerHexID: current.clonerHexID,
@@ -49,6 +50,26 @@ export const rollForWaterClone: Move<GameState> = (
     }
   })
   G.waterCloneRoll = waterCloneRoll
+  // add to game log
+  const cloneCount = Object.values(waterCloneRoll?.placements ?? {}).length
+  const rollsAndThreshholds = Object.keys(waterCloneRoll?.diceRolls ?? {}).map(
+    (gameUnitID) => {
+      return [
+        waterCloneRoll.diceRolls[gameUnitID],
+        waterCloneRoll.threshholds[gameUnitID],
+      ]
+    }
+  )
+  const id = `r${G.currentRound}:om${G.currentOrderMarker}:waterClonse`
+  const gameLogForThisMove = encodeGameLogMessage({
+    type: gameLogTypes.waterClone,
+    id,
+    playerID: ctx.currentPlayer,
+    rollsAndThreshholds,
+    cloneCount,
+    unitName,
+  })
+  G.gameLog.push(gameLogForThisMove)
   //
 }
 export const finishWaterCloningAndEndTurn: Move<GameState> = ({

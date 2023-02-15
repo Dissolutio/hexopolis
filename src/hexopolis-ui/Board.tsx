@@ -20,9 +20,9 @@ import {
 } from 'bgio-contexts'
 import { ChatMessage } from 'boardgame.io'
 import { GameState } from 'game/types'
-import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/App'
 import { TabsComponent } from './controls/TabsComponent'
 import { SpecialAttackContextProvider } from './contexts/special-attack-context'
+import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/constants'
 
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
@@ -53,13 +53,16 @@ export const Board = ({
   isConnected,
   credentials,
 }: MyGameProps) => {
-  const isLocalOrDemoGame =
-    matchID === specialMatchIdToTellHeaderNavThisMatchIsLocal
+  const isLocalOrDemoGame = matchID.includes(
+    specialMatchIdToTellHeaderNavThisMatchIsLocal
+  )
+  const localOrDemoGameNumPlayers = parseInt(matchID.split(':')[1])
   const mapWrapperRef = React.useRef<HTMLDivElement>(null)
   return (
     <>
       <ThemeProvider theme={theme(playerID ?? '')}>
         <BgioClientInfoProvider
+          isLocalOrDemoGame={isLocalOrDemoGame}
           log={log}
           playerID={playerID || ''}
           matchID={matchID}
@@ -70,7 +73,7 @@ export const Board = ({
           isActive={isActive}
         >
           <BgioGProvider G={G}>
-            <BgioCtxProvider ctx={ctx}>
+            <BgioCtxProvider isLocalOrDemoGame={isLocalOrDemoGame} ctx={ctx}>
               <BgioMovesProvider moves={moves} undo={undo} redo={redo}>
                 <BgioEventsProvider reset={reset} events={events}>
                   <BgioChatProvider
@@ -86,6 +89,9 @@ export const Board = ({
                               <Layout mapWrapperRef={mapWrapperRef}>
                                 <HeaderNav
                                   isLocalOrDemoGame={isLocalOrDemoGame}
+                                  localOrDemoGameNumPlayers={
+                                    localOrDemoGameNumPlayers
+                                  }
                                 />
                                 <MapDisplay mapWrapperRef={mapWrapperRef} />
                                 <TabsComponent />

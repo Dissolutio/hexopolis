@@ -7,16 +7,19 @@ export type Props = {
   x?: string | number
   y?: string | number
   className?: string
+  style?: React.CSSProperties
 } & React.SVGProps<SVGTextElement>
 
 export function HexText(props: Props) {
-  const { children, hexSize, x, y } = props
+  const { children, hexSize, x, y, className, style } = props
   return (
     <StyledText
       hexSize={hexSize}
-      x={x || 0}
-      y={y ? y : '0.3em'}
+      x={x !== undefined ? x : 0}
+      y={y !== undefined ? y : '0.3em'}
       textAnchor="middle"
+      className={className}
+      style={style}
     >
       {children}
     </StyledText>
@@ -26,6 +29,5 @@ type StyledTextProps = React.SVGProps<SVGTextElement> & {
   hexSize: number
 }
 const StyledText = styled.text<StyledTextProps>`
-  fill: var(--sub-white);
   font-size: ${(props) => `${props.hexSize / 75}rem`};
 `

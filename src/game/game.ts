@@ -16,20 +16,24 @@ import {
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
-export const defaultSetupData = {
-  score: { '0': 0, '1': 0 },
-  lobbyDisplayName: '',
-}
+const isDevOverrideState =
+  process.env.NODE_ENV === 'production'
+    ? false
+    : // toggle this one to test the game with pre-placed units
+      true
 
-export const MYGAME_NUMPLAYERS = 2
-
-export const HexedMeadow: Game<GameState> = {
-  name: 'HexedMeadow',
-  // Function that returns the initial value of G.
+export const Hexoscape: Game<GameState> = {
+  name: 'Hexoscape',
+  // setup: Function that returns the initial value of G.
   // setupData is an optional custom object that is
-  // passed through the Game Creation API.
+  // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatch()
   setup: (ctx, setupData) => {
-    return gameSetupInitialGameState
+    return gameSetupInitialGameState({
+      // numPlayers is decided either by createMatch, or what was passed to Bgio-Client (for local and demo games)
+      numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
+      scenarioName: setupData?.scenarioName || '',
+      withPrePlacedUnits: isDevOverrideState,
+    })
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:
   validateSetupData: (setupData, numPlayers) => 'setupData is not valid!',
@@ -38,7 +42,7 @@ export const HexedMeadow: Game<GameState> = {
   seed: `${Math.random()}`,
   // The minimum and maximum number of players supported (this is only enforced when using the Lobby server component)
   minPlayers: 2,
-  maxPlayers: 2,
+  maxPlayers: 6,
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
     //PHASE: PLACEMENT
@@ -104,11 +108,13 @@ export const HexedMeadow: Game<GameState> = {
     //PHASE-ROUND OF PLAY -
     [phaseNames.roundOfPlay]: {
       // roll initiative
-      onBegin: ({ G }) => {
-        const initiativeRoll = rollD20Initiative(['0', '1'])
+      onBegin: ({ G, ctx }) => {
+        const playerIDs = Object.keys(G.players)
+        const initiativeRoll = rollD20Initiative(playerIDs)
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,
+          playerID: '',
           initiativeRolls: initiativeRoll.rolls,
         })
         G.initiative = initiativeRoll.initiative
@@ -191,7 +197,7 @@ export const HexedMeadow: Game<GameState> = {
               type: gameLogTypes.noUnitsOnTurn,
               id,
               playerID: ctx.currentPlayer,
-              cardNameWithNoUnits: revealedGameCard?.name ?? '',
+              unitName: revealedGameCard?.name ?? '',
               isNoCard,
               currentOrderMarker: `${G.currentOrderMarker}`,
             })

@@ -70,6 +70,7 @@ export const rollForBerserkerCharge: Move<GameState> = (
   const gameLogForThisMove = encodeGameLogMessage({
     type: gameLogTypes.berserkerCharge,
     id,
+    playerID: gameCard.playerID,
     roll,
     isRollSuccessful: isSuccessful,
     rollThreshold: berserkChargeThreshold,

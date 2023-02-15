@@ -1,5 +1,4 @@
 export interface GameState {
-  initialArmyCards: GameArmyCard[]
   gameArmyCards: GameArmyCard[]
   killedArmyCards: GameArmyCard[]
   gameUnits: GameUnits
@@ -56,6 +55,11 @@ export interface GameState {
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
 }
+export type SetupData = {
+  numPlayers: number
+  scenarioName: string
+  withPrePlacedUnits: boolean
+}
 export type StageQueueItem = {
   stage: string
   playerID: string
@@ -69,6 +73,7 @@ export type GameMap = {
 }
 export type HexMap = {
   mapShape: string // 'hexagon' | 'rectangle'
+  mapName: string
   mapSize: number // for hexagon shaped maps
   mapHeight: number // for rectangle shaped maps
   mapWidth: number // for rectangle shaped maps
@@ -177,9 +182,9 @@ export type ArmyCard = {
   personality: string // valiant, relentless etc
   height: number // 3-14
   heightClass: string // small medium large huge
+  image: string
   // CURRENTLY, THESE ARE OMITTED UNTIL WE USE THEM
   // setWave: string
-  // image: string
   // portraitPattern: string
 }
 export type GameArmyCardsState = {
@@ -226,6 +231,7 @@ export type MoveRange = {
     isSafe?: boolean
     isEngage?: boolean
     isDisengage?: boolean
+    isGrappleGun?: boolean
   }
 }
 

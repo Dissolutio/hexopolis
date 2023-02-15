@@ -1,5 +1,5 @@
 import { HEXGRID_SPACING } from 'app/constants'
-import { useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
 import { MapShapes } from 'game/types'
 import { useMapContext } from 'hexopolis-ui/contexts'
 import { Notifications } from 'hexopolis-ui/notifications/Notifications'
@@ -18,6 +18,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
   const {
     hexMap: { hexSize, flat, mapId, mapSize },
   } = useBgioG()
+  const { playerID } = useBgioClientInfo()
   const { viewBox } = useMapContext()
   //! MAP SETUP/LAYOUT CONFIG
   const initialMapState = {
@@ -70,7 +71,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       })
   }
   return (
-    <MapHexStyles hexSize={hexSize}>
+    <MapHexStyles hexSize={hexSize} playerID={playerID}>
       <ZoomControls
         handleClickZoomIn={handleClickZoomIn}
         handleClickZoomOut={handleClickZoomOut}

@@ -42,7 +42,7 @@
         "unkill"
     ],
     "editor.snippetSuggestions": "top",
-    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": true,
     "typescript.suggest.enabled": true,
     "snippets.triggerKey": ""
 }

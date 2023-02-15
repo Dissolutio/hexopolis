@@ -6,11 +6,13 @@ import { phaseNames, stageNames } from 'game/constants'
 type BgioCtxProviderProps = {
   children: React.ReactNode
   ctx: BoardProps['ctx']
+  isLocalOrDemoGame: boolean
 }
 
 // add two handy properties
 type BgioCtxValue = BoardProps['ctx'] & {
   isMyTurn: boolean
+  isWaitingForPlayersToJoin: boolean
   isOrderMarkerPhase: boolean
   isPlacementPhase: boolean
   isRoundOfPlayPhase: boolean
@@ -34,8 +36,12 @@ type BgioCtxValue = BoardProps['ctx'] & {
 }
 const BgioCtxContext = React.createContext<BgioCtxValue | undefined>(undefined)
 
-export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
-  const { playerID } = useBgioClientInfo()
+export function BgioCtxProvider({
+  ctx,
+  isLocalOrDemoGame,
+  children,
+}: BgioCtxProviderProps) {
+  const { playerID, isAllPlayerSlotsFilled } = useBgioClientInfo()
   const isMyTurn: boolean = ctx.currentPlayer === playerID
   const isMovementStage: boolean =
     ctx.activePlayers?.[playerID] === stageNames.movement
@@ -84,10 +90,14 @@ export function BgioCtxProvider({ ctx, children }: BgioCtxProviderProps) {
     isRoundOfPlayPhase &&
     ctx.activePlayers?.[playerID] === stageNames.mindShackle
   const isGameover: boolean = Boolean(ctx.gameover)
+  const isWaitingForPlayersToJoin: boolean = isLocalOrDemoGame
+    ? false
+    : !isAllPlayerSlotsFilled
   return (
     <BgioCtxContext.Provider
       value={{
         ...ctx,
+        isWaitingForPlayersToJoin,
         isMyTurn,
         isOrderMarkerPhase,
         isPlacementPhase,

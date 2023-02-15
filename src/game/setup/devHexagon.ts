@@ -411,6 +411,7 @@ export const devHexagon = {
   hexMap: {
     mapId: 'devHexagon',
     mapShape: 'hexagon',
+    mapName: 'Dev Hexagon',
     flat: false,
     mapSize: 3,
     hexSize: 10,
