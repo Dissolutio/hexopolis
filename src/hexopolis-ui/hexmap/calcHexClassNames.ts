@@ -43,32 +43,32 @@ export function calcPlacementHexClassNames({
     editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
 
   // highlight all player startzones
-  if (startZones?.['0'].includes(hex.id)) {
+  if ((startZones?.['0'] ?? []).includes(hex.id)) {
     classNames = classNames.concat(
       ` maphex__startzone maphex__startzone--player0 `
     )
   }
-  if (startZones?.['1'].includes(hex.id)) {
+  if ((startZones?.['1'] ?? []).includes(hex.id)) {
     classNames = classNames.concat(
       ` maphex__startzone maphex__startzone--player1 `
     )
   }
-  if (startZones?.['2'].includes(hex.id)) {
+  if ((startZones?.['2'] ?? []).includes(hex.id)) {
     classNames = classNames.concat(
       ` maphex__startzone maphex__startzone--player2`
     )
   }
-  if (startZones?.['3'].includes(hex.id)) {
+  if ((startZones?.['3'] ?? []).includes(hex.id)) {
     classNames = classNames.concat(
       ` maphex__startzone maphex__startzone--player3`
     )
   }
-  if (startZones?.['4'].includes(hex.id)) {
+  if ((startZones?.['4'] ?? []).includes(hex.id)) {
     classNames = classNames.concat(
       ` maphex__startzone maphex__startzone--player4`
     )
   }
-  if (startZones?.['5'].includes(hex.id)) {
+  if ((startZones?.['5'] ?? []).includes(hex.id)) {
     classNames = classNames.concat(
       ` maphex__startzone maphex__startzone--player5`
     )
@@ -213,7 +213,7 @@ export function calcRopHexClassNames({
   const hexUnit = gameUnits[hexUnitID]
   const hexOfSelectedUnit = selectHexForUnit(selectedUnitID, boardHexes)
   const isSelectedCard = (hex: BoardHex) => {
-    return revealedGameCardUnitIDs.includes(hexUnitID)
+    return revealedGameCardUnitIDs?.includes?.(hexUnitID)
   }
   const isSelectedUnitHex = (hex: BoardHex) => {
     return hexUnitID && hexUnitID === selectedUnitID

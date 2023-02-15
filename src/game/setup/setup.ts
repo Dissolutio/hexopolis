@@ -107,7 +107,6 @@ function makeTestScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
 ): GameState {
-  console.log('🚀 ~ file: setup.ts:110 ~ numPlayers', numPlayers)
   // ArmyCards to GameArmyCards
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   // GameUnits
