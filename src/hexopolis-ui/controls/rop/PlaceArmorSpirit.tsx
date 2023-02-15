@@ -78,9 +78,11 @@ export const PlaceArmorSpiritControls = () => {
   )
 }
 export const IdlePlaceArmorSpiritControls = () => {
-  const { gameArmyCards } = useBgioG()
+  const { gameArmyCards, killedArmyCards } = useBgioG()
   const { activePlayers } = useBgioCtx()
-  const thorgrimsCard = gameArmyCards?.find((c) => c.armyCardID === thorgrimID)
+  const thorgrimsCard = [...gameArmyCards, ...killedArmyCards]?.find(
+    (c) => c.armyCardID === thorgrimID
+  )
   const playerPlacingSpirit =
     Object.keys(activePlayers ?? {}).find(
       (k) => activePlayers?.[k] === stageNames.placingArmorSpirit

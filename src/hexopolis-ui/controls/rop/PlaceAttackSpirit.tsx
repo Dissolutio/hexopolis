@@ -78,9 +78,11 @@ export const PlaceAttackSpiritControls = () => {
   )
 }
 export const IdlePlaceAttackSpiritControls = () => {
-  const { gameArmyCards } = useBgioG()
+  const { gameArmyCards, killedArmyCards } = useBgioG()
   const { activePlayers } = useBgioCtx()
-  const finnsCard = gameArmyCards?.find((c) => c.armyCardID === finnID)
+  const finnsCard = [...gameArmyCards, ...killedArmyCards]?.find(
+    (c) => c.armyCardID === finnID
+  )
   const playerPlacingSpirit =
     Object.keys(activePlayers ?? {}).find(
       (k) => activePlayers?.[k] === stageNames.placingAttackSpirit
