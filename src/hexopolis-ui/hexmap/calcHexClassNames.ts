@@ -33,8 +33,8 @@ export function calcPlacementHexClassNames({
   activeTailPlacementUnitID: string
   tailPlaceables: string[]
 }) {
-  const isMyStartZoneHex = Boolean(startZones[playerID].includes(hex.id))
-  const isTailPlaceable = tailPlaceables.includes(hex.id)
+  const isMyStartZoneHex = Boolean(startZones?.[playerID]?.includes(hex.id))
+  const isTailPlaceable = tailPlaceables?.includes(hex.id)
   const isSelectedHex = hex.id === selectedMapHex
   // Start: Paint Terrain
   let classNames = `maphex__terrain--${hex.terrain}`
@@ -87,7 +87,7 @@ export function calcPlacementHexClassNames({
       if (
         isMyStartZoneHex &&
         !occupyingPlacementUnitId &&
-        startZoneForMy2HexUnits.includes(hex.id)
+        startZoneForMy2HexUnits?.includes(hex.id)
       ) {
         classNames = classNames.concat(` maphex__start-zone--placement `)
       }
@@ -220,7 +220,7 @@ export function calcRopHexClassNames({
   }
   const activeEnemyUnitIDs = (revealedGameCardUnits ?? []).map((u) => u.unitID)
   const isOpponentsActiveUnitHex = (hex: BoardHex) => {
-    return activeEnemyUnitIDs.includes(hexUnitID)
+    return activeEnemyUnitIDs?.includes(hexUnitID)
   }
   //phase: ROP-All??
   // Start: Paint Terrain
@@ -245,7 +245,7 @@ export function calcRopHexClassNames({
       classNames = classNames.concat(' maphex__selected-card-unit--active ')
     }
     // Highlight targetable enemy units
-    if (selectedUnitAttackRange.includes(hex.id)) {
+    if (selectedUnitAttackRange?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-attack-selectable ')
     }
   }
@@ -254,10 +254,10 @@ export function calcRopHexClassNames({
   if (isMovementStage) {
     const { safeMoves, engageMoves, disengageMoves } =
       transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
-    const isInSafeMoveRange = safeMoves.includes(hex.id)
-    const isInEngageMoveRange = engageMoves.includes(hex.id)
-    const hasUnitOnHexMoved = unitsMoved.includes(hexUnitID)
-    const isInDisengageMoveRange = disengageMoves.includes(hex.id)
+    const isInSafeMoveRange = safeMoves?.includes(hex.id)
+    const isInEngageMoveRange = engageMoves?.includes(hex.id)
+    const hasUnitOnHexMoved = unitsMoved?.includes(hexUnitID)
+    const isInDisengageMoveRange = disengageMoves?.includes(hex.id)
     const isUnitMovePartiallyExpended =
       hasUnitOnHexMoved && hexUnit.movePoints > 0
     const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0
@@ -292,51 +292,51 @@ export function calcRopHexClassNames({
 
   //  phase: ROP-water-clone
   if (isWaterCloneStage) {
-    if (clonerHexIDs.includes(hex.id)) {
+    if (clonerHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' maphex__cloner-hexes ')
     }
-    if (clonePlaceableHexIDs.includes(hex.id)) {
+    if (clonePlaceableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
   }
   if (isChompStage) {
     // TODO: Selected hex red?
-    if (chompableHexIDs.includes(hex.id)) {
+    if (chompableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
-    if (chompSelectedHexIDs.includes(hex.id)) {
+    if (chompSelectedHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
   if (isMindShackleStage) {
     // TODO: Selected hex red?
-    if (mindShackleTargetableHexIDs.includes(hex.id)) {
+    if (mindShackleTargetableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
-    if (mindShackleSelectedHexIDs.includes(hex.id)) {
+    if (mindShackleSelectedHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
   //  phase: ROP-fire-line Special Attack
   if (isFireLineSAStage) {
-    if (fireLineTargetableHexIDs.includes(hex.id)) {
+    if (fireLineTargetableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
-    if (fireLineAffectedHexIDs.includes(hex.id)) {
+    if (fireLineAffectedHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-malaffected ')
     }
-    if (fireLineSelectedHexIDs.includes(hex.id)) {
+    if (fireLineSelectedHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
   if (isExplosionSAStage) {
-    if (explosionTargetableHexIDs.includes(hex.id)) {
+    if (explosionTargetableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
-    if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
+    if (explosionAffectedUnitIDs?.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-malaffected ')
     }
-    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
+    if (explosionSelectedUnitIDs?.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }
@@ -345,13 +345,13 @@ export function calcRopHexClassNames({
     if (selectedUnitID && isSelectedUnitHex(hex)) {
       classNames = classNames.concat(' maphex__selected-card-unit--active ')
     }
-    if (explosionTargetableHexIDs.includes(hex.id)) {
+    if (explosionTargetableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
-    if (explosionAffectedUnitIDs.includes(hex.occupyingUnitID)) {
+    if (explosionAffectedUnitIDs?.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-malaffected ')
     }
-    if (explosionSelectedUnitIDs.includes(hex.occupyingUnitID)) {
+    if (explosionSelectedUnitIDs?.includes(hex.occupyingUnitID)) {
       classNames = classNames.concat(' hexagon-selected-special-attack ')
     }
   }

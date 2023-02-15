@@ -277,7 +277,7 @@ function recurseThroughMoves({
       const can2HexUnitStopHere =
         isEndHexUnoccupied &&
         !isFromOccupied &&
-        validTailSpotsForNeighbor.includes(startHexID)
+        validTailSpotsForNeighbor?.includes(startHexID)
       const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
       const moveRangeData = {
         fromHexID: startHexID,

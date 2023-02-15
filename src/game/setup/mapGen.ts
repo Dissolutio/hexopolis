@@ -189,7 +189,7 @@ const transformBoardHexesToHaveStartZones = (
   return Object.entries(boardHexes).reduce((acc: BoardHexes, [hexID, hex]) => {
     const startzonePlayerIDs = Object.entries(startZones).reduce(
       (acc: string[], [playerID, hexIDs]) => {
-        if (hexIDs.includes(hexID)) {
+        if (hexIDs?.includes(hexID)) {
           return [...acc, playerID]
         } else {
           return acc
