@@ -1,5 +1,5 @@
 import { OrderMarkers, PlayerState } from 'game/types'
-import { startingArmies } from './unitGen'
+import { startingArmies } from './unit-gen'
 
 // TEST SCENARIO ORDER MARKERS
 const oms = {

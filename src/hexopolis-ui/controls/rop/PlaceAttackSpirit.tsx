@@ -15,8 +15,8 @@ import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { playerIDDisplay } from 'game/transformers'
-import { finnID } from 'game/setup/unitGen'
 import { Army } from '../Armies'
+import { finnID } from 'game/setup/unit-gen'
 
 export const PlaceAttackSpiritControls = () => {
   const { myAliveCards, gameArmyCards, killedArmyCards } = useBgioG()

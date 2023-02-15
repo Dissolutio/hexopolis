@@ -8,9 +8,9 @@ import {
   makeDevHexagonMap,
   makeGiantsTableMap,
   makeHexagonShapedMap,
-} from './mapGen'
+} from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
-import { armyCardsToGameArmyCardsForTest } from './unitGen'
+import { armyCardsToGameArmyCardsForTest } from './unit-gen'
 import { scenarioNames } from './scenarios'
 import {
   generatePreplacedOrderMarkers,
