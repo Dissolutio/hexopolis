@@ -10,12 +10,12 @@ import {
   makeHexagonShapedMap,
 } from './mapGen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
+import { armyCardsToGameArmyCardsForTest } from './unitGen'
+import { scenarioNames } from './scenarios'
 import {
-  armyCardsToGameArmyCardsForTest,
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
-} from './unitGen'
-import { scenarioNames } from './scenarios'
+} from './om-gen'
 
 const someInitialGameState = {
   currentRound: 1,
