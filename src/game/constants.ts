@@ -36,25 +36,39 @@ export const stageNames = {
 
 export const OM_COUNT = 3
 const ORDERS = ['0', '1', '2', 'X']
+const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
+  return [...prev, { gameCardID: '', order: curr }]
+}, [] as OrderMarker[])
 
-export function generateBlankOrderMarkers(): OrderMarkers {
-  const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
-    return [...prev, { gameCardID: '', order: curr }]
-  }, [] as OrderMarker[])
-  return {
-    '0': blankOrderMarkers,
-    '1': blankOrderMarkers,
+export function generateStateForNumPlayers(
+  numPlayers: number,
+  defaultValue: boolean
+): PlayerStateToggle {
+  let rdyState: { [key: string]: boolean } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    rdyState[index] = defaultValue
   }
+  const result = rdyState
+  return result
 }
-export function generateBlankPlayersState(): PlayerState {
-  return {
-    '0': {
-      orderMarkers: generateBlankPlayersOrderMarkers(),
-    },
-    '1': {
-      orderMarkers: generateBlankPlayersOrderMarkers(),
-    },
+
+export function generateBlankOrderMarkersForNumPlayers(
+  numPlayers: number
+): OrderMarkers {
+  let result: { [key: string]: any } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    result[index] = blankOrderMarkers
   }
+  return result
+}
+export function generateBlankPlayersStateForNumPlayers(
+  numPlayers: number
+): PlayerState {
+  let result: { [key: string]: any } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    result[index] = generateBlankPlayersOrderMarkers()
+  }
+  return result
 }
 export function generateBlankPlayersOrderMarkers(): PlayerOrderMarkers {
   return {

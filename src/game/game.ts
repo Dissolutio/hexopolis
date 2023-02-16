@@ -11,8 +11,9 @@ import {
   phaseNames,
   stageNames,
   OM_COUNT,
-  generateBlankOrderMarkers,
+  generateBlankOrderMarkersForNumPlayers,
   generateBlankPlayersOrderMarkers,
+  generateReadyStateForNumPlayers,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 
@@ -65,18 +66,20 @@ export const Hexoscape: Game<GameState> = {
     //PHASE: ORDER-MARKERS
     [phaseNames.placeOrderMarkers]: {
       // reset order-markers state
-      onBegin: ({ G }) => {
+      onBegin: ({ G, ctx }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 1) {
           // clear secret order marker state
           G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
           G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
           // clear public order marker state
-          G.orderMarkers = generateBlankOrderMarkers()
-          G.orderMarkersReady = {
-            '0': false,
-            '1': false,
-          }
+          G.orderMarkers = generateBlankOrderMarkersForNumPlayers(
+            ctx.numPlayers
+          )
+          G.orderMarkersReady = generateReadyStateForNumPlayers(
+            ctx.numPlayers,
+            false
+          )
         }
       },
       // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)

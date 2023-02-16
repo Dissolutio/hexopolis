@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 import { RedButton } from 'hexopolis-ui/layout/buttons'
 import {
-  generateBlankOrderMarkers,
+  generateBlankOrderMarkersForNumPlayers,
   generateBlankPlayersOrderMarkers,
 } from 'game/constants'
 import { omToString } from 'game/transformers'

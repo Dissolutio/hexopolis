@@ -1,7 +1,7 @@
 import { GameArmyCard, GameState, GameUnits } from '../types'
 import {
-  generateBlankPlayersState,
-  generateBlankOrderMarkers,
+  generateBlankPlayersStateForNumPlayers,
+  generateBlankOrderMarkersForNumPlayers,
   generateReadyStateForNumPlayers,
 } from '../constants'
 import {
@@ -65,8 +65,8 @@ const frequentlyChangedDevState = (
           numPlayers,
           false
         ),
-        orderMarkers: generateBlankOrderMarkers(),
-        players: generateBlankPlayersState(),
+        orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
+        players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
 //!! TEST SCENARIO
