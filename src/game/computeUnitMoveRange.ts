@@ -175,10 +175,7 @@ function recurseThroughMoves({
   } = unmutatedContext
   const startHexID = prevHex.id
   const isVisitedAlready =
-    // we have to have been there with more move points AND less disengaged units
-    (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) >= movePoints &&
-    initialMoveRange?.[startHexID]?.disengagedUnitIDs?.length <=
-      (prevHexesDisengagedUnitIDs ?? [])?.length
+    (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
   const isUnitInitiallyEngaged = initialEngagements.length > 0
   //*early out
   if (movePoints <= 0 || isVisitedAlready) {
