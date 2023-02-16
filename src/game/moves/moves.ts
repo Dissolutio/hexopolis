@@ -26,7 +26,7 @@ const deployUnits: Move<GameState> = (
   deploymentProposition: BoardHexesUnitDeployment,
   playerID: string
 ) => {
-  const myStartZone = G.startZones[playerID]
+  const myStartZone = G.startZones?.[playerID]
   const propositions = Object.entries(deploymentProposition)
   let newBoardHexes = {
     ...G.boardHexes,

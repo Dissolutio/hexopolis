@@ -70,9 +70,11 @@ const PlacementContextProvider = ({
           },
         }
       }, {})
-  const startZoneForMy2HexUnits = startZones[playerID].filter((sz) => {
-    return selectValidTailHexes(sz, boardHexes).length > 0
-  })
+  const startZoneForMy2HexUnits = (startZones?.[playerID] ?? []).filter(
+    (sz) => {
+      return selectValidTailHexes(sz, boardHexes).length > 0
+    }
+  )
   const initialEditingBoardHexesIfTotallyReset = {}
   const myUnitIdsAlreadyOnMap = () =>
     Object.values(boardHexes)

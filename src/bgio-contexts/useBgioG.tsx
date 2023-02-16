@@ -32,7 +32,7 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const myAliveCards: GameArmyCard[] = myCards.filter(
     (c) => selectUnitsForCard(c.gameCardID, G.gameUnits).length > 0
   )
-  const myStartZone: string[] = G.startZones[playerID]
+  const myStartZone: string[] = G.startZones?.[playerID]
   const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
   const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers
   const currentRoundText = `${G.currentRound}`
