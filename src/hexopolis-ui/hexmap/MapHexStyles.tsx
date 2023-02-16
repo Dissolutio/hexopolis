@@ -8,7 +8,7 @@ type MapHexStylesProps = {
 export const MapHexStyles = styled.div<MapHexStylesProps>`
   @keyframes dash {
     to {
-      stroke-dashoffset: 100;
+      stroke-dashoffset: 1000;
     }
   }
   height: 100%;
@@ -165,20 +165,28 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   //PHASE: ROP-move
   // move ranges: fill, fill-opacity
   .maphex__move-safe > g polygon {
-    fill: var(--neon-green);
-    fill-opacity: 1;
-    /* stroke: var(--neon-green);
-    stroke-width: 2;
-    stroke-dasharray: 10;
-    animation: dash 10s linear infinite; */
+    /* fill: var(--neon-green);
+    fill-opacity: 1; */
+    stroke: var(--neon-green);
+    stroke-width: 1;
+    stroke-dasharray: 5;
+    animation: dash 200s linear infinite;
   }
   .maphex__move-engage > g polygon {
-    fill: var(--neon-orange);
-    fill-opacity: 1;
+    /* fill: var(--neon-orange);
+    fill-opacity: 1; */
+    stroke: var(--neon-orange);
+    stroke-width: 1;
+    stroke-dasharray: 5;
+    animation: dash 200s linear infinite;
   }
   .maphex__move-disengage > g polygon {
-    fill: var(--neon-red);
-    fill-opacity: 1;
+    /* fill: var(--neon-red);
+    fill-opacity: 1; */
+    stroke: var(--neon-red);
+    stroke-width: 1;
+    stroke-dasharray: 5;
+    animation: dash 200s linear infinite;
   }
 
   // partially moves units: stroke, stroke-opacity, stroke-width
