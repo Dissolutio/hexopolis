@@ -74,12 +74,25 @@ export const Notifications = () => {
         const moreRepetitiveMsgDuration = 5000
         switch (type) {
           case gameLogTypes.move:
+            const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} wounds)`
+            const woundedMove = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
+            const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
+            const moveMsgText = `${unitSingleName} is on the move`
+            const moveMsg = isFatal
+              ? diedFallingMsg
+              : (wounds ?? 0) > 0
+              ? woundedMove
+              : isGrappleGun
+              ? grappleGunMoveMsg
+              : moveMsgText
+            const duration =
+              isFatal || (wounds ?? 0) > 0
+                ? defaultDuration
+                : moreRepetitiveMsgDuration
             toast(
-              <span style={{ color: playerColors[playerID] }}>
-                {gameLogMessage?.msg ?? ''}
-              </span>,
+              <span style={{ color: playerColors[playerID] }}>{moveMsg}</span>,
               {
-                duration: moreRepetitiveMsgDuration,
+                duration: duration,
                 id: gameLogMessage?.id,
               }
             )
@@ -194,7 +207,9 @@ export const Notifications = () => {
             break
           default:
             toast(
-              <span style={{ color: playerColors[playerID] }}>{`${msg}`}</span>,
+              <span
+                style={{ color: playerColors[playerID] }}
+              >{`${gameLogMessage.msg}`}</span>,
               {
                 duration: defaultDuration,
                 id: gameLogMessage?.id,
