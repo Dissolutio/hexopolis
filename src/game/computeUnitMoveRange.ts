@@ -286,6 +286,7 @@ function recurseThroughMoves({
       const newFallDamage =
         prevHexFallDamage +
         selectIsFallDamage(unit, armyCards, prevHex, neighbor)
+      const isFallDamage = newFallDamage > 0
       const isUnpassable = isFlying
         ? isTooCostly
         : isTooCostly ||
@@ -299,6 +300,7 @@ function recurseThroughMoves({
         !isFromOccupied &&
         validTailSpotsForNeighbor?.includes(startHexID)
       const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
+      const isDangerousHex = isCausingDisengagement || isFallDamage
       const moveRangeData = {
         fromHexID: startHexID,
         fromCost,
@@ -312,13 +314,14 @@ function recurseThroughMoves({
         return acc
       }
       // 2. passable: we can get here, maybe stop, maybe pass thru
-      // order matters for if/else-if here, disengagement overrides engagement
-      if (isCausingDisengagement) {
+      // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
+      if (isDangerousHex) {
         if (canStopHere) {
           acc[neighborHexID] = {
             ...moveRangeData,
-            isDisengage: true,
+            isDisengage: isCausingDisengagement,
             isGrappleGun,
+            fallDamage: isFallDamage ? newFallDamage : undefined,
           }
         }
         return {
@@ -348,7 +351,7 @@ function recurseThroughMoves({
             unmutatedContext,
             prevHexesDisengagedUnitIDs: disengagedUnitIDs,
             prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-            prevHexFallDamage: newFallDamage,
+            prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
             prevHex: neighbor,
             startTailHex: isUnit2Hex ? prevHex : undefined,
             movePoints: movePointsLeft,
@@ -371,9 +374,9 @@ function recurseThroughMoves({
               ...acc,
               ...recurseThroughMoves({
                 unmutatedContext,
-                prevHexesDisengagedUnitIDs: disengagedUnitIDs,
-                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-                prevHexFallDamage: newFallDamage,
+                prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs, // this should be 0 here, as the hex would be an engagement-hex ^^
+                prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
                 prevHex: neighbor,
                 startTailHex: isUnit2Hex ? prevHex : undefined,
                 movePoints: movePointsLeft,

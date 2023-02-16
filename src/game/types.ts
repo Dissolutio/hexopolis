@@ -228,6 +228,7 @@ export type MoveRange = {
     movePointsLeft: number
     disengagedUnitIDs: string[]
     engagedUnitIDs: string[]
+    fallDamage?: number
     isSafe?: boolean
     isEngage?: boolean
     isDisengage?: boolean
