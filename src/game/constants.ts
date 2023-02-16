@@ -88,7 +88,7 @@ export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
     ),
   }
 }
-const gamePlayerIDs = ['0', '1']
+const gamePlayerIDs = ['0', '1'] // THIS IS A HUGE BUG
 const selectAllOtherGamePlayerIDs = (playerID: string) => {
   return gamePlayerIDs.filter((id) => id !== playerID)
 }
