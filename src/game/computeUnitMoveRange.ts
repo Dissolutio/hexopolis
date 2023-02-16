@@ -206,11 +206,6 @@ function recurseThroughMoves({
           ? movePoints
           : selectMoveCostBetweenNeighbors(prevHex, neighbor)
       const movePointsLeft = movePoints - fromCost
-      const isVisitedAlready =
-        initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
-      if (isVisitedAlready) {
-        return acc
-      }
       const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
       // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
       const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
@@ -223,6 +218,15 @@ function recurseThroughMoves({
         gameUnits,
         armyCards,
       })
+      // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
+      const isVisitedAlready =
+        initialMoveRange?.[neighbor.id]?.movePointsLeft === movePointsLeft
+          ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs <=
+            disengagedUnitIDs
+          : initialMoveRange?.[neighbor.id]?.movePointsLeft > movePointsLeft
+      if (isVisitedAlready) {
+        return acc
+      }
       const totalDisengagedIDsSoFar = uniq([
         ...(prevHexesDisengagedUnitIDs ?? []),
         ...disengagedUnitIDs,
