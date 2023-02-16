@@ -74,7 +74,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     fill-opacity: 0.4;
   }
 
-  // PHASE: PLACEMENT
+  // PHASE: PLACEMENT AND DRAFT
   // Startzone hexagons: stroke,  stroke-width
   .maphex__startzone > g polygon {
     stroke-width: 0.3;

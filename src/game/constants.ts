@@ -9,6 +9,7 @@ import {
 } from './types'
 
 export const phaseNames = {
+  draft: 'draft',
   placement: 'placement',
   placeOrderMarkers: 'placeOrderMarkers',
   roundOfPlay: 'roundOfPlay',

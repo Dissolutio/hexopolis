@@ -1,4 +1,4 @@
-import { Game } from 'boardgame.io'
+import { Ctx, Game } from 'boardgame.io'
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
@@ -48,9 +48,23 @@ export const Hexoscape: Game<GameState> = {
   maxPlayers: 6,
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
-    //PHASE: PLACEMENT
-    [phaseNames.placement]: {
+    //PHASE: DRAFT AND PLACE UNITS
+    [phaseNames.draft]: {
       start: true,
+      // roll initiative
+      onBegin: ({ G, ctx }) => {
+        const playerIDs = Object.keys(G.players)
+        const initiativeRoll = rollD20Initiative(playerIDs)
+        const roundBeginGameLog = encodeGameLogMessage({
+          type: gameLogTypes.roundBegin,
+          id: `${G.currentRound}`,
+          playerID: '',
+          initiativeRolls: initiativeRoll.rolls,
+        })
+        G.initiative = initiativeRoll.initiative
+        G.currentOrderMarker = 0
+        G.gameLog = [...G.gameLog, roundBeginGameLog]
+      },
       // all players may make moves and place their units
       turn: {
         activePlayers: {
@@ -58,8 +72,21 @@ export const Hexoscape: Game<GameState> = {
         },
       },
       // once all players have placed their units and confirmed ready, the order marker stage will begin
-      endIf: ({ G }) => {
-        return G.placementReady['0'] && G.placementReady['1']
+      endIf: ({ G, ctx }) => {
+        return checkReady('draftReady', G, ctx)
+      },
+      next: phaseNames.placeOrderMarkers,
+    },
+    [phaseNames.placement]: {
+      // all players may make moves and place their units
+      turn: {
+        activePlayers: {
+          all: stageNames.placingUnits,
+        },
+      },
+      // once all players have placed their units and confirmed ready, the order marker stage will begin
+      endIf: ({ G, ctx }) => {
+        return checkReady('placementReady', G, ctx)
       },
       next: phaseNames.placeOrderMarkers,
     },
@@ -89,9 +116,8 @@ export const Hexoscape: Game<GameState> = {
         },
       },
       // proceed to round-of-play once all players are ready
-      endIf: ({ G }) => {
-        // TODO: check to make sure all order markers are placed!
-        return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
+      endIf: ({ G, ctx }) => {
+        return checkReady('orderMarkersReady', G, ctx)
       },
       // setup unrevealed public order-markers
       onEnd: ({ G }) => {
@@ -127,9 +153,15 @@ export const Hexoscape: Game<GameState> = {
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },
       // reset state, update currentRound
-      onEnd: ({ G }) => {
-        G.orderMarkersReady = { '0': false, '1': false }
-        G.roundOfPlayStartReady = { '0': false, '1': false }
+      onEnd: ({ G, ctx }) => {
+        G.orderMarkersReady = generateReadyStateForNumPlayers(
+          ctx.numPlayers,
+          false
+        )
+        G.roundOfPlayStartReady = generateReadyStateForNumPlayers(
+          ctx.numPlayers,
+          false
+        )
         G.currentOrderMarker = 0
         G.currentRound += 1
       },
@@ -243,6 +275,9 @@ export const Hexoscape: Game<GameState> = {
   // Ends the game if this returns anything.
   // The return value is available in `ctx.gameover`.
   endIf: ({ G, ctx }) => {
+    if (ctx.phase === phaseNames.placement || ctx.phase === phaseNames.draft) {
+      return false
+    }
     const gameUnitsArr = Object.values(G.gameUnits)
     const isP0Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '0')
     const isP1Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '1')
@@ -260,4 +295,13 @@ export const Hexoscape: Game<GameState> = {
     const winner = ctx.gameover.winner === '0' ? 'BEES' : 'BUTTERFLIES'
     console.log(`THE ${winner} WON!`)
   },
+}
+
+const checkReady = (key: string, G: GameState, ctx: Ctx) => {
+  const arr: any[] = new Array(ctx.numPlayers).fill(false)
+  for (let i = 0; i < ctx.numPlayers; i++) {
+    // i.e. G.ready['0'] = [true, false, false]
+    arr[i] = Boolean((G as any)?.[key]?.[i])
+  }
+  return arr.every((v) => v === true)
 }

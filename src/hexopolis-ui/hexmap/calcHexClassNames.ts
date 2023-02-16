@@ -10,7 +10,7 @@ import {
   StartZones,
 } from 'game/types'
 
-export function calcPlacementHexClassNames({
+export function calcDraftAndPlacementHexClassNames({
   selectedMapHex,
   selectedUnitID,
   selectedUnitIs2Hex,

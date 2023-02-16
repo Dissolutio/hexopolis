@@ -1,4 +1,6 @@
 export interface GameState {
+  maxArmyValue: number
+  maxRounds: number
   gameArmyCards: GameArmyCard[]
   killedArmyCards: GameArmyCard[]
   gameUnits: GameUnits
@@ -14,6 +16,7 @@ export interface GameState {
   initiative: string[]
   currentRound: number
   currentOrderMarker: number
+  draftReady: PlayerStateToggle
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle

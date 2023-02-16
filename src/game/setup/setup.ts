@@ -18,6 +18,8 @@ import {
 } from './om-gen'
 
 const someInitialGameState = {
+  maxArmyValue: 300,
+  maxRounds: 12,
   currentRound: 1,
   currentOrderMarker: 0,
   initiative: [],
@@ -48,6 +50,7 @@ const frequentlyChangedDevState = (
 ) =>
   isDevOverrideState
     ? {
+        draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
         roundOfPlayStartReady: generateReadyStateForNumPlayers(
@@ -59,6 +62,7 @@ const frequentlyChangedDevState = (
         ...someInitialGameState,
       }
     : {
+        draftReady: generateReadyStateForNumPlayers(numPlayers, false),
         placementReady: generateReadyStateForNumPlayers(numPlayers, false),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
         roundOfPlayStartReady: generateReadyStateForNumPlayers(
@@ -91,7 +95,9 @@ export const gameSetupInitialGameState = ({
   ) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
-  return makeTestScenario(numPlayers, withPrePlacedUnits)
+  // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
+  return makeGiantsTable2PlayerScenario(2, false)
+  // return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -105,8 +111,10 @@ function makeGiantsTable2PlayerScenario(
   })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
-    gameArmyCards: armyCards,
-    gameUnits,
+    maxArmyValue: 400,
+    maxRounds: 12,
+    gameArmyCards: withPrePlacedUnits ? armyCards : [],
+    gameUnits: withPrePlacedUnits ? gameUnits : {},
     hexMap: map.hexMap,
     boardHexes: map.boardHexes,
     startZones: map.startZones,
@@ -121,20 +129,20 @@ function makeTestScenario(
   // GameUnits
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
   // Map
-  const map = makeHexagonShapedMap({
-    mapSize: Math.max(numPlayers * 2, 8),
-    withPrePlacedUnits,
-    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-    flat: false,
-  })
+  // const map = makeHexagonShapedMap({
+  //   mapSize: Math.max(numPlayers * 2, 8),
+  //   withPrePlacedUnits,
+  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+  //   flat: false,
+  // })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
   // })
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
-  //   gameUnits,
-  // })
+  const map = makeDevHexagonMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits,
+  })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
