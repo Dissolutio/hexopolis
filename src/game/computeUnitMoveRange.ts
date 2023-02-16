@@ -174,13 +174,7 @@ function recurseThroughMoves({
     armyCards,
   } = unmutatedContext
   const startHexID = prevHex.id
-  const isVisitedAlready =
-    (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
   const isUnitInitiallyEngaged = initialEngagements.length > 0
-  //*early out
-  if (movePoints <= 0 || isVisitedAlready) {
-    return initialMoveRange
-  }
   const isUnit2Hex = unit?.is2Hex
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
   // Neighbors are either passable or unpassable
