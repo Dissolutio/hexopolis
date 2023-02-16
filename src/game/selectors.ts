@@ -20,6 +20,7 @@ import {
 } from './hex-utils'
 import {
   selectIfGameArmyCardHasAbility,
+  selectIfGameArmyCardHasFlying,
   selectUnitRange,
 } from './selector/card-selectors'
 
@@ -543,4 +544,20 @@ export function selectIsClimbable(
   return (
     altitudeDelta < (overrideDelta !== undefined ? overrideDelta : unitHeight)
   )
+}
+export function selectIsFallDamage(
+  unit: GameUnit,
+  armyCards: GameArmyCard[],
+  startHex: BoardHex,
+  endHex: BoardHex
+): number {
+  const unitCard = selectGameCardByID(armyCards, unit.gameCardID)
+  const { hasFlying } = selectIfGameArmyCardHasFlying(unitCard)
+  // flying figures don't take fall damage, and you can fall into water without taking damage, also
+  if (hasFlying || endHex.terrain === 'water') return 0
+  const unitHeight = unitCard?.height ?? 0
+  const altitudeDelta = startHex.altitude - endHex.altitude
+  const isMinorFall = altitudeDelta >= unitHeight
+  const isMajorFall = altitudeDelta >= unitHeight + 10
+  return isMajorFall ? 3 : isMinorFall ? 1 : 0
 }

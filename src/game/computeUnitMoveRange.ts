@@ -17,6 +17,7 @@ import {
   selectMoveDisengagedUnitIDs,
   selectIsClimbable,
   selectTailHexForUnit,
+  selectIsFallDamage,
 } from './selectors'
 import {
   selectIfGameArmyCardHasDisengage,
@@ -89,6 +90,7 @@ export function computeUnitMoveRange(
         gameUnits,
       },
       prevHexesEngagedUnitIDs: initialEngagements,
+      prevHexFallDamage: 0,
       movePoints: initialMovePoints,
       initialMoveRange,
     }
@@ -122,6 +124,7 @@ export function computeUnitMoveRange(
       },
       prevHex: startHex,
       prevHexesEngagedUnitIDs: initialEngagements,
+      prevHexFallDamage: 0,
       // grapple gun is not a normal move, we treat it like flying so we make up the notion of a move point for it, and give Drake 1 move point
       movePoints: isGrappleGun ? (hasMoved ? 0 : 1) : initialMovePoints,
       initialMoveRange,
@@ -134,6 +137,7 @@ function recurseThroughMoves({
   unmutatedContext,
   prevHexesDisengagedUnitIDs,
   prevHexesEngagedUnitIDs,
+  prevHexFallDamage,
   prevHex,
   startTailHex,
   movePoints,
@@ -154,6 +158,7 @@ function recurseThroughMoves({
   }
   prevHexesDisengagedUnitIDs?: string[]
   prevHexesEngagedUnitIDs: string[]
+  prevHexFallDamage: number
   // !! these inputs below get mutated in the recursion
   prevHex: BoardHex
   startTailHex?: BoardHex
@@ -278,6 +283,9 @@ function recurseThroughMoves({
         // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
         isGrappleGun ? 26 : undefined
       )
+      const newFallDamage =
+        prevHexFallDamage +
+        selectIsFallDamage(unit, armyCards, prevHex, neighbor)
       const isUnpassable = isFlying
         ? isTooCostly
         : isTooCostly ||
@@ -319,6 +327,7 @@ function recurseThroughMoves({
             unmutatedContext,
             prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
             prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+            prevHexFallDamage: newFallDamage,
             prevHex: neighbor,
             movePoints: movePointsLeft,
             initialMoveRange: acc,
@@ -339,6 +348,7 @@ function recurseThroughMoves({
             unmutatedContext,
             prevHexesDisengagedUnitIDs: disengagedUnitIDs,
             prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+            prevHexFallDamage: newFallDamage,
             prevHex: neighbor,
             startTailHex: isUnit2Hex ? prevHex : undefined,
             movePoints: movePointsLeft,
@@ -363,6 +373,7 @@ function recurseThroughMoves({
                 unmutatedContext,
                 prevHexesDisengagedUnitIDs: disengagedUnitIDs,
                 prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHexFallDamage: newFallDamage,
                 prevHex: neighbor,
                 startTailHex: isUnit2Hex ? prevHex : undefined,
                 movePoints: movePointsLeft,
