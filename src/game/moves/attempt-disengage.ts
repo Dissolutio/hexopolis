@@ -8,7 +8,13 @@ export const attemptDisengage: Move<GameState> = {
   undoable: false,
   move: (
     { G, events },
-    { unit, endHexID, defendersToDisengage, endFromHexID }: DisengageAttempt
+    {
+      unit,
+      endHexID,
+      defendersToDisengage,
+      endFromHexID,
+      movePointsLeft,
+    }: DisengageAttempt
   ) => {
     const { unitID } = unit
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
@@ -31,6 +37,7 @@ export const attemptDisengage: Move<GameState> = {
       endHexID,
       endFromHexID,
       defendersToDisengage,
+      movePointsLeft,
     }
     // update game log
     const indexOfThisMove = G.unitsMoved.length

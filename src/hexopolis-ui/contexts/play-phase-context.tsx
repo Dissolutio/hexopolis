@@ -239,12 +239,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const disengagementUnitIDs =
       selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
     const endFromHexID = selectedUnitMoveRange[endHexID]?.fromHexID
+    const movePointsLeft = selectedUnitMoveRange[endHexID]?.movePointsLeft
     const defendersToDisengage = disengagementUnitIDs.map((id) => gameUnits[id])
     setDisengageAttempt({
       unit: selectedUnit,
       endHexID,
       endFromHexID,
       defendersToDisengage,
+      movePointsLeft,
     })
   }
 

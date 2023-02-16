@@ -203,14 +203,9 @@ export const takeDisengagementSwipe: Move<GameState> = {
             newBoardHexes[endHexID].occupyingUnitID =
               unitAttemptingToDisengage.unitID
           }
-          // update unit move-points: this moveCost assumes adjacency and non-recursion on engagement/disengagement hexes
-          const moveCost = selectMoveCostBetweenNeighbors(
-            unitAttemptingToDisengageHex,
-            endHex
-          )
-          const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
+          // update unit move-points from move-range
           newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
-            newMovePoints
+            disengagesAttempting.movePointsLeft
 
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
@@ -265,14 +260,9 @@ export const takeDisengagementSwipe: Move<GameState> = {
         }
         /* END MOVE */
 
-        // update unit move-points
-        const moveCost = selectMoveCostBetweenNeighbors(
-          unitAttemptingToDisengageHex,
-          endHex
-        )
-        const newMovePoints = unitAttemptingToDisengage.movePoints - moveCost
+        // update unit move-points from move-range
         newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
-          newMovePoints
+          disengagesAttempting.movePointsLeft
         G.boardHexes = { ...newBoardHexes }
         G.gameUnits = { ...newGameUnits }
         G.unitsMoved = newUnitsMoved
