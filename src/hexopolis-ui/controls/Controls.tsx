@@ -14,13 +14,13 @@ export const Controls = () => {
     isRoundOfPlayPhase,
     isGameover,
   } = useBgioCtx()
-  if (isWaitingForPlayersToJoin) {
-    return (
-      <StyledControlsHeaderH2>
-        Waiting for all players to join
-      </StyledControlsHeaderH2>
-    )
-  }
+  // if (isWaitingForPlayersToJoin) {
+  //   return (
+  //     <StyledControlsHeaderH2>
+  //       Waiting for all players to join
+  //     </StyledControlsHeaderH2>
+  //   )
+  // }
   if (isPlacementPhase) {
     return <PlacementControls />
   }
