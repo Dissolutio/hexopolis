@@ -72,14 +72,19 @@ const frequentlyChangedDevState = (
 //!! TEST SCENARIO
 export const gameSetupInitialGameState = ({
   numPlayers,
+  isLocalOrDemoGame,
   scenarioName,
   withPrePlacedUnits,
 }: {
   numPlayers: number
+  isLocalOrDemoGame: boolean
   scenarioName?: string
   withPrePlacedUnits?: boolean
 }) => {
   if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants2) {
+    return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (numPlayers === 2 && isLocalOrDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   return makeTestScenario(numPlayers, withPrePlacedUnits)
