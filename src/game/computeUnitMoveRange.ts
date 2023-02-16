@@ -324,6 +324,10 @@ function recurseThroughMoves({
             fallDamage: newFallDamage,
           }
         }
+        // ONLY for falling damage hexes will be not recurse, because I don't want to deal with applying disengage/fall damage in the right order (you will take all disengagement swipes, and THEN fall)
+        if (isFallDamage) {
+          return acc
+        }
         return {
           ...acc,
           ...recurseThroughMoves({
