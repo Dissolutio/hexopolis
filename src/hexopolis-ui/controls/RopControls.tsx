@@ -216,10 +216,10 @@ const RopConfirmDisengageAttemptControls = () => {
         } units? (${unitsThatGetASwipe.map((u) => u.singleName).join(', ')})`}
       </StyledControlsHeaderH2>
       <ConfirmOrResetButtons
-        confirm={confirmDisengageAttempt}
-        confirmText={`Yes, disengage them!`}
-        reset={cancelDisengageAttempt}
-        resetText={`No, we will find another way...`}
+        confirm={cancelDisengageAttempt}
+        confirmText={`No, we will find another way...`}
+        reset={confirmDisengageAttempt}
+        resetText={`Yes, disengage them!`}
       />
     </>
   )

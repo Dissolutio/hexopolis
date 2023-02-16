@@ -28,11 +28,13 @@ export const Hexoscape: Game<GameState> = {
   // setupData is an optional custom object that is
   // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatch()
   setup: (ctx, setupData) => {
+    const isLocalOrDemoGame = setupData === undefined
     return gameSetupInitialGameState({
       // numPlayers is decided either by createMatch, or what was passed to Bgio-Client (for local and demo games)
       numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
       scenarioName: setupData?.scenarioName || '',
       withPrePlacedUnits: isDevOverrideState,
+      isLocalOrDemoGame,
     })
   },
   /*  validateSetupData -- Optional function to validate the setupData before matches are created. If this returns a value, an error will be reported to the user and match creation is aborted:

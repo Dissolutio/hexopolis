@@ -63,16 +63,16 @@ export function computeUnitMoveRange(
   if (isTwoSpace) {
     tailHex = selectTailHexForUnit(unitUid, boardHexes)
   }
-  const initialEngagements: string[] = selectEngagementsForHex({
-    hexID: startHex?.id ?? '',
-    boardHexes,
-    gameUnits,
-    armyCards,
-  })
   //*early out
   if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
     return initialMoveRange
   }
+  const initialEngagements: string[] = selectEngagementsForHex({
+    hexID: startHex.id,
+    boardHexes,
+    gameUnits,
+    armyCards,
+  })
   let moveRange: MoveRange = {}
   if (isTwoSpace && tailHex) {
     const sharedParamsForHeadAndTail = {
@@ -88,19 +88,19 @@ export function computeUnitMoveRange(
         armyCards,
         gameUnits,
       },
-      prevEngagements: initialEngagements,
+      prevHexesEngagedUnitIDs: initialEngagements,
       movePoints: initialMovePoints,
       initialMoveRange,
     }
     moveRange = mergeTwoMoveRanges(
       recurseThroughMoves({
         ...sharedParamsForHeadAndTail,
-        startHex: startHex,
+        prevHex: startHex,
         startTailHex: tailHex,
       }),
       recurseThroughMoves({
         ...sharedParamsForHeadAndTail,
-        startHex: tailHex,
+        prevHex: tailHex,
         startTailHex: startHex,
       })
     )
@@ -120,8 +120,8 @@ export function computeUnitMoveRange(
         armyCards,
         gameUnits,
       },
-      startHex: startHex,
-      prevEngagements: initialEngagements,
+      prevHex: startHex,
+      prevHexesEngagedUnitIDs: initialEngagements,
       // grapple gun is not a normal move, we treat it like flying so we make up the notion of a move point for it, and give Drake 1 move point
       movePoints: isGrappleGun ? (hasMoved ? 0 : 1) : initialMovePoints,
       initialMoveRange,
@@ -133,7 +133,8 @@ export function computeUnitMoveRange(
 function recurseThroughMoves({
   unmutatedContext,
   prevHexesDisengagedUnitIDs,
-  startHex,
+  prevHexesEngagedUnitIDs,
+  prevHex,
   startTailHex,
   movePoints,
   initialMoveRange,
@@ -152,9 +153,9 @@ function recurseThroughMoves({
     gameUnits: GameUnits
   }
   prevHexesDisengagedUnitIDs?: string[]
-  prevEngagements: string[]
+  prevHexesEngagedUnitIDs: string[]
   // !! these inputs below get mutated in the recursion
-  startHex: BoardHex
+  prevHex: BoardHex
   startTailHex?: BoardHex
   movePoints: number
   initialMoveRange: MoveRange
@@ -172,7 +173,7 @@ function recurseThroughMoves({
     gameUnits,
     armyCards,
   } = unmutatedContext
-  const startHexID = startHex.id
+  const startHexID = prevHex.id
   const isVisitedAlready =
     (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
   const isUnitInitiallyEngaged = initialEngagements.length > 0
@@ -186,12 +187,12 @@ function recurseThroughMoves({
   let nextResults = neighbors.reduce(
     (acc: MoveRange, neighbor: BoardHex): MoveRange => {
       const isFromOccupied =
-        startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
+        prevHex.occupyingUnitID && prevHex.occupyingUnitID !== unit.unitID
       const validTailSpotsForNeighbor = selectValidTailHexes(
         neighbor.id,
         boardHexes
       ).map((hex) => hex.id)
-      const isStartHexWater = startHex.terrain === 'water'
+      const isStartHexWater = prevHex.terrain === 'water'
       const isNeighborHexWater = neighbor.terrain === 'water'
       const isWaterStoppage =
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
@@ -203,13 +204,8 @@ function recurseThroughMoves({
           : // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
           isWaterStoppage
           ? movePoints
-          : selectMoveCostBetweenNeighbors(startHex, neighbor)
+          : selectMoveCostBetweenNeighbors(prevHex, neighbor)
       const movePointsLeft = movePoints - fromCost
-      const isVisitedAlready =
-        initialMoveRange?.[neighbor.id]?.movePointsLeft >= movePointsLeft
-      if (isVisitedAlready) {
-        return acc
-      }
       const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
       // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
       const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
@@ -222,11 +218,20 @@ function recurseThroughMoves({
         gameUnits,
         armyCards,
       })
+      // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
+      const isVisitedAlready =
+        initialMoveRange?.[neighbor.id]?.movePointsLeft === movePointsLeft
+          ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs <=
+            disengagedUnitIDs
+          : initialMoveRange?.[neighbor.id]?.movePointsLeft > movePointsLeft
+      if (isVisitedAlready) {
+        return acc
+      }
       const totalDisengagedIDsSoFar = uniq([
         ...(prevHexesDisengagedUnitIDs ?? []),
         ...disengagedUnitIDs,
       ])
-      const engagedUnitIDs = selectMoveEngagedUnitIDs({
+      const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
         unit,
         startHexID,
         neighborHexID,
@@ -234,7 +239,20 @@ function recurseThroughMoves({
         gameUnits,
         armyCards,
       })
-      const isCausingEngagement = engagedUnitIDs.length > 0
+      const neighborHexEngagements = selectEngagementsForHex({
+        hexID: neighbor.id,
+        boardHexes,
+        gameUnits,
+        armyCards,
+        override: {
+          overrideUnitID: unit.unitID,
+          overrideTailHexID: prevHex.id,
+        },
+      })
+      const isCausingEngagement =
+        latestEngagedUnitIDs.length > 0 ||
+        // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
+        neighborHexEngagements.some((id) => !initialEngagements.includes(id))
       // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
       const isCausingDisengagementIfFlying =
         isUnitInitiallyEngaged && !hasStealth
@@ -261,7 +279,7 @@ function recurseThroughMoves({
       const isTooTallOfClimb = !selectIsClimbable(
         unit,
         armyCards,
-        startHex,
+        prevHex,
         neighbor,
         // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
         isGrappleGun ? 26 : undefined
@@ -285,7 +303,7 @@ function recurseThroughMoves({
         isFromOccupied,
         movePointsLeft,
         disengagedUnitIDs: totalDisengagedIDsSoFar,
-        engagedUnitIDs,
+        engagedUnitIDs: latestEngagedUnitIDs,
       }
       // 1. unpassable
       if (isUnpassable) {
@@ -306,8 +324,8 @@ function recurseThroughMoves({
           ...recurseThroughMoves({
             unmutatedContext,
             prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
-            prevEngagements: engagedUnitIDs,
-            startHex: neighbor,
+            prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+            prevHex: neighbor,
             movePoints: movePointsLeft,
             initialMoveRange: acc,
           }),
@@ -321,15 +339,14 @@ function recurseThroughMoves({
             isGrappleGun,
           }
         }
-        // walking does not recurse past engagement hexes
         return {
           ...acc,
           ...recurseThroughMoves({
             unmutatedContext,
             prevHexesDisengagedUnitIDs: disengagedUnitIDs,
-            prevEngagements: engagedUnitIDs,
-            startHex: neighbor,
-            startTailHex: isUnit2Hex ? startHex : undefined,
+            prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+            prevHex: neighbor,
+            startTailHex: isUnit2Hex ? prevHex : undefined,
             movePoints: movePointsLeft,
             initialMoveRange: acc,
           }),
@@ -345,16 +362,15 @@ function recurseThroughMoves({
             isGrappleGun,
           }
         }
-        // walking and flying both recurse past safe hexes
         return isMovePointsLeftAfterMove
           ? {
               ...acc,
               ...recurseThroughMoves({
                 unmutatedContext,
                 prevHexesDisengagedUnitIDs: disengagedUnitIDs,
-                prevEngagements: engagedUnitIDs,
-                startHex: neighbor,
-                startTailHex: isUnit2Hex ? startHex : undefined,
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHex: neighbor,
+                startTailHex: isUnit2Hex ? prevHex : undefined,
                 movePoints: movePointsLeft,
                 initialMoveRange: acc,
               }),
