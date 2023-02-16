@@ -241,6 +241,7 @@ export type DisengageAttempt = {
   endHexID: string
   endFromHexID: string
   movePointsLeft: number
+  fallDamage: number
   defendersToDisengage: GameUnit[]
 }
 export type UnitsCloning = {

@@ -59,9 +59,12 @@ export const RopControls = () => {
     isExplosionSAStage,
     isGrenadeSAStage,
   } = useBgioCtx()
-  const { showDisengageConfirm } = usePlayContext()
+  const { showDisengageConfirm, fallHexID } = usePlayContext()
   if (showDisengageConfirm) {
+    // also shows fall damage info aside the disengagement info
     return <RopConfirmDisengageAttemptControls />
+  } else if (fallHexID) {
+    return <RopConfirmFallDamageControls />
   }
   if (isIdleStage) {
     return (
@@ -194,11 +197,17 @@ const RopIdleControls = () => {
 }
 
 const RopConfirmDisengageAttemptControls = () => {
-  const { confirmDisengageAttempt, cancelDisengageAttempt, disengageAttempt } =
-    usePlayContext()
+  const {
+    disengageAttempt,
+    cancelDisengageAttempt,
+    confirmDisengageAttempt,
+    selectedUnitMoveRange,
+  } = usePlayContext()
   const { gameArmyCards } = useBgioG()
   if (!disengageAttempt) return null
   const { unit, defendersToDisengage } = disengageAttempt
+  const fallDamage =
+    selectedUnitMoveRange?.[disengageAttempt.endHexID]?.fallDamage ?? 0
   const myUnitCard = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
   const myUnitName = myUnitCard?.name ?? ''
   const unitsThatGetASwipe = defendersToDisengage.map((u) => {
@@ -214,12 +223,39 @@ const RopConfirmDisengageAttemptControls = () => {
         {`Confirm you want ${myUnitName} to disengage ${
           unitsThatGetASwipe.length
         } units? (${unitsThatGetASwipe.map((u) => u.singleName).join(', ')})`}
+        {fallDamage > 0 && ` and risk ${fallDamage} wounds from fall damage?`}
       </StyledControlsHeaderH2>
       <ConfirmOrResetButtons
         confirm={cancelDisengageAttempt}
         confirmText={`No, we will find another way...`}
         reset={confirmDisengageAttempt}
-        resetText={`Yes, disengage them!`}
+        resetText={`Yes, disengage them! ${
+          fallDamage > 0 && `And risk ${fallDamage} wounds from fall damage!`
+        }`}
+      />
+    </>
+  )
+}
+
+const RopConfirmFallDamageControls = () => {
+  const {
+    confirmFallDamageMove,
+    cancelFallDamageMove,
+    fallHexID,
+    selectedUnitMoveRange,
+  } = usePlayContext()
+  const fallDamage = selectedUnitMoveRange?.[fallHexID]?.fallDamage ?? 0
+  // const myUnitName = myUnitCard?.name ?? ''
+  return (
+    <>
+      <StyledControlsHeaderH2>
+        {`Confirm you want to risk ${fallDamage} wounds from fall damage?`}
+      </StyledControlsHeaderH2>
+      <ConfirmOrResetButtons
+        confirm={cancelFallDamageMove}
+        confirmText={`No, we will find another way...`}
+        reset={confirmFallDamageMove}
+        resetText={`It's not that high! (Confirm risk of ${fallDamage} wounds)`}
       />
     </>
   )

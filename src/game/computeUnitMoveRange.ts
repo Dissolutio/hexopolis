@@ -321,7 +321,7 @@ function recurseThroughMoves({
             ...moveRangeData,
             isDisengage: isCausingDisengagement,
             isGrappleGun,
-            fallDamage: isFallDamage ? newFallDamage : undefined,
+            fallDamage: newFallDamage,
           }
         }
         return {
@@ -349,7 +349,7 @@ function recurseThroughMoves({
           ...acc,
           ...recurseThroughMoves({
             unmutatedContext,
-            prevHexesDisengagedUnitIDs: disengagedUnitIDs,
+            prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
             prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
             prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
             prevHex: neighbor,

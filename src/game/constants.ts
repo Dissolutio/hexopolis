@@ -74,7 +74,7 @@ export function generateBlankMoveRange(): MoveRange {
 export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
   safeMoves: string[]
   engageMoves: string[]
-  disengageMoves: string[]
+  dangerousMoves: string[]
 } {
   return {
     safeMoves: Object.keys(moveRange).filter(
@@ -83,8 +83,9 @@ export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
     engageMoves: Object.keys(moveRange).filter(
       (hexID) => moveRange[hexID].isEngage
     ),
-    disengageMoves: Object.keys(moveRange).filter(
-      (hexID) => moveRange[hexID].isDisengage
+    dangerousMoves: Object.keys(moveRange).filter(
+      (hexID) =>
+        moveRange[hexID].isDisengage || (moveRange[hexID]?.fallDamage ?? 0) > 0
     ),
   }
 }

@@ -33,8 +33,11 @@ export const moveAction: Move<GameState> = {
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
     const startHexID = startHex?.id ?? ''
     const startTailHexID = startTailHex?.id ?? ''
-    const { safeMoves, engageMoves, disengageMoves } =
-      transformMoveRangeToArraysOfIds(currentMoveRange)
+    const {
+      safeMoves,
+      engageMoves,
+      dangerousMoves: disengageMoves,
+    } = transformMoveRangeToArraysOfIds(currentMoveRange)
     // TODO: MoveRange Move Cost
     const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
     const revealedGameCard = selectRevealedGameCard(
