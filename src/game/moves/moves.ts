@@ -21,6 +21,14 @@ import {
   placeWaterClone,
 } from './water-clone-action'
 
+//phase:___Draft
+const confirmDraftReady: Move<GameState> = (
+  { G },
+  { playerID }: { playerID: string }
+) => {
+  G.draftReady[playerID] = true
+}
+
 //phase:___Placement
 const deployUnits: Move<GameState> = (
   { G },
@@ -88,6 +96,7 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 }
 
 export const moves: MoveMap<GameState> = {
+  confirmDraftReady,
   draftPrePlaceArmyCardAction,
   deployUnits,
   confirmPlacementReady,

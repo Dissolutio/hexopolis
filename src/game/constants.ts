@@ -68,7 +68,7 @@ export function generateBlankPlayersStateForNumPlayers(
 ): PlayerState {
   let result: { [key: string]: any } = {}
   for (let index = 0; index < numPlayers; index++) {
-    result[index] = generateBlankPlayersOrderMarkers()
+    result[index] = { orderMarkers: generateBlankPlayersOrderMarkers() }
   }
   return result
 }
