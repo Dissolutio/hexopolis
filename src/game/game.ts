@@ -70,6 +70,9 @@ export const Hexoscape: Game<GameState> = {
         activePlayers: {
           currentPlayer: stageNames.pickingUnits,
         },
+        onEnd: ({ G, ctx }) => {
+          G.cardsDraftedThisTurn = []
+        },
       },
       // Everybody picking at the same time, below, but undo does not work!
       // turn: {

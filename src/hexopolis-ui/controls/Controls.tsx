@@ -1,4 +1,4 @@
-import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { StyledControlsHeaderH2 } from 'hexopolis-ui/layout/Typography'
 import React from 'react'
 import { DraftControls, IdleDraftControls } from './DraftControls'
@@ -17,6 +17,7 @@ export const Controls = () => {
     isRoundOfPlayPhase,
     isGameover,
   } = useBgioCtx()
+  const { draftReady } = useBgioG()
   // if (isWaitingForPlayersToJoin) {
   //   return (
   //     <StyledControlsHeaderH2>
@@ -24,7 +25,8 @@ export const Controls = () => {
   //     </StyledControlsHeaderH2>
   //   )
   // }
-  if (isDraftPhase && isMyTurn) {
+  const isMyDraftReady = draftReady[playerID] === true
+  if (isDraftPhase && (isMyTurn || isMyDraftReady)) {
     return <DraftControls />
   }
   if (isDraftPhase && !isMyTurn) {

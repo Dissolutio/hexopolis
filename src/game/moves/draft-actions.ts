@@ -26,14 +26,15 @@ export const draftPrePlaceArmyCardAction: Move<GameState> = (
   newGameArmyCards.push(newCardsForPlayer)
   // give the player the units from the card
   const addedUnits = transformGameArmyCardsToGameUnits([newCardsForPlayer])
+  // and go ahead and auto-place the units on the board
   const newBoardHexes = transformBoardHexesWithPrePlacedUnits(
     //
     { ...G.boardHexes },
     { ...G.startZones },
     addedUnits
   )
+  G.cardsDraftedThisTurn.push(armyCard.armyCardID)
   const newGameUnits = { ...G.gameUnits, ...addedUnits }
-  // and go ahead and auto-place the units on the board
   G.boardHexes = newBoardHexes
   G.gameUnits = newGameUnits
   G.gameArmyCards = newGameArmyCards

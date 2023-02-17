@@ -23,10 +23,12 @@ import {
 
 //phase:___Draft
 const confirmDraftReady: Move<GameState> = (
-  { G },
+  { G, events },
   { playerID }: { playerID: string }
 ) => {
   G.draftReady[playerID] = true
+  // we only surface the confirm button when it is current players turn to "draft"
+  events.endTurn()
 }
 
 //phase:___Placement

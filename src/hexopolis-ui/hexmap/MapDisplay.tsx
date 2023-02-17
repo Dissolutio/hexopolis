@@ -1,9 +1,10 @@
 import { HEXGRID_SPACING } from 'app/constants'
-import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { MapShapes } from 'game/types'
 import { useMapContext } from 'hexopolis-ui/contexts'
 import { Notifications } from 'hexopolis-ui/notifications/Notifications'
 import React, { useEffect } from 'react'
+import { DraftCounter } from './DraftCounter'
 import { HexgridLayout } from './HexgridLayout'
 import { MapHexes } from './MapHexes'
 import { MapHexStyles } from './MapHexStyles'
@@ -19,6 +20,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
     hexMap: { hexSize, flat, mapId, mapSize },
   } = useBgioG()
   const { playerID } = useBgioClientInfo()
+  const { isDraftPhase } = useBgioCtx()
   const { viewBox } = useMapContext()
   //! MAP SETUP/LAYOUT CONFIG
   const initialMapState = {
@@ -78,6 +80,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       />
       <Notifications />
       <TurnCounter />
+      {isDraftPhase && <DraftCounter />}
       <HexgridLayout
         size={{ x: hexSize, y: hexSize }}
         flat={flat}

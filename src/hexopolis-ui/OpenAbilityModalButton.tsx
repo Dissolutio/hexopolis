@@ -37,7 +37,7 @@ export const OpenCardModalButton = ({
           marginLeft: '-1rem',
         }}
       />
-      {/* <span>Card info</span> */}
+      View
     </StyledBlueIconButton>
   )
 }

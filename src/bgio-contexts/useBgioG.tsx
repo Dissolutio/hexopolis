@@ -21,6 +21,8 @@ const BgioGContext = React.createContext<
       myOrderMarkers: PlayerOrderMarkers
       currentRoundText: string
       uniqUnitsMoved: string[]
+      myPointsOnBoard: number
+      myDraftPointsLeft: number
     })
   | undefined
 >(undefined)
@@ -29,6 +31,7 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
   const { playerID, belongsToPlayer } = useBgioClientInfo()
   const myCards: GameArmyCard[] = G.gameArmyCards.filter(belongsToPlayer)
   const myPointsOnBoard = selectPointsOnBoard({ myCards })
+  const myDraftPointsLeft = G.maxArmyValue - myPointsOnBoard
   const myAliveCards: GameArmyCard[] = myCards.filter(
     (c) => selectUnitsForCard(c.gameCardID, G.gameUnits).length > 0
   )
@@ -48,6 +51,8 @@ export function BgioGProvider({ G, children }: BgioGProviderProps) {
         myOrderMarkers,
         currentRoundText,
         uniqUnitsMoved,
+        myPointsOnBoard,
+        myDraftPointsLeft,
       }}
     >
       {children}
