@@ -50,11 +50,13 @@ type PlayContextValue = {
   selectedUnitAttackRange: string[] // hexIDs
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
+  fallHexID: string
   isWalkingFlyer: boolean
   isGrappleGun: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
-  toggleDisengageConfirm: (endHexID: string) => void
+  confirmFallDamageMove: () => void
+  cancelFallDamageMove: () => void
 
   // computed
   currentTurnGameCardID: string
@@ -223,6 +225,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const selectedUnitAttackRange =
     revealedGameCardTargetsInRange?.[selectedUnitID] ?? []
 
+  // FALL DAMAGE ATTEMPT
+  const [fallHexID, setFallHexID] = useState<string>('')
+  const confirmFallDamageMove = () => {
+    moveAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
+    setFallHexID('')
+  }
+  const cancelFallDamageMove = () => {
+    setFallHexID('')
+  }
   // DISENGAGE CONFIRM AND DISENGAGE RELATED
   const [disengageAttempt, setDisengageAttempt] = useState<
     undefined | DisengageAttempt
@@ -235,19 +246,33 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const cancelDisengageAttempt = () => {
     setDisengageAttempt(undefined)
   }
-  const onClickDisengageHex = (endHexID: string) => {
-    const disengagementUnitIDs =
-      selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
-    const endFromHexID = selectedUnitMoveRange[endHexID]?.fromHexID
-    const movePointsLeft = selectedUnitMoveRange[endHexID]?.movePointsLeft
-    const defendersToDisengage = disengagementUnitIDs.map((id) => gameUnits[id])
-    setDisengageAttempt({
-      unit: selectedUnit,
-      endHexID,
-      endFromHexID,
-      defendersToDisengage,
-      movePointsLeft,
-    })
+  const onClickDangerousHex = (endHexID: string) => {
+    // this is either a disengage and/or a falling damage hex
+    const moveRangeSelection = selectedUnitMoveRange[endHexID]
+    if (!moveRangeSelection) {
+      return
+    }
+    const fallDamage = moveRangeSelection?.fallDamage ?? 0
+    if (moveRangeSelection.isDisengage) {
+      const disengagementUnitIDs =
+        selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
+      const endFromHexID = selectedUnitMoveRange[endHexID]?.fromHexID
+      const movePointsLeft = selectedUnitMoveRange[endHexID]?.movePointsLeft
+      const defendersToDisengage = disengagementUnitIDs.map(
+        (id) => gameUnits[id]
+      )
+      setDisengageAttempt({
+        unit: selectedUnit,
+        endHexID,
+        endFromHexID,
+        defendersToDisengage,
+        movePointsLeft,
+        fallDamage,
+      })
+    } else if (fallDamage > 0) {
+      // we set the id, and then show confirm, if they say yes, we do the move and move-action will apply the fall damage
+      setFallHexID(endHexID)
+    }
   }
 
   // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
@@ -268,7 +293,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     generateBlankMoveRange()
   )
 
-  const { safeMoves, engageMoves, disengageMoves } =
+  const { safeMoves, engageMoves, dangerousMoves } =
     transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
   // effect: update moverange when selected unit changes (only necessary in movement stage)
   useEffect(() => {
@@ -383,7 +408,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       )
       const isAbleToMakeMove =
         isInSafeMoveRangeOfSelectedUnit || isInEngageMoveRangeOfSelectedUnit
-      const isInDisengageRange = disengageMoves.includes(sourceHex.id)
+      const isInDangerousRange = dangerousMoves.includes(sourceHex.id)
       // move selected unit if possible...
       if (selectedUnitID && isAbleToMakeMove) {
         moveAction(
@@ -391,9 +416,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
           boardHexes[sourceHex.id],
           selectedUnitMoveRange
         )
-      } else if (selectedUnitID && isInDisengageRange) {
+      } else if (selectedUnitID && isInDangerousRange) {
         // if clicked in disengage hex, then make them confirm...
-        onClickDisengageHex(sourceHexID)
+        onClickDangerousHex(sourceHexID)
       } else {
         // ...otherwise, select or deselect
         // select unit
@@ -457,11 +482,13 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         // disengage confirm
         showDisengageConfirm,
         disengageAttempt,
+        fallHexID,
         isWalkingFlyer,
         isGrappleGun,
         confirmDisengageAttempt,
         cancelDisengageAttempt,
-        toggleDisengageConfirm: onClickDisengageHex,
+        confirmFallDamageMove,
+        cancelFallDamageMove,
         // COMPUTED
         currentTurnGameCardID,
         selectedUnit,

@@ -10,7 +10,7 @@ import {
   StartZones,
 } from 'game/types'
 
-export function calcPlacementHexClassNames({
+export function calcDraftAndPlacementHexClassNames({
   selectedMapHex,
   selectedUnitID,
   selectedUnitIs2Hex,
@@ -252,8 +252,11 @@ export function calcRopHexClassNames({
 
   // phase: ROP-move
   if (isMovementStage) {
-    const { safeMoves, engageMoves, disengageMoves } =
-      transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
+    const {
+      safeMoves,
+      engageMoves,
+      dangerousMoves: disengageMoves,
+    } = transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
     const isInSafeMoveRange = safeMoves?.includes(hex.id)
     const isInEngageMoveRange = engageMoves?.includes(hex.id)
     const hasUnitOnHexMoved = unitsMoved?.includes(hexUnitID)

@@ -1,10 +1,10 @@
-import { CardAbility, GameArmyCard } from 'game/types'
+import { ArmyCard, CardAbility, GameArmyCard } from 'game/types'
 import * as React from 'react'
 
 type ModalState = {
   modalState: string
   modalAbility?: CardAbility
-  modalCard?: GameArmyCard
+  modalCard?: GameArmyCard | ArmyCard
 }
 
 type UIContextProviderProps = {
@@ -18,7 +18,7 @@ const UIContext = React.createContext<
       closeModal: () => void
       backModal: () => void
       openModalAbility: (ability: CardAbility) => void
-      openModalCard: (card: GameArmyCard) => void
+      openModalCard: (card: GameArmyCard | ArmyCard) => void
       selectedUnitID: string
       setSelectedUnitID: React.Dispatch<React.SetStateAction<string>>
       selectedGameCardID: string
@@ -57,7 +57,7 @@ export function UIContextProvider({ children }: UIContextProviderProps) {
       modalAbility: ability,
     }))
   }
-  const openModalCard = (card: GameArmyCard) => {
+  const openModalCard = (card: GameArmyCard | ArmyCard) => {
     setModalState((s) => ({
       ...s,
       modalState: modalStates.card,

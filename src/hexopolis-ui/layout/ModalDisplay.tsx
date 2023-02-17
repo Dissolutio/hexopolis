@@ -186,7 +186,7 @@ export const ModalDisplay = (props: Props) => {
                     <UnitIcon
                       hexSize={40}
                       armyCardID={modalCard.armyCardID}
-                      iconPlayerID={modalCard.playerID}
+                      iconPlayerID={(modalCard as any)?.playerID ?? ''}
                     />
                   </div>
                 </div>
@@ -197,7 +197,12 @@ export const ModalDisplay = (props: Props) => {
                 </h4>
                 {/* <AbilitiesBadges card={card} /> */}
                 {modalCard.abilities.map((ability) => {
-                  return <OpenAbilityModalButton cardAbility={ability} />
+                  return (
+                    <OpenAbilityModalButton
+                      key={ability.name}
+                      cardAbility={ability}
+                    />
+                  )
                 })}
               </div>
               {/* <div className="cardgrid_buttons"> */}

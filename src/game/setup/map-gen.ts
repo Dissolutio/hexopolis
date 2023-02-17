@@ -10,6 +10,7 @@ import {
 import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
 import { selectHexNeighbors, selectValidTailHexes } from '../selectors'
+import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -106,59 +107,11 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
     },
   }
 }
-function transformBoardHexesWithPrePlacedUnits(
-  boardHexes: BoardHexes,
-  startZones: StartZones,
-  gameUnits: GameUnits
-): BoardHexes {
-  const copy = { ...boardHexes }
-  const gameUnitsArr = Object.values(gameUnits)
-  gameUnitsArr.forEach((unit) => {
-    const is2Hex = unit.is2Hex
-    try {
-      const { playerID } = unit
-      const sz = startZones?.[playerID].filter(
-        (sz) => copy[sz].occupyingUnitID === ''
-      )
-      const validHex =
-        sz?.find((hexID) => {
-          if (is2Hex) {
-            const validTails = selectValidTailHexes(hexID, copy).filter(
-              (t) => t.occupyingUnitID === ''
-            )
-            return copy[hexID].occupyingUnitID === '' && validTails.length > 0
-          } else {
-            return copy[hexID].occupyingUnitID === ''
-          }
-        }) ?? ''
-      const validTail = selectValidTailHexes(validHex ?? '', copy)
-        .filter((t) => t.occupyingUnitID === '')
-        .map((h) => h.id)[0]
-      // update boardHex
-      if (unit.is2Hex) {
-        // update boardHex
-        copy[validHex].occupyingUnitID = unit.unitID
-        copy[validTail].occupyingUnitID = unit.unitID
-        copy[validTail].isUnitTail = true
-      } else {
-        copy[validHex].occupyingUnitID = unit.unitID
-      }
-    } catch (error) {
-      console.error(
-        '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
-        `🚔 The problem is likely the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
-        error
-      )
-    }
-  })
-  return copy
-}
 
 const transformBoardHexesToHaveStartZones = (
   boardHexes: BoardHexes,
   mapSize: number
 ): BoardHexes => {
-  let result: BoardHexes = {}
   const cornersIDs = [
     `0,-${mapSize},${mapSize}`,
     `0,${mapSize},-${mapSize}`,

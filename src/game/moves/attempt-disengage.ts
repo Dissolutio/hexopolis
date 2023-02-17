@@ -14,6 +14,7 @@ export const attemptDisengage: Move<GameState> = {
       defendersToDisengage,
       endFromHexID,
       movePointsLeft,
+      fallDamage,
     }: DisengageAttempt
   ) => {
     const { unitID } = unit
@@ -38,6 +39,7 @@ export const attemptDisengage: Move<GameState> = {
       endFromHexID,
       defendersToDisengage,
       movePointsLeft,
+      fallDamage,
     }
     // update game log
     const indexOfThisMove = G.unitsMoved.length

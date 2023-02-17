@@ -17,6 +17,7 @@ import {
   selectMoveDisengagedUnitIDs,
   selectIsClimbable,
   selectTailHexForUnit,
+  selectIsFallDamage,
 } from './selectors'
 import {
   selectIfGameArmyCardHasDisengage,
@@ -89,6 +90,7 @@ export function computeUnitMoveRange(
         gameUnits,
       },
       prevHexesEngagedUnitIDs: initialEngagements,
+      prevHexFallDamage: 0,
       movePoints: initialMovePoints,
       initialMoveRange,
     }
@@ -122,6 +124,7 @@ export function computeUnitMoveRange(
       },
       prevHex: startHex,
       prevHexesEngagedUnitIDs: initialEngagements,
+      prevHexFallDamage: 0,
       // grapple gun is not a normal move, we treat it like flying so we make up the notion of a move point for it, and give Drake 1 move point
       movePoints: isGrappleGun ? (hasMoved ? 0 : 1) : initialMovePoints,
       initialMoveRange,
@@ -134,6 +137,7 @@ function recurseThroughMoves({
   unmutatedContext,
   prevHexesDisengagedUnitIDs,
   prevHexesEngagedUnitIDs,
+  prevHexFallDamage,
   prevHex,
   startTailHex,
   movePoints,
@@ -154,6 +158,7 @@ function recurseThroughMoves({
   }
   prevHexesDisengagedUnitIDs?: string[]
   prevHexesEngagedUnitIDs: string[]
+  prevHexFallDamage: number
   // !! these inputs below get mutated in the recursion
   prevHex: BoardHex
   startTailHex?: BoardHex
@@ -174,13 +179,7 @@ function recurseThroughMoves({
     armyCards,
   } = unmutatedContext
   const startHexID = prevHex.id
-  const isVisitedAlready =
-    (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
   const isUnitInitiallyEngaged = initialEngagements.length > 0
-  //*early out
-  if (movePoints <= 0 || isVisitedAlready) {
-    return initialMoveRange
-  }
   const isUnit2Hex = unit?.is2Hex
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
   // Neighbors are either passable or unpassable
@@ -284,6 +283,10 @@ function recurseThroughMoves({
         // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
         isGrappleGun ? 26 : undefined
       )
+      const newFallDamage =
+        prevHexFallDamage +
+        selectIsFallDamage(unit, armyCards, prevHex, neighbor)
+      const isFallDamage = newFallDamage > 0
       const isUnpassable = isFlying
         ? isTooCostly
         : isTooCostly ||
@@ -297,6 +300,7 @@ function recurseThroughMoves({
         !isFromOccupied &&
         validTailSpotsForNeighbor?.includes(startHexID)
       const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
+      const isDangerousHex = isCausingDisengagement || isFallDamage
       const moveRangeData = {
         fromHexID: startHexID,
         fromCost,
@@ -310,14 +314,19 @@ function recurseThroughMoves({
         return acc
       }
       // 2. passable: we can get here, maybe stop, maybe pass thru
-      // order matters for if/else-if here, disengagement overrides engagement
-      if (isCausingDisengagement) {
+      // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
+      if (isDangerousHex) {
         if (canStopHere) {
           acc[neighborHexID] = {
             ...moveRangeData,
-            isDisengage: true,
+            isDisengage: isCausingDisengagement,
             isGrappleGun,
+            fallDamage: newFallDamage,
           }
+        }
+        // ONLY for falling damage hexes will be not recurse, because I don't want to deal with applying disengage/fall damage in the right order (you will take all disengagement swipes, and THEN fall)
+        if (isFallDamage) {
+          return acc
         }
         return {
           ...acc,
@@ -325,6 +334,7 @@ function recurseThroughMoves({
             unmutatedContext,
             prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
             prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+            prevHexFallDamage: newFallDamage,
             prevHex: neighbor,
             movePoints: movePointsLeft,
             initialMoveRange: acc,
@@ -343,8 +353,9 @@ function recurseThroughMoves({
           ...acc,
           ...recurseThroughMoves({
             unmutatedContext,
-            prevHexesDisengagedUnitIDs: disengagedUnitIDs,
+            prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
             prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+            prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
             prevHex: neighbor,
             startTailHex: isUnit2Hex ? prevHex : undefined,
             movePoints: movePointsLeft,
@@ -367,8 +378,9 @@ function recurseThroughMoves({
               ...acc,
               ...recurseThroughMoves({
                 unmutatedContext,
-                prevHexesDisengagedUnitIDs: disengagedUnitIDs,
-                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs, // this should be 0 here, as the hex would be an engagement-hex ^^
+                prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
                 prevHex: neighbor,
                 startTailHex: isUnit2Hex ? prevHex : undefined,
                 movePoints: movePointsLeft,

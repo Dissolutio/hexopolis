@@ -2,6 +2,7 @@ import React, {
   createContext,
   SyntheticEvent,
   useContext,
+  useEffect,
   useState,
 } from 'react'
 import { useUIContext, useMapContext } from '.'
@@ -12,7 +13,7 @@ import {
   PlacementUnit,
   BoardHexesUnitDeployment,
 } from 'game/types'
-import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { selectValidTailHexes } from 'game/selectors'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
@@ -52,6 +53,7 @@ const PlacementContextProvider = ({
   const isConfirmedReady = placementReady[playerID] === true
   const { selectMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
+  const { isPlacementPhase } = useBgioCtx()
   // STATE
   const myUnitIds = myUnits.map((u) => u.unitID)
   // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty
@@ -95,6 +97,12 @@ const PlacementContextProvider = ({
       })
   const [editingBoardHexes, setEditingBoardHexes] =
     useState<BoardHexesUnitDeployment>(initialEditingBoardHexes())
+  useEffect(() => {
+    if (isPlacementPhase) {
+      setEditingBoardHexes(initialEditingBoardHexes())
+    }
+  }, [isPlacementPhase])
+
   const [placementUnits, setPlacementUnits] = useState((): string[] =>
     initialPlacementUnits()
   )

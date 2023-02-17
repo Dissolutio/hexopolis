@@ -9,14 +9,16 @@ import {
 } from './types'
 
 export const phaseNames = {
+  draft: 'draft',
   placement: 'placement',
   placeOrderMarkers: 'placeOrderMarkers',
   roundOfPlay: 'roundOfPlay',
 }
 
 export const stageNames = {
-  placeOrderMarkers: 'placeOrderMarkers',
+  pickingUnits: 'pickingUnits',
   placingUnits: 'placingUnits',
+  placeOrderMarkers: 'placeOrderMarkers',
   attacking: 'attacking',
   movement: 'movement',
   waitingForDisengageSwipe: 'waitingForDisengageSwipe',
@@ -36,25 +38,39 @@ export const stageNames = {
 
 export const OM_COUNT = 3
 const ORDERS = ['0', '1', '2', 'X']
+const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
+  return [...prev, { gameCardID: '', order: curr }]
+}, [] as OrderMarker[])
 
-export function generateBlankOrderMarkers(): OrderMarkers {
-  const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
-    return [...prev, { gameCardID: '', order: curr }]
-  }, [] as OrderMarker[])
-  return {
-    '0': blankOrderMarkers,
-    '1': blankOrderMarkers,
+export function generateStateForNumPlayers(
+  numPlayers: number,
+  defaultValue: boolean
+): PlayerStateToggle {
+  let rdyState: { [key: string]: boolean } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    rdyState[index] = defaultValue
   }
+  const result = rdyState
+  return result
 }
-export function generateBlankPlayersState(): PlayerState {
-  return {
-    '0': {
-      orderMarkers: generateBlankPlayersOrderMarkers(),
-    },
-    '1': {
-      orderMarkers: generateBlankPlayersOrderMarkers(),
-    },
+
+export function generateBlankOrderMarkersForNumPlayers(
+  numPlayers: number
+): OrderMarkers {
+  let result: { [key: string]: any } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    result[index] = blankOrderMarkers
   }
+  return result
+}
+export function generateBlankPlayersStateForNumPlayers(
+  numPlayers: number
+): PlayerState {
+  let result: { [key: string]: any } = {}
+  for (let index = 0; index < numPlayers; index++) {
+    result[index] = { orderMarkers: generateBlankPlayersOrderMarkers() }
+  }
+  return result
 }
 export function generateBlankPlayersOrderMarkers(): PlayerOrderMarkers {
   return {
@@ -74,7 +90,7 @@ export function generateBlankMoveRange(): MoveRange {
 export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
   safeMoves: string[]
   engageMoves: string[]
-  disengageMoves: string[]
+  dangerousMoves: string[]
 } {
   return {
     safeMoves: Object.keys(moveRange).filter(
@@ -83,12 +99,13 @@ export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
     engageMoves: Object.keys(moveRange).filter(
       (hexID) => moveRange[hexID].isEngage
     ),
-    disengageMoves: Object.keys(moveRange).filter(
-      (hexID) => moveRange[hexID].isDisengage
+    dangerousMoves: Object.keys(moveRange).filter(
+      (hexID) =>
+        moveRange[hexID].isDisengage || (moveRange[hexID]?.fallDamage ?? 0) > 0
     ),
   }
 }
-const gamePlayerIDs = ['0', '1']
+const gamePlayerIDs = ['0', '1'] // THIS IS A HUGE BUG
 const selectAllOtherGamePlayerIDs = (playerID: string) => {
   return gamePlayerIDs.filter((id) => id !== playerID)
 }

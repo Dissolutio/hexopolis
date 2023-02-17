@@ -1,4 +1,6 @@
 export interface GameState {
+  maxArmyValue: number
+  maxRounds: number
   gameArmyCards: GameArmyCard[]
   killedArmyCards: GameArmyCard[]
   gameUnits: GameUnits
@@ -14,14 +16,17 @@ export interface GameState {
   initiative: string[]
   currentRound: number
   currentOrderMarker: number
+  draftReady: PlayerStateToggle
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
-  // rop game state below
+  // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
+  stageQueue: StageQueueItem[]
+  // Draft tracking below
+  cardsDraftedThisTurn: string[]
+  // ROP game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: { [attackingUnitID: string]: string[] }
-  // These 2 booleans are for shuffling the stage of the current player, so say, if finn dies, after placing his spirit the activePlayers can be updated to the right thing (w/e current player was doing before finn died)
-  isCurrentPlayerAttacking: boolean
   // unitsKilled does not get erased or updated when killed units are resurrected/cloned
   unitsKilled: UnitsKilled
   gameLog: string[]
@@ -52,8 +57,6 @@ export interface GameState {
   // this is used to track results of Tarn Viking Warrior berserker charges
   berserkerChargeRoll: BerserkerChargeRoll | undefined
   berserkerChargeSuccessCount: number
-  // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
-  stageQueue: StageQueueItem[]
 }
 export type SetupData = {
   numPlayers: number
@@ -228,6 +231,7 @@ export type MoveRange = {
     movePointsLeft: number
     disengagedUnitIDs: string[]
     engagedUnitIDs: string[]
+    fallDamage?: number
     isSafe?: boolean
     isEngage?: boolean
     isDisengage?: boolean
@@ -240,6 +244,7 @@ export type DisengageAttempt = {
   endHexID: string
   endFromHexID: string
   movePointsLeft: number
+  fallDamage: number
   defendersToDisengage: GameUnit[]
 }
 export type UnitsCloning = {

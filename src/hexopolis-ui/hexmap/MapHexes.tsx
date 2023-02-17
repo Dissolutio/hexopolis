@@ -12,8 +12,8 @@ import { selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
+  calcDraftAndPlacementHexClassNames,
   calcOrderMarkerHexClassNames,
-  calcPlacementHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
@@ -36,6 +36,7 @@ export const MapHexes = () => {
   const { selectedMapHex } = useMapContext()
   const {
     isMyTurn,
+    isDraftPhase,
     isPlacementPhase,
     isOrderMarkerPhase,
     isRoundOfPlayPhase,
@@ -125,8 +126,8 @@ export const MapHexes = () => {
   }
   // classnames
   const hexClassNames = (hex: BoardHex) => {
-    if (isPlacementPhase) {
-      return calcPlacementHexClassNames({
+    if (isPlacementPhase || isDraftPhase) {
+      return calcDraftAndPlacementHexClassNames({
         selectedMapHex,
         selectedUnitID,
         selectedUnitIs2Hex,

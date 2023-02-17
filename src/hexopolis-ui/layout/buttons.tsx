@@ -4,6 +4,12 @@ export const GreenButton = styled.button`
   color: var(--success-green);
   border: 1px solid var(--success-green);
 `
+export const BigGreenButton = styled(GreenButton)`
+  display: block;
+  font-size: 1.3rem;
+  padding: 20px;
+  margin: auto;
+`
 
 export const BlueButton = styled.button`
   font-size: 0.8rem;

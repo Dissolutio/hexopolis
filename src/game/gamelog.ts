@@ -198,11 +198,8 @@ export const decodeGameLogMessage = (
           ...gameLog,
         }
       case gameLogTypes.move:
-        const moveMsgText = `${unitSingleName} is on the move`
-        const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
         return {
-          ...basic,
-          msg: isGrappleGun ? grappleGunMoveMsg : moveMsgText,
+          ...gameLog,
         }
       case gameLogTypes.disengageAttempt:
         const disengageAttemptMsgText = `${unitSingleName} is attempting to disengage from ${
