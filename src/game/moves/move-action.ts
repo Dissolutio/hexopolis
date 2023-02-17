@@ -22,7 +22,7 @@ import {
   StageQueueItem,
 } from '../types'
 import { rollHeroscapeDice } from './attack-action'
-import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { killUnit_G } from './G-mutators'
 
 export const moveAction: Move<GameState> = {

@@ -6,7 +6,7 @@ import {
   PlayerState,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
-import { makeGameCardID } from 'game/transformers'
+import { makeGameCardID } from '../transformers'
 
 const marroID = 'hs1000'
 const deathwalker9000ID = 'hs1001'
