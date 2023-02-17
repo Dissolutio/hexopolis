@@ -25,40 +25,29 @@ export function CreateMatchForm() {
           onChange={(e) => setMatchName(e.target.value)}
         />
       </label> */}
-      <p>
-        Currently there is only one cool map/scenario, it's the one already
-        selected, Clashing Fronts for 2 Players at Table of the Giants. Whoever
-        joins the match first will be Player 1.
-      </p>
-      These are the starting armies:
-      <h3>Player 1</h3>
+      <p>Currently there is only one map/scenario, and it is for 2 players</p>
+      These are the available characters:
       <ul>
-        <li>Krav Maga</li>
+        <li>Krav Maga Agents</li>
         <li>Tarn Viking Warriors</li>
+        <li>Airborn Elite</li>
+        <li>Izumi Samurari</li>
+        <li>Marro Warriors</li>
+        <li>Zettian Guards</li>
         <li>Grimnak</li>
-        <li>
-          Airborn Elite ("The Drop" Ability not yet functional, but "Grenade"
-          works!)
-        </li>
         <li>Ne-Gok-Sa</li>
         <li>Agent Carr</li>
         <li>Thorgrim</li>
         <li>Syvarris</li>
-      </ul>
-      <h3>Player 2</h3>
-      <ul>
         <li>Sgt. Drake Alexander</li>
-        <li>Izumi Samurari</li>
-        <li>Zettian Guards</li>
         <li>Deathwalker 9000</li>
-        <li>Marro Warriors</li>
         <li>Mimring</li>
         <li>Finn the Viking Champion</li>
         <li>Raelin the Kyrie Warrior</li>
       </ul>
       <label htmlFor="numPlayersSelect">Select map/scenario:</label>
       <select
-        name="numPlayers"
+        name="numPlayersSelect"
         value={scenarioName}
         onChange={handleChange}
         id="numPlayersSelect"
@@ -66,7 +55,7 @@ export function CreateMatchForm() {
         <option value={scenarioNames.clashingFrontsAtTableOfTheGiants2}>
           2 players: Clashing Fronts at The Table of the Giants
         </option>
-        <option value={scenarioNames.theBigHexagon2}>
+        {/* <option value={scenarioNames.theBigHexagon2}>
           2 players: The Big Hexagon
         </option>
         <option value={scenarioNames.theBigHexagon3}>
@@ -80,7 +69,7 @@ export function CreateMatchForm() {
         </option>
         <option value={scenarioNames.theBigHexagon6}>
           6 players: The Big Hexagon
-        </option>
+        </option> */}
       </select>
       <button type="submit">Create Match</button>
     </form>
