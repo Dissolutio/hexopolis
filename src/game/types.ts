@@ -20,11 +20,11 @@ export interface GameState {
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
-  // rop game state below
+  // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
+  stageQueue: StageQueueItem[]
+  // ROP game state below
   unitsMoved: string[] // unitsMoved is not unique ids; for now used to track # of moves used
   unitsAttacked: { [attackingUnitID: string]: string[] }
-  // These 2 booleans are for shuffling the stage of the current player, so say, if finn dies, after placing his spirit the activePlayers can be updated to the right thing (w/e current player was doing before finn died)
-  isCurrentPlayerAttacking: boolean
   // unitsKilled does not get erased or updated when killed units are resurrected/cloned
   unitsKilled: UnitsKilled
   gameLog: string[]
@@ -55,8 +55,6 @@ export interface GameState {
   // this is used to track results of Tarn Viking Warrior berserker charges
   berserkerChargeRoll: BerserkerChargeRoll | undefined
   berserkerChargeSuccessCount: number
-  // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
-  stageQueue: StageQueueItem[]
 }
 export type SetupData = {
   numPlayers: number

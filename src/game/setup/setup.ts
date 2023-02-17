@@ -27,7 +27,6 @@ const someInitialGameState = {
   disengagesAttempting: undefined,
   disengagedUnitIds: [],
   unitsAttacked: {},
-  isCurrentPlayerAttacking: false,
   unitsKilled: {},
   gameLog: [],
   killedArmyCards: [],

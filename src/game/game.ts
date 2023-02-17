@@ -203,7 +203,6 @@ export const Hexoscape: Game<GameState> = {
           // finally, reset state for the turn about to be taken
           G.unitsMoved = []
           G.unitsAttacked = {}
-          G.isCurrentPlayerAttacking = false
           G.chompsAttempted = []
           G.mindShacklesAttempted = []
           G.grenadesThrown = []
