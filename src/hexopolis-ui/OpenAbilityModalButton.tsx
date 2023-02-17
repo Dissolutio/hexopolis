@@ -1,4 +1,4 @@
-import { CardAbility, GameArmyCard } from 'game/types'
+import { ArmyCard, CardAbility, GameArmyCard } from 'game/types'
 import { ImZoomIn } from 'react-icons/im'
 import { useUIContext } from './contexts'
 import { StyledBlueIconButton } from './layout/buttons'
@@ -22,7 +22,11 @@ export const OpenAbilityModalButton = ({
     </StyledBlueIconButton>
   )
 }
-export const OpenCardModalButton = ({ card }: { card: GameArmyCard }) => {
+export const OpenCardModalButton = ({
+  card,
+}: {
+  card: GameArmyCard | ArmyCard
+}) => {
   const { openModalCard } = useUIContext()
   return (
     <StyledBlueIconButton onClick={() => openModalCard(card)}>
