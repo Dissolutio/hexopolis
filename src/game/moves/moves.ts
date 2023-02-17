@@ -13,6 +13,7 @@ import { rollForFireLineSpecialAttack } from './fire-line-SA'
 import { rollForExplosionSpecialAttack } from './explosion-SA'
 import { chompAction } from './chomp-action'
 import { mindShackleAction } from './mind-shackle-action'
+import { draftPrePlaceArmyCardAction } from './draft-actions'
 import { rollForBerserkerCharge } from './roll-berserker-charge'
 import {
   rollForWaterClone,
@@ -87,6 +88,7 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 }
 
 export const moves: MoveMap<GameState> = {
+  draftPrePlaceArmyCardAction,
   deployUnits,
   confirmPlacementReady,
   deconfirmPlacementReady,

@@ -21,7 +21,7 @@ const isDevOverrideState =
   process.env.NODE_ENV === 'production'
     ? false
     : // toggle this one to test the game with pre-placed units
-      true
+      false
 
 export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
@@ -51,20 +51,6 @@ export const Hexoscape: Game<GameState> = {
     //PHASE: DRAFT AND PLACE UNITS
     [phaseNames.draft]: {
       start: true,
-      // roll initiative
-      onBegin: ({ G, ctx }) => {
-        const playerIDs = Object.keys(G.players)
-        const initiativeRoll = rollD20Initiative(playerIDs)
-        const roundBeginGameLog = encodeGameLogMessage({
-          type: gameLogTypes.roundBegin,
-          id: `${G.currentRound}`,
-          playerID: '',
-          initiativeRolls: initiativeRoll.rolls,
-        })
-        G.initiative = initiativeRoll.initiative
-        G.currentOrderMarker = 0
-        G.gameLog = [...G.gameLog, roundBeginGameLog]
-      },
       // all players may make moves and place their units
       turn: {
         activePlayers: {

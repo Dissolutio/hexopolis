@@ -1,17 +1,55 @@
-import { useBgioCtx } from 'bgio-contexts'
+import {
+  useBgioClientInfo,
+  useBgioCtx,
+  useBgioG,
+  useBgioMoves,
+} from 'bgio-contexts'
+import styled from 'styled-components'
 import { StyledControlsHeaderH2 } from 'hexopolis-ui/layout/Typography'
 import React from 'react'
+import { MS1Cards } from 'game/coreHeroscapeCards'
+import { transformHSCardsToDraftableCards } from 'game/transformers'
+import { ArmyCard } from 'game/types'
 
 export const DraftControls = () => {
-  const { isMyTurn, activePlayers } = useBgioCtx()
-  console.log(
-    '🚀 ~ file: DraftControls.tsx:9 ~ DraftControlsPicking ~ activePlayers',
-    activePlayers
+  return (
+    <>
+      <StyledControlsHeaderH2>DraftControls</StyledControlsHeaderH2>
+      <DraftCardGallery />
+    </>
   )
-  return <StyledControlsHeaderH2>DraftControls</StyledControlsHeaderH2>
 }
 
-type Props = {}
-const DraftCardGallery = (props: Props) => {
-  return <div>DraftControls</div>
+const DraftCardGallery = () => {
+  const { myCards } = useBgioG()
+  const myCardsIDs = myCards.map((c) => c.armyCardID)
+  const draftableCards = transformHSCardsToDraftableCards(MS1Cards).filter(
+    (c) => !myCardsIDs.includes(c.armyCardID)
+  )
+  return (
+    <StyledDraftGalleryDiv>
+      {draftableCards.map((card) => (
+        <DraftArmyCard key={card?.armyCardID} card={card} />
+      ))}
+    </StyledDraftGalleryDiv>
+  )
 }
+const StyledDraftGalleryDiv = styled.div``
+const DraftArmyCard = ({ card }: { card: ArmyCard }) => {
+  const { playerID } = useBgioClientInfo()
+  const {
+    moves: { draftPrePlaceArmyCardAction },
+  } = useBgioMoves()
+  const handleClickDraftCard = () => {
+    draftPrePlaceArmyCardAction({
+      armyCard: card,
+      playerID,
+    })
+  }
+  return (
+    <StyledDraftCardDiv onClick={handleClickDraftCard}>
+      <img alt={'unit portrait'} src={`/heroscape-portraits/${card?.image}`} />
+    </StyledDraftCardDiv>
+  )
+}
+const StyledDraftCardDiv = styled.div``
