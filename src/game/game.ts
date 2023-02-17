@@ -52,11 +52,31 @@ export const Hexoscape: Game<GameState> = {
     [phaseNames.draft]: {
       start: true,
       // all players may make moves and place their units
+      onBegin: ({ G, ctx }) => {
+        const playerIDs = Object.keys(G.players)
+        const initiativeRoll = rollD20Initiative(playerIDs)
+        G.initiative = initiativeRoll.initiative
+        // TODO add gamelog of draft begin
+        // const draftBeginGameLog = encodeGameLogMessage({
+        //   type: gameLogTypes.roundBegin,
+        //   id: `draftBegin`,
+        //   initiativeRolls: initiativeRoll.rolls,
+        // })
+        // G.gameLog = [...G.gameLog, draftBeginGameLog]
+      },
       turn: {
+        // d20 roll-offs for initiative
+        order: TurnOrder.CUSTOM_FROM('initiative'),
         activePlayers: {
-          all: stageNames.pickingUnits,
+          currentPlayer: stageNames.pickingUnits,
         },
       },
+      // Everybody picking at the same time, below, but undo does not work!
+      // turn: {
+      //   activePlayers: {
+      //     all: stageNames.pickingUnits,
+      //   },
+      // },
       // once all players have placed their units and confirmed ready, the order marker stage will begin
       endIf: ({ G, ctx }) => {
         return checkReady('draftReady', G, ctx)

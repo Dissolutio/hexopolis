@@ -1,7 +1,7 @@
 import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
 import { StyledControlsHeaderH2 } from 'hexopolis-ui/layout/Typography'
 import React from 'react'
-import { DraftControls } from './DraftControls'
+import { DraftControls, IdleDraftControls } from './DraftControls'
 import { PlacementControls } from './PlacementControls'
 import { PlaceOrderMarkersControls } from './PlaceOrderMarkersControls'
 import { RopControls } from './RopControls'
@@ -10,6 +10,7 @@ export const Controls = () => {
   const {
     gameover,
     isWaitingForPlayersToJoin,
+    isMyTurn,
     isDraftPhase,
     isOrderMarkerPhase,
     isPlacementPhase,
@@ -23,8 +24,11 @@ export const Controls = () => {
   //     </StyledControlsHeaderH2>
   //   )
   // }
-  if (isDraftPhase) {
+  if (isDraftPhase && isMyTurn) {
     return <DraftControls />
+  }
+  if (isDraftPhase && !isMyTurn) {
+    return <IdleDraftControls />
   }
   if (isPlacementPhase) {
     return <PlacementControls />
