@@ -1,4 +1,5 @@
 import {
+  ArmyCard,
   GameArmyCard,
   ICoreHeroscapeCard,
   OrderMarkers,
@@ -26,24 +27,24 @@ export const grimnakID = 'hs1015'
 // TEST SCENARIO ARMYCARDS
 export const startingArmies: { [playerID: string]: string[] } = {
   '0': [
+    // syvarrisID,
     kravMagaID,
-    tarnID,
-    grimnakID,
-    airbornID,
-    negoksaID,
-    carrID,
-    thorgrimID,
-    syvarrisID,
+    raelinOneID,
+    // tarnID,
+    // grimnakID,
+    // airbornID,
+    // negoksaID,
+    // carrID,
+    // thorgrimID,
   ],
   '1': [
     drake1ID,
-    izumiID,
-    zettianID,
-    deathwalker9000ID,
-    marroID,
-    mimringID,
-    finnID,
-    raelinOneID,
+    // izumiID,
+    // zettianID,
+    // deathwalker9000ID,
+    // marroID,
+    // mimringID,
+    // finnID,
   ],
   '2': [mimringID, tarnID],
   '3': [mimringID, tarnID],
@@ -81,6 +82,52 @@ function hsCardsToArmyCards(
       cardClass: hsCard.cardClass,
       personality: hsCard.personality,
       image: hsCard.image,
+    }
+  })
+}
+function transformHSCardToDraftableCard(
+  params: Array<ICoreHeroscapeCard>
+): Array<ArmyCard | undefined> {
+  return params.map((hsCard) => {
+    if (!hsCard) return undefined
+    return {
+      // playerID,
+      // cardQuantity: 1,
+      // gameCardID: makeGameCardID(playerID, hsCard.armyCardID),
+      armyCardID: hsCard.armyCardID,
+      abilities: hsCard.abilities,
+      name: hsCard.name,
+      singleName: hsCard.singleName,
+      race: hsCard.race,
+      life: parseInt(hsCard.life),
+      move: parseInt(hsCard.move),
+      range: parseInt(hsCard.range),
+      attack: parseInt(hsCard.attack),
+      defense: parseInt(hsCard.defense),
+      height: parseInt(hsCard.height),
+      heightClass: hsCard.heightClass,
+      points: parseInt(hsCard.points),
+      figures: parseInt(hsCard.figures),
+      hexes: parseInt(hsCard.hexes),
+      general: hsCard.general,
+      type: hsCard.type,
+      cardClass: hsCard.cardClass,
+      personality: hsCard.personality,
+      image: hsCard.image,
+    }
+  })
+}
+
+function transformDraftableCardToGameCard(
+  params: ArmyCard[],
+  playerID: string
+): GameArmyCard[] {
+  return params.map((card) => {
+    return {
+      ...card,
+      playerID,
+      cardQuantity: 1,
+      gameCardID: makeGameCardID(playerID, card.armyCardID),
     }
   })
 }

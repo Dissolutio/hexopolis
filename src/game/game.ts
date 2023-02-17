@@ -68,14 +68,14 @@ export const Hexoscape: Game<GameState> = {
       // all players may make moves and place their units
       turn: {
         activePlayers: {
-          all: stageNames.placingUnits,
+          all: stageNames.pickingUnits,
         },
       },
       // once all players have placed their units and confirmed ready, the order marker stage will begin
       endIf: ({ G, ctx }) => {
         return checkReady('draftReady', G, ctx)
       },
-      next: phaseNames.placeOrderMarkers,
+      next: phaseNames.placement,
     },
     [phaseNames.placement]: {
       // all players may make moves and place their units

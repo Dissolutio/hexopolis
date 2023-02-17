@@ -73,8 +73,8 @@ export const devHexagon = {
       id: '-2,1,1',
       occupyingUnitID: '',
       isUnitTail: false,
-      altitude: 1,
-      terrain: 'grass',
+      altitude: 25,
+      terrain: 'sand',
       startzonePlayerIDs: ['5'],
     },
     '-2,2,0': {

@@ -16,8 +16,9 @@ export const phaseNames = {
 }
 
 export const stageNames = {
-  placeOrderMarkers: 'placeOrderMarkers',
+  pickingUnits: 'pickingUnits',
   placingUnits: 'placingUnits',
+  placeOrderMarkers: 'placeOrderMarkers',
   attacking: 'attacking',
   movement: 'movement',
   waitingForDisengageSwipe: 'waitingForDisengageSwipe',

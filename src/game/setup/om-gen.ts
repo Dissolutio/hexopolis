@@ -3,10 +3,10 @@ import { startingArmies } from './unit-gen'
 
 // TEST SCENARIO ORDER MARKERS
 const oms = {
-  p0_0: `p0_${startingArmies['0'][0]}`,
-  p0_1: `p0_${startingArmies['0'][0]}`,
-  p0_2: `p0_${startingArmies['0'][0]}`,
-  p0_X: `p0_${startingArmies['0'][0]}`,
+  p0_0: `p0_${startingArmies['0'][1]}`,
+  p0_1: `p0_${startingArmies['0'][1]}`,
+  p0_2: `p0_${startingArmies['0'][1]}`,
+  p0_X: `p0_${startingArmies['0'][1]}`,
   p1_0: `p1_${startingArmies['1'][0]}`,
   p1_1: `p1_${startingArmies['1'][0]}`,
   p1_2: `p1_${startingArmies['1'][0]}`,
