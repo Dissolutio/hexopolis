@@ -134,7 +134,7 @@ export function transformBoardHexesWithPrePlacedUnits(
         sz?.find((hexID) => {
           if (is2Hex) {
             const validTails = selectValidTailHexes(hexID, copy).filter(
-              (t) => t.occupyingUnitID === ''
+              (t) => t?.occupyingUnitID === ''
             )
             return copy[hexID].occupyingUnitID === '' && validTails.length > 0
           } else {
