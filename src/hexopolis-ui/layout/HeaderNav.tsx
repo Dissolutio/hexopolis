@@ -65,11 +65,9 @@ const PlayerTeamLogo = ({
   // for multiplayer, it will be a link back to the lobby
   const lobbyLink = `/`
   return (
-    <Link to={lobbyLink}>
-      <PlayerTeamLogoH1>
-        Hexopolis: {playerIDDisplay(playerID)}
-      </PlayerTeamLogoH1>
-    </Link>
+    // <Link to={lobbyLink}>
+    <PlayerTeamLogoH1>Hexopolis: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
+    // </Link>
   )
 }
 
