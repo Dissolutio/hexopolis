@@ -76,11 +76,11 @@ export function transformDraftableCardToGameCard(
     }
   })
 }
+let unitID = 0
 export function transformGameArmyCardsToGameUnits(
   armyCards: GameArmyCard[]
 ): GameUnits {
   // id factory
-  let unitID = 0
   console.log('🚀 ~ file: transformers.ts:84 ~ unitID', unitID)
   function makeUnitID(playerID: string) {
     return `p${playerID}u${unitID++}`
