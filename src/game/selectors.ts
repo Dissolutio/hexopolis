@@ -341,7 +341,7 @@ export const selectIsInRangeOfAttack = ({
     : false
   const isInRangedRange =
     // a normal attack cannot be a ranged attack if the attacker is engaged
-    !isAttackerEngaged || isInTailRange || isInHeadHexRange
+    !isAttackerEngaged && (isInTailRange || isInHeadHexRange)
   const isAttackerRangeOneWhichRequiresEngagement = unitRange === 1
   const isThorianSpeedDefender = selectIfGameArmyCardHasAbility(
     // thorian speed means cannot be targeted by a normal ranged attack
