@@ -50,6 +50,8 @@ export interface GameState {
   waterClonesPlaced: WaterClonesPlaced
   // This is an array of gameCardIDs, it gets added to whenever a grenade gets thrown, and then at end of turn, in game.ts file,  we can mark that card true for hasThrownGrenade
   grenadesThrown: string[]
+  // tracks which cards that need to use The Drop have used it
+  theDropUsed: string[]
   // this marks grimnak as having chomped
   chompsAttempted: string[]
   // this marks negoksa as having attempted mind shackle

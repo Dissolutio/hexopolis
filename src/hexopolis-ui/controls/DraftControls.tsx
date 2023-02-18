@@ -18,6 +18,7 @@ import { ArmyCard } from 'game/types'
 import { BigGreenButton, GreenButton } from 'hexopolis-ui/layout/buttons'
 import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import { OpenCardModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
+import { StyledButtonWrapper } from './ConfirmOrResetButtons'
 
 export const DraftControls = () => {
   const { playerID } = useBgioClientInfo()
@@ -66,11 +67,13 @@ export const DraftControls = () => {
       <>
         <StyledControlsHeaderH2>
           Your army is at capacity, no more cards can be drafted. Ready for
-          Placement phase?)
+          Placement phase?
         </StyledControlsHeaderH2>
-        <GreenButton onClick={onClickConfirm}>
-          Confirm Ready (finished Drafting)
-        </GreenButton>
+        <StyledButtonWrapper>
+          <GreenButton onClick={onClickConfirm}>
+            Confirm Ready (finished Drafting)
+          </GreenButton>
+        </StyledButtonWrapper>
       </>
     )
   }

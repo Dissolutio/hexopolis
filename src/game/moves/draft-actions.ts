@@ -1,4 +1,5 @@
 import { Move } from 'boardgame.io'
+import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
 import {
   transformDraftableCardToGameCard,
   transformGameArmyCardsToGameUnits,
@@ -26,16 +27,19 @@ export const draftPrePlaceArmyCardAction: Move<GameState> = (
   newGameArmyCards.push(newCardsForPlayer)
   // give the player the units from the card
   const addedUnits = transformGameArmyCardsToGameUnits([newCardsForPlayer])
-  // and go ahead and auto-place the units on the board
-  const newBoardHexes = transformBoardHexesWithPrePlacedUnits(
-    //
-    { ...G.boardHexes },
-    { ...G.startZones },
-    addedUnits
-  )
+  const hasTheDrop = selectIfGameArmyCardHasAbility('The Drop', armyCard)
+  // units with The Drop are not auto-placed on the board, the rest are
+  if (!hasTheDrop) {
+    const newBoardHexes = transformBoardHexesWithPrePlacedUnits(
+      { ...G.boardHexes },
+      { ...G.startZones },
+      addedUnits
+    )
+    G.boardHexes = newBoardHexes
+  }
+  // apply the card and units after units are placed
   G.cardsDraftedThisTurn.push(armyCard.armyCardID)
   const newGameUnits = { ...G.gameUnits, ...addedUnits }
-  G.boardHexes = newBoardHexes
   G.gameUnits = newGameUnits
   G.gameArmyCards = newGameArmyCards
 }

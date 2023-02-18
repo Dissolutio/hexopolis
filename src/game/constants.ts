@@ -17,6 +17,8 @@ export const phaseNames = {
 
 export const stageNames = {
   pickingUnits: 'pickingUnits',
+  theDrop: 'theDrop',
+  idleTheDrop: 'idleTheDrop',
   placingUnits: 'placingUnits',
   placeOrderMarkers: 'placeOrderMarkers',
   attacking: 'attacking',

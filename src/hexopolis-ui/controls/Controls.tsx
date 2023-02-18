@@ -14,6 +14,8 @@ export const Controls = () => {
     isDraftPhase,
     isOrderMarkerPhase,
     isPlacementPhase,
+    isTheDropStage,
+    isIdleTheDropStage,
     isRoundOfPlayPhase,
     isGameover,
   } = useBgioCtx()
@@ -26,6 +28,12 @@ export const Controls = () => {
   //   )
   // }
   const isMyDraftReady = draftReady[playerID] === true
+  if (isTheDropStage) {
+    return <h1>The Drop BABY</h1>
+  }
+  if (isIdleTheDropStage) {
+    return <h1>The Drop IDLE'NNN BABY</h1>
+  }
   if (isDraftPhase && (isMyTurn || isMyDraftReady)) {
     return <DraftControls />
   }

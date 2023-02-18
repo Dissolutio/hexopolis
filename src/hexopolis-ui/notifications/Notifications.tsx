@@ -123,7 +123,7 @@ export const Notifications = () => {
           case gameLogTypes.chomp:
             const chompMsg = isChompSuccessful ? (
               <span style={{ color: playerColors[playerID] }}>
-                {unitName} Chomped{' '}
+                Grimnak Chomped{' '}
                 <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
                   {isChompedUnitSquad ? unitChompedSingleName : unitChompedName}
                 </span>

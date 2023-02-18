@@ -2,7 +2,7 @@ import { Ctx, Game } from 'boardgame.io'
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
-import { GameState, OrderMarker, GameUnit } from './types'
+import { GameState, OrderMarker, GameUnit, StageQueueItem } from './types'
 import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { gameSetupInitialGameState } from './setup/setup'
@@ -14,8 +14,10 @@ import {
   generateBlankOrderMarkersForNumPlayers,
   generateBlankPlayersOrderMarkers,
   generateReadyStateForNumPlayers,
+  getActivePlayersIdleStage,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
+import { selectIfGameArmyCardHasAbility } from './selector/card-selectors'
 
 const isDevOverrideState =
   process.env.NODE_ENV === 'production'
@@ -102,7 +104,7 @@ export const Hexoscape: Game<GameState> = {
     //PHASE: ORDER-MARKERS
     [phaseNames.placeOrderMarkers]: {
       // reset order-markers state
-      onBegin: ({ G, ctx }) => {
+      onBegin: ({ G, ctx, events }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 1) {
           // clear secret order marker state
@@ -118,15 +120,62 @@ export const Hexoscape: Game<GameState> = {
           )
         }
       },
-      // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
       turn: {
+        onBegin: ({ G, events }) => {
+          // we cannot use the onBegin hook for the phase, so we do it here: before order markers are placed, we can check to see who needs to use The Drop
+          const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+            (id) => {
+              // players who already used The Drop cannot use it again
+              if (G.theDropUsed.includes(id)) return false
+              const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+              return armyCards.some((c) =>
+                selectIfGameArmyCardHasAbility('The Drop', c)
+              )
+            }
+          )
+          const orderOfDropStages =
+            rollD20Initiative(playerIDsWithActiveTheDrop)?.initiative ?? []
+          const playerDropStagesForQueue = orderOfDropStages.map(
+            (playerID) => ({
+              stage: stageNames.theDrop,
+              playerID,
+            })
+          )
+          // The last stage into the queue will be Stage:Movement of the active player
+          let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]
+          const nextStage = newStageQueue.shift()
+          G.stageQueue = newStageQueue
+          if (nextStage) {
+            const activePlayers = getActivePlayersIdleStage({
+              activePlayerID: nextStage.playerID,
+              activeStage: stageNames.theDrop,
+              idleStage: stageNames.idleTheDrop,
+            })
+            events.setActivePlayers({ value: activePlayers })
+          }
+        },
+        // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
         activePlayers: {
           all: stageNames.placeOrderMarkers,
         },
       },
       // proceed to round-of-play once all players are ready
       endIf: ({ G, ctx }) => {
-        return checkReady('orderMarkersReady', G, ctx)
+        const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+          (id) => {
+            // players who already used The Drop cannot use it again
+            if (G.theDropUsed.includes(id)) return false
+            const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+            return armyCards.some((c) =>
+              selectIfGameArmyCardHasAbility('The Drop', c)
+            )
+          }
+        )
+        return (
+          // we need to run this check here because endIf is called before onBegin, so if we keep the phase from ending, then onBegin will fire and players can Drop/ adjust their order markers
+          playerIDsWithActiveTheDrop.length <= 0 &&
+          checkReady('orderMarkersReady', G, ctx)
+        )
       },
       // setup unrevealed public order-markers
       onEnd: ({ G }) => {

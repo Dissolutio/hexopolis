@@ -16,9 +16,11 @@ import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
 } from './om-gen'
+import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { keyBy } from 'lodash'
 
 const someInitialGameState = {
-  maxArmyValue: 300,
+  maxArmyValue: 160,
   maxRounds: 12,
   currentRound: 1,
   currentOrderMarker: 0,
@@ -34,6 +36,7 @@ const someInitialGameState = {
   killedUnits: {},
   waterClonesPlaced: [],
   grenadesThrown: [],
+  theDropUsed: [],
   chompsAttempted: [],
   mindShacklesAttempted: [],
   berserkerChargeRoll: undefined,
@@ -93,7 +96,8 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
-  return makeTestScenario(numPlayers, withPrePlacedUnits)
+  return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  // return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -101,9 +105,24 @@ function makeGiantsTable2PlayerScenario(
 ): GameState {
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const armyCardIDsWithTheDrop = armyCards
+    .filter((card) => {
+      return selectIfGameArmyCardHasAbility('The Drop', card)
+    })
+    .map((ac) => ac.gameCardID)
+  const gameUnitsToPrePlace = keyBy(
+    Object.values(gameUnits).filter(
+      (u) => !armyCardIDsWithTheDrop.includes(u.gameCardID)
+    ),
+    'unitID'
+  )
+  console.log(
+    '🚀 ~ file: setup.ts:118 ~ gameUnitsToPrePlace',
+    gameUnitsToPrePlace
+  )
   const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
-    gameUnits,
+    gameUnitsToPrePlace,
   })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
@@ -140,7 +159,7 @@ function makeTestScenario(
   // })
   const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
-    gameUnits,
+    gameUnitsToPrePlace: gameUnits,
   })
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
