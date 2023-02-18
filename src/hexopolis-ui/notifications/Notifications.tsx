@@ -256,4 +256,7 @@ const StyledDiv = styled.div`
   left: Min(10%, 600px);
   /* width: 300px; */
   font-size: 0.8rem;
+  @media screen and (max-width: 1100px) {
+    font-size: 0.7rem;
+  }
 `
