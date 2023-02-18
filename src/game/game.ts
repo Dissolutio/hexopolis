@@ -337,12 +337,12 @@ export const Hexoscape: Game<GameState> = {
       return false
     }
     const gameUnitsArr = Object.values(G.gameUnits)
-    const isP0Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '0')
-    const isP1Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '1')
-    if (isP0Dead) {
-      return { winner: '1' }
-    } else if (isP1Dead) {
-      return { winner: '0' }
+    const firstPlayerID = gameUnitsArr[0].playerID
+    const allUnitsAreOfSamePlayer = gameUnitsArr.every(
+      (u) => u.playerID === firstPlayerID
+    )
+    if (allUnitsAreOfSamePlayer) {
+      return { winner: firstPlayerID }
     } else {
       return false
     }
