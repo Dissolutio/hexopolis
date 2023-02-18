@@ -168,6 +168,18 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       canUnMovedFiguresAttack ? true : uniqUnitsMoved.includes(u.unitID)
     )
 
+  // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
+  const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
+  const toggleIsGrappleGun = () => {
+    setIsGrappleGun((s) => !s)
+  }
+  // TOGGLE FLYING/WALKING FOR FLYING UNITS
+  const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
+  const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
+  const isFlying = isWalkingFlyer ? false : hasFlying
+  const toggleIsWalkingFlyer = () => {
+    setIsWalkingFlyer((s) => !s)
+  }
   // TARGETS IN RANGE
   const revealedGameCardTargetsInRange = React.useMemo((): TargetsInRange => {
     if (!revealedGameCard) {
@@ -273,19 +285,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       // we set the id, and then show confirm, if they say yes, we do the move and move-action will apply the fall damage
       setFallHexID(endHexID)
     }
-  }
-
-  // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
-  const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
-  const toggleIsGrappleGun = () => {
-    setIsGrappleGun((s) => !s)
-  }
-  // TOGGLE FLYING/WALKING FOR FLYING UNITS
-  const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
-  const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
-  const isFlying = isWalkingFlyer ? false : hasFlying
-  const toggleIsWalkingFlyer = () => {
-    setIsWalkingFlyer((s) => !s)
   }
 
   // MOVE RANGE
