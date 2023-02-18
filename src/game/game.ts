@@ -15,6 +15,7 @@ import {
   generateBlankPlayersOrderMarkers,
   generateReadyStateForNumPlayers,
   getActivePlayersIdleStage,
+  generateBlankPlayersStateForNumPlayers,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 import { selectIfGameArmyCardHasAbility } from './selector/card-selectors'
@@ -108,8 +109,7 @@ export const Hexoscape: Game<GameState> = {
         // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 1) {
           // clear secret order marker state
-          G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
-          G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
+          G.players = generateBlankPlayersStateForNumPlayers(ctx.numPlayers)
           // clear public order marker state
           G.orderMarkers = generateBlankOrderMarkersForNumPlayers(
             ctx.numPlayers
@@ -147,6 +147,7 @@ export const Hexoscape: Game<GameState> = {
           G.stageQueue = newStageQueue
           if (nextStage) {
             const activePlayers = getActivePlayersIdleStage({
+              gamePlayerIDs: Object.keys(G.players),
               activePlayerID: nextStage.playerID,
               activeStage: stageNames.theDrop,
               idleStage: stageNames.idleTheDrop,

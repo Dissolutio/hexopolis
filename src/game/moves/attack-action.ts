@@ -277,6 +277,7 @@ export const attackAction: Move<GameState> = {
         })
       }
       const activePlayers = getActivePlayersIdleStage({
+        gamePlayerIDs: Object.keys(G.players),
         activePlayerID: defenderGameCard.playerID,
         activeStage: stageNames.placingAttackSpirit,
         idleStage: stageNames.idlePlacingAttackSpirit,
@@ -294,6 +295,7 @@ export const attackAction: Move<GameState> = {
         })
       }
       const activePlayers = getActivePlayersIdleStage({
+        gamePlayerIDs: Object.keys(G.players),
         activePlayerID: defenderGameCard.playerID,
         activeStage: stageNames.placingArmorSpirit,
         idleStage: stageNames.idlePlacingArmorSpirit,
