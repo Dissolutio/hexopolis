@@ -182,7 +182,7 @@ function recurseThroughMoves({
   const isVisitedAlready =
     (initialMoveRange?.[startHexID]?.movePointsLeft ?? 0) > movePoints
   const isUnitInitiallyEngaged = initialEngagements.length > 0
-  //*early out
+  //*early out (WARNING: This isVisitedAlready check seems redundant, but actually the stack will blow up without it AKA it needs something to tell the recursion monster to stop)
   if (movePoints <= 0 || isVisitedAlready) {
     return initialMoveRange
   }
