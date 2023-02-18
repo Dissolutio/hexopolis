@@ -92,8 +92,8 @@ export const gameSetupInitialGameState = ({
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
-  return makeGiantsTable2PlayerScenario(2, false)
-  // return makeTestScenario(numPlayers, withPrePlacedUnits)
+  // return makeGiantsTable2PlayerScenario(2, false)
+  return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -121,24 +121,26 @@ function makeTestScenario(
   withPrePlacedUnits?: boolean
 ): GameState {
   // ArmyCards to GameArmyCards
-  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = []
   // GameUnits
-  const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = {}
   // Map
-  // const map = makeHexagonShapedMap({
-  //   mapSize: Math.max(numPlayers * 2, 8),
-  //   withPrePlacedUnits,
-  //   gameUnits: transformGameArmyCardsToGameUnits(armyCards),
-  //   flat: false,
-  // })
+  const map = makeHexagonShapedMap({
+    mapSize: Math.max(numPlayers * 2, 8),
+    withPrePlacedUnits,
+    gameUnits: transformGameArmyCardsToGameUnits(armyCards),
+    flat: false,
+  })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnits,
   // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: Boolean(withPrePlacedUnits),
-    gameUnits,
-  })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits,
+  // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
