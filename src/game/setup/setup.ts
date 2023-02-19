@@ -16,9 +16,12 @@ import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
 } from './om-gen'
+import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
+import { keyBy } from 'lodash'
+import { selectGameCardByID } from '../selectors'
 
 const someInitialGameState = {
-  maxArmyValue: 300,
+  maxArmyValue: 160,
   maxRounds: 12,
   currentRound: 1,
   currentOrderMarker: 0,
@@ -34,6 +37,7 @@ const someInitialGameState = {
   killedUnits: {},
   waterClonesPlaced: [],
   grenadesThrown: [],
+  theDropUsed: [],
   chompsAttempted: [],
   mindShacklesAttempted: [],
   berserkerChargeRoll: undefined,
@@ -48,23 +52,17 @@ const frequentlyChangedDevState = (
     ? {
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
-        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        roundOfPlayStartReady: generateReadyStateForNumPlayers(
-          numPlayers,
-          true
-        ),
-        players: playersStateWithPrePlacedOMs(numPlayers),
-        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        // players: playersStateWithPrePlacedOMs(numPlayers),
+        players: generateBlankPlayersStateForNumPlayers(numPlayers),
+        // orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
     : {
         draftReady: generateReadyStateForNumPlayers(numPlayers, false),
         placementReady: generateReadyStateForNumPlayers(numPlayers, false),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
-        roundOfPlayStartReady: generateReadyStateForNumPlayers(
-          numPlayers,
-          false
-        ),
         orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
         players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,
@@ -93,6 +91,7 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
+  // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
@@ -101,13 +100,28 @@ function makeGiantsTable2PlayerScenario(
 ): GameState {
   const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const armyCardIDsWithTheDrop = armyCards
+    .filter((card) => {
+      return selectIfGameArmyCardHasAbility('The Drop', card)
+    })
+    .map((ac) => ac.gameCardID)
+  const gameUnitsToPrePlace = keyBy(
+    Object.values(gameUnits).filter(
+      (u) => !armyCardIDsWithTheDrop.includes(u.gameCardID)
+    ),
+    'unitID'
+  )
+  console.log(
+    '🚀 ~ file: setup.ts:118 ~ gameUnitsToPrePlace',
+    gameUnitsToPrePlace
+  )
   const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
-    gameUnits,
+    gameUnitsToPrePlace,
   })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
-    maxArmyValue: 400,
+    maxArmyValue: 100,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
     gameUnits: withPrePlacedUnits ? gameUnits : {},
@@ -130,21 +144,28 @@ function makeTestScenario(
   const gameUnits: GameUnits = withPrePlacedUnits
     ? transformGameArmyCardsToGameUnits(armyCards)
     : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
   // Map
   // const map = makeHexagonShapedMap({
   //   // mapSize: Math.max(numPlayers * 2, 8),
   //   mapSize: 3,
   //   withPrePlacedUnits,
-  //   gameUnits,
+  //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
   const map = makeGiantsTableMap({
     withPrePlacedUnits: true,
-    gameUnits,
+    gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   })
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
-  //   gameUnits,
+  //   gameUnits: gameUnitsWithoutTheDrop,
   // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),

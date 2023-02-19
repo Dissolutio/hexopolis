@@ -12,9 +12,11 @@ import {
   GameUnit,
   PlacementUnit,
   BoardHexesUnitDeployment,
+  BoardHexes,
 } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { selectValidTailHexes } from 'game/selectors'
+import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -31,9 +33,38 @@ type PlacementContextValue = {
     sourceHex: BoardHex
   ) => void
   editingBoardHexes: BoardHexesUnitDeployment
+  onPlaceUnitUpdateEditingBoardHexes: ({
+    clickedHexId,
+    selectedUnitID,
+    selectedUnitOldHex,
+    selectedUnitOldTail,
+    displacedUnitsOtherHex,
+  }: {
+    clickedHexId: string
+    selectedUnitID: string
+    selectedUnitOldHex?: string | undefined
+    selectedUnitOldTail?: string | undefined
+    displacedUnitsOtherHex?: string | undefined
+  }) => void
   startZoneForMy2HexUnits: string[]
   onResetPlacementState: () => void
 }
+
+const initialEditingBoardHexes = (
+  boardHexes: BoardHexes,
+  myUnitIds: string[]
+) =>
+  Object.values(boardHexes)
+    .filter((i) => !!i.occupyingUnitID && myUnitIds.includes(i.occupyingUnitID))
+    .reduce((result, bh) => {
+      return {
+        ...result,
+        [bh.id]: {
+          occupyingUnitID: bh.occupyingUnitID,
+          isUnitTail: bh.isUnitTail,
+        },
+      }
+    }, {})
 
 const PlacementContextProvider = ({
   children,
@@ -58,20 +89,6 @@ const PlacementContextProvider = ({
   const myUnitIds = myUnits.map((u) => u.unitID)
   // if we pre-placed units, this will setup their editing-state from G.boardHexes, but if they click reset, then we will set editing-state to be empty
   // the flow is that in setup, we assign units to boardHexes if that is toggled on, then here, we copy board hexes to make our editing-state
-  const initialEditingBoardHexes = () =>
-    Object.values(boardHexes)
-      .filter(
-        (i) => !!i.occupyingUnitID && myUnitIds.includes(i.occupyingUnitID)
-      )
-      .reduce((result, bh) => {
-        return {
-          ...result,
-          [bh.id]: {
-            occupyingUnitID: bh.occupyingUnitID,
-            isUnitTail: bh.isUnitTail,
-          },
-        }
-      }, {})
   const startZoneForMy2HexUnits = (startZones?.[playerID] ?? []).filter(
     (sz) => {
       return selectValidTailHexes(sz, boardHexes).length > 0
@@ -84,23 +101,82 @@ const PlacementContextProvider = ({
       .filter((id) => {
         return id && gameUnits[id].playerID === playerID
       })
-  const initialPlacementUnitsIfTotallyReset = myUnits.map((unit) => {
-    return unit.unitID
-  })
+  const initialPlacementUnitsIfTotallyReset = myUnits
+    // units that get dropped in later do not get pre-placed, so we need to filter them out
+    .filter((unit) => {
+      const gameCardForUnit = myCards.find(
+        (card) => card.gameCardID === unit.gameCardID
+      )
+      return !selectIfGameArmyCardHasAbility('The Drop', gameCardForUnit)
+    })
+    .map((unit) => {
+      return unit.unitID
+    })
+  // the initial placement units are just ones that are not already on the map, an outdated concept
   const initialPlacementUnits = () =>
     myUnits
-      .filter(
-        (unit: GameUnit) => !myUnitIdsAlreadyOnMap().includes(unit.unitID)
-      )
+      .filter((unit: GameUnit) => {
+        const gameCardForUnit = myCards.find(
+          (card) => card.gameCardID === unit.gameCardID
+        )
+        // units that get dropped in later do not get pre-placed, so we need to filter them out
+        return (
+          !selectIfGameArmyCardHasAbility('The Drop', gameCardForUnit) &&
+          !myUnitIdsAlreadyOnMap().includes(unit.unitID)
+        )
+      })
       .map((unit) => {
         return unit.unitID
       })
   const [editingBoardHexes, setEditingBoardHexes] =
-    useState<BoardHexesUnitDeployment>(initialEditingBoardHexes())
+    useState<BoardHexesUnitDeployment>(
+      initialEditingBoardHexes(boardHexes, myUnitIds)
+    )
+  const onPlaceUnitUpdateEditingBoardHexes = ({
+    clickedHexId,
+    selectedUnitID,
+    selectedUnitOldHex,
+    selectedUnitOldTail,
+    displacedUnitsOtherHex,
+  }: {
+    clickedHexId: string
+    selectedUnitID: string
+    selectedUnitOldHex?: string
+    selectedUnitOldTail?: string
+    displacedUnitsOtherHex?: string
+  }) => {
+    setEditingBoardHexes((oldState) => {
+      const newState = {
+        ...oldState,
+        // place selected unit('s head) on clicked hex, this will remove the displaced unit (but not their other hex if they have one)
+        [clickedHexId]: {
+          occupyingUnitID: selectedUnitID,
+          isUnitTail: false,
+        },
+      }
+      // remove unit from old hex, head and tail
+      if (selectedUnitOldHex) {
+        delete newState[selectedUnitOldHex]
+      }
+      if (selectedUnitOldTail) {
+        delete newState[selectedUnitOldTail]
+      }
+      if (displacedUnitsOtherHex) {
+        delete newState[displacedUnitsOtherHex]
+      }
+      return newState
+    })
+  }
   useEffect(() => {
     if (isPlacementPhase) {
-      setEditingBoardHexes(initialEditingBoardHexes())
+      // at the beginning of the placement phase, we want to set the editing hexes to be the units that are already on the map (that we pre-placed for them, but that's still faster than them having to place each unit)
+      setEditingBoardHexes(initialEditingBoardHexes(boardHexes, myUnitIds))
+    } else {
+      // after placement phase, we want to clear out the editing hexes, for any ability (The Drop) that might want to use them
+      setEditingBoardHexes({})
     }
+    // Only want to auto update their editing hexes at the beginning and end of a phase
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlacementPhase])
 
   const [placementUnits, setPlacementUnits] = useState((): string[] =>
@@ -208,6 +284,13 @@ const PlacementContextProvider = ({
             setActiveTailPlacementUnitID(selectedUnitID)
             setTailPlaceables(validTailHexes.map((bh) => bh.id))
             // update board hexes
+            onPlaceUnitUpdateEditingBoardHexes({
+              clickedHexId,
+              selectedUnitID,
+              selectedUnitOldHex,
+              selectedUnitOldTail,
+              displacedUnitsOtherHex,
+            })
             setEditingBoardHexes((oldState) => {
               const newState = {
                 ...oldState,
@@ -302,6 +385,7 @@ const PlacementContextProvider = ({
         onClickPlacementUnit,
         onClickPlacementHex,
         editingBoardHexes,
+        onPlaceUnitUpdateEditingBoardHexes,
         startZoneForMy2HexUnits,
         onResetPlacementState,
       }}

@@ -139,9 +139,18 @@ export function calcDraftAndPlacementHexClassNames({
   return classNames
 }
 
-export function calcOrderMarkerHexClassNames({ terrain }: { terrain: string }) {
+export function calcOrderMarkerHexClassNames({
+  hex,
+  theDropPlaceableHexIDs,
+}: {
+  hex: BoardHex
+  theDropPlaceableHexIDs?: string[]
+}) {
   // Start: Paint Terrain
-  let classNames = `maphex__terrain--${terrain}`
+  let classNames = `maphex__terrain--${hex.terrain}`
+  if ((theDropPlaceableHexIDs ?? []).includes(hex.id)) {
+    classNames = classNames.concat(' hexagon-selectable ')
+  }
   return classNames
 }
 

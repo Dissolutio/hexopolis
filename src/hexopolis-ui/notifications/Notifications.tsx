@@ -6,6 +6,7 @@ import { useUIContext } from 'hexopolis-ui/contexts'
 import { decodeGameLogMessage, gameLogTypes } from 'game/gamelog'
 import { uniqBy } from 'lodash'
 import { playerColors } from 'hexopolis-ui/theme'
+import { playerIDDisplay } from 'game/transformers'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
@@ -97,6 +98,23 @@ export const Notifications = () => {
               }
             )
             break
+          case gameLogTypes.theDropRoll:
+            const theDropRollMsg = isRollSuccessful ? (
+              <span style={{ color: playerColors[playerID] }}>
+                {playerIDDisplay(playerID)} rolled for The Drop and succeeded! (
+                {roll} / {rollThreshold}){' '}
+              </span>
+            ) : (
+              <span style={{ color: playerColors[playerID] }}>
+                {playerIDDisplay(playerID)} failed their roll for The Drop (
+                {roll} / {rollThreshold}){' '}
+              </span>
+            )
+            toast(theDropRollMsg, {
+              duration: defaultDuration,
+              id: gameLogMessage?.id,
+            })
+            break
           case gameLogTypes.mindShackle:
             const msgMindShackle = isRollSuccessful ? (
               <span style={{ color: playerColors[playerID] }}>
@@ -123,7 +141,7 @@ export const Notifications = () => {
           case gameLogTypes.chomp:
             const chompMsg = isChompSuccessful ? (
               <span style={{ color: playerColors[playerID] }}>
-                {unitName} Chomped{' '}
+                Grimnak Chomped{' '}
                 <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
                   {isChompedUnitSquad ? unitChompedSingleName : unitChompedName}
                 </span>
@@ -256,4 +274,7 @@ const StyledDiv = styled.div`
   left: Min(10%, 600px);
   /* width: 300px; */
   font-size: 0.8rem;
+  @media screen and (max-width: 1100px) {
+    font-size: 0.7rem;
+  }
 `

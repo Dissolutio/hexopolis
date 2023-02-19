@@ -19,12 +19,14 @@ import {
   selectHexForUnit,
   selectRevealedGameCard,
   selectIsInRangeOfAttack,
+  selectUnitsForCard,
+  selectHexNeighbors,
 } from '../../game/selectors'
 import {
   generateBlankMoveRange,
   transformMoveRangeToArraysOfIds,
 } from 'game/constants'
-import { useUIContext } from '../contexts'
+import { usePlacementContext, useUIContext } from '../contexts'
 import {
   useBgioClientInfo,
   useBgioCtx,
@@ -35,6 +37,7 @@ import { hexUtilsDistance } from 'game/hex-utils'
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import {
   selectGameArmyCardAttacksAllowed,
+  selectIfGameArmyCardHasAbility,
   selectIfGameArmyCardHasFlying,
 } from 'game/selector/card-selectors'
 
@@ -57,6 +60,8 @@ type PlayContextValue = {
   cancelDisengageAttempt: () => void
   confirmFallDamageMove: () => void
   cancelFallDamageMove: () => void
+  onConfirmDropPlacement(): void
+  onDenyDrop(): void
 
   // computed
   currentTurnGameCardID: string
@@ -71,6 +76,8 @@ type PlayContextValue = {
   countOfUnmovedFiguresThatCanAttack: number
   clonerHexIDs: string[]
   clonePlaceableHexIDs: string[]
+  toBeDroppedUnitIDs: string[]
+  theDropPlaceableHexIDs: string[]
   // handlers
   onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
   toggleIsWalkingFlyer: () => void
@@ -82,6 +89,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const {
     boardHexes,
     gameArmyCards,
+    myCards,
+    myUnits,
     gameUnits,
     killedUnits,
     unitsAttacked,
@@ -98,13 +107,22 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isAttackingStage,
     isWaterCloneStage,
     isMyTurn,
+    isTheDropStage,
     isGrenadeSAStage,
   } = useBgioCtx()
   const {
-    moves: { moveAction, attackAction, attemptDisengage, placeWaterClone },
+    moves: {
+      moveAction,
+      attackAction,
+      attemptDisengage,
+      placeWaterClone,
+      dropInUnits,
+    },
   } = useBgioMoves()
   // SELECTED UNIT
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
+  const { onPlaceUnitUpdateEditingBoardHexes, editingBoardHexes } =
+    usePlacementContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
   const selectedUnitGameCard = gameArmyCards.find(
     (card) => card.gameCardID === selectedUnit?.gameCardID
@@ -168,6 +186,18 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       canUnMovedFiguresAttack ? true : uniqUnitsMoved.includes(u.unitID)
     )
 
+  // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
+  const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
+  const toggleIsGrappleGun = () => {
+    setIsGrappleGun((s) => !s)
+  }
+  // TOGGLE FLYING/WALKING FOR FLYING UNITS
+  const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
+  const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
+  const isFlying = isWalkingFlyer ? false : hasFlying
+  const toggleIsWalkingFlyer = () => {
+    setIsWalkingFlyer((s) => !s)
+  }
   // TARGETS IN RANGE
   const revealedGameCardTargetsInRange = React.useMemo((): TargetsInRange => {
     if (!revealedGameCard) {
@@ -275,19 +305,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     }
   }
 
-  // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
-  const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
-  const toggleIsGrappleGun = () => {
-    setIsGrappleGun((s) => !s)
-  }
-  // TOGGLE FLYING/WALKING FOR FLYING UNITS
-  const [isWalkingFlyer, setIsWalkingFlyer] = useState<boolean>(false)
-  const { hasFlying } = selectIfGameArmyCardHasFlying(selectedUnitGameCard)
-  const isFlying = isWalkingFlyer ? false : hasFlying
-  const toggleIsWalkingFlyer = () => {
-    setIsWalkingFlyer((s) => !s)
-  }
-
   // MOVE RANGE
   const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
     generateBlankMoveRange()
@@ -345,6 +362,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         .reduce((result: string[], placement) => {
           return [...result, ...placement.tails]
         }, [])
+
   const onClickClonePlaceableHex = (hex: BoardHex) => {
     // Since we know that marro warriors have 4 figures, the most that could be dead and cloned on one turn is 2 (2 dead, 2 successful clones)
     const validPlacements = Object.values(
@@ -385,7 +403,54 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       })
     }
   }
-
+  // THE DROP
+  const myCardWithTheDrop = myCards.filter((c) =>
+    selectIfGameArmyCardHasAbility('The Drop', c)
+  )[0]
+  const getDroppingUnits = () => {
+    return myUnits.filter((u) => u.gameCardID === myCardWithTheDrop?.gameCardID)
+  }
+  const toBeDroppedUnitIDs = getDroppingUnits()
+    .map((u) => u.unitID)
+    .filter(
+      (u) =>
+        !Object.values(boardHexes).some(
+          (h) =>
+            h.occupyingUnitID === u ||
+            editingBoardHexes[h.id]?.occupyingUnitID === u
+        )
+    )
+  // default empty if player is idling, or placed all units
+  const theDropPlaceableHexIDs: string[] =
+    !(toBeDroppedUnitIDs.length > 0) || !isTheDropStage
+      ? []
+      : Object.values(boardHexes)
+          .filter((hex) => {
+            const isHexUnoccupied =
+              !hex.occupyingUnitID && !editingBoardHexes[hex.id]
+            const isAllHexNeighborsUnoccupied = !selectHexNeighbors(
+              hex.id,
+              boardHexes
+            ).some(
+              (h) =>
+                h.occupyingUnitID || editingBoardHexes[h.id]?.occupyingUnitID
+            )
+            return isHexUnoccupied && isAllHexNeighborsUnoccupied
+          })
+          .map((hex) => hex.id)
+  function onConfirmDropPlacement() {
+    dropInUnits({
+      isAccepting: true,
+      deploymentProposition: editingBoardHexes,
+      gameCardID: myCardWithTheDrop?.gameCardID,
+      toBeDroppedUnitIDs,
+    })
+  }
+  function onDenyDrop() {
+    dropInUnits({
+      isAccept: false,
+    })
+  }
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
     // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
@@ -399,7 +464,17 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const isUnitOnHexSelected = unitOnHex?.unitID === selectedUnitID
     const isEndHexEnemyOccupied =
       isEndHexOccupied && endHexUnitPlayerID !== playerID
-
+    // THE DROP STAGE
+    if (isTheDropStage) {
+      // we clicked a drop-able hex, and we have a unitID to drop
+      const unitIDToDrop = toBeDroppedUnitIDs[0]
+      if (theDropPlaceableHexIDs.includes(sourceHexID) && unitIDToDrop) {
+        onPlaceUnitUpdateEditingBoardHexes({
+          clickedHexId: sourceHexID,
+          selectedUnitID: unitIDToDrop,
+        })
+      }
+    }
     // MOVE STAGE
     if (isMovementStage) {
       const isInSafeMoveRangeOfSelectedUnit = safeMoves.includes(sourceHex.id)
@@ -489,6 +564,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         cancelDisengageAttempt,
         confirmFallDamageMove,
         cancelFallDamageMove,
+        onConfirmDropPlacement,
+        onDenyDrop,
         // COMPUTED
         currentTurnGameCardID,
         selectedUnit,
@@ -502,6 +579,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         countOfUnmovedFiguresThatCanAttack,
         clonerHexIDs: clonerHexes,
         clonePlaceableHexIDs: clonePlaceableHexIDs,
+        theDropPlaceableHexIDs,
+        toBeDroppedUnitIDs,
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,

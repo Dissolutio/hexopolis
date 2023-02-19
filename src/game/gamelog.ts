@@ -49,6 +49,7 @@ export type GameLogMessage = {
   newValue?: number
 }
 export const gameLogTypes = {
+  theDropRoll: 'theDropRoll',
   noUnitsOnTurn: 'noUnitsOnTurn',
   move: 'move',
   attack: 'attack',
@@ -151,6 +152,10 @@ export const decodeGameLogMessage = (
           msg: `${playerIDDisplay(
             playerID
           )} has placed Finn's Attack Spirit on ${unitName}, raising their attack from ${initialValue} to ${newValue}!`,
+        }
+      case gameLogTypes.theDropRoll:
+        return {
+          ...gameLog,
         }
       case gameLogTypes.waterClone:
         const isWaterCloneSuccessful = cloneCount > 0

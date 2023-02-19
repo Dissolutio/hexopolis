@@ -196,6 +196,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
   G.stageQueue = newStageQueue
   if (nextStage?.stage === stageNames.placingAttackSpirit) {
     const activePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
       activePlayerID: nextStage.playerID,
       activeStage: stageNames.placingAttackSpirit,
       idleStage: stageNames.idlePlacingAttackSpirit,
@@ -204,6 +205,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
   }
   if (nextStage?.stage === stageNames.placingArmorSpirit) {
     const activePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
       activePlayerID: nextStage.playerID,
       activeStage: stageNames.placingArmorSpirit,
       idleStage: stageNames.idlePlacingArmorSpirit,

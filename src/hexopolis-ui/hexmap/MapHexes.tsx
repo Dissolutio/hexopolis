@@ -39,6 +39,8 @@ export const MapHexes = () => {
     isDraftPhase,
     isPlacementPhase,
     isOrderMarkerPhase,
+    isTheDropStage,
+    isIdleTheDropStage,
     isRoundOfPlayPhase,
     isAttackingStage,
     isMovementStage,
@@ -65,6 +67,7 @@ export const MapHexes = () => {
     currentTurnGameCardID,
     clonerHexIDs,
     clonePlaceableHexIDs,
+    theDropPlaceableHexIDs,
   } = usePlayContext()
   const {
     selectSpecialAttack,
@@ -85,6 +88,12 @@ export const MapHexes = () => {
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
+    }
+    if (isPlacementPhase) {
+      onClickPlacementHex?.(event, sourceHex)
+    }
+    if (isTheDropStage) {
+      onClickTurnHex?.(event, sourceHex)
     }
 
     if (isFireLineSAStage) {
@@ -111,7 +120,7 @@ export const MapHexes = () => {
         // this is a weird splitting off to select a grenade hex, part of hacky GrenadeSA implementation
         selectSpecialAttack(sourceHex.id)
       } else {
-        // if we clicked a grenade unit, we need to deselect the attack (if any) of the previously selected grenade unit
+        // if we clicked a grenade unit, we need to deselect the attack (if any) of the previously selected grenade unit, but still let the onClick pass thru to select the new unit
         if (
           isGrenadeSAStage &&
           sourceHex.occupyingUnitID !== selectedUnitID &&
@@ -128,10 +137,10 @@ export const MapHexes = () => {
   const hexClassNames = (hex: BoardHex) => {
     if (isPlacementPhase || isDraftPhase) {
       return calcDraftAndPlacementHexClassNames({
+        hex,
         selectedMapHex,
         selectedUnitID,
         selectedUnitIs2Hex,
-        hex,
         startZones,
         startZoneForMy2HexUnits,
         playerID,
@@ -140,15 +149,21 @@ export const MapHexes = () => {
         tailPlaceables,
       })
     }
+    if (isTheDropStage || isIdleTheDropStage) {
+      return calcOrderMarkerHexClassNames({
+        hex,
+        theDropPlaceableHexIDs,
+      })
+    }
     if (isOrderMarkerPhase) {
       return calcOrderMarkerHexClassNames({
-        terrain: hex.terrain,
+        hex,
       })
     }
     if (isRoundOfPlayPhase) {
       return calcRopHexClassNames({
-        selectedUnitID,
         hex,
+        selectedUnitID,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
         isMyTurn,
@@ -188,9 +203,16 @@ export const MapHexes = () => {
   const hexJSX = () => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       // During placement phase, player is overwriting units on hexes, in local state, but we wish to show that state for units
-      const unitIdToShowOnHex = isPlacementPhase
-        ? editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
-        : hex.occupyingUnitID
+      // During the drop stage (order marker phase), we want to show units on boardHexes AND the units on editingBoardHexes
+      const editingBoardHexUnitID =
+        editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
+      const unitIdToShowOnHex =
+        // order matters here
+        isTheDropStage
+          ? hex.occupyingUnitID || editingBoardHexUnitID
+          : isPlacementPhase
+          ? editingBoardHexUnitID
+          : hex.occupyingUnitID
       const gameUnit = gameUnits?.[unitIdToShowOnHex]
       // we only show players their own units during placement phase
       const isShowableUnit =
@@ -234,10 +256,10 @@ export const MapHexes = () => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              // text={`${hex.id}`}
-              // textLine2={`${hex.altitude}`}
-              text={`${hex.altitude}`}
-              textLine2={`${unitName}`}
+              text={`${hex.id}`}
+              textLine2={`${hex.altitude}`}
+              // text={`${hex.altitude}`}
+              // textLine2={`${unitName}`}
             />
             {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
               <UnitLifeText

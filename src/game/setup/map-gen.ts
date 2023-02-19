@@ -23,10 +23,10 @@ function generateUID() {
 }
 export function makeGiantsTableMap({
   withPrePlacedUnits,
-  gameUnits,
+  gameUnitsToPrePlace,
 }: {
   withPrePlacedUnits: boolean
-  gameUnits: GameUnits
+  gameUnitsToPrePlace: GameUnits
 }): GameMap {
   const boardHexes = giantsTable.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
@@ -45,7 +45,7 @@ export function makeGiantsTableMap({
     transformBoardHexesWithPrePlacedUnits(
       boardHexes,
       startZones,
-      gameUnits ?? {}
+      gameUnitsToPrePlace ?? {}
     )
   }
   return {
