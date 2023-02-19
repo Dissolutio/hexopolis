@@ -91,15 +91,19 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
-  // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  return makeTestScenario(numPlayers, withPrePlacedUnits)
+  return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  // return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
 ): GameState {
-  const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
-  const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
   const armyCardIDsWithTheDrop = armyCards
     .filter((card) => {
       return selectIfGameArmyCardHasAbility('The Drop', card)
@@ -111,17 +115,13 @@ function makeGiantsTable2PlayerScenario(
     ),
     'unitID'
   )
-  console.log(
-    '🚀 ~ file: setup.ts:118 ~ gameUnitsToPrePlace',
-    gameUnitsToPrePlace
-  )
   const map = makeGiantsTableMap({
-    withPrePlacedUnits: true,
+    withPrePlacedUnits,
     gameUnitsToPrePlace,
   })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
-    maxArmyValue: 100,
+    maxArmyValue: 400,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
     gameUnits: withPrePlacedUnits ? gameUnits : {},

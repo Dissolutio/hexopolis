@@ -25,7 +25,7 @@ export function makeGiantsTableMap({
   withPrePlacedUnits,
   gameUnitsToPrePlace,
 }: {
-  withPrePlacedUnits: boolean
+  withPrePlacedUnits?: boolean
   gameUnitsToPrePlace: GameUnits
 }): GameMap {
   const boardHexes = giantsTable.boardHexes as unknown as BoardHexes
