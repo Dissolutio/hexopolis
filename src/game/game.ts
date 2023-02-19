@@ -171,7 +171,6 @@ export const Hexoscape: Game<GameState> = {
             })
             G.gameLog = [...G.gameLog, gameLog]
           })
-          // TODO: add game log of the drop result, even for players who failed (they'll know why)
           const playersIDsToUseTheDrop = playerIDsWithActiveTheDrop.filter(
             (id, i) => rolls[i] >= threshold
           )
@@ -211,7 +210,7 @@ export const Hexoscape: Game<GameState> = {
       endIf: ({ G }) => {
         const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
           (id) => {
-            // players who already used The Drop cannot use it again
+            // players (their card, really) who already used The Drop cannot use it again
             if (G.theDropUsed.includes(id)) return false
             const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
             return armyCards.some((c) =>
@@ -244,69 +243,10 @@ export const Hexoscape: Game<GameState> = {
         }
       },
       turn: {
-        // onBegin: ({ G, events, random }) => {
-        //   // we cannot use the onBegin hook for the phase, so we do it here: before order markers are placed, we can check to see who needs to use The Drop
-        //   // const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
-        //   //   (id) => {
-        //   //     const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
-        //   //     return armyCards.some((c) => {
-        //   //       // players (their cards really) who already used The Drop cannot use it again
-        //   //       if (G.theDropUsed.includes(c.gameCardID)) return false
-        //   //       return selectIfGameArmyCardHasAbility('The Drop', c)
-        //   //     })
-        //   //   }
-        //   // )
-        //   // // TODO: glyph of lodin +1, any others
-        //   // const threshold = 13
-        //   // const rolls = playerIDsWithActiveTheDrop.map((id) => random.Die(20))
-        //   // const newDropResult = playerIDsWithActiveTheDrop.reduce(
-        //   //   (acc, id, i) => {
-        //   //     return {
-        //   //       ...acc,
-        //   //       [id]: {
-        //   //         playerID: id,
-        //   //         roll: rolls[i],
-        //   //         threshold,
-        //   //         isSuccessful: rolls[i] >= threshold,
-        //   //       },
-        //   //     }
-        //   //   },
-        //   //   {}
-        //   // )
-        //   // G.theDropResult = newDropResult
-        //   // // TODO: add game log of the drop result, even for players who failed (they'll know why)
-        //   // const playersIDsToUseTheDrop = playerIDsWithActiveTheDrop.filter(
-        //   //   (id, i) => rolls[i] >= threshold
-        //   // )
-        //   // const orderOfDropStages =
-        //   //   rollD20Initiative(playersIDsToUseTheDrop)?.initiative ?? []
-        //   // const playerDropStagesForQueue = orderOfDropStages.map(
-        //   //   (playerID) => ({
-        //   //     stage: stageNames.theDrop,
-        //   //     playerID,
-        //   //   })
-        //   // )
-        //   // let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]
-        //   // const nextStage = newStageQueue.shift()
-        //   // G.stageQueue = newStageQueue
-        //   // if (nextStage) {
-        //   //   const activePlayers = getActivePlayersIdleStage({
-        //   //     gamePlayerIDs: Object.keys(G.players),
-        //   //     activePlayerID: nextStage.playerID,
-        //   //     activeStage: stageNames.theDrop,
-        //   //     idleStage: stageNames.idleTheDrop,
-        //   //   })
-        //   //   events.setActivePlayers({ value: activePlayers })
-        //   // }
-        // },
         // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
         activePlayers: {
           all: stageNames.placeOrderMarkers,
         },
-        // onEnd: ({ G, ctx }) => {
-        //   // clear the drop result for next round (should maybe do this at phase level, but i like the proximity to the relevant onBegin code above)
-        //   // G.theDropResult = undefined
-        // },
       },
       // proceed to round-of-play once all players are ready
       endIf: ({ G, ctx }) => {

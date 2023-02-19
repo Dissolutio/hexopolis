@@ -23,6 +23,7 @@ import {
 } from './water-clone-action'
 import { selectGameCardByID } from '../selectors'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
+import { killUnit_G } from './G-mutators'
 
 //phase:___Draft
 const confirmDraftReady: Move<GameState> = (
@@ -69,10 +70,12 @@ const dropInUnits: Move<GameState> = (
     isAccepting,
     deploymentProposition,
     gameCardID,
+    toBeDroppedUnitIDs,
   }: {
     isAccepting: boolean
     deploymentProposition?: BoardHexesUnitDeployment
     gameCardID?: string
+    toBeDroppedUnitIDs?: string[]
   }
 ) => {
   let newBoardHexes = {
@@ -80,7 +83,11 @@ const dropInUnits: Move<GameState> = (
   }
   // if they accept, then they are also passing their placement
   if (isAccepting) {
-    if (!gameCardID || !deploymentProposition) {
+    if (
+      !gameCardID ||
+      !deploymentProposition ||
+      toBeDroppedUnitIDs === undefined
+    ) {
       console.error(
         'Cannot perform move dropInUnits because the gameCardID or deploymentProposition is undefined'
       )
@@ -100,14 +107,22 @@ const dropInUnits: Move<GameState> = (
     console.log('🚀 ~ file: moves.ts:100 ~ propositions', propositions)
     // this will just flat out overwrite units, so be careful in the selectable hex generation
     propositions.forEach((proposition) => {
-      console.log(
-        '🚀 ~ file: moves.ts:107 ~ propositions.forEach ~ proposition',
-        proposition
-      )
       const boardHexId = proposition[0]
       const placedGameUnitId = proposition[1].occupyingUnitID
       newBoardHexes[boardHexId].occupyingUnitID = placedGameUnitId
       newBoardHexes[boardHexId].isUnitTail = proposition[1].isUnitTail
+    })
+    // these get wasted, added to killed units but no killer
+    toBeDroppedUnitIDs.forEach((unitID) => {
+      killUnit_G({
+        boardHexes: G.boardHexes,
+        gameArmyCards: G.gameArmyCards,
+        killedArmyCards: G.killedArmyCards,
+        unitsKilled: G.unitsKilled,
+        killedUnits: G.killedUnits,
+        gameUnits: G.gameUnits,
+        unitToKillID: unitID,
+      })
     })
     G.theDropUsed.push(gameCardID)
   }
@@ -167,8 +182,8 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 }
 
 export const moves: MoveMap<GameState> = {
-  confirmDraftReady,
   draftPrePlaceArmyCardAction,
+  confirmDraftReady,
   deployUnits,
   confirmPlacementReady,
   deconfirmPlacementReady,

@@ -443,6 +443,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       isAccepting: true,
       deploymentProposition: editingBoardHexes,
       gameCardID: myCardWithTheDrop?.gameCardID,
+      toBeDroppedUnitIDs,
     })
   }
   function onDenyDrop() {

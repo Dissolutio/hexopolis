@@ -121,7 +121,7 @@ function makeGiantsTable2PlayerScenario(
   })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
-    maxArmyValue: 400,
+    maxArmyValue: 100,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
     gameUnits: withPrePlacedUnits ? gameUnits : {},
@@ -159,14 +159,14 @@ function makeTestScenario(
   //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
-  // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: Boolean(withPrePlacedUnits),
-    gameUnits: gameUnitsWithoutTheDrop,
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits: gameUnitsWithoutTheDrop,
+  // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
