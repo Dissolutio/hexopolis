@@ -104,7 +104,6 @@ const dropInUnits: Move<GameState> = (
     const playerID = cardDroppingIn.playerID
     // TODO: add to gamelog that player dropped in some units
     const propositions = Object.entries(deploymentProposition)
-    console.log('🚀 ~ file: moves.ts:100 ~ propositions', propositions)
     // this will just flat out overwrite units, so be careful in the selectable hex generation
     propositions.forEach((proposition) => {
       const boardHexId = proposition[0]

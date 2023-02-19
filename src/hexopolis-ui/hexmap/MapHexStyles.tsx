@@ -224,10 +224,14 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   //PHASE: ROP WaterClone && FireLineSA: fill, fill-opacity, drop-shadow
   /* hexagon-selectable is going to become more of a utility class for stages */
   .hexagon-selectable > g polygon {
-    fill: var(--neon-green);
+    /* fill: var(--neon-green);
     fill-opacity: 1;
     filter: drop-shadow(2.5px 2.5px 2px var(--neon-green))
-      drop-shadow(-2.5px -2.5px 2px var(--neon-green));
+      drop-shadow(-2.5px -2.5px 2px var(--neon-green)); */
+    stroke: var(--neon-green);
+    stroke-width: 1;
+    stroke-dasharray: 5;
+    animation: dash 200s linear infinite;
   }
   //PHASE: ROP FireLineSA: fill, fill-opacity, drop-shadow
   .hexagon-malaffected > g polygon {
