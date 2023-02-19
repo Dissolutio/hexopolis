@@ -79,6 +79,12 @@ export const Hexoscape: Game<GameState> = {
         activePlayers: {
           currentPlayer: stageNames.pickingUnits,
         },
+        onBegin: ({ G, ctx, events }) => {
+          // if player is already done drafting, skip their turn
+          if (G.draftReady[ctx.currentPlayer] === true) {
+            events.endTurn()
+          }
+        },
         onEnd: ({ G, ctx }) => {
           G.cardsDraftedThisTurn = []
         },
