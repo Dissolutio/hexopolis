@@ -162,7 +162,7 @@ export const Notifications = () => {
             })
             break
           case gameLogTypes.attack:
-            const isCounterStrike = counterStrikeWounds ?? 0 > 0
+            const isCounterStrike = (counterStrikeWounds ?? 0) > 0
             const counterStrikeMsg = isFatalCounterStrike ? (
               <span style={{ color: playerColors[playerID] }}>
                 {unitName} attacked{' '}
