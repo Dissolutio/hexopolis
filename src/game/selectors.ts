@@ -426,8 +426,8 @@ export function selectEngagementsForHex({
           (all
             ? true
             : friendly
-            ? gameUnits[h.occupyingUnitID].playerID === playerID
-            : gameUnits[h.occupyingUnitID].playerID !== playerID) &&
+            ? gameUnits?.[h.occupyingUnitID]?.playerID === playerID
+            : gameUnits?.[h.occupyingUnitID]?.playerID !== playerID) &&
           // filter for engaged units
           selectAreTwoAdjacentUnitsEngaged({
             aHeight: armyCardForUnitOnHex?.height ?? 0,

@@ -68,7 +68,7 @@ export const selectUnitRange = ({
       return (
         hex.occupyingUnitID &&
         neighborUnitCard &&
-        neighborUnitCard.playerID === attackingUnit.playerID &&
+        (neighborUnitCard?.playerID ?? '') === attackingUnit.playerID &&
         selectIfGameArmyCardHasAbility('Range Enhancement', neighborUnitCard) &&
         selectAreTwoAdjacentUnitsEngaged({
           aHeight: attackerGameCard.height,
