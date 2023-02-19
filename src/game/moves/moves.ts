@@ -20,6 +20,7 @@ import {
   finishWaterCloningAndEndTurn,
   placeWaterClone,
 } from './water-clone-action'
+import { selectGameCardByID } from 'game/selectors'
 
 //phase:___Draft
 const confirmDraftReady: Move<GameState> = (
@@ -52,6 +53,38 @@ const deployUnits: Move<GameState> = (
       newBoardHexes[hexID].isUnitTail = false
     }
   }
+  propositions.forEach((proposition) => {
+    const boardHexId = proposition[0]
+    const placedGameUnitId = proposition[1].occupyingUnitID
+    newBoardHexes[boardHexId].occupyingUnitID = placedGameUnitId
+    newBoardHexes[boardHexId].isUnitTail = proposition[1].isUnitTail
+  })
+  G.boardHexes = newBoardHexes
+}
+const dropInUnits: Move<GameState> = (
+  { G },
+  {
+    deploymentProposition,
+    gameCardID,
+  }: {
+    deploymentProposition: BoardHexesUnitDeployment
+    gameCardID: string
+  }
+) => {
+  const cardDroppingIn = selectGameCardByID(G.gameArmyCards, gameCardID)
+
+  if (!cardDroppingIn) {
+    console.error(
+      'Cannot perform move dropInUnits because cardDroppingIn is undefined'
+    )
+    return
+  }
+  const playerID = cardDroppingIn.playerID
+  const propositions = Object.entries(deploymentProposition)
+  let newBoardHexes = {
+    ...G.boardHexes,
+  }
+  // this will just flat out overwrite units, so be careful in the selectable hex generation
   propositions.forEach((proposition) => {
     const boardHexId = proposition[0]
     const placedGameUnitId = proposition[1].occupyingUnitID
@@ -103,6 +136,7 @@ export const moves: MoveMap<GameState> = {
   deployUnits,
   confirmPlacementReady,
   deconfirmPlacementReady,
+  dropInUnits,
   placeOrderMarkers,
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,

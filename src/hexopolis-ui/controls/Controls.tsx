@@ -2,6 +2,7 @@ import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { StyledControlsHeaderH2 } from 'hexopolis-ui/layout/Typography'
 import React from 'react'
 import { DraftControls, IdleDraftControls } from './DraftControls'
+import { DropControls, IdleDropControls } from './DropControls'
 import { PlacementControls } from './PlacementControls'
 import { PlaceOrderMarkersControls } from './PlaceOrderMarkersControls'
 import { RopControls } from './RopControls'
@@ -29,10 +30,10 @@ export const Controls = () => {
   // }
   const isMyDraftReady = draftReady[playerID] === true
   if (isTheDropStage) {
-    return <h1>The Drop BABY</h1>
+    return <DropControls />
   }
   if (isIdleTheDropStage) {
-    return <h1>The Drop IDLE'NNN BABY</h1>
+    return <IdleDropControls />
   }
   if (isDraftPhase && (isMyTurn || isMyDraftReady)) {
     return <DraftControls />

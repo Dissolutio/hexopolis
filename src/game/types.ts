@@ -51,6 +51,14 @@ export interface GameState {
   grenadesThrown: string[]
   // tracks which cards that need to use The Drop have used it
   theDropUsed: string[]
+  // this temporarily stores the results of The Drop rolls for players to see while they decide if/where to drop, does NOT mean they have used The Drop
+  theDropResult?: {
+    [playerID: string]: {
+      roll: number
+      threshold: number
+      isSuccessful: boolean
+    }
+  }
   // this marks grimnak as having chomped
   chompsAttempted: string[]
   // this marks negoksa as having attempted mind shackle

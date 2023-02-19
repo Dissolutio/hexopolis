@@ -91,8 +91,8 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
-  return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  // return makeTestScenario(numPlayers, withPrePlacedUnits)
+  // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -144,22 +144,29 @@ function makeTestScenario(
   const gameUnits: GameUnits = withPrePlacedUnits
     ? transformGameArmyCardsToGameUnits(armyCards)
     : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
   // Map
   // const map = makeHexagonShapedMap({
   //   // mapSize: Math.max(numPlayers * 2, 8),
   //   mapSize: 3,
   //   withPrePlacedUnits,
-  //   gameUnits,
+  //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
-  const map = makeGiantsTableMap({
-    withPrePlacedUnits: true,
-    gameUnitsToPrePlace: gameUnits,
-  })
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
-  //   gameUnits,
+  // const map = makeGiantsTableMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   // })
+  const map = makeDevHexagonMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
