@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io'
-import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import {
   transformDraftableCardToGameCard,
   transformGameArmyCardsToGameUnits,

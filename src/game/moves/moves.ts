@@ -21,8 +21,8 @@ import {
   finishWaterCloningAndEndTurn,
   placeWaterClone,
 } from './water-clone-action'
-import { selectGameCardByID } from 'game/selectors'
-import { getActivePlayersIdleStage, stageNames } from 'game/constants'
+import { selectGameCardByID } from '../selectors'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
 
 //phase:___Draft
 const confirmDraftReady: Move<GameState> = (

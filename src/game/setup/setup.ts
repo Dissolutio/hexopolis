@@ -16,9 +16,9 @@ import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
 } from './om-gen'
-import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { keyBy } from 'lodash'
-import { selectGameCardByID } from 'game/selectors'
+import { selectGameCardByID } from '../selectors'
 
 const someInitialGameState = {
   maxArmyValue: 160,
