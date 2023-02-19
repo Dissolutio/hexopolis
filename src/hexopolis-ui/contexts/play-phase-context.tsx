@@ -61,6 +61,7 @@ type PlayContextValue = {
   confirmFallDamageMove: () => void
   cancelFallDamageMove: () => void
   onConfirmDropPlacement(): void
+  onDenyDrop(): void
 
   // computed
   currentTurnGameCardID: string
@@ -419,22 +420,34 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             editingBoardHexes[h.id]?.occupyingUnitID === u
         )
     )
-  const theDropPlaceableHexIDs: string[] = Object.values(boardHexes)
-    .filter((hex) => {
-      const isHexUnoccupied = !hex.occupyingUnitID && !editingBoardHexes[hex.id]
-      const isAllHexNeighborsUnoccupied = !selectHexNeighbors(
-        hex.id,
-        boardHexes
-      ).some(
-        (h) => h.occupyingUnitID || editingBoardHexes[h.id]?.occupyingUnitID
-      )
-      return isHexUnoccupied && isAllHexNeighborsUnoccupied
-    })
-    .map((hex) => hex.id)
+  // default empty if player is idling, or placed all units
+  const theDropPlaceableHexIDs: string[] =
+    !(toBeDroppedUnitIDs.length > 0) || !isTheDropStage
+      ? []
+      : Object.values(boardHexes)
+          .filter((hex) => {
+            const isHexUnoccupied =
+              !hex.occupyingUnitID && !editingBoardHexes[hex.id]
+            const isAllHexNeighborsUnoccupied = !selectHexNeighbors(
+              hex.id,
+              boardHexes
+            ).some(
+              (h) =>
+                h.occupyingUnitID || editingBoardHexes[h.id]?.occupyingUnitID
+            )
+            return isHexUnoccupied && isAllHexNeighborsUnoccupied
+          })
+          .map((hex) => hex.id)
   function onConfirmDropPlacement() {
     dropInUnits({
+      isAccepting: true,
       deploymentProposition: editingBoardHexes,
       gameCardID: myCardWithTheDrop?.gameCardID,
+    })
+  }
+  function onDenyDrop() {
+    dropInUnits({
+      isAccept: false,
     })
   }
   function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
@@ -551,6 +564,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         confirmFallDamageMove,
         cancelFallDamageMove,
         onConfirmDropPlacement,
+        onDenyDrop,
         // COMPUTED
         currentTurnGameCardID,
         selectedUnit,

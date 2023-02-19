@@ -6,6 +6,7 @@ import { useUIContext } from 'hexopolis-ui/contexts'
 import { decodeGameLogMessage, gameLogTypes } from 'game/gamelog'
 import { uniqBy } from 'lodash'
 import { playerColors } from 'hexopolis-ui/theme'
+import { playerIDDisplay } from 'game/transformers'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
@@ -96,6 +97,23 @@ export const Notifications = () => {
                 id: gameLogMessage?.id,
               }
             )
+            break
+          case gameLogTypes.theDropRoll:
+            const theDropRollMsg = isRollSuccessful ? (
+              <span style={{ color: playerColors[playerID] }}>
+                {playerIDDisplay(playerID)} rolled for The Drop and succeeded! (
+                {roll} / {rollThreshold}){' '}
+              </span>
+            ) : (
+              <span style={{ color: playerColors[playerID] }}>
+                {playerIDDisplay(playerID)} failed their roll for The Drop (
+                {roll} / {rollThreshold}){' '}
+              </span>
+            )
+            toast(theDropRollMsg, {
+              duration: defaultDuration,
+              id: gameLogMessage?.id,
+            })
             break
           case gameLogTypes.mindShackle:
             const msgMindShackle = isRollSuccessful ? (

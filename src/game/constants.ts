@@ -11,6 +11,7 @@ import {
 export const phaseNames = {
   draft: 'draft',
   placement: 'placement',
+  beforePlaceOrderMarkers: 'beforePlaceOrderMarkers',
   placeOrderMarkers: 'placeOrderMarkers',
   roundOfPlay: 'roundOfPlay',
 }

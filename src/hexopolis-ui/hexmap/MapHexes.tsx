@@ -40,6 +40,7 @@ export const MapHexes = () => {
     isPlacementPhase,
     isOrderMarkerPhase,
     isTheDropStage,
+    isIdleTheDropStage,
     isRoundOfPlayPhase,
     isAttackingStage,
     isMovementStage,
@@ -91,7 +92,7 @@ export const MapHexes = () => {
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
     }
-    if (isOrderMarkerPhase && isTheDropStage) {
+    if (isTheDropStage) {
       onClickTurnHex?.(event, sourceHex)
     }
 
@@ -148,17 +149,16 @@ export const MapHexes = () => {
         tailPlaceables,
       })
     }
+    if (isTheDropStage || isIdleTheDropStage) {
+      return calcOrderMarkerHexClassNames({
+        hex,
+        theDropPlaceableHexIDs,
+      })
+    }
     if (isOrderMarkerPhase) {
-      if (isTheDropStage) {
-        return calcOrderMarkerHexClassNames({
-          hex,
-          theDropPlaceableHexIDs,
-        })
-      } else {
-        return calcOrderMarkerHexClassNames({
-          hex,
-        })
-      }
+      return calcOrderMarkerHexClassNames({
+        hex,
+      })
     }
     if (isRoundOfPlayPhase) {
       return calcRopHexClassNames({
@@ -207,8 +207,9 @@ export const MapHexes = () => {
       const editingBoardHexUnitID =
         editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
       const unitIdToShowOnHex =
-        isOrderMarkerPhase && isTheDropStage
-          ? editingBoardHexUnitID || hex.occupyingUnitID
+        // order matters here
+        isTheDropStage
+          ? hex.occupyingUnitID || editingBoardHexUnitID
           : isPlacementPhase
           ? editingBoardHexUnitID
           : hex.occupyingUnitID
@@ -255,10 +256,10 @@ export const MapHexes = () => {
             </AnimatePresence>
             <HexIDText
               hexSize={hexSize}
-              // text={`${hex.id}`}
-              // textLine2={`${hex.altitude}`}
-              text={`${hex.altitude}`}
-              textLine2={`${unitName}`}
+              text={`${hex.id}`}
+              textLine2={`${hex.altitude}`}
+              // text={`${hex.altitude}`}
+              // textLine2={`${unitName}`}
             />
             {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
               <UnitLifeText

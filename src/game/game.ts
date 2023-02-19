@@ -2,7 +2,13 @@ import { Ctx, Game } from 'boardgame.io'
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
-import { GameState, OrderMarker, GameUnit, StageQueueItem } from './types'
+import {
+  GameState,
+  OrderMarker,
+  GameUnit,
+  StageQueueItem,
+  TheDropRoll,
+} from './types'
 import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { gameSetupInitialGameState } from './setup/setup'
@@ -89,6 +95,7 @@ export const Hexoscape: Game<GameState> = {
       },
       next: phaseNames.placement,
     },
+    // PHASE: PLACEMENT
     [phaseNames.placement]: {
       // all players may make moves and place their units
       turn: {
@@ -96,16 +103,132 @@ export const Hexoscape: Game<GameState> = {
           all: stageNames.placingUnits,
         },
       },
+      onEnd: ({ G, ctx }) => {
+        const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+          (id) => {
+            // players who already used The Drop cannot use it again
+            if (G.theDropUsed.includes(id)) return false
+            const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+            return armyCards.some((c) =>
+              selectIfGameArmyCardHasAbility('The Drop', c)
+            )
+          }
+        )
+        if (playerIDsWithActiveTheDrop.length > 0) {
+          // we initialise the drop result to an empty object here, so that we can check if it's empty in the next phase's onBegin hook (all because that hook is oddly called AFTER the onEnd hook)
+          G.theDropResult = {}
+        }
+      },
       // once all players have placed their units and confirmed ready, the order marker stage will begin
       endIf: ({ G, ctx }) => {
         return checkReady('placementReady', G, ctx)
       },
+      next: phaseNames.beforePlaceOrderMarkers,
+    },
+    //PHASE: ORDER-MARKERS (+ the drop)
+    [phaseNames.beforePlaceOrderMarkers]: {
+      turn: {
+        onBegin: ({ G, events, random }) => {
+          // we cannot use the onBegin hook for the phase, so we do it here: before order markers are placed, we can check to see who needs to use The Drop
+          const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+            (id) => {
+              const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+              return armyCards.some((c) => {
+                // players (their cards really) who already used The Drop cannot use it again
+                if (G.theDropUsed.includes(c.gameCardID)) return false
+                return selectIfGameArmyCardHasAbility('The Drop', c)
+              })
+            }
+          )
+          // TODO: glyph of lodin +1, any others
+          const threshold = 13
+          const rolls = playerIDsWithActiveTheDrop.map(
+            (id) =>
+              // random.Die(20)
+              20
+          )
+          const newDropResult: { [playerID: string]: TheDropRoll } =
+            playerIDsWithActiveTheDrop.reduce((acc, id, i) => {
+              return {
+                ...acc,
+                [id]: {
+                  playerID: id,
+                  roll: rolls[i],
+                  threshold,
+                  isSuccessful: rolls[i] >= threshold,
+                },
+              }
+            }, {})
+          G.theDropResult = newDropResult
+          Object.values(newDropResult).forEach((result) => {
+            const gameLog = encodeGameLogMessage({
+              type: gameLogTypes.theDropRoll,
+              id: `${G.currentRound}:theDrop:p${result.playerID}`,
+              playerID: result.playerID,
+              roll: result.roll,
+              rollThreshold: threshold,
+              isRollSuccessful: result.isSuccessful,
+            })
+            G.gameLog = [...G.gameLog, gameLog]
+          })
+          // TODO: add game log of the drop result, even for players who failed (they'll know why)
+          const playersIDsToUseTheDrop = playerIDsWithActiveTheDrop.filter(
+            (id, i) => rolls[i] >= threshold
+          )
+          const orderOfDropStages =
+            rollD20Initiative(playersIDsToUseTheDrop)?.initiative ?? []
+          const playerDropStagesForQueue = orderOfDropStages.map(
+            (playerID) => ({
+              stage: stageNames.theDrop,
+              playerID,
+            })
+          )
+          let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]
+          const nextStage = newStageQueue.shift()
+          G.stageQueue = newStageQueue
+          if (nextStage) {
+            const activePlayers = getActivePlayersIdleStage({
+              gamePlayerIDs: Object.keys(G.players),
+              activePlayerID: nextStage.playerID,
+              activeStage: stageNames.theDrop,
+              idleStage: stageNames.idleTheDrop,
+            })
+            events.setActivePlayers({ value: activePlayers })
+          } else {
+            events.endPhase()
+          }
+        },
+        // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
+        activePlayers: {
+          all: stageNames.placeOrderMarkers,
+        },
+      },
+      onEnd: ({ G, ctx }) => {
+        // clear the drop result, it was initialised to an empty object by placement.onEnd
+        G.theDropResult = undefined
+      },
+      // proceed to order-markers if no players have pre-order marker abilities
+      endIf: ({ G }) => {
+        const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+          (id) => {
+            // players who already used The Drop cannot use it again
+            if (G.theDropUsed.includes(id)) return false
+            const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+            return armyCards.some((c) =>
+              selectIfGameArmyCardHasAbility('The Drop', c)
+            )
+          }
+        )
+        return (
+          // we need to run this check here because endIf is called before onBegin, so if we keep the phase from ending, then onBegin will fire and players can Drop/ adjust their order markers
+          playerIDsWithActiveTheDrop.length <= 0
+        )
+      },
       next: phaseNames.placeOrderMarkers,
     },
-    //PHASE: ORDER-MARKERS
     [phaseNames.placeOrderMarkers]: {
       // reset order-markers state
-      onBegin: ({ G, ctx, events }) => {
+      onBegin: ({ G, ctx }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 1) {
           // clear secret order marker state
@@ -121,60 +244,85 @@ export const Hexoscape: Game<GameState> = {
         }
       },
       turn: {
-        onBegin: ({ G, events }) => {
-          // we cannot use the onBegin hook for the phase, so we do it here: before order markers are placed, we can check to see who needs to use The Drop
-          const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
-            (id) => {
-              // players who already used The Drop cannot use it again
-              if (G.theDropUsed.includes(id)) return false
-              const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
-              return armyCards.some((c) =>
-                selectIfGameArmyCardHasAbility('The Drop', c)
-              )
-            }
-          )
-          const orderOfDropStages =
-            rollD20Initiative(playerIDsWithActiveTheDrop)?.initiative ?? []
-          const playerDropStagesForQueue = orderOfDropStages.map(
-            (playerID) => ({
-              stage: stageNames.theDrop,
-              playerID,
-            })
-          )
-          // The last stage into the queue will be Stage:Movement of the active player
-          let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]
-          const nextStage = newStageQueue.shift()
-          G.stageQueue = newStageQueue
-          if (nextStage) {
-            const activePlayers = getActivePlayersIdleStage({
-              gamePlayerIDs: Object.keys(G.players),
-              activePlayerID: nextStage.playerID,
-              activeStage: stageNames.theDrop,
-              idleStage: stageNames.idleTheDrop,
-            })
-            events.setActivePlayers({ value: activePlayers })
-          }
-        },
+        // onBegin: ({ G, events, random }) => {
+        //   // we cannot use the onBegin hook for the phase, so we do it here: before order markers are placed, we can check to see who needs to use The Drop
+        //   // const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+        //   //   (id) => {
+        //   //     const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+        //   //     return armyCards.some((c) => {
+        //   //       // players (their cards really) who already used The Drop cannot use it again
+        //   //       if (G.theDropUsed.includes(c.gameCardID)) return false
+        //   //       return selectIfGameArmyCardHasAbility('The Drop', c)
+        //   //     })
+        //   //   }
+        //   // )
+        //   // // TODO: glyph of lodin +1, any others
+        //   // const threshold = 13
+        //   // const rolls = playerIDsWithActiveTheDrop.map((id) => random.Die(20))
+        //   // const newDropResult = playerIDsWithActiveTheDrop.reduce(
+        //   //   (acc, id, i) => {
+        //   //     return {
+        //   //       ...acc,
+        //   //       [id]: {
+        //   //         playerID: id,
+        //   //         roll: rolls[i],
+        //   //         threshold,
+        //   //         isSuccessful: rolls[i] >= threshold,
+        //   //       },
+        //   //     }
+        //   //   },
+        //   //   {}
+        //   // )
+        //   // G.theDropResult = newDropResult
+        //   // // TODO: add game log of the drop result, even for players who failed (they'll know why)
+        //   // const playersIDsToUseTheDrop = playerIDsWithActiveTheDrop.filter(
+        //   //   (id, i) => rolls[i] >= threshold
+        //   // )
+        //   // const orderOfDropStages =
+        //   //   rollD20Initiative(playersIDsToUseTheDrop)?.initiative ?? []
+        //   // const playerDropStagesForQueue = orderOfDropStages.map(
+        //   //   (playerID) => ({
+        //   //     stage: stageNames.theDrop,
+        //   //     playerID,
+        //   //   })
+        //   // )
+        //   // let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]
+        //   // const nextStage = newStageQueue.shift()
+        //   // G.stageQueue = newStageQueue
+        //   // if (nextStage) {
+        //   //   const activePlayers = getActivePlayersIdleStage({
+        //   //     gamePlayerIDs: Object.keys(G.players),
+        //   //     activePlayerID: nextStage.playerID,
+        //   //     activeStage: stageNames.theDrop,
+        //   //     idleStage: stageNames.idleTheDrop,
+        //   //   })
+        //   //   events.setActivePlayers({ value: activePlayers })
+        //   // }
+        // },
         // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
         activePlayers: {
           all: stageNames.placeOrderMarkers,
         },
+        // onEnd: ({ G, ctx }) => {
+        //   // clear the drop result for next round (should maybe do this at phase level, but i like the proximity to the relevant onBegin code above)
+        //   // G.theDropResult = undefined
+        // },
       },
       // proceed to round-of-play once all players are ready
       endIf: ({ G, ctx }) => {
-        const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
-          (id) => {
-            // players who already used The Drop cannot use it again
-            if (G.theDropUsed.includes(id)) return false
-            const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
-            return armyCards.some((c) =>
-              selectIfGameArmyCardHasAbility('The Drop', c)
-            )
-          }
-        )
+        // const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+        //   (id) => {
+        //     // players who already used The Drop cannot use it again
+        //     if (G.theDropUsed.includes(id)) return false
+        //     const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+        //     return armyCards.some((c) =>
+        //       selectIfGameArmyCardHasAbility('The Drop', c)
+        //     )
+        //   }
+        // )
         return (
           // we need to run this check here because endIf is called before onBegin, so if we keep the phase from ending, then onBegin will fire and players can Drop/ adjust their order markers
-          playerIDsWithActiveTheDrop.length <= 0 &&
+          // playerIDsWithActiveTheDrop.length <= 0 &&
           checkReady('orderMarkersReady', G, ctx)
         )
       },

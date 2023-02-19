@@ -53,11 +53,7 @@ export interface GameState {
   theDropUsed: string[]
   // this temporarily stores the results of The Drop rolls for players to see while they decide if/where to drop, does NOT mean they have used The Drop
   theDropResult?: {
-    [playerID: string]: {
-      roll: number
-      threshold: number
-      isSuccessful: boolean
-    }
+    [playerID: string]: TheDropRoll
   }
   // this marks grimnak as having chomped
   chompsAttempted: string[]
@@ -280,6 +276,12 @@ export type WaterCloneRoll = {
       tails: string[]
     }
   }
+}
+export type TheDropRoll = {
+  playerID: string
+  roll: number
+  threshold: number
+  isSuccessful: boolean
 }
 // for secret state
 export type PlayerState = {

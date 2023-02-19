@@ -23,36 +23,52 @@ import { UndoRedoButtons } from './rop/UndoRedoButtons'
 import { OpenCardModalButton } from 'hexopolis-ui/OpenAbilityModalButton'
 import { StyledButtonWrapper } from './ConfirmOrResetButtons'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
-import { usePlayContext } from 'hexopolis-ui/contexts'
+import { usePlacementContext, usePlayContext } from 'hexopolis-ui/contexts'
 import { noop } from 'lodash'
 import { stageNames } from 'game/constants'
 
 export const DropControls = () => {
   const { playerID } = useBgioClientInfo()
   const { events } = useBgioEvents()
-  const { toBeDroppedUnitIDs, onConfirmDropPlacement } = usePlayContext()
+  const {
+    toBeDroppedUnitIDs,
+    onConfirmDropPlacement,
+    onDenyDrop,
+    theDropPlaceableHexIDs,
+  } = usePlayContext()
+  const { editingBoardHexes } = usePlacementContext()
   const { myCards, myDraftPointsLeft, cardsDraftedThisTurn, draftReady } =
     useBgioG()
   const theCard = myCards.filter((c) =>
     selectIfGameArmyCardHasAbility('The Drop', c)
   )[0]
   const numberUnitsRemainingToDrop = toBeDroppedUnitIDs.length
-  const isCouldBeDone = numberUnitsRemainingToDrop === 0
+  const isCouldBeDone =
+    numberUnitsRemainingToDrop === 0 || theDropPlaceableHexIDs.length === 0
   return (
     <>
       <StyledControlsHeaderH2>
-        The Drop: place {numberUnitsRemainingToDrop} more units
+        The Drop: place {numberUnitsRemainingToDrop} more {theCard.singleName}
       </StyledControlsHeaderH2>
+
       {isCouldBeDone ? (
         <StyledButtonWrapper>
-          <GreenButton onClick={onConfirmDropPlacement}>
+          <BigGreenButton onClick={onConfirmDropPlacement}>
             Confirm Ready (finished placing units)
-          </GreenButton>
+          </BigGreenButton>
         </StyledButtonWrapper>
       ) : (
         <StyledControlsP>
           Select a green hex to place a unit there.
         </StyledControlsP>
+      )}
+      {/* hacky way to show the deny button */}
+      {numberUnitsRemainingToDrop === 4 && (
+        <StyledButtonWrapper>
+          <GreenButton onClick={onDenyDrop}>
+            Hold the plane! (deny using The Drop and save it for a future round)
+          </GreenButton>
+        </StyledButtonWrapper>
       )}
     </>
   )
