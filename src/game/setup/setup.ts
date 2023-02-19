@@ -18,6 +18,7 @@ import {
 } from './om-gen'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
 import { keyBy } from 'lodash'
+import { selectGameCardByID } from 'game/selectors'
 
 const someInitialGameState = {
   maxArmyValue: 160,
@@ -51,23 +52,17 @@ const frequentlyChangedDevState = (
     ? {
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
-        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        roundOfPlayStartReady: generateReadyStateForNumPlayers(
-          numPlayers,
-          true
-        ),
-        players: playersStateWithPrePlacedOMs(numPlayers),
-        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        // players: playersStateWithPrePlacedOMs(numPlayers),
+        players: generateBlankPlayersStateForNumPlayers(numPlayers),
+        // orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
     : {
         draftReady: generateReadyStateForNumPlayers(numPlayers, false),
         placementReady: generateReadyStateForNumPlayers(numPlayers, false),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
-        roundOfPlayStartReady: generateReadyStateForNumPlayers(
-          numPlayers,
-          false
-        ),
         orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
         players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,

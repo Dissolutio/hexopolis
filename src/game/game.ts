@@ -217,10 +217,6 @@ export const Hexoscape: Game<GameState> = {
           ctx.numPlayers,
           false
         )
-        G.roundOfPlayStartReady = generateReadyStateForNumPlayers(
-          ctx.numPlayers,
-          false
-        )
         G.currentOrderMarker = 0
         G.currentRound += 1
       },

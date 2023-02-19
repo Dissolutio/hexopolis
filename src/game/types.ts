@@ -19,7 +19,6 @@ export interface GameState {
   draftReady: PlayerStateToggle
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
-  roundOfPlayStartReady: PlayerStateToggle
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
   // Draft tracking below
@@ -300,7 +299,6 @@ export type BaseGameOptions =
   | {
       placementReady?: PlayerStateToggle
       orderMarkersReady?: PlayerStateToggle
-      roundOfPlayStartReady?: PlayerStateToggle
       currentRound?: number
       currentOrderMarker?: number
       orderMarkers?: OrderMarkers
