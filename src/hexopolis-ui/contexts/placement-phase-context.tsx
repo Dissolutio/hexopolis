@@ -99,7 +99,7 @@ const PlacementContextProvider = ({
     Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
       .filter((id) => {
-        return id && gameUnits[id].playerID === playerID
+        return id && gameUnits[id]?.playerID === playerID
       })
   const initialPlacementUnitsIfTotallyReset = myUnits
     // units that get dropped in later do not get pre-placed, so we need to filter them out
