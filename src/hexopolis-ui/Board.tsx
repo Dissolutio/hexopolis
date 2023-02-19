@@ -83,6 +83,7 @@ export const Board = ({
                     <MapContextProvider hexMap={G.hexMap}>
                       {/* UI Context is consumed by PlacementContext and PlayContext */}
                       <UIContextProvider>
+                        {/* Placement Context is consumed by Play Context  */}
                         <PlacementContextProvider>
                           <PlayContextProvider>
                             <SpecialAttackContextProvider>

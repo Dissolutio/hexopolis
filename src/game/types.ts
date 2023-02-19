@@ -19,7 +19,6 @@ export interface GameState {
   draftReady: PlayerStateToggle
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
-  roundOfPlayStartReady: PlayerStateToggle
   // Stage queue: This is how, when Mimring kills many units that cause different stages to happen, we track the order of those stages
   stageQueue: StageQueueItem[]
   // Draft tracking below
@@ -50,6 +49,12 @@ export interface GameState {
   waterClonesPlaced: WaterClonesPlaced
   // This is an array of gameCardIDs, it gets added to whenever a grenade gets thrown, and then at end of turn, in game.ts file,  we can mark that card true for hasThrownGrenade
   grenadesThrown: string[]
+  // tracks which cards that need to use The Drop have used it
+  theDropUsed: string[]
+  // this temporarily stores the results of The Drop rolls for players to see while they decide if/where to drop, does NOT mean they have used The Drop
+  theDropResult?: {
+    [playerID: string]: TheDropRoll
+  }
   // this marks grimnak as having chomped
   chompsAttempted: string[]
   // this marks negoksa as having attempted mind shackle
@@ -272,6 +277,12 @@ export type WaterCloneRoll = {
     }
   }
 }
+export type TheDropRoll = {
+  playerID: string
+  roll: number
+  threshold: number
+  isSuccessful: boolean
+}
 // for secret state
 export type PlayerState = {
   [playerID: string]: {
@@ -298,7 +309,6 @@ export type BaseGameOptions =
   | {
       placementReady?: PlayerStateToggle
       orderMarkersReady?: PlayerStateToggle
-      roundOfPlayStartReady?: PlayerStateToggle
       currentRound?: number
       currentOrderMarker?: number
       orderMarkers?: OrderMarkers

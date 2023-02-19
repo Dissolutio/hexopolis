@@ -44,7 +44,7 @@ export const PlaceArmorSpiritControls = () => {
   return (
     <>
       <StyledControlsHeaderH2>
-        Place Finn's Attack Spirit
+        Place Thorgrim's Armor Spirit
       </StyledControlsHeaderH2>
       <StyledControlsP
         style={{ color: 'var(--text-muted)', maxWidth: '800px' }}

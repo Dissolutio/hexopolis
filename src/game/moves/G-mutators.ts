@@ -28,26 +28,30 @@ export const killUnit_G = ({
   unitsKilled: UnitsKilled
   killedUnits: GameUnits
   gameUnits: GameUnits
-
   unitToKillID: string
-  killerUnitID: string
-  defenderHexID: string
+  killerUnitID?: string
+  defenderHexID?: string
   defenderTailHexID?: string
 }) => {
-  unitsKilled[killerUnitID] = [
-    ...(unitsKilled?.[killerUnitID] ?? []),
-    unitToKillID,
-  ]
+  // if someone killed this unit, add them to the killed units (wasted units from The Drop have no killer)
+  if (killerUnitID) {
+    unitsKilled[killerUnitID] = [
+      ...(unitsKilled?.[killerUnitID] ?? []),
+      unitToKillID,
+    ]
+  }
 
   killedUnits[unitToKillID] = {
     ...gameUnits[unitToKillID],
   }
   delete gameUnits[unitToKillID]
-  // remove from hex, and tail if applicable
-  boardHexes[defenderHexID].occupyingUnitID = ''
-  if (defenderTailHexID) {
-    boardHexes[defenderTailHexID].occupyingUnitID = ''
-    boardHexes[defenderTailHexID].isUnitTail = false
+  if (defenderHexID) {
+    // remove from hex, and tail if applicable
+    boardHexes[defenderHexID].occupyingUnitID = ''
+    if (defenderTailHexID) {
+      boardHexes[defenderTailHexID].occupyingUnitID = ''
+      boardHexes[defenderTailHexID].isUnitTail = false
+    }
   }
   // remove the game army card if all units for it are dead
   const isNoMoreUnitsForCard = !Object.values(gameUnits).find(

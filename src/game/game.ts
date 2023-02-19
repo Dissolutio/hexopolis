@@ -2,7 +2,13 @@ import { Ctx, Game } from 'boardgame.io'
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 
 import { selectUnitsForCard, selectUnrevealedGameCard } from './selectors'
-import { GameState, OrderMarker, GameUnit } from './types'
+import {
+  GameState,
+  OrderMarker,
+  GameUnit,
+  StageQueueItem,
+  TheDropRoll,
+} from './types'
 import { moves } from './moves/moves'
 import { rollD20Initiative } from './rollInitiative'
 import { gameSetupInitialGameState } from './setup/setup'
@@ -14,8 +20,11 @@ import {
   generateBlankOrderMarkersForNumPlayers,
   generateBlankPlayersOrderMarkers,
   generateReadyStateForNumPlayers,
+  getActivePlayersIdleStage,
+  generateBlankPlayersStateForNumPlayers,
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
+import { selectIfGameArmyCardHasAbility } from './selector/card-selectors'
 
 const isDevOverrideState =
   process.env.NODE_ENV === 'production'
@@ -70,6 +79,12 @@ export const Hexoscape: Game<GameState> = {
         activePlayers: {
           currentPlayer: stageNames.pickingUnits,
         },
+        onBegin: ({ G, ctx, events }) => {
+          // if player is already done drafting, skip their turn
+          if (G.draftReady[ctx.currentPlayer] === true) {
+            events.endTurn()
+          }
+        },
         onEnd: ({ G, ctx }) => {
           G.cardsDraftedThisTurn = []
         },
@@ -86,6 +101,7 @@ export const Hexoscape: Game<GameState> = {
       },
       next: phaseNames.placement,
     },
+    // PHASE: PLACEMENT
     [phaseNames.placement]: {
       // all players may make moves and place their units
       turn: {
@@ -93,21 +109,135 @@ export const Hexoscape: Game<GameState> = {
           all: stageNames.placingUnits,
         },
       },
+      onEnd: ({ G, ctx }) => {
+        const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+          (id) => {
+            // players who already used The Drop cannot use it again
+            if (G.theDropUsed.includes(id)) return false
+            const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+            return armyCards.some((c) =>
+              selectIfGameArmyCardHasAbility('The Drop', c)
+            )
+          }
+        )
+        if (playerIDsWithActiveTheDrop.length > 0) {
+          // we initialise the drop result to an empty object here, so that we can check if it's empty in the next phase's onBegin hook (all because that hook is oddly called AFTER the onEnd hook)
+          G.theDropResult = {}
+        }
+      },
       // once all players have placed their units and confirmed ready, the order marker stage will begin
       endIf: ({ G, ctx }) => {
         return checkReady('placementReady', G, ctx)
       },
+      next: phaseNames.beforePlaceOrderMarkers,
+    },
+    //PHASE: ORDER-MARKERS (+ the drop)
+    [phaseNames.beforePlaceOrderMarkers]: {
+      turn: {
+        onBegin: ({ G, events, random }) => {
+          // we cannot use the onBegin hook for the phase, so we do it here: before order markers are placed, we can check to see who needs to use The Drop
+          const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+            (id) => {
+              const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+              return armyCards.some((c) => {
+                // players (their cards really) who already used The Drop cannot use it again
+                if (G.theDropUsed.includes(c.gameCardID)) return false
+                return selectIfGameArmyCardHasAbility('The Drop', c)
+              })
+            }
+          )
+          // TODO: glyph of lodin +1, any others
+          const threshold = 13
+          const rolls = playerIDsWithActiveTheDrop.map(
+            (id) =>
+              // random.Die(20)
+              20
+          )
+          const newDropResult: { [playerID: string]: TheDropRoll } =
+            playerIDsWithActiveTheDrop.reduce((acc, id, i) => {
+              return {
+                ...acc,
+                [id]: {
+                  playerID: id,
+                  roll: rolls[i],
+                  threshold,
+                  isSuccessful: rolls[i] >= threshold,
+                },
+              }
+            }, {})
+          G.theDropResult = newDropResult
+          Object.values(newDropResult).forEach((result) => {
+            const gameLog = encodeGameLogMessage({
+              type: gameLogTypes.theDropRoll,
+              id: `${G.currentRound}:theDrop:p${result.playerID}`,
+              playerID: result.playerID,
+              roll: result.roll,
+              rollThreshold: threshold,
+              isRollSuccessful: result.isSuccessful,
+            })
+            G.gameLog = [...G.gameLog, gameLog]
+          })
+          const playersIDsToUseTheDrop = playerIDsWithActiveTheDrop.filter(
+            (id, i) => rolls[i] >= threshold
+          )
+          const orderOfDropStages =
+            rollD20Initiative(playersIDsToUseTheDrop)?.initiative ?? []
+          const playerDropStagesForQueue = orderOfDropStages.map(
+            (playerID) => ({
+              stage: stageNames.theDrop,
+              playerID,
+            })
+          )
+          let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]
+          const nextStage = newStageQueue.shift()
+          G.stageQueue = newStageQueue
+          if (nextStage) {
+            const activePlayers = getActivePlayersIdleStage({
+              gamePlayerIDs: Object.keys(G.players),
+              activePlayerID: nextStage.playerID,
+              activeStage: stageNames.theDrop,
+              idleStage: stageNames.idleTheDrop,
+            })
+            events.setActivePlayers({ value: activePlayers })
+          } else {
+            events.endPhase()
+          }
+        },
+        // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
+        activePlayers: {
+          all: stageNames.placeOrderMarkers,
+        },
+      },
+      onEnd: ({ G, ctx }) => {
+        // clear the drop result, it was initialised to an empty object by placement.onEnd
+        G.theDropResult = undefined
+      },
+      // proceed to order-markers if no players have pre-order marker abilities
+      endIf: ({ G }) => {
+        const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+          (id) => {
+            // players (their card, really) who already used The Drop cannot use it again
+            if (G.theDropUsed.includes(id)) return false
+            const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+            return armyCards.some((c) =>
+              selectIfGameArmyCardHasAbility('The Drop', c)
+            )
+          }
+        )
+        return (
+          // we need to run this check here because endIf is called before onBegin, so if we keep the phase from ending, then onBegin will fire and players can Drop/ adjust their order markers
+          playerIDsWithActiveTheDrop.length <= 0
+        )
+      },
       next: phaseNames.placeOrderMarkers,
     },
-    //PHASE: ORDER-MARKERS
     [phaseNames.placeOrderMarkers]: {
       // reset order-markers state
       onBegin: ({ G, ctx }) => {
         // bypassing first-round-reset allows you to customize initial game state, for development
         if (G.currentRound > 1) {
           // clear secret order marker state
-          G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
-          G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
+          G.players = generateBlankPlayersStateForNumPlayers(ctx.numPlayers)
           // clear public order marker state
           G.orderMarkers = generateBlankOrderMarkersForNumPlayers(
             ctx.numPlayers
@@ -118,15 +248,29 @@ export const Hexoscape: Game<GameState> = {
           )
         }
       },
-      // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
       turn: {
+        // all players may make moves and place their order markers (order markers are hidden from other players via the bgio player-state API)
         activePlayers: {
           all: stageNames.placeOrderMarkers,
         },
       },
       // proceed to round-of-play once all players are ready
       endIf: ({ G, ctx }) => {
-        return checkReady('orderMarkersReady', G, ctx)
+        // const playerIDsWithActiveTheDrop = Object.keys(G.players).filter(
+        //   (id) => {
+        //     // players who already used The Drop cannot use it again
+        //     if (G.theDropUsed.includes(id)) return false
+        //     const armyCards = G.gameArmyCards.filter((c) => c.playerID === id)
+        //     return armyCards.some((c) =>
+        //       selectIfGameArmyCardHasAbility('The Drop', c)
+        //     )
+        //   }
+        // )
+        return (
+          // we need to run this check here because endIf is called before onBegin, so if we keep the phase from ending, then onBegin will fire and players can Drop/ adjust their order markers
+          // playerIDsWithActiveTheDrop.length <= 0 &&
+          checkReady('orderMarkersReady', G, ctx)
+        )
       },
       // setup unrevealed public order-markers
       onEnd: ({ G }) => {
@@ -164,10 +308,6 @@ export const Hexoscape: Game<GameState> = {
       // reset state, update currentRound
       onEnd: ({ G, ctx }) => {
         G.orderMarkersReady = generateReadyStateForNumPlayers(
-          ctx.numPlayers,
-          false
-        )
-        G.roundOfPlayStartReady = generateReadyStateForNumPlayers(
           ctx.numPlayers,
           false
         )
@@ -287,12 +427,12 @@ export const Hexoscape: Game<GameState> = {
       return false
     }
     const gameUnitsArr = Object.values(G.gameUnits)
-    const isP0Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '0')
-    const isP1Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '1')
-    if (isP0Dead) {
-      return { winner: '1' }
-    } else if (isP1Dead) {
-      return { winner: '0' }
+    const firstPlayerID = gameUnitsArr[0].playerID
+    const allUnitsAreOfSamePlayer = gameUnitsArr.every(
+      (u) => u.playerID === firstPlayerID
+    )
+    if (allUnitsAreOfSamePlayer) {
+      return { winner: firstPlayerID }
     } else {
       return false
     }

@@ -3,6 +3,7 @@ import {
   BoardHexesUnitDeployment,
   GameState,
   PlayerOrderMarkers,
+  StageQueueItem,
 } from '../types'
 import { moveAction } from './move-action'
 import { attemptDisengage } from './attempt-disengage'
@@ -20,6 +21,9 @@ import {
   finishWaterCloningAndEndTurn,
   placeWaterClone,
 } from './water-clone-action'
+import { selectGameCardByID } from '../selectors'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
+import { killUnit_G } from './G-mutators'
 
 //phase:___Draft
 const confirmDraftReady: Move<GameState> = (
@@ -60,6 +64,86 @@ const deployUnits: Move<GameState> = (
   })
   G.boardHexes = newBoardHexes
 }
+const dropInUnits: Move<GameState> = (
+  { G, events },
+  {
+    isAccepting,
+    deploymentProposition,
+    gameCardID,
+    toBeDroppedUnitIDs,
+  }: {
+    isAccepting: boolean
+    deploymentProposition?: BoardHexesUnitDeployment
+    gameCardID?: string
+    toBeDroppedUnitIDs?: string[]
+  }
+) => {
+  let newBoardHexes = {
+    ...G.boardHexes,
+  }
+  // if they accept, then they are also passing their placement
+  if (isAccepting) {
+    if (
+      !gameCardID ||
+      !deploymentProposition ||
+      toBeDroppedUnitIDs === undefined
+    ) {
+      console.error(
+        'Cannot perform move dropInUnits because the gameCardID or deploymentProposition is undefined'
+      )
+      return
+    }
+    const cardDroppingIn = selectGameCardByID(G.gameArmyCards, gameCardID)
+
+    if (!cardDroppingIn) {
+      console.error(
+        'Cannot perform move dropInUnits because cardDroppingIn is undefined'
+      )
+      return
+    }
+    const playerID = cardDroppingIn.playerID
+    // TODO: add to gamelog that player dropped in some units
+    const propositions = Object.entries(deploymentProposition)
+    console.log('🚀 ~ file: moves.ts:100 ~ propositions', propositions)
+    // this will just flat out overwrite units, so be careful in the selectable hex generation
+    propositions.forEach((proposition) => {
+      const boardHexId = proposition[0]
+      const placedGameUnitId = proposition[1].occupyingUnitID
+      newBoardHexes[boardHexId].occupyingUnitID = placedGameUnitId
+      newBoardHexes[boardHexId].isUnitTail = proposition[1].isUnitTail
+    })
+    // these get wasted, added to killed units but no killer
+    toBeDroppedUnitIDs.forEach((unitID) => {
+      killUnit_G({
+        boardHexes: G.boardHexes,
+        gameArmyCards: G.gameArmyCards,
+        killedArmyCards: G.killedArmyCards,
+        unitsKilled: G.unitsKilled,
+        killedUnits: G.killedUnits,
+        gameUnits: G.gameUnits,
+        unitToKillID: unitID,
+      })
+    })
+    G.theDropUsed.push(gameCardID)
+  }
+  // All below is done even if the player is not accepting the drop in
+  // TODO: add to gamelog that player did not drop in units
+  let newStageQueue: StageQueueItem[] = [...G.stageQueue]
+  const nextStage = newStageQueue.shift()
+  G.stageQueue = newStageQueue
+  G.boardHexes = newBoardHexes
+  if (nextStage) {
+    const activePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
+      activePlayerID: nextStage.playerID,
+      activeStage: stageNames.theDrop,
+      idleStage: stageNames.idleTheDrop,
+    })
+    events.setActivePlayers({ value: activePlayers })
+  } else {
+    events.endPhase()
+  }
+}
 const confirmPlacementReady: Move<GameState> = (
   { G },
   { playerID }: { playerID: string }
@@ -98,11 +182,12 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 }
 
 export const moves: MoveMap<GameState> = {
-  confirmDraftReady,
   draftPrePlaceArmyCardAction,
+  confirmDraftReady,
   deployUnits,
   confirmPlacementReady,
   deconfirmPlacementReady,
+  dropInUnits,
   placeOrderMarkers,
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,

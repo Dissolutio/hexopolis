@@ -2537,7 +2537,7 @@ export const giantsTable = {
       id: '1,9,-10',
       occupyingUnitID: '',
       isUnitTail: false,
-      startzonePlayerIDs: ['0'],
+      startzonePlayerIDs: [],
       terrain: 'rock',
       altitude: 2,
     },

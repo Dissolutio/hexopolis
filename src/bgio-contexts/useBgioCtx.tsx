@@ -16,6 +16,8 @@ type BgioCtxValue = BoardProps['ctx'] & {
   isOrderMarkerPhase: boolean
   isDraftPhase: boolean
   isPlacementPhase: boolean
+  isTheDropStage: boolean
+  isIdleTheDropStage: boolean
   isRoundOfPlayPhase: boolean
   isIdleStage: boolean
   isMovementStage: boolean
@@ -44,14 +46,18 @@ export function BgioCtxProvider({
 }: BgioCtxProviderProps) {
   const { playerID, isAllPlayerSlotsFilled } = useBgioClientInfo()
   const isMyTurn: boolean = ctx.currentPlayer === playerID
-  const isMovementStage: boolean =
-    ctx.activePlayers?.[playerID] === stageNames.movement
-  const isOrderMarkerPhase: boolean = ctx.phase === phaseNames.placeOrderMarkers
   const isDraftPhase: boolean = ctx.phase === phaseNames.draft
   const isPlacementPhase: boolean = ctx.phase === phaseNames.placement
+  const isTheDropStage: boolean =
+    ctx.activePlayers?.[playerID] === stageNames.theDrop
+  const isIdleTheDropStage: boolean =
+    ctx.activePlayers?.[playerID] === stageNames.idleTheDrop
+  const isOrderMarkerPhase: boolean = ctx.phase === phaseNames.placeOrderMarkers
   const isRoundOfPlayPhase: boolean = ctx.phase === phaseNames.roundOfPlay
   const isIdleStage: boolean =
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === undefined
+  const isMovementStage: boolean =
+    ctx.activePlayers?.[playerID] === stageNames.movement
   const isAttackingStage: boolean =
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
   const isWaterCloneStage: boolean =
@@ -104,6 +110,8 @@ export function BgioCtxProvider({
         isOrderMarkerPhase,
         isDraftPhase,
         isPlacementPhase,
+        isTheDropStage,
+        isIdleTheDropStage,
         isRoundOfPlayPhase,
         isIdleStage,
         isMovementStage,

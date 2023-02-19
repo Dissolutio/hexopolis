@@ -230,7 +230,9 @@ const RopConfirmDisengageAttemptControls = () => {
         confirmText={`No, we will find another way...`}
         reset={confirmDisengageAttempt}
         resetText={`Yes, disengage them! ${
-          fallDamage > 0 && `And risk ${fallDamage} wounds from fall damage!`
+          fallDamage > 0
+            ? `And risk ${fallDamage} wounds from fall damage!`
+            : ''
         }`}
       />
     </>

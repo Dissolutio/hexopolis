@@ -4,6 +4,7 @@ import {
   GameUnits,
   GameUnit,
   BoardHex,
+  ArmyCard,
 } from '../types'
 import {
   selectAreTwoAdjacentUnitsEngaged,
@@ -120,7 +121,7 @@ export function selectIfGameArmyCardHasDisengage(
 // abilities:
 export function selectIfGameArmyCardHasAbility(
   abilityName: string,
-  gameArmyCard?: GameArmyCard
+  gameArmyCard?: GameArmyCard | ArmyCard
 ): boolean {
   return gameArmyCard
     ? gameArmyCard.abilities.some((a) => a.name === abilityName)

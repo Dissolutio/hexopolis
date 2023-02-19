@@ -78,6 +78,7 @@ export const chompAction: Move<GameState> = (
       stage: stageNames.movement,
     })
     const activePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
       activePlayerID: targetGameCard.playerID,
       activeStage: stageNames.placingAttackSpirit,
       idleStage: stageNames.idlePlacingAttackSpirit,
@@ -93,6 +94,7 @@ export const chompAction: Move<GameState> = (
       stage: stageNames.movement,
     })
     const activePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
       activePlayerID: targetGameCard.playerID,
       activeStage: stageNames.placingArmorSpirit,
       idleStage: stageNames.idlePlacingArmorSpirit,
