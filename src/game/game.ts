@@ -407,7 +407,7 @@ export const Hexoscape: Game<GameState> = {
           }
           // end the RoundOfPlay phase after last turn
           if (isLastTurn && isLastOrderMarker) {
-            events.setPhase(phaseNames.placeOrderMarkers)
+            events.setPhase(phaseNames.beforePlaceOrderMarkers)
           }
         },
       },
