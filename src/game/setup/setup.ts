@@ -43,6 +43,7 @@ const someInitialGameState = {
   berserkerChargeRoll: undefined,
   berserkerChargeSuccessCount: 0,
   stageQueue: [],
+  secret: { glyphs: {} },
 }
 const frequentlyChangedDevState = (
   numPlayers: number,

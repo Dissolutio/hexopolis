@@ -8,6 +8,12 @@ export interface GameState {
   killedUnits: GameUnits
   // annihilatedUnits would be units that were never killed, because they were never placed on the map (in placement, no room in start zone)
   // annihilatedUnits: GameUnits
+  secret: {
+    glyphs: {
+      [boardHexID: string]: string // a glyphID
+    }
+  }
+  // players is like secret, a bgio include: playersState keys are playerIDS, players only see their slice of it at G.players
   players: PlayerState
   hexMap: HexMap
   boardHexes: BoardHexes
@@ -118,6 +124,7 @@ export type Orientation = {
 export type BoardHex = HexCoordinates & {
   id: string
   occupyingUnitID: string
+  glyphID: string
   isUnitTail: boolean
   altitude: number
   startzonePlayerIDs: string[]
