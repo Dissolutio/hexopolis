@@ -198,7 +198,7 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     life: '1',
     move: '4',
     range: '1',
-    attack: '4',
+    attack: '3',
     defense: '4',
     points: '50',
     figures: '4',
