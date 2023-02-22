@@ -7,7 +7,7 @@ import { StyledButtonWrapper } from '../ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { stageNames } from 'game/constants'
 import { selectHexForUnit, selectValidTailHexes } from 'game/selectors'
-import { GameUnit, UnitsCloning } from 'game/types'
+import { GameUnit, HexTerrain, UnitsCloning } from 'game/types'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { UndoRedoButtons } from './UndoRedoButtons'
 import { useMemo } from 'react'
@@ -59,7 +59,7 @@ export const WaterCloneControls = () => {
     revealedGameCardKilledUnitsCount
   )
   const threshholds = unitsCloning.map((uc) => {
-    const isOnWater = boardHexes[uc.clonerHexID].terrain === 'water'
+    const isOnWater = boardHexes[uc.clonerHexID].terrain === HexTerrain.water
     return isOnWater ? 10 : 15
   })
   const isCloneSuccess = (waterCloneRoll?.cloneCount ?? 0) > 0

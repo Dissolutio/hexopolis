@@ -364,3 +364,11 @@ export type BerserkerChargeRoll = {
   isSuccessful: boolean
 }
 export type UnitsKilled = { [unitID: string]: string[] }
+
+export enum HexTerrain {
+  void = 'void',
+  water = 'water',
+  grass = 'grass',
+  sand = 'sand',
+  rock = 'rock',
+}

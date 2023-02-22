@@ -5,6 +5,7 @@ import {
   GameArmyCard,
   GameUnit,
   BoardHex,
+  HexTerrain,
 } from './types'
 import { generateBlankMoveRange } from './constants'
 import {
@@ -197,8 +198,8 @@ function recurseThroughMoves({
         neighbor.id,
         boardHexes
       ).map((hex) => hex.id)
-      const isStartHexWater = prevHex.terrain === 'water'
-      const isNeighborHexWater = neighbor.terrain === 'water'
+      const isStartHexWater = prevHex.terrain === HexTerrain.water
+      const isNeighborHexWater = neighbor.terrain === HexTerrain.water
       const isWaterStoppage =
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
         (!isUnit2Hex && isNeighborHexWater)
