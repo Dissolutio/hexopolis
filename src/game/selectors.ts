@@ -173,11 +173,30 @@ export function selectIsUnitWithinNHexesOfUnit({
   n: number
 }): boolean {
   const startHex = selectHexForUnit(startUnitID, boardHexes)
+  const startTailHex = selectTailHexForUnit(startUnitID, boardHexes)
   const endHex = selectHexForUnit(endUnitID, boardHexes)
+  const endTailHex = selectTailHexForUnit(endUnitID, boardHexes)
   if (!startHex || !endHex) return false
-  const distance = hexUtilsDistance(startHex, endHex)
+  const distanceHeadToHead = hexUtilsDistance(startHex, endHex)
+  let distanceStartTailToEndHead = Infinity
+  let distanceTailToEndTail = Infinity
+  let distanceStartHeadToEndTail = Infinity
+  if (startTailHex) {
+    distanceStartTailToEndHead = hexUtilsDistance(startTailHex, endHex)
+  }
+  if (endTailHex) {
+    distanceStartHeadToEndTail = hexUtilsDistance(startHex, endTailHex)
+  }
+  if (startTailHex && endTailHex) {
+    distanceTailToEndTail = hexUtilsDistance(startTailHex, endTailHex)
+  }
   // TODO: RUINS: account for barriers between two hexes
-  return distance <= n
+  return (
+    distanceHeadToHead <= n ||
+    distanceStartTailToEndHead <= n ||
+    distanceStartHeadToEndTail <= n ||
+    distanceTailToEndTail <= n
+  )
 }
 export function selectValidTailHexes(
   hexID: string,
