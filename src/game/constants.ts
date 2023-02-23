@@ -139,3 +139,9 @@ export function generateReadyStateForNumPlayers(
   const result = rdyState
   return result
 }
+
+export const generateBlankHexMapGlyphs = () => ({
+  glyphPool1: [],
+  glyphPool2: [],
+  glyphs: {},
+})

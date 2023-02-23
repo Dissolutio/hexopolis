@@ -43,6 +43,7 @@ const someInitialGameState = {
   berserkerChargeRoll: undefined,
   berserkerChargeSuccessCount: 0,
   stageQueue: [],
+  secret: { glyphs: {} },
 }
 const frequentlyChangedDevState = (
   numPlayers: number,
@@ -91,8 +92,8 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
-  return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  // return makeTestScenario(numPlayers, withPrePlacedUnits)
+  // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  return makeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -154,19 +155,19 @@ function makeTestScenario(
   // Map
   // const map = makeHexagonShapedMap({
   //   // mapSize: Math.max(numPlayers * 2, 8),
-  //   mapSize: 3,
+  //   mapSize: 0,
   //   withPrePlacedUnits,
   //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
-  const map = makeGiantsTableMap({
-    withPrePlacedUnits: true,
-    gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
-  })
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
-  //   gameUnits: gameUnitsWithoutTheDrop,
+  // const map = makeGiantsTableMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   // })
+  const map = makeDevHexagonMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,

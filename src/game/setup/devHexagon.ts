@@ -1,3 +1,5 @@
+import { generateBlankHexMapGlyphs } from 'game/constants'
+
 export const devHexagon = {
   boardHexes: {
     '-3,0,3': {
@@ -417,5 +419,29 @@ export const devHexagon = {
     hexSize: 10,
     mapWidth: 3,
     mapHeight: 3,
+    glyphPool1: ['attack', 'defense', 'move', 'range'],
+    glyphPool2: ['summoner'],
+    glyphs: {
+      '0,0,0': {
+        glyphPool: '',
+        glyphID: 'healer',
+        isRevealed: true,
+      },
+      '2,-2,0': {
+        glyphPool: '1',
+        glyphID: '',
+        isRevealed: true,
+      },
+      '-2,2,0': {
+        glyphPool: '1',
+        glyphID: '',
+        isRevealed: true,
+      },
+      '-3,3,0': {
+        glyphPool: '2',
+        glyphID: '',
+        isRevealed: true,
+      },
+    },
   },
 }
