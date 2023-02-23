@@ -4137,6 +4137,34 @@ export const giantsTable = {
     hexSize: 10,
     mapWidth: 25,
     mapHeight: 15,
-    ...generateBlankHexMapGlyphs(),
+    glyphPool1: [],
+    glyphPool2: [],
+    glyphs: {
+      '12,0,-12': {
+        glyphPool: '',
+        glyphID: 'healer',
+        isRevealed: true,
+      },
+      '10,1,-11': {
+        glyphPool: '',
+        glyphID: 'summoner',
+        isRevealed: true,
+      },
+      '10,4,-14': {
+        glyphPool: '',
+        glyphID: 'range',
+        isRevealed: true,
+      },
+      '9,7,-16': {
+        glyphPool: '',
+        glyphID: 'move',
+        isRevealed: true,
+      },
+      '8,9,-17': {
+        glyphPool: '',
+        glyphID: 'move',
+        isRevealed: true,
+      },
+    },
   },
 }
