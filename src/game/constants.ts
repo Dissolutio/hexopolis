@@ -139,3 +139,15 @@ export function generateReadyStateForNumPlayers(
   const result = rdyState
   return result
 }
+
+export const generateBlankHexMapGlyphs = () => ({
+  glyphPool1: [],
+  glyphPool2: [],
+  glyphs: {
+    '-3,2,1': {
+      glyphPool: '1', // '1' or '2'
+      glyphID: '',
+      isRevealed: false,
+    },
+  },
+})

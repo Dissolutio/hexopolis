@@ -1,3 +1,5 @@
+import { generateBlankHexMapGlyphs } from 'game/constants'
+
 export const giantsTable = {
   boardHexes: {
     '0,0,0': {
@@ -4135,5 +4137,6 @@ export const giantsTable = {
     hexSize: 10,
     mapWidth: 25,
     mapHeight: 15,
+    ...generateBlankHexMapGlyphs(),
   },
 }

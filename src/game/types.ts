@@ -93,8 +93,16 @@ export type HexMap = {
   mapWidth: number // for rectangle shaped maps
   hexSize: number
   flat: boolean
-  // from hexxaform below: mapId so when we have multiple maps we can switch between them, hexSize so we can scale the map
   mapId: string
+  glyphPool1?: string[]
+  glyphPool2?: string[]
+  glyphs: {
+    [boardHexID: string]: {
+      glyphPool: string // '1' or '2'
+      glyphID?: string
+      isRevealed: boolean
+    }
+  }
 }
 export enum MapShapes {
   hexagon = 'hexagon',
