@@ -18,14 +18,14 @@ import {
 } from './calcHexClassNames'
 import Hexagon from './Hexagon'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
-import { HexIDText, UnitLifeText } from './HexIDText'
+import { HexGlyph, HexIDText, UnitLifeText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 
 export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
-    hexMap: { hexSize },
+    hexMap: { hexSize, glyphs },
     gameArmyCards,
     startZones,
     gameUnits,
@@ -104,6 +104,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     : hex.isUnitTail
   const isUnitAHeroOrMultiLife =
     gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
+  const isGlyph = !!glyphs[hex.id]?.glyphID
 
   // handlers
   const onClickHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
@@ -218,6 +219,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     }
   }
   const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
+  const glyphTextPosition: Point = { x: hexSize * 0.6, y: 0 }
   return (
     <Hexagon hex={hex} onClick={onClickHex} className={hexClassNames(hex)}>
       <g>
@@ -255,14 +257,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
             position={unitLifePosition}
           />
         )}
-        {isGlyph && (
-          <UnitLifeText
-            unit={gameUnit}
-            card={gameUnitCard}
-            hexSize={hexSize}
-            position={unitLifePosition}
-          />
-        )}
+        {isGlyph && <HexGlyph hexSize={hexSize} position={glyphTextPosition} />}
       </g>
     </Hexagon>
   )

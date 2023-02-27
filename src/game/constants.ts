@@ -141,7 +141,5 @@ export function generateReadyStateForNumPlayers(
 }
 
 export const generateBlankHexMapGlyphs = () => ({
-  glyphPool1: [],
-  glyphPool2: [],
   glyphs: {},
 })

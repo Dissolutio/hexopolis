@@ -94,12 +94,9 @@ export type HexMap = {
   hexSize: number
   flat: boolean
   mapId: string
-  glyphPool1?: string[]
-  glyphPool2?: string[]
   glyphs: {
     [boardHexID: string]: {
-      glyphPool: string // '1' or '2'
-      glyphID?: string
+      glyphID: string
       isRevealed: boolean
     }
   }

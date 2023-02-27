@@ -32,17 +32,12 @@ export const HexIDText = ({ hexSize, text, textLine2 }: Props) => {
   )
 }
 export const HexGlyph = ({
-  unit,
-  card,
   hexSize,
   position,
 }: {
-  unit: GameUnit
-  card: GameArmyCard
   hexSize: number
   position: Point
 }) => {
-  const unitLifeLeft = card.life - unit.wounds
   return (
     <>
       <HexText
@@ -54,7 +49,7 @@ export const HexGlyph = ({
           fontWeight: '900',
         }}
       >
-        {unitLifeLeft.toString()}
+        GLYPHY
       </HexText>
     </>
   )
