@@ -9,7 +9,7 @@ import {
 } from '../contexts'
 import { UnitIcon } from '../unit-icons/UnitIcon'
 import { selectGameCardByID } from 'game/selectors'
-import { BoardHex } from 'game/types'
+import { BoardHex, Point } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
   calcDraftAndPlacementHexClassNames,
@@ -217,7 +217,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
       })
     }
   }
-
+  const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
   return (
     <Hexagon hex={hex} onClick={onClickHex} className={hexClassNames(hex)}>
       <g>
@@ -248,7 +248,20 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
           textLine2={`${unitName}`}
         />
         {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
-          <UnitLifeText unit={gameUnit} card={gameUnitCard} hexSize={hexSize} />
+          <UnitLifeText
+            unit={gameUnit}
+            card={gameUnitCard}
+            hexSize={hexSize}
+            position={unitLifePosition}
+          />
+        )}
+        {isGlyph && (
+          <UnitLifeText
+            unit={gameUnit}
+            card={gameUnitCard}
+            hexSize={hexSize}
+            position={unitLifePosition}
+          />
         )}
       </g>
     </Hexagon>

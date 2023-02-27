@@ -1,5 +1,5 @@
 import { selectGameCardByID } from 'game/selectors'
-import { GameArmyCard, GameUnit } from 'game/types'
+import { GameArmyCard, GameUnit, Point } from 'game/types'
 import React from 'react'
 import { HexText } from './HexText'
 
@@ -31,23 +31,56 @@ export const HexIDText = ({ hexSize, text, textLine2 }: Props) => {
     </>
   )
 }
-export const UnitLifeText = ({
+export const HexGlyph = ({
   unit,
   card,
   hexSize,
+  position,
 }: {
   unit: GameUnit
   card: GameArmyCard
   hexSize: number
+  position: Point
 }) => {
   const unitLifeLeft = card.life - unit.wounds
   return (
     <>
       <HexText
         hexSize={hexSize}
-        y={0}
-        x={hexSize * -0.6}
-        style={{ fill: 'var(--neon-red)' }}
+        y={position.y}
+        x={position.x}
+        style={{
+          fill: 'var(--life-red)',
+          fontWeight: '900',
+        }}
+      >
+        {unitLifeLeft.toString()}
+      </HexText>
+    </>
+  )
+}
+export const UnitLifeText = ({
+  unit,
+  card,
+  hexSize,
+  position,
+}: {
+  unit: GameUnit
+  card: GameArmyCard
+  hexSize: number
+  position: Point
+}) => {
+  const unitLifeLeft = card.life - unit.wounds
+  return (
+    <>
+      <HexText
+        hexSize={hexSize}
+        y={position.y}
+        x={position.x}
+        style={{
+          fill: 'var(--life-red)',
+          fontWeight: '900',
+        }}
       >
         {unitLifeLeft.toString()}
       </HexText>
