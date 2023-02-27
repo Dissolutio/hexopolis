@@ -430,17 +430,17 @@ export const devHexagon = {
       '2,-2,0': {
         glyphPool: '1',
         glyphID: '',
-        isRevealed: true,
+        isRevealed: false,
       },
       '-2,2,0': {
         glyphPool: '1',
         glyphID: '',
-        isRevealed: true,
+        isRevealed: false,
       },
       '-3,3,0': {
         glyphPool: '2',
         glyphID: '',
-        isRevealed: true,
+        isRevealed: false,
       },
     },
   },
