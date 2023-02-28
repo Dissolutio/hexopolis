@@ -350,6 +350,7 @@ export type LayoutDimension = {
   orientation: Orientation
   origin: Point
   spacing: number
+  flat: boolean
 }
 
 export type HexNeighborsWithDirections = { [hexID: string]: number }

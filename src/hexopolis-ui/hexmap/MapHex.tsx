@@ -20,6 +20,7 @@ import Hexagon from './Hexagon'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { HexGlyph, HexIDText, UnitLifeText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
+import { GlyphDisplay } from './GlyphDisplay'
 
 export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const { playerID } = useBgioClientInfo()
@@ -219,7 +220,6 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     }
   }
   const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
-  const glyphTextPosition: Point = { x: hexSize * 0.6, y: 0 }
   return (
     <Hexagon hex={hex} onClick={onClickHex} className={hexClassNames(hex)}>
       <g>
@@ -257,7 +257,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
             position={unitLifePosition}
           />
         )}
-        {isGlyph && <HexGlyph hexSize={hexSize} position={glyphTextPosition} />}
+        {isGlyph && <GlyphDisplay hex={hex} />}
       </g>
     </Hexagon>
   )

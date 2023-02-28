@@ -27,7 +27,7 @@ export function Hexagon(props: HexagonProps) {
   const hexAltitude = hex.altitude
   return (
     <g
-      className={classNames('hexagon-group', className)}
+      className={'hexagon-group'}
       transform={`translate(${pixel.x}, ${pixel.y})`}
       onClick={(e) => {
         if (onClick) {
@@ -36,7 +36,7 @@ export function Hexagon(props: HexagonProps) {
       }}
     >
       <g className="hexagon">
-        <polygon points={points} />
+        <polygon points={points} className={className} />
         {children}
       </g>
     </g>
