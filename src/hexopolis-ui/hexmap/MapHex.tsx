@@ -14,7 +14,6 @@ import {
   calcOrderMarkerHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
-import Hexagon from './Hexagon'
 import { HexIDText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 import { GlyphDisplay } from './GlyphDisplay'

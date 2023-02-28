@@ -1,5 +1,4 @@
 import * as React from 'react'
-import classNames from 'classnames'
 import { useLayoutContext } from './HexgridLayout'
 import { hexUtilsHexToPixel } from 'game/hex-utils'
 import { BoardHex } from 'game/types'
