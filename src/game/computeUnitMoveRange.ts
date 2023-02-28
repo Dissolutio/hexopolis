@@ -307,7 +307,8 @@ function recurseThroughMoves({
         !isFromOccupied &&
         validTailSpotsForNeighbor?.includes(startHexID)
       const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
-      const isDangerousHex = isCausingDisengagement || isFallDamage
+      const isDangerousHex =
+        isCausingDisengagement || isFallDamage || isActionGlyph
       const moveRangeData = {
         fromHexID: startHexID,
         fromCost,
