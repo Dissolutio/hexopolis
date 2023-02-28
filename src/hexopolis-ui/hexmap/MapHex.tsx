@@ -240,7 +240,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
         textLine2={!hex.isUnitTail ? `${unitName}` : ''}
       />
       {/* Glyph display */}
-      {isGlyph && <GlyphDisplay hex={hex} />}
+      <GlyphDisplay hex={hex} />
       {/* Unit icon */}
       <AnimatePresence initial={false}>
         {gameUnit && isShowableUnit && (
