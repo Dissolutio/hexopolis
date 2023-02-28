@@ -45,7 +45,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
 
   // All hexagons white fill on hover
-  .hexagon-group {
+  .base-maphex {
     @media (hover: hover) {
       &:hover {
         fill: var(--sub-white);
@@ -53,7 +53,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
   // All hexagons stroke, stroke-width, fill-opacity (fill-opacity has given problems with flickering to 1, before)
-  .hexagon-group {
+  .base-maphex {
     stroke: var(--white);
     stroke-width: 0.1;
     fill-opacity: 0.4;

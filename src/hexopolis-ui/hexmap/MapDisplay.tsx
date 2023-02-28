@@ -98,6 +98,9 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
             {Object.values(boardHexes).map((hex) => (
               <MapHex key={hex.id} hex={hex} />
             ))}
+            {/* {Object.values(boardHexes).map((hex) => (
+              <MapHex key={hex.id} hex={hex} />
+            ))} */}
           </g>
         </svg>
       </HexgridLayout>

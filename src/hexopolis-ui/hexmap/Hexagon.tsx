@@ -1,8 +1,8 @@
 import * as React from 'react'
-import classNames from 'classnames'
 import { useLayoutContext } from './HexgridLayout'
 import { hexUtilsHexToPixel } from 'game/hex-utils'
 import { BoardHex } from 'game/types'
+import { HexGridCoordinate } from './HexGridCoordinate'
 
 type HexagonProps = {
   hex: BoardHex
@@ -16,30 +16,13 @@ type HexagonProps = {
  */
 export function Hexagon(props: HexagonProps) {
   const { hex, onClick, className, children } = props
-  const { layout, points } = useLayoutContext()
-  const { pixel } = React.useMemo(() => {
-    const pixel = hexUtilsHexToPixel(hex, layout)
-    return {
-      pixel,
-    }
-  }, [hex, layout])
+  const { points } = useLayoutContext()
 
-  const hexAltitude = hex.altitude
   return (
-    <g
-      className={'hexagon-group'}
-      transform={`translate(${pixel.x}, ${pixel.y})`}
-      onClick={(e) => {
-        if (onClick) {
-          onClick(e, hex)
-        }
-      }}
-    >
-      <g className="hexagon">
-        <polygon points={points} className={className} />
-        {children}
-      </g>
-    </g>
+    <HexGridCoordinate hex={hex} onClick={onClick}>
+      <polygon points={points} className={`base-maphex ${className}`} />
+      {children}
+    </HexGridCoordinate>
   )
 }
 
