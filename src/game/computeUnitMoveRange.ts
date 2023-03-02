@@ -6,6 +6,7 @@ import {
   GameUnit,
   BoardHex,
   HexTerrain,
+  Glyphs,
 } from './types'
 import { generateBlankMoveRange } from './constants'
 import {
@@ -45,7 +46,8 @@ export function computeUnitMoveRange(
   hasMoved: boolean,
   boardHexes: BoardHexes,
   gameUnits: GameUnits,
-  armyCards: GameArmyCard[]
+  armyCards: GameArmyCard[],
+  glyphs: Glyphs
 ): MoveRange {
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
   const initialMoveRange = generateBlankMoveRange()
@@ -89,6 +91,7 @@ export function computeUnitMoveRange(
         boardHexes,
         armyCards,
         gameUnits,
+        glyphs,
       },
       prevHexesEngagedUnitIDs: initialEngagements,
       prevHexFallDamage: 0,
@@ -122,6 +125,7 @@ export function computeUnitMoveRange(
         boardHexes,
         armyCards,
         gameUnits,
+        glyphs,
       },
       prevHex: startHex,
       prevHexesEngagedUnitIDs: initialEngagements,
@@ -156,6 +160,7 @@ function recurseThroughMoves({
     boardHexes: BoardHexes
     armyCards: GameArmyCard[]
     gameUnits: GameUnits
+    glyphs: Glyphs
   }
   prevHexesDisengagedUnitIDs?: string[]
   prevHexesEngagedUnitIDs: string[]
@@ -178,6 +183,7 @@ function recurseThroughMoves({
     boardHexes,
     gameUnits,
     armyCards,
+    glyphs,
   } = unmutatedContext
   const startHexID = prevHex.id
   const isVisitedAlready =
@@ -200,15 +206,21 @@ function recurseThroughMoves({
       ).map((hex) => hex.id)
       const isStartHexWater = prevHex.terrain === HexTerrain.water
       const isNeighborHexWater = neighbor.terrain === HexTerrain.water
+
+      const isGlyphStoppage = !!glyphs[neighbor.id]
+      const isGlyphRevealed = !!glyphs[neighbor.id]?.isRevealed
+      const isActionGlyph = isGlyphStoppage && !isGlyphRevealed // TODO: Or if it's a special stage glyph (healer, summoner, curse)
+
       const isWaterStoppage =
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
         (!isUnit2Hex && isNeighborHexWater)
       const fromCost =
+        // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
         isFlying || isGrappleGun
           ? // flying is just one point to go anywhere, so is grapple-gun up to 25-height
             1
           : // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
-          isWaterStoppage
+          isWaterStoppage || isGlyphStoppage
           ? movePoints
           : selectMoveCostBetweenNeighbors(prevHex, neighbor)
       const movePointsLeft = movePoints - fromCost

@@ -94,11 +94,12 @@ export type HexMap = {
   hexSize: number
   flat: boolean
   mapId: string
-  glyphs: {
-    [boardHexID: string]: {
-      glyphID: string
-      isRevealed: boolean
-    }
+  glyphs: Glyphs
+}
+export type Glyphs = {
+  [boardHexID: string]: {
+    glyphID: string
+    isRevealed: boolean
   }
 }
 export enum MapShapes {

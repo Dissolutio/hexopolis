@@ -12,14 +12,11 @@ import {
   DisengageAttempt,
   GameArmyCard,
   GameUnit,
-  HexCoordinates,
   MoveRange,
 } from 'game/types'
 import {
-  selectHexForUnit,
   selectRevealedGameCard,
   selectIsInRangeOfAttack,
-  selectUnitsForCard,
   selectHexNeighbors,
 } from '../../game/selectors'
 import {
@@ -33,7 +30,6 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { hexUtilsDistance } from 'game/hex-utils'
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import {
   selectGameArmyCardAttacksAllowed,
@@ -88,6 +84,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
+    hexMap: { glyphs },
     gameArmyCards,
     myCards,
     myUnits,
@@ -325,7 +322,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             uniqUnitsMoved.length > 0,
             boardHexes,
             gameUnits,
-            gameArmyCards
+            gameArmyCards,
+            glyphs
           )
         )
       } else {
@@ -342,6 +340,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     selectedUnitID,
     isGrappleGun,
     uniqUnitsMoved.length,
+    glyphs,
   ])
 
   // WATER CLONE
