@@ -58,6 +58,8 @@ type PlayContextValue = {
   cancelFallDamageMove: () => void
   onConfirmDropPlacement(): void
   onDenyDrop(): void
+  hasChompAvailable: boolean
+  hasMindShackleAvailable: boolean
 
   // computed
   currentTurnGameCardID: string
@@ -65,7 +67,6 @@ type PlayContextValue = {
   revealedGameCard: GameArmyCard | undefined
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
-  revealedGameCardTargetsInRange: TargetsInRange
   revealedGameCardKilledUnits: GameUnit[]
   attacksLeft: number
   unitsWithTargets: number
@@ -97,6 +98,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     uniqUnitsMoved,
     waterCloneRoll,
     waterClonesPlaced,
+    chompsAttempted,
+    mindShacklesAttempted,
   } = useBgioG()
   const {
     currentPlayer,
@@ -182,6 +185,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     .filter((u) =>
       canUnMovedFiguresAttack ? true : uniqUnitsMoved.includes(u.unitID)
     )
+  const hasChompAvailable =
+    selectIfGameArmyCardHasAbility('Chomp', revealedGameCard) &&
+    chompsAttempted.length === 0 &&
+    attacksUsed <= 0
+  const hasMindShackleAvailable =
+    selectIfGameArmyCardHasAbility('Mind Shackle 20', revealedGameCard) &&
+    mindShacklesAttempted.length === 0 &&
+    attacksUsed <= 0
 
   // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
   const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
@@ -571,7 +582,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCard,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
-        revealedGameCardTargetsInRange,
         revealedGameCardKilledUnits,
         unitsWithTargets,
         attacksLeft,
@@ -580,6 +590,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         clonePlaceableHexIDs: clonePlaceableHexIDs,
         theDropPlaceableHexIDs,
         toBeDroppedUnitIDs,
+        hasChompAvailable,
+        hasMindShackleAvailable,
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,

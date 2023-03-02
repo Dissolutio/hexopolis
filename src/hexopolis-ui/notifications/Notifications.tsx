@@ -149,7 +149,7 @@ export const Notifications = () => {
               </span>
             ) : (
               <span style={{ color: playerColors[playerID] }}>
-                {unitName} attempted to Chomp{' '}
+                Grimnak attempted to Chomp{' '}
                 <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
                   {unitChompedName}
                 </span>{' '}
