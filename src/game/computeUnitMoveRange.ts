@@ -206,11 +206,11 @@ function recurseThroughMoves({
       ).map((hex) => hex.id)
       const isStartHexWater = prevHex.terrain === HexTerrain.water
       const isNeighborHexWater = neighbor.terrain === HexTerrain.water
-
+      // TODO: squad units cannot step on healer glyphs
       const isGlyphStoppage = !!glyphs[neighbor.id]
       const isGlyphRevealed = !!glyphs[neighbor.id]?.isRevealed
-      const isActionGlyph = isGlyphStoppage && !isGlyphRevealed // TODO: Or if it's a special stage glyph (healer, summoner, curse)
-
+      // TODO: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
+      const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
       const isWaterStoppage =
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
         (!isUnit2Hex && isNeighborHexWater)
@@ -313,12 +313,11 @@ function recurseThroughMoves({
           (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
           (hasGhostWalk ? false : isEndHexUnitEngaged) ||
           isTooTallOfClimb
-      const can1HexUnitStopHere = isEndHexUnoccupied
       const can2HexUnitStopHere =
         isEndHexUnoccupied &&
         !isFromOccupied &&
         validTailSpotsForNeighbor?.includes(startHexID)
-      const canStopHere = isUnit2Hex ? can2HexUnitStopHere : can1HexUnitStopHere
+      const canStopHere = isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied
       const isDangerousHex =
         isCausingDisengagement || isFallDamage || isActionGlyph
       const moveRangeData = {
@@ -342,6 +341,7 @@ function recurseThroughMoves({
             isDisengage: isCausingDisengagement,
             isGrappleGun,
             fallDamage: newFallDamage,
+            isActionGlyph,
           }
         }
         // ONLY for falling damage hexes will be not recurse, because I don't want to deal with applying disengage/fall damage in the right order (you will take all disengagement swipes, and THEN fall)

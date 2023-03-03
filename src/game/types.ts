@@ -254,6 +254,7 @@ export type MoveRange = {
     isEngage?: boolean
     isDisengage?: boolean
     isGrappleGun?: boolean
+    isActionGlyph?: boolean
   }
 }
 

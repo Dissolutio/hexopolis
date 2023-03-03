@@ -56,6 +56,8 @@ type PlayContextValue = {
   cancelDisengageAttempt: () => void
   confirmFallDamageMove: () => void
   cancelFallDamageMove: () => void
+  confirmGlyphMove: () => void
+  cancelGlyphMove: () => void
   onConfirmDropPlacement(): void
   onDenyDrop(): void
   hasChompAvailable: boolean
@@ -272,6 +274,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const cancelFallDamageMove = () => {
     setFallHexID('')
   }
+  // MOVE-ONTO-GLYPH ATTEMPT
+  const [glyphMoveID, setGlyphMoveID] = useState<string>('')
+  const confirmGlyphMove = () => {
+    moveAction(selectedUnit, boardHexes[glyphMoveID], selectedUnitMoveRange)
+    setGlyphMoveID('')
+  }
+  const cancelGlyphMove = () => {
+    setGlyphMoveID('')
+  }
   // DISENGAGE CONFIRM AND DISENGAGE RELATED
   const [disengageAttempt, setDisengageAttempt] = useState<
     undefined | DisengageAttempt
@@ -285,7 +296,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     setDisengageAttempt(undefined)
   }
   const onClickDangerousHex = (endHexID: string) => {
-    // this is either a disengage and/or a falling damage hex
+    // this is either a disengage and/or a falling damage hex and/or a hex with an action-glyph
     const moveRangeSelection = selectedUnitMoveRange[endHexID]
     if (!moveRangeSelection) {
       return
@@ -574,6 +585,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         cancelDisengageAttempt,
         confirmFallDamageMove,
         cancelFallDamageMove,
+        confirmGlyphMove,
+        cancelGlyphMove,
         onConfirmDropPlacement,
         onDenyDrop,
         // COMPUTED
