@@ -43,21 +43,15 @@ export const moveAction: Move<GameState> = {
     const startHexID = startHex?.id ?? ''
     const startTailHexID = startTailHex?.id ?? ''
     const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
-    const revealedGameCard = selectRevealedGameCard(
-      G.orderMarkers,
-      G.gameArmyCards,
-      G.currentOrderMarker,
-      ctx.currentPlayer
-    )
     const movedUnitsCount = uniq(G.unitsMoved).length
-    const allowedMoveCount = revealedGameCard?.figures ?? 0
+    const allowedMoveCount = unitGameCard?.figures ?? 0
 
     const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
     const isUnitMoved = G.unitsMoved.includes(unitID)
     const isDisallowedBecauseMaxUnitsMoved =
       !isAvailableMoveToBeUsed && !isUnitMoved
     //! EARLY OUTS
-    // DISALLOW - move not in move range
+    // DISALLOW - unit card not found
     if (!unitGameCard) {
       console.error(
         `Move action denied: missing needed ingredients to calculate move`
@@ -183,9 +177,9 @@ export const moveAction: Move<GameState> = {
     const gameLogForThisMove = encodeGameLogMessage({
       type: 'move',
       id: moveId,
-      playerID: revealedGameCard?.playerID ?? '',
+      playerID: unitPlayerID,
       unitID: unitID,
-      unitSingleName: revealedGameCard?.singleName ?? '',
+      unitSingleName,
       startHexID,
       endHexID,
       wounds: fallingDamageWounds,

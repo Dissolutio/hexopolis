@@ -318,6 +318,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         movePointsLeft,
         fallDamage,
       })
+    } else if (moveRangeSelection.isActionGlyph) {
+      // we set the id, and then show confirm, if they say yes, we do the move and move-action will flip the glyph
+      setGlyphMoveID(endHexID)
     } else if (fallDamage > 0) {
       // we set the id, and then show confirm, if they say yes, we do the move and move-action will apply the fall damage
       setFallHexID(endHexID)
