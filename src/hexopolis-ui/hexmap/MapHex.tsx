@@ -233,11 +233,11 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
       {/* Hex text */}
       <HexIDText
         hexSize={hexSize}
-        // text={`${hex.id}`}
-        // textLine2={`${hex.altitude}`}
-        text={`${hex.altitude}`}
+        text={`${hex.id}`}
+        textLine2={`${hex.altitude}`}
+        // text={`${hex.altitude}`}
         // only show unit name on head-hex
-        textLine2={!hex.isUnitTail ? `${unitName}` : ''}
+        // textLine2={!hex.isUnitTail ? `${unitName}` : ''}
       />
       {/* Glyph display */}
       <GlyphDisplay hex={hex} />
