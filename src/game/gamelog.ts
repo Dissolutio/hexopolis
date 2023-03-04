@@ -30,6 +30,7 @@ export type GameLogMessage = {
   startHexID?: string
   endHexID?: string
   isGrappleGun?: boolean
+  fallDamage?: number
   // disengage attempts
   unitIdsToAttemptToDisengage?: string[]
   // berserker charge logs, most generic roll format
@@ -112,6 +113,7 @@ export const decodeGameLogMessage = (
       isGrappleGun,
       startHexID,
       endHexID,
+      isFallDamage,
       unitIdsToAttemptToDisengage,
       // berserker charge: most generic roll format
       roll,

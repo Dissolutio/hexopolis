@@ -51,6 +51,7 @@ export const Notifications = () => {
           // move logs
           unitSingleName,
           isGrappleGun,
+          fallDamage,
           startHexID,
           endHexID,
           unitIdsToAttemptToDisengage,
@@ -75,14 +76,17 @@ export const Notifications = () => {
         const moreRepetitiveMsgDuration = 5000
         switch (type) {
           case gameLogTypes.move:
-            const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} wounds)`
-            const woundedMove = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
+            const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} / ${fallDamage} possible wounds)`
+            const fallButNoDamageMove = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
+            const woundedFallMove = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
             const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
             const moveMsgText = `${unitSingleName} is on the move`
             const moveMsg = isFatal
               ? diedFallingMsg
               : (wounds ?? 0) > 0
-              ? woundedMove
+              ? woundedFallMove
+              : (fallDamage ?? 0) > 0 && wounds === 0
+              ? fallButNoDamageMove
               : isGrappleGun
               ? grappleGunMoveMsg
               : moveMsgText

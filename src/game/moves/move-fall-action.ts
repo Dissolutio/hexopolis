@@ -25,10 +25,11 @@ import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { killUnit_G, moveUnit_G } from './G-mutators'
 
-export const moveAction: Move<GameState> = {
-  undoable: ({ G, ctx }) => true,
+export const moveFallAction: Move<GameState> = {
+  // the biggest difference between move-fall-action and what used to be move-action, is this "undoable: ({G, ctx}, undefined/BUMMER) => false" property not receiving the params that the move fn receives
+  undoable: false,
   move: (
-    { G, ctx, events, random },
+    { G, events, random },
     unit: GameUnit,
     endHex: BoardHex,
     currentMoveRange: MoveRange
@@ -36,7 +37,7 @@ export const moveAction: Move<GameState> = {
     const { unitID } = unit
     const endHexID = endHex.id
     const endTailHexID = currentMoveRange[endHexID].fromHexID
-    const fallDamage = currentMoveRange[endHexID].fallDamage
+    const fallDamage = currentMoveRange[endHexID]?.fallDamage ?? 0
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const startTailHex = selectTailHexForUnit(unitID, G.boardHexes)
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
@@ -70,7 +71,6 @@ export const moveAction: Move<GameState> = {
     // make copies
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
-    const newUnitsMoved = [...G.unitsMoved, unitID]
     const unitSingleName = `${unitGameCard.singleName}`
     const unitPlayerID = `${unitGameCard.playerID}`
     const unitLife = unitGameCard.life - unit.wounds
@@ -79,7 +79,7 @@ export const moveAction: Move<GameState> = {
     let isFatal = false
 
     // 1. They fall, and die or take wounds
-    if (fallDamage) {
+    if (fallDamage > 0) {
       const { skulls } = rollHeroscapeDice(fallDamage, random)
       // mutation
       fallingDamageWounds = skulls
@@ -173,6 +173,7 @@ export const moveAction: Move<GameState> = {
       unitSingleName,
       startHexID,
       endHexID,
+      fallDamage: fallDamage,
       wounds: fallingDamageWounds,
       isFatal,
     })
@@ -181,7 +182,7 @@ export const moveAction: Move<GameState> = {
     // update G
     G.boardHexes = { ...newBoardHexes }
     G.gameUnits = { ...newGameUnits }
-    G.unitsMoved = newUnitsMoved
+    G.unitsMoved = [...G.unitsMoved, unitID]
     return G
   },
 }

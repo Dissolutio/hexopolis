@@ -108,13 +108,13 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     isMovementStage,
     isAttackingStage,
     isWaterCloneStage,
-    isMyTurn,
     isTheDropStage,
     isGrenadeSAStage,
   } = useBgioCtx()
   const {
     moves: {
       moveAction,
+      moveFallAction,
       attackAction,
       attemptDisengage,
       placeWaterClone,
@@ -268,7 +268,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // FALL DAMAGE ATTEMPT
   const [fallHexID, setFallHexID] = useState<string>('')
   const confirmFallDamageMove = () => {
-    moveAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
+    moveFallAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
     setFallHexID('')
   }
   const cancelFallDamageMove = () => {
@@ -319,10 +319,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         fallDamage,
       })
     } else if (moveRangeSelection.isActionGlyph) {
-      // we set the id, and then show confirm, if they say yes, we do the move and move-action will flip the glyph
+      // we set the id, and then show confirm, if they say yes, we do the move-glyph-action
       setGlyphMoveID(endHexID)
     } else if (fallDamage > 0) {
-      // we set the id, and then show confirm, if they say yes, we do the move and move-action will apply the fall damage
+      // we set the id, and then show confirm, if they say yes, we do the move-fall-action
       setFallHexID(endHexID)
     }
   }

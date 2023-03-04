@@ -65,6 +65,37 @@ export const killUnit_G = ({
     gameArmyCards.splice(indexOfGameArmyCardToRemove, 1)
   }
 }
+export const moveUnit_G = ({
+  unitID,
+  startHexID,
+  endHexID,
+  boardHexes,
+  startTailHexID = '',
+  endTailHexID = '',
+}: {
+  unitID: string
+  startHexID: string
+  endHexID: string
+  boardHexes: BoardHexes
+  startTailHexID?: string
+  endTailHexID?: string
+}) => {
+  if (startTailHexID) {
+    // remove from old
+    boardHexes[startHexID].occupyingUnitID = ''
+    boardHexes[startTailHexID].occupyingUnitID = ''
+    boardHexes[startTailHexID].isUnitTail = false
+    // add to new
+    boardHexes[endHexID].occupyingUnitID = unitID
+    boardHexes[endTailHexID].occupyingUnitID = unitID
+    boardHexes[endTailHexID].isUnitTail = true
+  } else {
+    // remove from old
+    boardHexes[startHexID].occupyingUnitID = ''
+    // add to new
+    boardHexes[endHexID].occupyingUnitID = unitID
+  }
+}
 
 export const assignCardMovePointsToUnit_G = ({
   gameArmyCards,
