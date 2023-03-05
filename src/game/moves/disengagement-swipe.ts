@@ -180,9 +180,11 @@ export const takeDisengagementSwipe: Move<GameState> = {
         G.gameLog.push(gameLogForThisMove)
         // if this is the last disengagement, actually move the unit
         if (isAllEngagementsSettled) {
+          // TODO: Glyph move
           /* START MOVE */
           newUnitsMoved.push(unitAttemptingToDisengage.unitID)
           // update unit position, 2-hex or 1-hex
+          // TODO: use move-unit G-mutator
           if (is2Hex) {
             // remove from old
             newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
