@@ -3,22 +3,22 @@ import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
-  selectMoveCostBetweenNeighbors,
   selectGameCardByID,
   selectHexForUnit,
-  selectRevealedGameCard,
   selectTailHexForUnit,
 } from '../selectors'
 import { BoardHexes, GameState, GameUnits } from '../types'
 import { rollHeroscapeDice } from './attack-action'
-import { killUnit_G } from './G-mutators'
+import { killUnit_G, moveUnit_G } from './G-mutators'
 
-// This move is either fatal, not fatal, or denied
+// 5 possible paths:
+// 1. (3 paths) Accept: Fatal or non-fatal, if non-fatal then after last swipe move unit
+// 2. Deny: If last swipe then move unit
 
 export const takeDisengagementSwipe: Move<GameState> = {
   undoable: false,
   move: (
-    { G, ctx, events, random },
+    { G, events, random },
     { unitID, isTaking }: { unitID: string; isTaking: boolean }
   ) => {
     const disengagesAttempting = G.disengagesAttempting
@@ -71,7 +71,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
 
     const endHexID = disengagesAttempting.endHexID
     const endTailHexID = disengagesAttempting.endFromHexID
-    const endHex = G.boardHexes[disengagesAttempting.endHexID]
     const isAllEngagementsSettled =
       G.disengagedUnitIds.length ===
       disengagesAttempting.defendersToDisengage.length - 1
@@ -96,8 +95,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     const newUnitsMoved = [...G.unitsMoved]
-    const is2Hex =
-      unitAttemptingToDisengage.is2Hex && unitAttemptingToDisengageTailHex
 
     // ALLOWED
     if (isTaking) {
@@ -180,31 +177,30 @@ export const takeDisengagementSwipe: Move<GameState> = {
         G.gameLog.push(gameLogForThisMove)
         // if this is the last disengagement, actually move the unit
         if (isAllEngagementsSettled) {
-          // TODO: Glyph move
           /* START MOVE */
+          // TODO: Glyph move
+          moveUnit_G({
+            unitID: unitAttemptingToDisengage.unitID,
+            startHexID: unitAttemptingToDisengageHex.id,
+            endHexID,
+            boardHexes: newBoardHexes,
+            startTailHexID: unitAttemptingToDisengageTailHex?.id,
+            endTailHexID,
+          })
           newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-          // update unit position, 2-hex or 1-hex
-          // TODO: use move-unit G-mutator
-          if (is2Hex) {
-            // remove from old
-            newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-            newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
-              ''
-            newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail =
-              false
-            // add to new
-            newBoardHexes[endHexID].occupyingUnitID =
-              unitAttemptingToDisengage.unitID
-            newBoardHexes[endTailHexID].occupyingUnitID =
-              unitAttemptingToDisengage.unitID
-            newBoardHexes[endTailHexID].isUnitTail = true
-          } else {
-            // remove from old
-            newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-            // add to new
-            newBoardHexes[endHexID].occupyingUnitID =
-              unitAttemptingToDisengage.unitID
-          }
+          // if (is2Hex) {
+          //   // remove from old
+          //   newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
+          //   newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
+          //     ''
+          //   newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail =
+          //     false
+          //   // add to new
+          //   newBoardHexes[endHexID].occupyingUnitID =
+          //     unitAttemptingToDisengage.unitID
+          //   newBoardHexes[endTailHexID].occupyingUnitID =
+          //     unitAttemptingToDisengage.unitID
+          //   newBoardHexes[endTailHexID].isUnitTail = true
           // update unit move-points from move-range
           newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
             disengagesAttempting.movePointsLeft
@@ -213,9 +209,11 @@ export const takeDisengagementSwipe: Move<GameState> = {
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
           /* END MOVE */
+
+          // clear disengagement state
           G.disengagesAttempting = undefined
           G.disengagedUnitIds = []
-
+          // send players back to movement/idle stages
           events.setActivePlayers({
             currentPlayer: stageNames.movement,
           })
@@ -240,26 +238,15 @@ export const takeDisengagementSwipe: Move<GameState> = {
       G.gameLog.push(gameLogForThisMove)
       if (isAllEngagementsSettled) {
         /* START MOVE */
+        moveUnit_G({
+          unitID: unitAttemptingToDisengage.unitID,
+          startHexID: unitAttemptingToDisengageHex.id,
+          endHexID,
+          boardHexes: newBoardHexes,
+          startTailHexID: unitAttemptingToDisengageTailHex?.id,
+          endTailHexID,
+        })
         newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-        if (is2Hex) {
-          // remove from old
-          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-          newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
-            ''
-          newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail = false
-          // add to new
-          newBoardHexes[endHexID].occupyingUnitID =
-            unitAttemptingToDisengage.unitID
-          newBoardHexes[endTailHexID].occupyingUnitID =
-            unitAttemptingToDisengage.unitID
-          newBoardHexes[endTailHexID].isUnitTail = true
-        } else {
-          // remove from old
-          newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-          // add to new
-          newBoardHexes[endHexID].occupyingUnitID =
-            unitAttemptingToDisengage.unitID
-        }
         /* END MOVE */
 
         // update unit move-points from move-range
