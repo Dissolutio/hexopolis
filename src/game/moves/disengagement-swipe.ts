@@ -13,7 +13,7 @@ import { killUnit_G, moveUnit_G } from './G-mutators'
 
 // 5 possible paths:
 // 1. (3 paths) Accept: Fatal or non-fatal, if non-fatal then after last swipe move unit
-// 2. Deny: If last swipe then move unit
+// 2. (2 paths) Deny: Not last swipe, or is last swipe + move unit
 
 export const takeDisengagementSwipe: Move<GameState> = {
   undoable: false,

@@ -50,6 +50,7 @@ type PlayContextValue = {
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
   fallHexID: string
+  glyphMoveHexID: string
   isWalkingFlyer: boolean
   isGrappleGun: boolean
   confirmDisengageAttempt: () => void
@@ -275,13 +276,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     setFallHexID('')
   }
   // MOVE-ONTO-GLYPH ATTEMPT
-  const [glyphMoveID, setGlyphMoveID] = useState<string>('')
+  const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
   const confirmGlyphMove = () => {
-    moveAction(selectedUnit, boardHexes[glyphMoveID], selectedUnitMoveRange)
-    setGlyphMoveID('')
+    // TODO: we should do a fall move if the glyph is on a fall hex,
+    moveAction(selectedUnit, boardHexes[glyphMoveHexID], selectedUnitMoveRange)
+    setGlyphMoveHexID('')
   }
   const cancelGlyphMove = () => {
-    setGlyphMoveID('')
+    setGlyphMoveHexID('')
   }
   // DISENGAGE CONFIRM AND DISENGAGE RELATED
   const [disengageAttempt, setDisengageAttempt] = useState<
@@ -320,7 +322,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       })
     } else if (moveRangeSelection.isActionGlyph) {
       // we set the id, and then show confirm, if they say yes, we do the move-glyph-action
-      setGlyphMoveID(endHexID)
+      setGlyphMoveHexID(endHexID)
     } else if (fallDamage > 0) {
       // we set the id, and then show confirm, if they say yes, we do the move-fall-action
       setFallHexID(endHexID)
@@ -582,6 +584,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         showDisengageConfirm,
         disengageAttempt,
         fallHexID,
+        glyphMoveHexID,
         isWalkingFlyer,
         isGrappleGun,
         confirmDisengageAttempt,
