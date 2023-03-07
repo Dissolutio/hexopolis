@@ -188,27 +188,13 @@ export const takeDisengagementSwipe: Move<GameState> = {
             endTailHexID,
           })
           newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-          // if (is2Hex) {
-          //   // remove from old
-          //   newBoardHexes[unitAttemptingToDisengageHex.id].occupyingUnitID = ''
-          //   newBoardHexes[unitAttemptingToDisengageTailHex.id].occupyingUnitID =
-          //     ''
-          //   newBoardHexes[unitAttemptingToDisengageTailHex.id].isUnitTail =
-          //     false
-          //   // add to new
-          //   newBoardHexes[endHexID].occupyingUnitID =
-          //     unitAttemptingToDisengage.unitID
-          //   newBoardHexes[endTailHexID].occupyingUnitID =
-          //     unitAttemptingToDisengage.unitID
-          //   newBoardHexes[endTailHexID].isUnitTail = true
+          /* END MOVE */
           // update unit move-points from move-range
           newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
             disengagesAttempting.movePointsLeft
-
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
-          /* END MOVE */
 
           // clear disengagement state
           G.disengagesAttempting = undefined
@@ -237,6 +223,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
       })
       G.gameLog.push(gameLogForThisMove)
       if (isAllEngagementsSettled) {
+        // TODO: falling damage
         /* START MOVE */
         moveUnit_G({
           unitID: unitAttemptingToDisengage.unitID,
