@@ -11,10 +11,10 @@ import { BoardHexes, GameState, GameUnits } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { killUnit_G, moveUnit_G } from './G-mutators'
 
-// 5 possible paths:
-// 1. (3 paths) Accept: Fatal or non-fatal, if non-fatal then after last swipe move unit
-// 2. (2 paths) Deny: Not last swipe, or is last swipe + move unit
-
+// 7 possible paths:
+// 1. (2 + 2-move paths) Accept: Fatal or non-fatal, then move unit
+// 2. (1 + 2-move paths) Deny: Still swipes to go, or move unit
+// 3. (2 paths) 1. falling damage, fatal, set stages, 2. wounds and move-unit
 export const takeDisengagementSwipe: Move<GameState> = {
   undoable: false,
   move: (
@@ -22,6 +22,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
     { unitID, isTaking }: { unitID: string; isTaking: boolean }
   ) => {
     const disengagesAttempting = G.disengagesAttempting
+    const fallDamage = disengagesAttempting?.fallDamage ?? 0
     const unitAttemptingToDisengage = disengagesAttempting?.unit
     const unitAttemptingToDisengageHex = selectHexForUnit(
       unitAttemptingToDisengage?.unitID ?? '',
