@@ -1,15 +1,17 @@
 import type { Move } from 'boardgame.io'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
-import { stageNames } from '../constants'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
   selectGameCardByID,
   selectHexForUnit,
   selectTailHexForUnit,
 } from '../selectors'
-import { BoardHexes, GameState, GameUnits } from '../types'
+import { BoardHexes, GameState, GameUnits, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { killUnit_G, moveUnit_G } from './G-mutators'
+
+// accept => disengage => wounds last? => falling => wounds => move
 
 // 7 possible paths:
 // 1. (2 + 2-move paths) Accept: Fatal or non-fatal, then move unit
@@ -19,7 +21,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
   undoable: false,
   move: (
     { G, events, random },
-    { unitID, isTaking }: { unitID: string; isTaking: boolean }
+    { unitID: unitSwipingID, isTaking }: { unitID: string; isTaking: boolean }
   ) => {
     const disengagesAttempting = G.disengagesAttempting
     const fallDamage = disengagesAttempting?.fallDamage ?? 0
@@ -36,8 +38,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
       G.gameArmyCards,
       unitAttemptingToDisengage?.gameCardID ?? ''
     )
-    const unitSwiping = G.gameUnits[unitID]
-
+    const unitSwiping = G.gameUnits[unitSwipingID]
     const unitSwipingCard = selectGameCardByID(
       G.gameArmyCards,
       unitSwiping?.gameCardID ?? ''
@@ -63,43 +64,66 @@ export const takeDisengagementSwipe: Move<GameState> = {
       )
       return
     }
-    if (G.disengagedUnitIds.includes(unitID)) {
+    if (G.disengagedUnitIds.includes(unitSwipingID)) {
       console.error(
         `Disengagement swipe action denied, this unit has already been disengaged`
       )
       return
     }
 
+    // ALLOWED
+    // copied state will be mutated
+    let newBoardHexes: BoardHexes = { ...G.boardHexes }
+    let newGameUnits: GameUnits = { ...G.gameUnits }
+    let newUnitsMoved = [...G.unitsMoved]
+    let newStageQueue: StageQueueItem[] = []
+    /* 
+      Here's the flow:
+      1. swipe => wounds => maybe Move
+      2. deny => maybe Move
+      Move: fall => wounds => kill or move-unit
+    */
+    const unitDisengagingID = unitAttemptingToDisengage.unitID
+    const unitDisengagingPlayerID = unitAttemptingToDisengage.playerID
     const endHexID = disengagesAttempting.endHexID
     const endTailHexID = disengagesAttempting.endFromHexID
     const isAllEngagementsSettled =
       G.disengagedUnitIds.length ===
       disengagesAttempting.defendersToDisengage.length - 1
     const disengagementDiceRolled = 1
-    const isAHit = rollHeroscapeDice(disengagementDiceRolled, random)
+    const isAHit = rollHeroscapeDice(disengagementDiceRolled, random).skulls
     const initialLife = unitAttemptingCard.life
-    const numberOfWounds = isAHit.skulls >= 1 ? 1 : 0
-    const isFatal =
-      unitAttemptingToDisengage.wounds + numberOfWounds >= initialLife
+    // const swipeWounds = isAHit >= 1 ? 1 : 0
+    const swipeWounds = 0
+    const unitLifeLeft =
+      initialLife - (unitAttemptingToDisengage.wounds + swipeWounds)
+    const isFatalSwipe = unitLifeLeft <= 0
     const isWarriorSpirit =
-      isFatal &&
+      isFatalSwipe &&
       selectIfGameArmyCardHasAbility(
         "Warrior's Attack Spirit 1",
         unitAttemptingCard
       )
     const isArmorSpirit =
-      isFatal &&
+      isFatalSwipe &&
       selectIfGameArmyCardHasAbility(
         "Warrior's Armor Spirit 1",
         unitAttemptingCard
       )
-    const newBoardHexes: BoardHexes = { ...G.boardHexes }
-    const newGameUnits: GameUnits = { ...G.gameUnits }
-    const newUnitsMoved = [...G.unitsMoved]
-
-    // ALLOWED
+    const warriorSpiritActivePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
+      activePlayerID: unitDisengagingPlayerID,
+      activeStage: stageNames.placingAttackSpirit,
+      idleStage: stageNames.idlePlacingAttackSpirit,
+    })
+    const armorSpiritActivePlayers = getActivePlayersIdleStage({
+      gamePlayerIDs: Object.keys(G.players),
+      activePlayerID: unitDisengagingPlayerID,
+      activeStage: stageNames.placingArmorSpirit,
+      idleStage: stageNames.idlePlacingArmorSpirit,
+    })
     if (isTaking) {
-      if (isFatal) {
+      if (isFatalSwipe) {
         killUnit_G({
           boardHexes: newBoardHexes,
           gameArmyCards: G.gameArmyCards,
@@ -107,8 +131,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
           unitsKilled: G.unitsKilled,
           killedUnits: G.killedUnits,
           gameUnits: G.gameUnits,
-          unitToKillID: unitAttemptingToDisengage.unitID,
-          killerUnitID: unitID,
+          unitToKillID: unitDisengagingID,
+          killerUnitID: unitSwipingID,
           defenderHexID: unitAttemptingToDisengageHex.id,
           defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
         })
@@ -121,8 +145,9 @@ export const takeDisengagementSwipe: Move<GameState> = {
         G.gameUnits = { ...newGameUnits }
         // update game log for fatal disengagement
         const indexOfThisDisengage = G.disengagedUnitIds.length
-        const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:d-fatal-${indexOfThisDisengage}`
-        const gameLogForThisMove = encodeGameLogMessage({
+        const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitSwipingID}:d-fatal-${indexOfThisDisengage}`
+        // TODO: pass info for unit that is swiping
+        const gameLogForFatalSwipe = encodeGameLogMessage({
           type: gameLogTypes.disengageSwipeFatal,
           id,
           playerID: unitSwipingCard.playerID,
@@ -130,127 +155,279 @@ export const takeDisengagementSwipe: Move<GameState> = {
           defenderUnitName: unitAttemptingCard.name,
           defenderPlayerID: unitAttemptingCard.playerID,
         })
-        G.gameLog.push(gameLogForThisMove)
+        G.gameLog.push(gameLogForFatalSwipe)
+        /* begin stage queue */
         if (isWarriorSpirit) {
-          // TODO: Multiplayer, set stages for all other players to idle
+          newStageQueue.push({
+            playerID: unitDisengagingID,
+            stage: stageNames.movement,
+          })
+          G.stageQueue = newStageQueue
           events.setActivePlayers({
-            value: {
-              [unitAttemptingToDisengage.playerID]:
-                stageNames.placingAttackSpirit,
-              [unitSwiping.playerID]: stageNames.idlePlacingAttackSpirit,
-            },
+            value: warriorSpiritActivePlayers,
           })
         } else if (isArmorSpirit) {
-          // TODO: Multiplayer, set stages for all other players to idle
+          newStageQueue.push({
+            playerID: unitDisengagingID,
+            stage: stageNames.movement,
+          })
+          G.stageQueue = newStageQueue
           events.setActivePlayers({
-            value: {
-              [unitAttemptingToDisengage.playerID]:
-                stageNames.placingArmorSpirit,
-              [unitSwiping.playerID]: stageNames.idlePlacingArmorSpirit,
-            },
+            value: armorSpiritActivePlayers,
           })
         } else {
+          // no need for queue, just go back to movement
           events.setActivePlayers({
             currentPlayer: stageNames.movement,
           })
-          events.endStage()
+          // end the current stage? is this right?
+          // events.endStage()
         }
-      } else if (!isFatal) {
+        /* end stage queue */
+      } else if (!isFatalSwipe) {
         // assign wounds
-        newGameUnits[unitAttemptingToDisengage.unitID].wounds += numberOfWounds
+        newGameUnits[unitDisengagingID].wounds += swipeWounds
         // update game log for non-fatal disengagement
         const indexOfThisDisengage = G.disengagedUnitIds.length
-        const logShortTerm = numberOfWounds > 0 ? 'nonfatal' : 'miss'
-        const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:d-${logShortTerm}-${indexOfThisDisengage}`
+        const logShortTerm = swipeWounds > 0 ? 'nonfatal' : 'miss'
+        const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitSwipingID}:d-${logShortTerm}-${indexOfThisDisengage}`
         const type =
-          numberOfWounds > 0
+          swipeWounds > 0
             ? gameLogTypes.disengageSwipeNonFatal
             : gameLogTypes.disengageSwipeMiss
-        const gameLogForThisMove = encodeGameLogMessage({
+        // TODO: pass info for unit that is swiping
+        const gameLogForNonFatalSwipe = encodeGameLogMessage({
           type,
           id,
           playerID: unitSwipingCard.playerID,
           unitName: unitSwipingCard.name,
           defenderUnitName: unitAttemptingCard.name,
           defenderPlayerID: unitAttemptingCard.playerID,
-          wounds: numberOfWounds,
+          wounds: swipeWounds,
         })
-        G.gameLog.push(gameLogForThisMove)
-        // if this is the last disengagement, actually move the unit
+        G.gameLog.push(gameLogForNonFatalSwipe)
+        // move the unit, it might fall to death
         if (isAllEngagementsSettled) {
           /* START MOVE */
+          if (fallDamage > 0) {
+            // const fallingDamageWounds = rollHeroscapeDice(
+            //   fallDamage,
+            //   random
+            // ).skulls
+            const fallingDamageWounds = 0
+            const isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
+            if (isFallFatal) {
+              killUnit_G({
+                boardHexes: G.boardHexes,
+                gameArmyCards: G.gameArmyCards,
+                killedArmyCards: G.killedArmyCards,
+                unitsKilled: G.unitsKilled,
+                killedUnits: G.killedUnits,
+                gameUnits: G.gameUnits,
+                unitToKillID: unitDisengagingID,
+                killerUnitID: unitDisengagingID, // falling damage is a unit killing itself
+                defenderHexID: unitAttemptingToDisengageHex.id,
+                defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
+              })
+              console.log(
+                '🚀 ~ file: disengagement-swipe.ts:230',
+                unitDisengagingID,
+                'just died from fall damage'
+              )
+              // TODO: gamelog fatal fall
+
+              /* begin stage queue */
+              if (isWarriorSpirit) {
+                newStageQueue.push({
+                  playerID: unitDisengagingID,
+                  stage: stageNames.movement,
+                })
+                G.stageQueue = newStageQueue
+                events.setActivePlayers({
+                  value: warriorSpiritActivePlayers,
+                })
+              } else if (isArmorSpirit) {
+                newStageQueue.push({
+                  playerID: unitDisengagingID,
+                  stage: stageNames.movement,
+                })
+                G.stageQueue = newStageQueue
+                events.setActivePlayers({
+                  value: armorSpiritActivePlayers,
+                })
+              } else {
+                // no need for queue, just go back to movement
+                events.setActivePlayers({
+                  currentPlayer: stageNames.movement,
+                })
+                // end the current stage? is this necessary?
+                events.endStage()
+              }
+              /* end stage queue */
+              return // AKA don't do the move below
+            }
+          }
+          // unit is not dead, move it
           // TODO: Glyph move
           moveUnit_G({
-            unitID: unitAttemptingToDisengage.unitID,
+            unitID: unitDisengagingID,
             startHexID: unitAttemptingToDisengageHex.id,
             endHexID,
             boardHexes: newBoardHexes,
             startTailHexID: unitAttemptingToDisengageTailHex?.id,
             endTailHexID,
           })
-          newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-          /* END MOVE */
+          newUnitsMoved.push(unitDisengagingID)
+
           // update unit move-points from move-range
-          newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
+          newGameUnits[unitDisengagingID].movePoints =
             disengagesAttempting.movePointsLeft
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
-
-          // clear disengagement state
-          G.disengagesAttempting = undefined
-          G.disengagedUnitIds = []
+          /* END MOVE */
           // send players back to movement/idle stages
           events.setActivePlayers({
             currentPlayer: stageNames.movement,
           })
+          // end the current stage? is this necessary?
           events.endStage()
-        } else {
-          // add to G.disengagedUnitIds
-          G.disengagedUnitIds.push(unitSwiping.unitID)
         }
+        // finally, clear disengagement state
+        G.disengagesAttempting = undefined
+        G.disengagedUnitIds = []
+      } else {
+        // still more disengagements to resolve
+        // add to G.disengagedUnitIds
+        G.disengagedUnitIds.push(unitSwiping.unitID)
       }
     }
+
     if (!isTaking) {
       G.disengagedUnitIds.push(unitSwiping.unitID)
       // update game log for non-fatal disengagement
       const indexOfThisDisengage = G.disengagedUnitIds.length
-      const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:d-deny-${indexOfThisDisengage}`
-      const gameLogForThisMove = encodeGameLogMessage({
+      const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitSwipingID}:d-deny-${indexOfThisDisengage}`
+      // TODO: pass info for unit that is swiping
+      const gameLogForDeniedSwipe = encodeGameLogMessage({
         type: gameLogTypes.disengageSwipeDenied,
         id,
         playerID: unitSwiping.playerID,
-        defenderPlayerID: unitAttemptingToDisengage.playerID,
+        defenderPlayerID: unitDisengagingPlayerID,
       })
-      G.gameLog.push(gameLogForThisMove)
+      G.gameLog.push(gameLogForDeniedSwipe)
       if (isAllEngagementsSettled) {
-        // TODO: falling damage
         /* START MOVE */
-        moveUnit_G({
-          unitID: unitAttemptingToDisengage.unitID,
-          startHexID: unitAttemptingToDisengageHex.id,
-          endHexID,
-          boardHexes: newBoardHexes,
-          startTailHexID: unitAttemptingToDisengageTailHex?.id,
-          endTailHexID,
-        })
-        newUnitsMoved.push(unitAttemptingToDisengage.unitID)
-        /* END MOVE */
+        if (fallDamage > 0) {
+          const fallingDamageWounds = rollHeroscapeDice(
+            fallDamage,
+            random
+          ).skulls
+          const isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
+          if (isFallFatal) {
+            killUnit_G({
+              boardHexes: G.boardHexes,
+              gameArmyCards: G.gameArmyCards,
+              killedArmyCards: G.killedArmyCards,
+              unitsKilled: G.unitsKilled,
+              killedUnits: G.killedUnits,
+              gameUnits: G.gameUnits,
+              unitToKillID: unitDisengagingID,
+              killerUnitID: unitDisengagingID, // falling damage is a unit killing itself
+              defenderHexID: unitAttemptingToDisengageHex.id,
+              defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
+            })
+            // TODO: gamelog fatal fall
 
-        // update unit move-points from move-range
-        newGameUnits[unitAttemptingToDisengage.unitID].movePoints =
-          disengagesAttempting.movePointsLeft
-        G.boardHexes = { ...newBoardHexes }
-        G.gameUnits = { ...newGameUnits }
-        G.unitsMoved = newUnitsMoved
-        /* END MOVE */
+            /* begin stage queue */
+            if (isWarriorSpirit) {
+              newStageQueue.push({
+                playerID: unitDisengagingID,
+                stage: stageNames.movement,
+              })
+              G.stageQueue = newStageQueue
+              events.setActivePlayers({
+                value: warriorSpiritActivePlayers,
+              })
+            } else if (isArmorSpirit) {
+              newStageQueue.push({
+                playerID: unitDisengagingID,
+                stage: stageNames.movement,
+              })
+              G.stageQueue = newStageQueue
+              events.setActivePlayers({
+                value: armorSpiritActivePlayers,
+              })
+            } else {
+              // no need for queue, just go back to movement
+              events.setActivePlayers({
+                currentPlayer: stageNames.movement,
+              })
+              // end the current stage? is this necessary?
+              // events.endStage()
+            }
+            /* end stage queue */
+          }
+        } else {
+          // TODO: Glyph move
+          moveUnit_G({
+            unitID: unitDisengagingID,
+            startHexID: unitAttemptingToDisengageHex.id,
+            endHexID,
+            boardHexes: newBoardHexes,
+            startTailHexID: unitAttemptingToDisengageTailHex?.id,
+            endTailHexID,
+          })
+          newUnitsMoved.push(unitDisengagingID)
 
-        events.setActivePlayers({
-          currentPlayer: stageNames.movement,
-        })
+          // update unit move-points from move-range
+          newGameUnits[unitDisengagingID].movePoints =
+            disengagesAttempting.movePointsLeft
+          G.boardHexes = { ...newBoardHexes }
+          G.gameUnits = { ...newGameUnits }
+          G.unitsMoved = newUnitsMoved
+          /* END MOVE */
+          // send players back to movement/idle stages
+          events.setActivePlayers({
+            currentPlayer: stageNames.movement,
+          })
+        }
+        // finally, clear disengagement state
         G.disengagesAttempting = undefined
         G.disengagedUnitIds = []
+      } else {
+        // still more disengagements to resolve
+        // add to G.disengagedUnitIds
+        G.disengagedUnitIds.push(unitSwiping.unitID)
       }
+      // if (isAllEngagementsSettled) {
+      //   // TODO: falling damage
+      //   /* START MOVE */
+      //   moveUnit_G({
+      //     unitID: unitDisengagingID,
+      //     startHexID: unitAttemptingToDisengageHex.id,
+      //     endHexID,
+      //     boardHexes: newBoardHexes,
+      //     startTailHexID: unitAttemptingToDisengageTailHex?.id,
+      //     endTailHexID,
+      //   })
+      //   newUnitsMoved.push(unitDisengagingID)
+      //   /* END MOVE */
+
+      //   // update unit move-points from move-range
+      //   newGameUnits[unitDisengagingID].movePoints =
+      //     disengagesAttempting.movePointsLeft
+      //   G.boardHexes = { ...newBoardHexes }
+      //   G.gameUnits = { ...newGameUnits }
+      //   G.unitsMoved = newUnitsMoved
+      //   /* END MOVE */
+
+      //   events.setActivePlayers({
+      //     currentPlayer: stageNames.movement,
+      //   })
+      //   G.disengagesAttempting = undefined
+      //   G.disengagedUnitIds = []
+      // }
     }
   },
 }

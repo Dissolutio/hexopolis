@@ -102,7 +102,7 @@ export const moveFallAction: Move<GameState> = {
           killedUnits: G.killedUnits,
           gameUnits: G.gameUnits,
           unitToKillID: unitID,
-          killerUnitID: unitID,
+          killerUnitID: unitID, // falling damage is a unit killing itself
           defenderHexID: startHexID,
           defenderTailHexID: startTailHexID,
         })
