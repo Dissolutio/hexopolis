@@ -1,5 +1,3 @@
-import { generateBlankHexMapGlyphs } from 'game/constants'
-
 export const giantsTable = {
   boardHexes: {
     '0,0,0': {
@@ -4137,27 +4135,28 @@ export const giantsTable = {
     hexSize: 10,
     mapWidth: 25,
     mapHeight: 15,
-    glyphs: {
-      '12,0,-12': {
-        glyphID: 'healer',
-        isRevealed: true,
-      },
-      '10,1,-11': {
-        glyphID: 'summoner',
-        isRevealed: true,
-      },
-      '10,4,-14': {
-        glyphID: 'range',
-        isRevealed: true,
-      },
-      '9,7,-16': {
-        glyphID: 'move',
-        isRevealed: true,
-      },
-      '8,9,-17': {
-        glyphID: 'move',
-        isRevealed: true,
-      },
-    },
+    glyphs: {},
+    // glyphs: {
+    //   '12,0,-12': {
+    //     glyphID: 'healer',
+    //     isRevealed: true,
+    //   },
+    //   '10,1,-11': {
+    //     glyphID: 'summoner',
+    //     isRevealed: true,
+    //   },
+    //   '10,4,-14': {
+    //     glyphID: 'range',
+    //     isRevealed: true,
+    //   },
+    //   '9,7,-16': {
+    //     glyphID: 'move',
+    //     isRevealed: true,
+    //   },
+    //   '8,9,-17': {
+    //     glyphID: 'move',
+    //     isRevealed: true,
+    //   },
+    // },
   },
 }
