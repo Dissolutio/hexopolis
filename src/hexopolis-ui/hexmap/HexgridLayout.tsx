@@ -1,6 +1,30 @@
 import { LayoutDimension, Orientation, Point } from 'game/types'
 import * as React from 'react'
 
+export function calculateCoordinates(
+  /**
+   * Calculates the points for a hexagon given the size, angle, and center
+   * @param radius Radius of the Hexagon
+   * @param angle Angle offset for the hexagon in radians
+   * @param center Central point for the hexagon
+   * @returns Array of 6 points
+   */
+  radius: number,
+  angle: number = 0,
+  center = { x: 0, y: 0 }
+) {
+  const corners: Point[] = []
+
+  for (let i = 0; i < 6; i++) {
+    const x = radius * Math.cos((2 * Math.PI * i) / 6 + angle)
+    const y = radius * Math.sin((2 * Math.PI * i) / 6 + angle)
+    const point = { x: center.x + x, y: center.y + y }
+    corners.push(point)
+  }
+
+  return corners
+}
+
 export type LayoutContextProps = {
   layout: LayoutDimension
   points: string
@@ -38,6 +62,7 @@ const Context = React.createContext<LayoutContextProps>({
     orientation: LAYOUT_FLAT,
     origin: defaultOrigin,
     spacing: defaultSpacing,
+    flat: true,
   },
   points: '',
 })
@@ -45,31 +70,6 @@ const Context = React.createContext<LayoutContextProps>({
 export function useLayoutContext() {
   const ctx = React.useContext(Context)
   return ctx
-}
-
-/**
- * Calculates the points for a hexagon given the size, angle, and center
- * @param radius Radius of the Hexagon
- * @param angle Angle offset for the hexagon in radians
- * @param center Central point for the hexagon
- * @returns Array of 6 points
- */
-
-function calculateCoordinates(
-  radius: number,
-  angle: number = 0,
-  center = { x: 0, y: 0 }
-) {
-  const corners: Point[] = []
-
-  for (let i = 0; i < 6; i++) {
-    const x = radius * Math.cos((2 * Math.PI * i) / 6 + angle)
-    const y = radius * Math.sin((2 * Math.PI * i) / 6 + angle)
-    const point = { x: center.x + x, y: center.y + y }
-    corners.push(point)
-  }
-
-  return corners
 }
 
 export type LayoutProps = {
@@ -106,6 +106,7 @@ export function HexgridLayout({
     size,
     origin,
     spacing,
+    flat,
   })
 
   return (

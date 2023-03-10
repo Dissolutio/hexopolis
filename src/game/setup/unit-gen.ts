@@ -28,8 +28,8 @@ export const grimnakID = 'hs1015'
 // TEST SCENARIO ARMYCARDS
 export const startingArmies: { [playerID: string]: string[] } = {
   '0': [
-    grimnakID,
-    // marroID,
+    // grimnakID,
+    marroID,
     // airbornID,
     // drake1ID,
     // negoksaID,
@@ -48,8 +48,8 @@ export const startingArmies: { [playerID: string]: string[] } = {
     // zettianID,
     carrID,
   ],
-  '2': [mimringID, tarnID],
-  '3': [mimringID, tarnID],
+  '2': [tarnID],
+  '3': [tarnID],
   '4': [mimringID, tarnID],
   '5': [mimringID, tarnID],
 }

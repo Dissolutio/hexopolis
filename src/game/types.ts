@@ -94,14 +94,12 @@ export type HexMap = {
   hexSize: number
   flat: boolean
   mapId: string
-  glyphPool1?: string[]
-  glyphPool2?: string[]
-  glyphs: {
-    [boardHexID: string]: {
-      glyphPool: string // '1' or '2'
-      glyphID?: string
-      isRevealed: boolean
-    }
+  glyphs: Glyphs
+}
+export type Glyphs = {
+  [boardHexID: string]: {
+    glyphID: string
+    isRevealed: boolean
   }
 }
 export enum MapShapes {
@@ -256,6 +254,7 @@ export type MoveRange = {
     isEngage?: boolean
     isDisengage?: boolean
     isGrappleGun?: boolean
+    isActionGlyph?: boolean
   }
 }
 
@@ -353,6 +352,7 @@ export type LayoutDimension = {
   orientation: Orientation
   origin: Point
   spacing: number
+  flat: boolean
 }
 
 export type HexNeighborsWithDirections = { [hexID: string]: number }

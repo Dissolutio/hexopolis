@@ -93,6 +93,7 @@ export const placeWaterClone: Move<GameState> = (
     movePoints: 0, // TODO: over time, there may be many properties that need resetting upon death/resurrection
   }
   delete G.killedUnits[clonedID]
+  // TODO: Glyph move
   // place the unit
   G.boardHexes[hexID].occupyingUnitID = clonedID
   G.waterClonesPlaced.push({ clonedID, hexID, clonerID })

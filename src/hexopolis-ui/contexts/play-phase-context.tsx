@@ -12,14 +12,11 @@ import {
   DisengageAttempt,
   GameArmyCard,
   GameUnit,
-  HexCoordinates,
   MoveRange,
 } from 'game/types'
 import {
-  selectHexForUnit,
   selectRevealedGameCard,
   selectIsInRangeOfAttack,
-  selectUnitsForCard,
   selectHexNeighbors,
 } from '../../game/selectors'
 import {
@@ -33,7 +30,6 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { hexUtilsDistance } from 'game/hex-utils'
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import {
   selectGameArmyCardAttacksAllowed,
@@ -54,14 +50,19 @@ type PlayContextValue = {
   showDisengageConfirm: boolean
   disengageAttempt: DisengageAttempt | undefined
   fallHexID: string
+  glyphMoveHexID: string
   isWalkingFlyer: boolean
   isGrappleGun: boolean
   confirmDisengageAttempt: () => void
   cancelDisengageAttempt: () => void
   confirmFallDamageMove: () => void
   cancelFallDamageMove: () => void
+  confirmGlyphMove: () => void
+  cancelGlyphMove: () => void
   onConfirmDropPlacement(): void
   onDenyDrop(): void
+  hasChompAvailable: boolean
+  hasMindShackleAvailable: boolean
 
   // computed
   currentTurnGameCardID: string
@@ -69,7 +70,6 @@ type PlayContextValue = {
   revealedGameCard: GameArmyCard | undefined
   revealedGameCardUnits: GameUnit[]
   revealedGameCardUnitIDs: string[]
-  revealedGameCardTargetsInRange: TargetsInRange
   revealedGameCardKilledUnits: GameUnit[]
   attacksLeft: number
   unitsWithTargets: number
@@ -88,6 +88,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
+    hexMap: { glyphs },
     gameArmyCards,
     myCards,
     myUnits,
@@ -100,19 +101,21 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     uniqUnitsMoved,
     waterCloneRoll,
     waterClonesPlaced,
+    chompsAttempted,
+    mindShacklesAttempted,
   } = useBgioG()
   const {
     currentPlayer,
     isMovementStage,
     isAttackingStage,
     isWaterCloneStage,
-    isMyTurn,
     isTheDropStage,
     isGrenadeSAStage,
   } = useBgioCtx()
   const {
     moves: {
       moveAction,
+      moveFallAction,
       attackAction,
       attemptDisengage,
       placeWaterClone,
@@ -185,6 +188,14 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     .filter((u) =>
       canUnMovedFiguresAttack ? true : uniqUnitsMoved.includes(u.unitID)
     )
+  const hasChompAvailable =
+    selectIfGameArmyCardHasAbility('Chomp', revealedGameCard) &&
+    chompsAttempted.length === 0 &&
+    attacksUsed <= 0
+  const hasMindShackleAvailable =
+    selectIfGameArmyCardHasAbility('Mind Shackle 20', revealedGameCard) &&
+    mindShacklesAttempted.length === 0 &&
+    attacksUsed <= 0
 
   // TOGGLE WALKING/GRAPPLE-GUN FOR SPECIAL-MOVE UNITS
   const [isGrappleGun, setIsGrappleGun] = useState<boolean>(false)
@@ -258,11 +269,21 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // FALL DAMAGE ATTEMPT
   const [fallHexID, setFallHexID] = useState<string>('')
   const confirmFallDamageMove = () => {
-    moveAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
+    moveFallAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
     setFallHexID('')
   }
   const cancelFallDamageMove = () => {
     setFallHexID('')
+  }
+  // MOVE-ONTO-GLYPH ATTEMPT
+  const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
+  const confirmGlyphMove = () => {
+    // TODO: we should do a fall move if the glyph is on a fall hex,
+    moveAction(selectedUnit, boardHexes[glyphMoveHexID], selectedUnitMoveRange)
+    setGlyphMoveHexID('')
+  }
+  const cancelGlyphMove = () => {
+    setGlyphMoveHexID('')
   }
   // DISENGAGE CONFIRM AND DISENGAGE RELATED
   const [disengageAttempt, setDisengageAttempt] = useState<
@@ -277,7 +298,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     setDisengageAttempt(undefined)
   }
   const onClickDangerousHex = (endHexID: string) => {
-    // this is either a disengage and/or a falling damage hex
+    // this is either a disengage and/or a falling damage hex and/or a hex with an action-glyph
     const moveRangeSelection = selectedUnitMoveRange[endHexID]
     if (!moveRangeSelection) {
       return
@@ -299,8 +320,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         movePointsLeft,
         fallDamage,
       })
+    } else if (moveRangeSelection.isActionGlyph) {
+      // we set the id, and then show confirm, if they say yes, we do the move-glyph-action
+      setGlyphMoveHexID(endHexID)
     } else if (fallDamage > 0) {
-      // we set the id, and then show confirm, if they say yes, we do the move and move-action will apply the fall damage
+      // we set the id, and then show confirm, if they say yes, we do the move-fall-action
       setFallHexID(endHexID)
     }
   }
@@ -325,7 +349,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             uniqUnitsMoved.length > 0,
             boardHexes,
             gameUnits,
-            gameArmyCards
+            gameArmyCards,
+            glyphs
           )
         )
       } else {
@@ -342,6 +367,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     selectedUnitID,
     isGrappleGun,
     uniqUnitsMoved.length,
+    glyphs,
   ])
 
   // WATER CLONE
@@ -558,12 +584,15 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         showDisengageConfirm,
         disengageAttempt,
         fallHexID,
+        glyphMoveHexID,
         isWalkingFlyer,
         isGrappleGun,
         confirmDisengageAttempt,
         cancelDisengageAttempt,
         confirmFallDamageMove,
         cancelFallDamageMove,
+        confirmGlyphMove,
+        cancelGlyphMove,
         onConfirmDropPlacement,
         onDenyDrop,
         // COMPUTED
@@ -572,7 +601,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         revealedGameCard,
         revealedGameCardUnits,
         revealedGameCardUnitIDs,
-        revealedGameCardTargetsInRange,
         revealedGameCardKilledUnits,
         unitsWithTargets,
         attacksLeft,
@@ -581,6 +609,8 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         clonePlaceableHexIDs: clonePlaceableHexIDs,
         theDropPlaceableHexIDs,
         toBeDroppedUnitIDs,
+        hasChompAvailable,
+        hasMindShackleAvailable,
         // HANDLERS
         onClickTurnHex,
         toggleIsWalkingFlyer,

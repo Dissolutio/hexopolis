@@ -53,11 +53,9 @@ const frequentlyChangedDevState = (
     ? {
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
-        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
-        // players: playersStateWithPrePlacedOMs(numPlayers),
-        players: generateBlankPlayersStateForNumPlayers(numPlayers),
-        // orderMarkers: generatePreplacedOrderMarkers(numPlayers),
-        orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        players: playersStateWithPrePlacedOMs(numPlayers),
+        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
         ...someInitialGameState,
       }
     : {

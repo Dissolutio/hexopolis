@@ -1,5 +1,5 @@
-import { SyntheticEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { SyntheticEvent } from 'react'
 
 import {
   useUIContext,
@@ -7,25 +7,27 @@ import {
   usePlacementContext,
   usePlayContext,
 } from '../contexts'
-import { UnitIcon } from '../unit-icons/UnitIcon'
 import { selectGameCardByID } from 'game/selectors'
-import { BoardHex } from 'game/types'
+import { BoardHex, Point } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
   calcDraftAndPlacementHexClassNames,
   calcOrderMarkerHexClassNames,
   calcRopHexClassNames,
 } from './calcHexClassNames'
-import Hexagon from './Hexagon'
-import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { HexIDText, UnitLifeText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
+import { GlyphDisplay } from './GlyphDisplay'
+import { HexGridCoordinate } from './HexGridCoordinate'
+import { useLayoutContext } from './HexgridLayout'
+import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
+import { UnitIcon } from 'hexopolis-ui/unit-icons'
 
 export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
-    hexMap: { hexSize },
+    hexMap: { hexSize, glyphs },
     gameArmyCards,
     startZones,
     gameUnits,
@@ -83,30 +85,8 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     mindShackleTargetableHexIDs,
     mindShackleSelectedHexIDs,
   } = useSpecialAttackContext()
-
-  // computed
-  const editingBoardHexUnitID =
-    editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
-  const unitIdToShowOnHex =
-    // order matters here
-    isTheDropStage
-      ? hex.occupyingUnitID || editingBoardHexUnitID
-      : isPlacementPhase
-      ? editingBoardHexUnitID
-      : hex.occupyingUnitID
-  const gameUnit = gameUnits?.[unitIdToShowOnHex]
-  // we only show players their own units during placement phase
-  const isShowableUnit = !isPlacementPhase || gameUnit?.playerID === playerID
-  const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
-  const unitName = gameUnitCard?.singleName ?? ''
-  const isUnitTail = isPlacementPhase
-    ? editingBoardHexes?.[hex.id]?.isUnitTail
-    : hex.isUnitTail
-  const isUnitAHeroOrMultiLife =
-    gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
-
   // handlers
-  const onClickHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
+  const onClick = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
     }
@@ -217,40 +197,80 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
       })
     }
   }
+  // computed
+  const editingBoardHexUnitID =
+    editingBoardHexes?.[hex.id]?.occupyingUnitID ?? ''
+  const unitIdToShowOnHex =
+    // order matters here
+    isTheDropStage
+      ? hex.occupyingUnitID || editingBoardHexUnitID
+      : isPlacementPhase
+      ? editingBoardHexUnitID
+      : hex.occupyingUnitID
+  const gameUnit = gameUnits?.[unitIdToShowOnHex]
+  // we only show players their own units during placement phase
+  const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
+  const unitName = gameUnitCard?.singleName ?? ''
+  const isGlyph = !!glyphs[hex.id]?.glyphID
+  // computed
+  // we only show players their own units during placement phase
+  const isShowableUnit = !isPlacementPhase || gameUnit?.playerID === playerID
+  const isUnitTail = isPlacementPhase
+    ? editingBoardHexes?.[hex.id]?.isUnitTail
+    : hex.isUnitTail
+  const isUnitAHeroOrMultiLife =
+    gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
 
+  const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
+
+  const { points } = useLayoutContext()
   return (
-    <Hexagon hex={hex} onClick={onClickHex} className={hexClassNames(hex)}>
-      <g>
-        <AnimatePresence initial={false}>
-          {gameUnit && isShowableUnit && (
-            <motion.g
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {(isUnitTail && (
-                <UnitTail hex={hex} iconPlayerID={gameUnit.playerID} />
-              )) || (
-                <UnitIcon
-                  hexSize={hexSize}
-                  armyCardID={gameUnit.armyCardID}
-                  iconPlayerID={gameUnit.playerID}
-                />
-              )}
-            </motion.g>
-          )}
-        </AnimatePresence>
-        <HexIDText
-          hexSize={hexSize}
-          // text={`${hex.id}`}
-          // textLine2={`${hex.altitude}`}
-          text={`${hex.altitude}`}
-          textLine2={`${unitName}`}
-        />
-        {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
-          <UnitLifeText unit={gameUnit} card={gameUnitCard} hexSize={hexSize} />
+    <HexGridCoordinate hex={hex} onClick={onClick}>
+      <polygon
+        points={points}
+        className={`base-maphex ${hexClassNames(hex)}`}
+      />
+      {/* Hex text */}
+      <HexIDText
+        hexSize={hexSize}
+        text={`${hex.id}`}
+        textLine2={`${hex.altitude}`}
+        // text={`${hex.altitude}`}
+        // only show unit name on head-hex
+        // textLine2={!hex.isUnitTail ? `${unitName}` : ''}
+      />
+      {/* Glyph display */}
+      <GlyphDisplay hex={hex} />
+      {/* Unit icon */}
+      <AnimatePresence initial={false}>
+        {gameUnit && isShowableUnit && (
+          <motion.g
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {(isUnitTail && (
+              <UnitTail hex={hex} iconPlayerID={gameUnit.playerID} />
+            )) || (
+              <UnitIcon
+                hexSize={hexSize}
+                armyCardID={gameUnit.armyCardID}
+                iconPlayerID={gameUnit.playerID}
+              />
+            )}
+          </motion.g>
         )}
-      </g>
-    </Hexagon>
+      </AnimatePresence>
+
+      {/* Unit life text */}
+      {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
+        <UnitLifeText
+          unit={gameUnit}
+          card={gameUnitCard}
+          hexSize={hexSize}
+          position={unitLifePosition}
+        />
+      )}
+    </HexGridCoordinate>
   )
 }

@@ -1,5 +1,13 @@
+export const getGlyphInfoByID = (glyphID: string) => {
+  const glyph = Object.values(powerGlyphs).find((g) => g.id === glyphID)
+  if (!glyph) {
+    throw new Error(`No glyph found for ID: ${glyphID}`)
+  }
+  return glyph
+}
 export const powerGlyphs = {
   attack: {
+    id: 'attack',
     name: 'Glyph of Astrid',
     type: 'power',
     effect: 'Attack +1',
@@ -7,6 +15,7 @@ export const powerGlyphs = {
       'Add one die to your attack roll when any figure in your army uses a Normal Attack',
   },
   defense: {
+    id: 'defense',
     name: 'Glyph of Gerda',
     type: 'power',
     effect: 'Defense +1',
@@ -14,6 +23,7 @@ export const powerGlyphs = {
       'Add one die to your Defense Roll when any figure in your army is attacked.',
   },
   move: {
+    id: 'move',
     name: 'Glyph of Valda',
     type: 'power',
     effect: 'Move +2',
@@ -21,6 +31,7 @@ export const powerGlyphs = {
       'Add 2 to the Move Number stated on every Army Card in your army.',
   },
   range: {
+    id: 'range',
     name: 'Glyph of Ivor',
     type: 'power',
     effect: 'Range +4',
@@ -28,12 +39,14 @@ export const powerGlyphs = {
       'Add 4 to the Range limit of every Army Card in your army which already had a Range of 4 or more.',
   },
   objective: {
+    id: 'objective',
     name: 'Glyph of Brandar',
     type: 'power',
     effect: 'Artifact',
     description: 'The rules for this Glyph changes for each scenario.',
   },
   initiative: {
+    id: 'initiative',
     name: 'Glyph of Dagmar',
     type: 'power',
     effect: 'Initiative +8',

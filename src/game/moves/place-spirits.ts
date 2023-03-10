@@ -127,7 +127,7 @@ export const placeArmorSpirit: Move<GameState> = (
   } else if (nextStage?.stage === stageNames.movement) {
     events.setActivePlayers({ currentPlayer: stageNames.movement })
   }
-  // we died from disengagement
+  // this should not happen, disengage will add a movement-stage to the queue
   else {
     events.endTurn()
   }

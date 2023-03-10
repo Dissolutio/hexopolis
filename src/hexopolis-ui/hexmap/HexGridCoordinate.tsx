@@ -1,22 +1,17 @@
 import * as React from 'react'
-import classNames from 'classnames'
 import { useLayoutContext } from './HexgridLayout'
 import { hexUtilsHexToPixel } from 'game/hex-utils'
 import { BoardHex } from 'game/types'
 
-type HexagonProps = {
+type Props = {
   hex: BoardHex
   onClick?: (e: React.MouseEvent, hex: BoardHex) => void
-  className?: string
   children?: React.ReactNode | React.ReactNode[]
 }
 
-/**
- * Renders a Hexagon cell at the given rqs-based coordinates.
- */
-export function Hexagon(props: HexagonProps) {
-  const { hex, onClick, className, children } = props
-  const { layout, points } = useLayoutContext()
+export function HexGridCoordinate(props: Props) {
+  const { hex, children, onClick } = props
+  const { layout } = useLayoutContext()
   const { pixel } = React.useMemo(() => {
     const pixel = hexUtilsHexToPixel(hex, layout)
     return {
@@ -24,10 +19,8 @@ export function Hexagon(props: HexagonProps) {
     }
   }, [hex, layout])
 
-  const hexAltitude = hex.altitude
   return (
     <g
-      className={classNames('hexagon-group', className)}
       transform={`translate(${pixel.x}, ${pixel.y})`}
       onClick={(e) => {
         if (onClick) {
@@ -35,12 +28,7 @@ export function Hexagon(props: HexagonProps) {
         }
       }}
     >
-      <g className="hexagon">
-        <polygon points={points} />
-        {children}
-      </g>
+      {children}
     </g>
   )
 }
-
-export default Hexagon

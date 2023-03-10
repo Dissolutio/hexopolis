@@ -13,6 +13,7 @@ export type GameLogMessage = {
   unitName?: string
   targetHexID?: string
   defenderUnitName?: string
+  defenderSingleName?: string
   defenderPlayerID?: string
   attackRolled?: number
   defenseRolled?: number
@@ -30,6 +31,7 @@ export type GameLogMessage = {
   startHexID?: string
   endHexID?: string
   isGrappleGun?: boolean
+  fallDamage?: number
   // disengage attempts
   unitIdsToAttemptToDisengage?: string[]
   // berserker charge logs, most generic roll format
@@ -95,6 +97,7 @@ export const decodeGameLogMessage = (
       unitName,
       targetHexID,
       defenderUnitName,
+      defenderSingleName,
       defenderPlayerID,
       attackRolled,
       defenseRolled,
@@ -112,6 +115,7 @@ export const decodeGameLogMessage = (
       isGrappleGun,
       startHexID,
       endHexID,
+      isFallDamage,
       unitIdsToAttemptToDisengage,
       // berserker charge: most generic roll format
       roll,
@@ -209,31 +213,27 @@ export const decodeGameLogMessage = (
       case gameLogTypes.disengageAttempt:
         const disengageAttemptMsgText = `${unitSingleName} is attempting to disengage from ${
           unitIdsToAttemptToDisengage.length
-        } unit${unitIdsToAttemptToDisengage.length === 1 ? 's' : ''}`
+        } unit${unitIdsToAttemptToDisengage.length === 1 ? '' : 's'}`
         return {
           ...basic,
           msg: disengageAttemptMsgText,
         }
       case gameLogTypes.disengageSwipeFatal:
-        const disengageSwipeFatalMsgText = `A unit was defeated while disengaging!`
         return {
-          ...basic,
-          msg: disengageSwipeFatalMsgText,
+          ...gameLog,
         }
       case gameLogTypes.disengageSwipeNonFatal:
-        const disengageSwipeNonFatalMsgText = `A unit was wounded while disengaging!`
         return {
-          ...basic,
-          msg: disengageSwipeNonFatalMsgText,
+          ...gameLog,
         }
       case gameLogTypes.disengageSwipeDenied:
-        const disengageSwipeDeniedMsgText = `A unit denied their disengagement swipe!`
+        const disengageSwipeDeniedMsgText = `${unitSingleName} denied their disengagement swipe!`
         return {
           ...basic,
           msg: disengageSwipeDeniedMsgText,
         }
       case gameLogTypes.disengageSwipeMiss:
-        const disengageSwipeMissMsgText = `A unit missed their disengagement swipe!`
+        const disengageSwipeMissMsgText = `${unitSingleName} missed their disengagement swipe!`
         return {
           ...basic,
           msg: disengageSwipeMissMsgText,

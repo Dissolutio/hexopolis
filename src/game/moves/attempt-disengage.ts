@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { DisengageAttempt, GameState, GameUnit } from '../types'
+import { DisengageAttempt, GameState } from '../types'
 import { stageNames } from '../constants'
 import { selectGameCardByID } from '../selectors'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
