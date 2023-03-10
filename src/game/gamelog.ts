@@ -211,7 +211,7 @@ export const decodeGameLogMessage = (
       case gameLogTypes.disengageAttempt:
         const disengageAttemptMsgText = `${unitSingleName} is attempting to disengage from ${
           unitIdsToAttemptToDisengage.length
-        } unit${unitIdsToAttemptToDisengage.length === 1 ? 's' : ''}`
+        } unit${unitIdsToAttemptToDisengage.length === 1 ? '' : 's'}`
         return {
           ...basic,
           msg: disengageAttemptMsgText,
