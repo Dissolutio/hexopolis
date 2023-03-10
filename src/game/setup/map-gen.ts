@@ -11,7 +11,7 @@ import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
 import { selectHexNeighbors, selectValidTailHexes } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
-import { generateBlankHexMapGlyphs } from 'game/constants'
+import { generateBlankHexMapGlyphs } from '../constants'
 
 function generateUID() {
   // I generate the UID from two parts here
