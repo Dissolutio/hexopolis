@@ -94,7 +94,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const isAHit = rollHeroscapeDice(disengagementDiceRolled, random).skulls
     const initialLife = unitAttemptingCard.life
     // const swipeWounds = isAHit >= 1 ? 1 : 0
-    const swipeWounds = 0
+    const swipeWounds = 1
     const unitLifeLeft =
       initialLife - (unitAttemptingToDisengage.wounds + swipeWounds)
     const isFatalSwipe = unitLifeLeft <= 0
@@ -202,6 +202,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           unitName: unitSwipingCard.name,
           unitSingleName: unitSwipingCard.singleName,
           defenderUnitName: unitAttemptingCard.name,
+          defenderSingleName: unitAttemptingCard.singleName,
           defenderPlayerID: unitAttemptingCard.playerID,
           wounds: swipeWounds,
         })

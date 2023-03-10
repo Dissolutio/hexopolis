@@ -223,13 +223,11 @@ export const decodeGameLogMessage = (
           ...gameLog,
         }
       case gameLogTypes.disengageSwipeNonFatal:
-        const disengageSwipeNonFatalMsgText = `${unitName} was wounded while disengaging!`
         return {
-          ...basic,
-          msg: disengageSwipeNonFatalMsgText,
+          ...gameLog,
         }
       case gameLogTypes.disengageSwipeDenied:
-        const disengageSwipeDeniedMsgText = `A unit denied their disengagement swipe!`
+        const disengageSwipeDeniedMsgText = `${unitSingleName} denied their disengagement swipe!`
         return {
           ...basic,
           msg: disengageSwipeDeniedMsgText,

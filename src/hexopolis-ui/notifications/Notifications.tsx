@@ -343,6 +343,19 @@ const GameLogDisplay = ({
           </span>
         </>
       )
+    case gameLogTypes.disengageSwipeNonFatal:
+      const disengageSwipeNonFatalMsgText = `${unitSingleName} took a swipe at `
+      return (
+        <>
+          <span style={{ color: playerColors[playerID] }}>
+            {disengageSwipeNonFatalMsgText}
+            <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+              {defenderSingleName}
+            </span>
+            {`! (${wounds} wounds)`}
+          </span>
+        </>
+      )
     case gameLogTypes.move:
       const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} / ${fallDamage} possible wounds)`
       const fallButNoDamageMove = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
