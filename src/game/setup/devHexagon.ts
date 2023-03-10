@@ -1,5 +1,3 @@
-import { generateBlankHexMapGlyphs } from 'game/constants'
-
 export const devHexagon = {
   boardHexes: {
     '-3,0,3': {
