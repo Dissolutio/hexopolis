@@ -235,7 +235,7 @@ export const decodeGameLogMessage = (
           msg: disengageSwipeDeniedMsgText,
         }
       case gameLogTypes.disengageSwipeMiss:
-        const disengageSwipeMissMsgText = `A unit missed their disengagement swipe!`
+        const disengageSwipeMissMsgText = `${unitSingleName} missed their disengagement swipe!`
         return {
           ...basic,
           msg: disengageSwipeMissMsgText,

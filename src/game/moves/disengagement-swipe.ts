@@ -94,7 +94,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const isAHit = rollHeroscapeDice(disengagementDiceRolled, random).skulls
     const initialLife = unitAttemptingCard.life
     // const swipeWounds = isAHit >= 1 ? 1 : 0
-    const swipeWounds = 1
+    const swipeWounds = 0
     const unitLifeLeft =
       initialLife - (unitAttemptingToDisengage.wounds + swipeWounds)
     const isFatalSwipe = unitLifeLeft <= 0
@@ -195,12 +195,12 @@ export const takeDisengagementSwipe: Move<GameState> = {
           swipeWounds > 0
             ? gameLogTypes.disengageSwipeNonFatal
             : gameLogTypes.disengageSwipeMiss
-        // TODO: pass info for unit that is swiping
         const gameLogForNonFatalSwipe = encodeGameLogMessage({
           type,
           id,
           playerID: unitSwipingCard.playerID,
           unitName: unitSwipingCard.name,
+          unitSingleName: unitSwipingCard.singleName,
           defenderUnitName: unitAttemptingCard.name,
           defenderPlayerID: unitAttemptingCard.playerID,
           wounds: swipeWounds,
@@ -209,13 +209,14 @@ export const takeDisengagementSwipe: Move<GameState> = {
         // move the unit, it might fall to death
         if (isAllEngagementsSettled) {
           /* START MOVE */
+          // const fallingDamageWounds = rollHeroscapeDice(
+          //   fallDamage,
+          //   random
+          // ).skulls
+          const fallingDamageWounds = 1
+          let isFallFatal = false
           if (fallDamage > 0) {
-            // const fallingDamageWounds = rollHeroscapeDice(
-            //   fallDamage,
-            //   random
-            // ).skulls
-            const fallingDamageWounds = 0
-            const isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
+            isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
             if (isFallFatal) {
               killUnit_G({
                 boardHexes: G.boardHexes,
@@ -229,11 +230,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
                 defenderHexID: unitAttemptingToDisengageHex.id,
                 defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
               })
-              console.log(
-                '🚀 ~ file: disengagement-swipe.ts:230',
-                unitDisengagingID,
-                'just died from fall damage'
-              )
               // TODO: gamelog fatal fall
 
               /* begin stage queue */
@@ -264,7 +260,11 @@ export const takeDisengagementSwipe: Move<GameState> = {
                 events.endStage()
               }
               /* end stage queue */
-              return // AKA don't do the move below
+              // return // AKA don't do the move below
+            }
+            // if fall is not fatal, assign wounds
+            else {
+              newGameUnits[unitDisengagingID].wounds += fallingDamageWounds
             }
           }
           // unit is not dead, move it
@@ -285,6 +285,21 @@ export const takeDisengagementSwipe: Move<GameState> = {
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
+          // copied from move-fall-action
+          const indexOfThisMove = G.unitsMoved.length
+          const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitDisengagingID}:m${indexOfThisMove}`
+          const gameLogForThisMove = encodeGameLogMessage({
+            type: gameLogTypes.move,
+            id: moveId,
+            playerID: unitDisengagingPlayerID,
+            unitID: unitDisengagingID,
+            unitSingleName: unitAttemptingCard.singleName,
+            endHexID,
+            fallDamage: fallDamage,
+            wounds: fallingDamageWounds,
+            isFatal: isFallFatal,
+          })
+          G.gameLog.push(gameLogForThisMove)
           /* END MOVE */
           // send players back to movement/idle stages
           events.setActivePlayers({
@@ -292,14 +307,14 @@ export const takeDisengagementSwipe: Move<GameState> = {
           })
           // end the current stage? is this necessary?
           events.endStage()
+          // finally, clear disengagement state
+          G.disengagesAttempting = undefined
+          G.disengagedUnitIds = []
+        } else {
+          // ENGAGEMENTS NOT SETTLED
+          // add to G.disengagedUnitIds
+          G.disengagedUnitIds.push(unitSwiping.unitID)
         }
-        // finally, clear disengagement state
-        G.disengagesAttempting = undefined
-        G.disengagedUnitIds = []
-      } else {
-        // still more disengagements to resolve
-        // add to G.disengagedUnitIds
-        G.disengagedUnitIds.push(unitSwiping.unitID)
       }
     }
 
