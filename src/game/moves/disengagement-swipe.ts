@@ -150,8 +150,9 @@ export const takeDisengagementSwipe: Move<GameState> = {
           type: gameLogTypes.disengageSwipeFatal,
           id,
           playerID: unitSwipingCard.playerID,
-          unitName: unitSwipingCard.name,
+          unitSingleName: unitSwipingCard.singleName,
           defenderUnitName: unitAttemptingCard.name,
+          defenderSingleName: unitAttemptingCard.singleName,
           defenderPlayerID: unitAttemptingCard.playerID,
         })
         G.gameLog.push(gameLogForFatalSwipe)

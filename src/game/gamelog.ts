@@ -13,6 +13,7 @@ export type GameLogMessage = {
   unitName?: string
   targetHexID?: string
   defenderUnitName?: string
+  defenderSingleName?: string
   defenderPlayerID?: string
   attackRolled?: number
   defenseRolled?: number
@@ -96,6 +97,7 @@ export const decodeGameLogMessage = (
       unitName,
       targetHexID,
       defenderUnitName,
+      defenderSingleName,
       defenderPlayerID,
       attackRolled,
       defenseRolled,
@@ -217,13 +219,11 @@ export const decodeGameLogMessage = (
           msg: disengageAttemptMsgText,
         }
       case gameLogTypes.disengageSwipeFatal:
-        const disengageSwipeFatalMsgText = `A unit was defeated while disengaging!`
         return {
-          ...basic,
-          msg: disengageSwipeFatalMsgText,
+          ...gameLog,
         }
       case gameLogTypes.disengageSwipeNonFatal:
-        const disengageSwipeNonFatalMsgText = `A unit was wounded while disengaging!`
+        const disengageSwipeNonFatalMsgText = `${unitName} was wounded while disengaging!`
         return {
           ...basic,
           msg: disengageSwipeNonFatalMsgText,

@@ -36,6 +36,7 @@ export const Notifications = () => {
           unitName,
           targetHexID,
           defenderUnitName,
+          defenderSingleName,
           defenderPlayerID,
           attackRolled,
           defenseRolled,
@@ -75,6 +76,24 @@ export const Notifications = () => {
         const defaultDuration = 20000
         const moreRepetitiveMsgDuration = 5000
         switch (type) {
+          case gameLogTypes.disengageSwipeFatal:
+            const disengageSwipeFatalMsgText = `${defenderSingleName} was defeated while disengaging from `
+            toast(
+              <>
+                <span style={{ color: playerColors[defenderPlayerID ?? ''] }}>
+                  {disengageSwipeFatalMsgText}
+                  <span style={{ color: playerColors[playerID] }}>
+                    {unitSingleName}
+                  </span>
+                  !
+                </span>
+              </>,
+              {
+                duration: defaultDuration,
+                id: gameLogMessage?.id,
+              }
+            )
+            break
           case gameLogTypes.move:
             const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} / ${fallDamage} possible wounds)`
             const fallButNoDamageMove = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
