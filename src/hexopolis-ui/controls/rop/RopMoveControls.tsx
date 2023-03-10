@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { usePlayContext } from '../../contexts'
 import { useBgioEvents, useBgioG } from 'bgio-contexts'
 import { UndoRedoButtons } from './UndoRedoButtons'
@@ -18,10 +16,7 @@ import {
 } from './FlyingUnitTextAndToggle'
 import { stageNames } from 'game/constants'
 import { GreenButton } from 'hexopolis-ui/layout/buttons'
-import {
-  selectIfGameArmyCardHasAbility,
-  selectIfGameArmyCardHasFlying,
-} from 'game/selector/card-selectors'
+import { selectIfGameArmyCardHasFlying } from 'game/selector/card-selectors'
 import { AbilityReadout } from './FireLineSAControls'
 import { AnimatePresence, motion } from 'framer-motion'
 import { omToString } from 'game/transformers'
@@ -47,13 +42,14 @@ export const RopMoveControls = () => {
     revealedGameCard,
     revealedGameCardUnitIDs,
     isGrappleGun,
+    hasChompAvailable,
   } = usePlayContext()
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
   const unitsAliveCount = revealedGameCardUnitIDs.length
   const { hasFlying, hasStealth } =
     selectIfGameArmyCardHasFlying(revealedGameCard)
-  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
+
   const revealedGameCardName = revealedGameCard?.name ?? ''
 
   const movesAvailable =
@@ -110,7 +106,7 @@ export const RopMoveControls = () => {
           </StyledControlsP>
 
           <UndoRedoButtons />
-          {hasChomp && (
+          {hasChompAvailable && (
             <StyledButtonWrapper>
               <GreenButton
                 onClick={() => {

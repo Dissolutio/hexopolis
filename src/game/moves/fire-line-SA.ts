@@ -11,7 +11,7 @@ import {
 } from '../selectors'
 import { GameState, PossibleFireLineAttack, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
-import { encodeGameLogMessage } from '../gamelog'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { killUnit_G } from './G-mutators'
 
@@ -153,7 +153,7 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
     // update game log
     // TODO: pull this game log out of the loop like stageQueue
     const gameLogForThisAttack = encodeGameLogMessage({
-      type: 'attack',
+      type: gameLogTypes.attack,
       id: attackId,
       playerID: attackerGameCard.playerID,
       defenderPlayerID: defenderGameCard.playerID,
@@ -161,6 +161,7 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
       unitName: attackerGameCard.name,
       targetHexID: defenderHex.id,
       defenderUnitName,
+      defenderSingleName: defenderGameCard.singleName,
       attackRolled,
       defenseRolled,
       skulls,

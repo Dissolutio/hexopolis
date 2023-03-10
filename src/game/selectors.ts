@@ -10,6 +10,7 @@ import {
   PlayerOrderMarkers,
   HexCoordinates,
   RangeScan,
+  HexTerrain,
 } from './types'
 import { generateHexID } from './constants'
 import {
@@ -204,14 +205,6 @@ export function selectValidTailHexes(
 ): BoardHex[] {
   return selectHexNeighbors(hexID, boardHexes).filter(
     (bh) => bh.altitude === boardHexes[hexID].altitude
-    /* 
-      This allows 2-space figures to stop on 2 different levels of terrain if the lower one has water. I believe I confused this with the rule that they don't have to stop
-      until they walk into 2 spaces of water. AKA, the rule below is NOT in the game.
-      ||
-      (boardHexes[hexID].terrain === 'water' &&
-      bh.altitude === boardHexes[hexID].altitude + 1) ||
-      (bh.terrain === 'water' && bh.altitude === boardHexes[hexID].altitude - 1)
-      */
   )
 }
 export function selectMoveCostBetweenNeighbors(
@@ -573,7 +566,7 @@ export function selectIsFallDamage(
   const unitCard = selectGameCardByID(armyCards, unit.gameCardID)
   const { hasFlying } = selectIfGameArmyCardHasFlying(unitCard)
   // flying figures don't take fall damage, and you can fall into water without taking damage, also
-  if (hasFlying || endHex.terrain === 'water') return 0
+  if (hasFlying || endHex.terrain === HexTerrain.water) return 0
   const unitHeight = unitCard?.height ?? 0
   const altitudeDelta = startHex.altitude - endHex.altitude
   const isMinorFall = altitudeDelta >= unitHeight

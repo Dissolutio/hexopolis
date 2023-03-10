@@ -1,5 +1,100 @@
-export const coreGlyphs = {
-  dickmar: '',
+export const getGlyphInfoByID = (glyphID: string) => {
+  const glyph = Object.values(powerGlyphs).find((g) => g.id === glyphID)
+  if (!glyph) {
+    throw new Error(`No glyph found for ID: ${glyphID}`)
+  }
+  return glyph
+}
+export const powerGlyphs = {
+  attack: {
+    id: 'attack',
+    name: 'Glyph of Astrid',
+    type: 'power',
+    effect: 'Attack +1',
+    description:
+      'Add one die to your attack roll when any figure in your army uses a Normal Attack',
+  },
+  defense: {
+    id: 'defense',
+    name: 'Glyph of Gerda',
+    type: 'power',
+    effect: 'Defense +1',
+    description:
+      'Add one die to your Defense Roll when any figure in your army is attacked.',
+  },
+  move: {
+    id: 'move',
+    name: 'Glyph of Valda',
+    type: 'power',
+    effect: 'Move +2',
+    description:
+      'Add 2 to the Move Number stated on every Army Card in your army.',
+  },
+  range: {
+    id: 'range',
+    name: 'Glyph of Ivor',
+    type: 'power',
+    effect: 'Range +4',
+    description:
+      'Add 4 to the Range limit of every Army Card in your army which already had a Range of 4 or more.',
+  },
+  objective: {
+    id: 'objective',
+    name: 'Glyph of Brandar',
+    type: 'power',
+    effect: 'Artifact',
+    description: 'The rules for this Glyph changes for each scenario.',
+  },
+  initiative: {
+    id: 'initiative',
+    name: 'Glyph of Dagmar',
+    type: 'power',
+    effect: 'Initiative +8',
+    description:
+      'Add 8 to your Initiative Roll at the beginning of the next Round.',
+  },
+  // {
+  //   name: 'Glyph of Jalgard',
+  //   effect: "Defense +2",
+  //   description: "Add two dice to your Defense Roll when any figure in your army is attacked."
+  // },
+  // {
+  //   name: 'Glyph of Lodin',
+  //   effect: "Lucky 20-Sider",
+  //   description: "Whenever you roll the 20 sided die, you may add one to your die roll."
+  // },
+  // {
+  //   name: 'Glyph of Rannveig',
+  //   effect: "Wind",
+  //   description: "When a figure is on this Glyph, no figure may use the 'Flying' power. This includes figures in your own army was well as figures on the other player's team."
+  // },
+  // {
+  //   name: 'Glyph of Crevcor',
+  //   effect: "Common Attack +1",
+  //   description: "All Common Figures in your army may add one additional attack die when attacking normally."
+  // },
+}
+
+export const temporaryGlyphs = {
+  healer: {
+    name: 'Glyph of Kelda',
+    type: 'temporary',
+    effect: 'Heal hero',
+    description:
+      'When a Hero you control lands on this Glyph, remove all wound markers from it. If a Squad figure lands here, nothing happens.',
+  },
+  summoner: {
+    name: 'Glyph of Erland',
+    type: 'temporary',
+    effect: 'Summon figure',
+    description: `When a figure lands on this Glyph, choose any one figure (yours, a teammate's or an opponent's) and to place on an adjacent space.`,
+  },
+  curse: {
+    name: 'Glyph of Mitonsoul',
+    type: 'temporary',
+    effect: 'Massive Curse',
+    description: `When a figure lands on this Glyph, all players must roll the 20 sided die for all their own figures. If a 1 is rolled, than that figure is destroyed, 2 or higher and the figure is safe.`,
+  },
 }
 
 // Permanent Glyphs

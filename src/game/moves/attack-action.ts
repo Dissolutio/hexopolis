@@ -9,7 +9,7 @@ import {
   selectAttackerHasAttacksAllowed,
 } from '../selectors'
 import { GameState, BoardHex, GameUnit, StageQueueItem } from '../types'
-import { encodeGameLogMessage } from '../gamelog'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
   selectIfGameArmyCardHasAbility,
   selectUnitAttackDiceForAttack,
@@ -249,7 +249,7 @@ export const attackAction: Move<GameState> = {
     G.unitsAttacked = unitsAttacked
     // update game log
     const gameLogForThisAttack = encodeGameLogMessage({
-      type: 'attack',
+      type: gameLogTypes.attack,
       id: attackId,
       playerID: attackerGameCard.playerID,
       defenderPlayerID: defenderGameCard.playerID,
@@ -257,6 +257,7 @@ export const attackAction: Move<GameState> = {
       unitName: attackerGameCard.name,
       targetHexID: defenderHexID,
       defenderUnitName,
+      defenderSingleName: defenderGameCard.singleName,
       attackRolled,
       defenseRolled,
       skulls,

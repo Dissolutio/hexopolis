@@ -1,4 +1,4 @@
-import { BoardHexes, HexCoordinates } from '../types'
+import { BoardHexes, HexCoordinates, HexTerrain } from '../types'
 import { generateHexID } from '../constants'
 import { generateHexagonHexas } from '../hex-utils'
 
@@ -15,9 +15,10 @@ function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
         ...curr,
         id: generateHexID(curr),
         occupyingUnitID: '',
+        glyphID: '',
         isUnitTail: false,
         altitude: 1,
-        terrain: 'grass',
+        terrain: HexTerrain.grass,
         startzonePlayerIDs: [],
       }
       return {

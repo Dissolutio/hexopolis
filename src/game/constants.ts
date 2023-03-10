@@ -104,7 +104,9 @@ export function transformMoveRangeToArraysOfIds(moveRange: MoveRange): {
     ),
     dangerousMoves: Object.keys(moveRange).filter(
       (hexID) =>
-        moveRange[hexID].isDisengage || (moveRange[hexID]?.fallDamage ?? 0) > 0
+        moveRange[hexID].isDisengage ||
+        (moveRange[hexID]?.fallDamage ?? 0) > 0 ||
+        moveRange[hexID].isActionGlyph
     ),
   }
 }
@@ -139,3 +141,7 @@ export function generateReadyStateForNumPlayers(
   const result = rdyState
   return result
 }
+
+export const generateBlankHexMapGlyphs = () => ({
+  glyphs: {},
+})

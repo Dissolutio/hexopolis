@@ -18,6 +18,7 @@ html {
   --water: #3794fd;
   --sand: #ab8e10;
   --rock: #475776;
+  --glyph: #601700;
   /* UTILITY */
   --neon-green: rgba(186, 217, 84, 0.502);
   --neon-blue: rgba(135, 199, 242, 0.5);
@@ -31,6 +32,8 @@ html {
   --caution-yellow: #eac435;
   --error-red: #ff5e5b;
   --info-blue: #246eb9;
+  /* card colors */
+  --life-red: #ff3633;
 }
 body {
   box-sizing: border-box;

@@ -1,6 +1,6 @@
 import type { Move } from 'boardgame.io'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
-import { GameState, UnitsCloning, WaterCloneRoll } from '../types'
+import { GameState, HexTerrain, UnitsCloning, WaterCloneRoll } from '../types'
 
 export const rollForWaterClone: Move<GameState> = (
   { G, ctx, random },
@@ -14,7 +14,8 @@ export const rollForWaterClone: Move<GameState> = (
   }
   const waterCloneRoll: WaterCloneRoll = unitsCloning.reduce(
     (result, current) => {
-      const isOnWater = G.boardHexes[current.clonerHexID].terrain === 'water'
+      const isOnWater =
+        G.boardHexes[current.clonerHexID].terrain === HexTerrain.water
       const rollThreshhold = isOnWater ? 10 : 15
       // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
       const roll = random.Die(20)
@@ -92,6 +93,7 @@ export const placeWaterClone: Move<GameState> = (
     movePoints: 0, // TODO: over time, there may be many properties that need resetting upon death/resurrection
   }
   delete G.killedUnits[clonedID]
+  // TODO: Glyph move
   // place the unit
   G.boardHexes[hexID].occupyingUnitID = clonedID
   G.waterClonesPlaced.push({ clonedID, hexID, clonerID })

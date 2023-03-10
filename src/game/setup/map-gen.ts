@@ -11,6 +11,7 @@ import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
 import { selectHexNeighbors, selectValidTailHexes } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
+import { generateBlankHexMapGlyphs } from 'game/constants'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -104,6 +105,7 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
       mapHeight: mapSize,
       mapWidth: mapSize,
       hexSize: 10,
+      ...generateBlankHexMapGlyphs(),
     },
   }
 }

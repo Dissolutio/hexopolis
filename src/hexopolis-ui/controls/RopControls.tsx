@@ -12,10 +12,7 @@ import {
   StyledControlsHeaderH2,
   StyledControlsP,
 } from 'hexopolis-ui/layout/Typography'
-import {
-  ConfirmOrResetButtons,
-  StyledButtonWrapper,
-} from './ConfirmOrResetButtons'
+import { ConfirmOrResetButtons } from './ConfirmOrResetButtons'
 import { GreenButton, RedButton } from 'hexopolis-ui/layout/buttons'
 import { selectGameCardByID } from 'game/selectors'
 import { playerIDDisplay } from 'game/transformers'
@@ -59,12 +56,16 @@ export const RopControls = () => {
     isExplosionSAStage,
     isGrenadeSAStage,
   } = useBgioCtx()
-  const { showDisengageConfirm, fallHexID } = usePlayContext()
+  const { showDisengageConfirm, fallHexID, glyphMoveHexID } = usePlayContext()
   if (showDisengageConfirm) {
-    // also shows fall damage info aside the disengagement info
+    // also shows fall damage info, and glyph info, aside the disengagement info
     return <RopConfirmDisengageAttemptControls />
   } else if (fallHexID) {
+    // also shows glyph info, aside the fall damage info
     return <RopConfirmFallDamageControls />
+  } else if (glyphMoveHexID) {
+    // just shows glyph info, aside the fall damage info
+    return <RopConfirmActionGlyphMoveControls />
   }
   if (isIdleStage) {
     return (
@@ -258,6 +259,34 @@ const RopConfirmFallDamageControls = () => {
         confirmText={`No, we will find another way...`}
         reset={confirmFallDamageMove}
         resetText={`It's not that high! (Confirm risk of ${fallDamage} wounds)`}
+      />
+    </>
+  )
+}
+
+const RopConfirmActionGlyphMoveControls = () => {
+  const {
+    confirmGlyphMove,
+    cancelGlyphMove,
+    glyphMoveHexID,
+    selectedUnitMoveRange,
+  } = usePlayContext()
+  const {
+    boardHexes,
+    hexMap: { glyphs },
+  } = useBgioG()
+  const isGlyphAnUnrevealedPowerGlyph =
+    Boolean(glyphs?.[glyphMoveHexID]?.isRevealed) === false
+  return (
+    <>
+      <StyledControlsHeaderH2>
+        {`Confirm you want to move onto the unrevealed and potentially dangerous glyph?`}
+      </StyledControlsHeaderH2>
+      <ConfirmOrResetButtons
+        confirm={cancelGlyphMove}
+        confirmText={`No, do not move onto the glyph`}
+        reset={confirmGlyphMove}
+        resetText={`Yes, move onto the glyph!`}
       />
     </>
   )

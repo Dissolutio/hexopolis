@@ -21,10 +21,11 @@ export const RopAttackControls = () => {
   const { events } = useBgioEvents()
   const {
     revealedGameCard,
-    revealedGameCardTargetsInRange,
     unitsWithTargets,
     countOfUnmovedFiguresThatCanAttack,
     attacksLeft,
+    hasChompAvailable,
+    hasMindShackleAvailable,
   } = usePlayContext()
   const revealedGameCardName = revealedGameCard?.name ?? ''
   const { totalNumberOfAttacksAllowed } =
@@ -35,11 +36,6 @@ export const RopAttackControls = () => {
 
   const hasWaterClone = selectIfGameArmyCardHasAbility(
     'Water Clone',
-    revealedGameCard
-  )
-  const hasChomp = selectIfGameArmyCardHasAbility('Chomp', revealedGameCard)
-  const hasMindShackle = selectIfGameArmyCardHasAbility(
-    'Mind Shackle 20',
     revealedGameCard
   )
   const { hasFireLine, hasExplosion, hasGrenade } =
@@ -148,7 +144,7 @@ export const RopAttackControls = () => {
           </GreenButton>
         </StyledButtonWrapper>
       )}
-      {isNoAttacksUsed && hasChomp && (
+      {hasChompAvailable && (
         <StyledButtonWrapper>
           <GreenButton
             onClick={() => {
@@ -159,7 +155,7 @@ export const RopAttackControls = () => {
           </GreenButton>
         </StyledButtonWrapper>
       )}
-      {isNoAttacksUsed && hasMindShackle && (
+      {hasMindShackleAvailable && (
         <StyledButtonWrapper>
           <GreenButton
             onClick={() => {
