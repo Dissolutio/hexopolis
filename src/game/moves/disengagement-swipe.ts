@@ -88,13 +88,12 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const endHexID = disengagesAttempting.endHexID
     const endTailHexID = disengagesAttempting.endFromHexID
     const isAllEngagementsSettled =
-      G.disengagedUnitIds.length ===
+      G.disengagedUnitIds.length >=
       disengagesAttempting.defendersToDisengage.length - 1
     const disengagementDiceRolled = 1
     const isAHit = rollHeroscapeDice(disengagementDiceRolled, random).skulls
     const initialLife = unitAttemptingCard.life
-    // const swipeWounds = isAHit >= 1 ? 1 : 0
-    const swipeWounds = 1
+    const swipeWounds = isTaking && isAHit >= 1 ? 1 : 0
     const unitLifeLeft =
       initialLife - (unitAttemptingToDisengage.wounds + swipeWounds)
     const isFatalSwipe = unitLifeLeft <= 0
@@ -209,12 +208,10 @@ export const takeDisengagementSwipe: Move<GameState> = {
         G.gameLog.push(gameLogForNonFatalSwipe)
         // move the unit, it might fall to death
         if (isAllEngagementsSettled) {
-          /* START MOVE */
-          // const fallingDamageWounds = rollHeroscapeDice(
-          //   fallDamage,
-          //   random
-          // ).skulls
-          const fallingDamageWounds = 1
+          const fallingDamageWounds = rollHeroscapeDice(
+            fallDamage,
+            random
+          ).skulls
           let isFallFatal = false
           if (fallDamage > 0) {
             isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
@@ -268,21 +265,24 @@ export const takeDisengagementSwipe: Move<GameState> = {
               newGameUnits[unitDisengagingID].wounds += fallingDamageWounds
             }
           }
-          // unit is not dead, move it
-          // TODO: Glyph move
-          moveUnit_G({
-            unitID: unitDisengagingID,
-            startHexID: unitAttemptingToDisengageHex.id,
-            endHexID,
-            boardHexes: newBoardHexes,
-            startTailHexID: unitAttemptingToDisengageTailHex?.id,
-            endTailHexID,
-          })
-          newUnitsMoved.push(unitDisengagingID)
+          if (!isFallFatal) {
+            // unit is not dead, move it
+            // TODO: Glyph move
+            moveUnit_G({
+              unitID: unitDisengagingID,
+              startHexID: unitAttemptingToDisengageHex.id,
+              endHexID,
+              boardHexes: newBoardHexes,
+              startTailHexID: unitAttemptingToDisengageTailHex?.id,
+              endTailHexID,
+            })
+            newUnitsMoved.push(unitDisengagingID)
 
-          // update unit move-points from move-range
-          newGameUnits[unitDisengagingID].movePoints =
-            disengagesAttempting.movePointsLeft
+            // update unit move-points from move-range
+            newGameUnits[unitDisengagingID].movePoints =
+              disengagesAttempting.movePointsLeft
+          }
+          // update G
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
@@ -301,7 +301,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
             isFatal: isFallFatal,
           })
           G.gameLog.push(gameLogForThisMove)
-          /* END MOVE */
           // send players back to movement/idle stages
           events.setActivePlayers({
             currentPlayer: stageNames.movement,
@@ -320,26 +319,26 @@ export const takeDisengagementSwipe: Move<GameState> = {
     }
 
     if (!isTaking) {
-      G.disengagedUnitIds.push(unitSwiping.unitID)
       // update game log for non-fatal disengagement
       const indexOfThisDisengage = G.disengagedUnitIds.length
       const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitSwipingID}:d-deny-${indexOfThisDisengage}`
-      // TODO: pass info for unit that is swiping
       const gameLogForDeniedSwipe = encodeGameLogMessage({
         type: gameLogTypes.disengageSwipeDenied,
         id,
         playerID: unitSwiping.playerID,
+        unitSingleName: unitSwipingCard.singleName,
         defenderPlayerID: unitDisengagingPlayerID,
       })
       G.gameLog.push(gameLogForDeniedSwipe)
       if (isAllEngagementsSettled) {
-        /* START MOVE */
+        // const fallingDamageWounds = rollHeroscapeDice(
+        //   fallDamage,
+        //   random
+        // ).skulls
+        const fallingDamageWounds = 1
+        let isFallFatal = false
         if (fallDamage > 0) {
-          const fallingDamageWounds = rollHeroscapeDice(
-            fallDamage,
-            random
-          ).skulls
-          const isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
+          isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
           if (isFallFatal) {
             killUnit_G({
               boardHexes: G.boardHexes,
@@ -353,8 +352,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
               defenderHexID: unitAttemptingToDisengageHex.id,
               defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
             })
-            // TODO: gamelog fatal fall
-
             /* begin stage queue */
             if (isWarriorSpirit) {
               newStageQueue.push({
@@ -384,14 +381,19 @@ export const takeDisengagementSwipe: Move<GameState> = {
             }
             /* end stage queue */
           }
-        } else {
+          // if fall is not fatal, assign wounds
+          else {
+            newGameUnits[unitDisengagingID].wounds += fallingDamageWounds
+          }
+        }
+        if (!isFallFatal) {
           // TODO: Glyph move
           moveUnit_G({
             unitID: unitDisengagingID,
-            startHexID: unitAttemptingToDisengageHex.id,
-            endHexID,
             boardHexes: newBoardHexes,
+            startHexID: unitAttemptingToDisengageHex.id,
             startTailHexID: unitAttemptingToDisengageTailHex?.id,
+            endHexID,
             endTailHexID,
           })
           newUnitsMoved.push(unitDisengagingID)
@@ -399,51 +401,43 @@ export const takeDisengagementSwipe: Move<GameState> = {
           // update unit move-points from move-range
           newGameUnits[unitDisengagingID].movePoints =
             disengagesAttempting.movePointsLeft
-          G.boardHexes = { ...newBoardHexes }
-          G.gameUnits = { ...newGameUnits }
-          G.unitsMoved = newUnitsMoved
-          /* END MOVE */
-          // send players back to movement/idle stages
-          events.setActivePlayers({
-            currentPlayer: stageNames.movement,
-          })
         }
+
+        // update G
+        G.boardHexes = { ...newBoardHexes }
+        G.gameUnits = { ...newGameUnits }
+        G.unitsMoved = newUnitsMoved
+
+        // copied from move-fall-action
+        const indexOfThisMove = G.unitsMoved.length
+        const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitDisengagingID}:m${indexOfThisMove}`
+        const gameLogForThisMove = encodeGameLogMessage({
+          type: gameLogTypes.move,
+          id: moveId,
+          playerID: unitDisengagingPlayerID,
+          unitID: unitDisengagingID,
+          unitSingleName: unitAttemptingCard.singleName,
+          endHexID,
+          fallDamage: fallDamage,
+          wounds: fallingDamageWounds,
+          isFatal: isFallFatal,
+        })
+        G.gameLog.push(gameLogForThisMove)
+        /* END MOVE */
+        // send players back to movement/idle stages
+        events.setActivePlayers({
+          currentPlayer: stageNames.movement,
+        })
+        // end the current stage? is this necessary?
+        events.endStage()
         // finally, clear disengagement state
         G.disengagesAttempting = undefined
         G.disengagedUnitIds = []
       } else {
-        // still more disengagements to resolve
+        // ENGAGEMENTS NOT SETTLED
         // add to G.disengagedUnitIds
         G.disengagedUnitIds.push(unitSwiping.unitID)
       }
-      // if (isAllEngagementsSettled) {
-      //   // TODO: falling damage
-      //   /* START MOVE */
-      //   moveUnit_G({
-      //     unitID: unitDisengagingID,
-      //     startHexID: unitAttemptingToDisengageHex.id,
-      //     endHexID,
-      //     boardHexes: newBoardHexes,
-      //     startTailHexID: unitAttemptingToDisengageTailHex?.id,
-      //     endTailHexID,
-      //   })
-      //   newUnitsMoved.push(unitDisengagingID)
-      //   /* END MOVE */
-
-      //   // update unit move-points from move-range
-      //   newGameUnits[unitDisengagingID].movePoints =
-      //     disengagesAttempting.movePointsLeft
-      //   G.boardHexes = { ...newBoardHexes }
-      //   G.gameUnits = { ...newGameUnits }
-      //   G.unitsMoved = newUnitsMoved
-      //   /* END MOVE */
-
-      //   events.setActivePlayers({
-      //     currentPlayer: stageNames.movement,
-      //   })
-      //   G.disengagesAttempting = undefined
-      //   G.disengagedUnitIds = []
-      // }
     }
   },
 }

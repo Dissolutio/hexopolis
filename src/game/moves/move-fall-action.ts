@@ -75,15 +75,14 @@ export const moveFallAction: Move<GameState> = {
     const unitPlayerID = `${unitGameCard.playerID}`
     const unitLife = unitGameCard.life - unit.wounds
     let newStageQueue: StageQueueItem[] = []
+    // falling wounds initializes as 0, but may be more, so these get mutated
     let fallingDamageWounds = 0
     let isFatal = false
 
     // 1. They fall, and die or take wounds
     if (fallDamage > 0) {
-      const { skulls } = rollHeroscapeDice(fallDamage, random)
-      // mutation
-      fallingDamageWounds = skulls
-      isFatal = skulls >= unitLife
+      fallingDamageWounds = rollHeroscapeDice(fallDamage, random).skulls
+      isFatal = fallingDamageWounds >= unitLife
       // 1.A kill the unit
       if (isFatal) {
         const isWarriorSpirit = selectIfGameArmyCardHasAbility(
@@ -144,7 +143,7 @@ export const moveFallAction: Move<GameState> = {
       }
       // 1.B they take wounds
       else {
-        newGameUnits[unitID].wounds += skulls
+        newGameUnits[unitID].wounds += fallingDamageWounds
       }
     }
 
