@@ -5,13 +5,11 @@ import {
   GameUnits,
   MapOptions,
   StartZones,
-  StringKeyedObj,
 } from '../types'
 import { giantsTable } from './giantsTable'
 import { devHexagon } from './devHexagon'
-import { selectHexNeighbors, selectValidTailHexes } from '../selectors'
+import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
-import { generateBlankHexMapGlyphs } from '../constants'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -105,7 +103,7 @@ export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
       mapHeight: mapSize,
       mapWidth: mapSize,
       hexSize: 10,
-      ...generateBlankHexMapGlyphs(),
+      glyphs: {},
     },
   }
 }

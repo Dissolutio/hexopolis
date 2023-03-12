@@ -1,5 +1,3 @@
-import { generateBlankHexMapGlyphs } from 'game/constants'
-
 export const giantsTable = {
   boardHexes: {
     '0,0,0': {
