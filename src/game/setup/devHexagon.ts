@@ -422,18 +422,18 @@ export const devHexagon = {
       //   glyphID: 'healer',
       //   isRevealed: true,
       // },
-      '2,-2,0': {
-        glyphID: 'attack',
-        isRevealed: false,
-      },
+      // '2,-2,0': {
+      //   glyphID: 'attack',
+      //   isRevealed: false,
+      // },
       '-2,2,0': {
         glyphID: 'defense',
         isRevealed: false,
       },
-      '-3,3,0': {
-        glyphID: 'summoner',
-        isRevealed: false,
-      },
+      // '-3,3,0': {
+      //   glyphID: 'summoner',
+      //   isRevealed: false,
+      // },
     },
   },
 }

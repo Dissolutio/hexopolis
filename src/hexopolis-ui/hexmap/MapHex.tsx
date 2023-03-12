@@ -17,7 +17,7 @@ import {
 } from './calcHexClassNames'
 import { HexIDText, UnitLifeText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
-import { GlyphDisplay } from './GlyphDisplay'
+import { MapHexGlyph } from './MapHexGlyph'
 import { HexGridCoordinate } from './HexGridCoordinate'
 import { useLayoutContext } from './HexgridLayout'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
@@ -240,7 +240,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
         // textLine2={!hex.isUnitTail ? `${unitName}` : ''}
       />
       {/* Glyph display */}
-      <GlyphDisplay hex={hex} />
+      <MapHexGlyph hex={hex} />
       {/* Unit icon */}
       <AnimatePresence initial={false}>
         {gameUnit && isShowableUnit && (

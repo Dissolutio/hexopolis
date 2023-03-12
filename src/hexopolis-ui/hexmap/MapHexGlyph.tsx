@@ -6,7 +6,7 @@ import { HexText } from './HexText'
 type Props = {
   hex: BoardHex
 }
-export function GlyphDisplay(props: Props) {
+export function MapHexGlyph(props: Props) {
   const { hex } = props
   const {
     hexMap: { glyphs, hexSize },
@@ -26,7 +26,14 @@ export function GlyphDisplay(props: Props) {
   return (
     <g transform={`translate(0, -2)`}>
       <polygon className={'hex-glyph'} points={points} />
-      <HexText hexSize={hexSize}>{glyphText}</HexText>
+      <HexText
+        style={{
+          fontSize: `${hexSize / 50}em`,
+        }}
+        hexSize={hexSize}
+      >
+        {glyphText}
+      </HexText>
     </g>
   )
 }
