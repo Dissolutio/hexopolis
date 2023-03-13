@@ -19,7 +19,7 @@ import {
 } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
-import { killUnit_G, moveUnit_G } from './G-mutators'
+import { killUnit_G, moveUnit_G, revealGlyph_G } from './G-mutators'
 
 export const noUndoMoveAction: Move<GameState> = {
   undoable: false,
@@ -158,14 +158,13 @@ export const noUndoMoveAction: Move<GameState> = {
       // update unit move-points
       newGameUnits[unitID].movePoints = movePointsLeft
     }
-    // TODO: GLYPH move
     // 3. Reveal or activate glyph on hex
     if (glyphOnHex) {
-      const isUnrevealedGlyph = glyphOnHex.isRevealed === false
-      // reveal glyph
-      if (isUnrevealedGlyph) {
-        newGlyphs[endHexID].isRevealed = true
-      }
+      revealGlyph_G({
+        endHexID: endHexID,
+        glyphOnHex: glyphOnHex,
+        glyphs: G.hexMap.glyphs,
+      })
     }
     // update game log
     const indexOfThisMove = G.unitsMoved.length
