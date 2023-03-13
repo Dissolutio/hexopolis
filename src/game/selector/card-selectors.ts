@@ -154,25 +154,46 @@ export const selectUnitAttackDiceForAttack = ({
   defender,
   attackerArmyCard,
   defenderArmyCard,
+  isMelee,
   boardHexes,
+  glyphs,
   gameArmyCards,
   gameUnits,
   unitsAttacked,
-  isMelee,
 }: {
   attackerHex: BoardHex
   defenderHex: BoardHex
   defender: GameUnit
   attackerArmyCard: GameArmyCard
   defenderArmyCard: GameArmyCard
+  isMelee: boolean
   boardHexes: BoardHexes
+  glyphs: Glyphs
   gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
   unitsAttacked: Record<string, string[]>
-  isMelee: boolean
 }): number => {
   let dice = attackerArmyCard.attack
   const heightBonus = attackerHex.altitude > defenderHex.altitude ? 1 : 0
+  const glyphBonus = () => {
+    const glyph = Object.values(glyphs).find(
+      (g) => g.glyphID === glyphIDs.attack
+    )
+    if (!glyph) {
+      return 0
+    }
+    const allAttackerUnitIDs = Object.values(gameUnits)
+      .filter((u) => u.playerID === attackerArmyCard.playerID)
+      .map((u) => u.unitID)
+    const allHexIDsAttackerOccupies = Object.values(boardHexes)
+      .filter(
+        (h) =>
+          h.occupyingUnitID && allAttackerUnitIDs.includes(h.occupyingUnitID)
+      )
+      .map((h) => h.id)
+    const isMyGlyph = allHexIDsAttackerOccupies.includes(glyph.hexID)
+    return isMyGlyph ? 1 : 0
+  }
   const zettianTargetingBonus =
     selectIfGameArmyCardHasAbility('Zettian Targeting', attackerArmyCard) &&
     // if second zettian attacks same unit as first, +1
@@ -242,6 +263,7 @@ export const selectUnitAttackDiceForAttack = ({
   return (
     dice +
     heightBonus +
+    glyphBonus() +
     zettianTargetingBonus +
     swordOfReckoningBonus +
     finnsAttackAura() +
@@ -273,23 +295,24 @@ export const selectUnitDefenseDiceForAttack = ({
 }): number => {
   let dice = defenderArmyCard.defense
   const heightBonus = defenderHex.altitude > attackerHex.altitude ? 1 : 0
-  const glyphOfGerdaBonus = () => {
-    const gerdaGlyph = Object.values(glyphs).find(
+  const glyphBonus = () => {
+    const glyph = Object.values(glyphs).find(
       (g) => g.glyphID === glyphIDs.defense
     )
-    if (!gerdaGlyph) {
+    if (!glyph) {
       return 0
     }
-    const allMyUnitIDs = Object.values(gameUnits)
+    const allDefenderUnitIDs = Object.values(gameUnits)
       .filter((u) => u.playerID === defenderArmyCard.playerID)
       .map((u) => u.unitID)
-    const allHexIDsMyUnitsOccupy = Object.values(boardHexes)
+    const allHexIDsDefenderOccupies = Object.values(boardHexes)
       .filter(
-        (h) => h.occupyingUnitID && allMyUnitIDs.includes(h.occupyingUnitID)
+        (h) =>
+          h.occupyingUnitID && allDefenderUnitIDs.includes(h.occupyingUnitID)
       )
       .map((h) => h.id)
-    const isGerdaMyGlyph = allHexIDsMyUnitsOccupy.includes(gerdaGlyph.hexID)
-    return isGerdaMyGlyph ? 1 : 0
+    const isMyGlyph = allHexIDsDefenderOccupies.includes(glyph.hexID)
+    return isMyGlyph ? 1 : 0
   }
   const raelinDefensiveAura = () => {
     const theirRaelinCard = gameArmyCards.filter(
@@ -306,7 +329,7 @@ export const selectUnitDefenseDiceForAttack = ({
     if (!theirRaelinUnit) {
       return 0
     }
-    // raelin does benefit from her own defensive aura
+    // raelin does NOT benefit from her own defensive aura
     return theirRaelinUnit.unitID !== defenderUnit.unitID &&
       selectIsUnitWithinNHexesOfUnit({
         startUnitID: theirRaelinUnit.unitID,
@@ -378,7 +401,7 @@ export const selectUnitDefenseDiceForAttack = ({
   return (
     dice +
     heightBonus +
-    glyphOfGerdaBonus() +
+    glyphBonus() +
     raelinDefensiveAura() +
     thorgrimDefensiveAura() +
     grimnaksOrcEnhancement()

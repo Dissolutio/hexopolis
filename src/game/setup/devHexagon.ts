@@ -423,11 +423,11 @@ export const devHexagon = {
       //   glyphID: 'healer',
       //   isRevealed: true,
       // },
-      // '2,-2,0': {
-      // hexID: '2,-2,0',
-      //   glyphID: 'attack',
-      //   isRevealed: false,
-      // },
+      '-3,3,0': {
+        hexID: '-3,3,0',
+        glyphID: 'attack',
+        isRevealed: false,
+      },
       '-2,2,0': {
         hexID: '-2,2,0',
         glyphID: 'defense',
