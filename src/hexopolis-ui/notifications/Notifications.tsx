@@ -11,6 +11,7 @@ import {
 import { uniqBy } from 'lodash'
 import { playerColors } from 'hexopolis-ui/theme'
 import { playerIDDisplay } from 'game/transformers'
+import { powerGlyphs } from 'game/glyphs'
 
 export const Notifications = () => {
   const { toasts, handlers } = useToaster()
@@ -318,6 +319,7 @@ const GameLogDisplay = ({
     unitSingleName,
     isGrappleGun,
     fallDamage,
+    revealedGlyphID,
     // berserker charge: most generic roll format
     roll,
     isRollSuccessful,
@@ -357,21 +359,36 @@ const GameLogDisplay = ({
         </>
       )
     case gameLogTypes.move:
+      const glyphName = revealedGlyphID
+        ? powerGlyphs?.[revealedGlyphID]?.name
+        : ''
+      const glyphEffect = revealedGlyphID
+        ? powerGlyphs?.[revealedGlyphID]?.effect
+        : ''
+      const revealedGlyphMsg = revealedGlyphID
+        ? `${unitSingleName} has revealed the ${glyphName}! (${glyphEffect})`
+        : ''
       const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} / ${fallDamage} possible wounds)`
-      const fallButNoDamageMove = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
-      const woundedFallMove = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
+      const unwoundedFallMsg = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
+      const woundedFallMsg = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
       const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
       const moveMsgText = `${unitSingleName} is on the move`
+      // TODO: Robustify this multi-line readout of an undoable move, really, we were just checking if the unit was destroyed, otherwise we display a litany of other messages
       const moveMsg = isFatal
         ? diedFallingMsg
         : (wounds ?? 0) > 0
-        ? woundedFallMove
+        ? woundedFallMsg
         : (fallDamage ?? 0) > 0 && wounds === 0
-        ? fallButNoDamageMove
+        ? unwoundedFallMsg
         : isGrappleGun
         ? grappleGunMoveMsg
         : moveMsgText
-      return <span style={{ color: playerColors[playerID] }}>{moveMsg}</span>
+      return (
+        <span style={{ color: playerColors[playerID] }}>
+          <div>{moveMsg}</div>
+          {revealedGlyphMsg && <div>{revealedGlyphMsg}</div>}
+        </span>
+      )
     case gameLogTypes.theDropRoll:
       const theDropRollMsg = isRollSuccessful ? (
         <span style={{ color: playerColors[playerID] }}>

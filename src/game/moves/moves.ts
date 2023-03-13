@@ -6,7 +6,7 @@ import {
   StageQueueItem,
 } from '../types'
 import { moveAction } from './move-action'
-import { moveFallAction } from './move-fall-action'
+import { undoableMoveAction } from './move-fall-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
@@ -192,7 +192,7 @@ export const moves: MoveMap<GameState> = {
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,
   moveAction,
-  moveFallAction,
+  undoableMoveAction,
   attemptDisengage,
   takeDisengagementSwipe,
   rollForBerserkerCharge,
