@@ -159,6 +159,7 @@ export const attackAction: Move<GameState> = {
       boardHexes: G.boardHexes,
       gameArmyCards: G.gameArmyCards,
       gameUnits: G.gameUnits,
+      glyphs: G.hexMap.glyphs,
     })
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds

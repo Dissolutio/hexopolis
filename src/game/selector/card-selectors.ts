@@ -5,6 +5,7 @@ import {
   GameUnit,
   BoardHex,
   ArmyCard,
+  Glyphs,
 } from '../types'
 import {
   selectAreTwoAdjacentUnitsEngaged,
@@ -17,6 +18,7 @@ import {
   selectUnitsForCard,
 } from '../selectors'
 import { finnID, grimnakID, raelinOneID, thorgrimID } from '../setup/unit-gen'
+import { glyphIDs } from 'game/glyphs'
 
 // range abilities:
 // 1 D-9000's Range Enhancement
@@ -256,6 +258,7 @@ export const selectUnitDefenseDiceForAttack = ({
   boardHexes,
   gameArmyCards,
   gameUnits,
+  glyphs,
 }: {
   defenderArmyCard: GameArmyCard
   defenderUnit: GameUnit
@@ -266,9 +269,28 @@ export const selectUnitDefenseDiceForAttack = ({
   boardHexes: BoardHexes
   gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
+  glyphs: Glyphs
 }): number => {
   let dice = defenderArmyCard.defense
   const heightBonus = defenderHex.altitude > attackerHex.altitude ? 1 : 0
+  const glyphOfGerdaBonus = () => {
+    const gerdaGlyph = Object.values(glyphs).find(
+      (g) => g.glyphID === glyphIDs.defense
+    )
+    if (!gerdaGlyph) {
+      return 0
+    }
+    const allMyUnitIDs = Object.values(gameUnits)
+      .filter((u) => u.playerID === defenderArmyCard.playerID)
+      .map((u) => u.unitID)
+    const allHexIDsMyUnitsOccupy = Object.values(boardHexes)
+      .filter(
+        (h) => h.occupyingUnitID && allMyUnitIDs.includes(h.occupyingUnitID)
+      )
+      .map((h) => h.id)
+    const isGerdaMyGlyph = allHexIDsMyUnitsOccupy.includes(gerdaGlyph.hexID)
+    return isGerdaMyGlyph ? 1 : 0
+  }
   const raelinDefensiveAura = () => {
     const theirRaelinCard = gameArmyCards.filter(
       (c) =>
@@ -356,6 +378,7 @@ export const selectUnitDefenseDiceForAttack = ({
   return (
     dice +
     heightBonus +
+    glyphOfGerdaBonus() +
     raelinDefensiveAura() +
     thorgrimDefensiveAura() +
     grimnaksOrcEnhancement()

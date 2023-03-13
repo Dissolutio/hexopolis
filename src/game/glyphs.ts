@@ -5,6 +5,10 @@ export const getGlyphInfoByID = (glyphID: string) => {
   }
   return glyph
 }
+export const glyphIDs = {
+  attack: 'attack',
+  defense: 'defense',
+}
 export type HexoscapeGlyphs = {
   [key: string]: {
     id: string
