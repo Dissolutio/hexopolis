@@ -312,7 +312,6 @@ export function calcRopHexClassNames({
     }
   }
   if (isChompStage) {
-    // TODO: Selected hex red?
     if (chompableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }
@@ -321,7 +320,6 @@ export function calcRopHexClassNames({
     }
   }
   if (isMindShackleStage) {
-    // TODO: Selected hex red?
     if (mindShackleTargetableHexIDs?.includes(hex.id)) {
       classNames = classNames.concat(' hexagon-selectable ')
     }

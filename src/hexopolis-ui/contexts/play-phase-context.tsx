@@ -157,7 +157,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     totalNumberOfAttacksAllowed,
     attacksAllowedPerFigure,
   } = selectGameArmyCardAttacksAllowed(revealedGameCard)
-  const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
+  const attacksUsed = Object.values(unitsAttacked).flat().length
   const attacksLeft =
     Math.min(
       totalNumberOfAttacksAllowed,
@@ -228,7 +228,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
               endHexUnitPlayerID !== attackerPlayerID // TODO: make this work for team games
             // If hex is enemy occupied...
             if (isEndHexEnemyOccupied) {
-              // TODO isInRange: a place where we may consider engagements requiring adjacent attacks / terrain blocking range-1 attacks etc.
               const { isInRange } = selectIsInRangeOfAttack({
                 attackingUnit: attackingUnit,
                 defenderHex: iteratedHex,
@@ -278,7 +277,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // MOVE-ONTO-GLYPH ATTEMPT
   const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
   const confirmGlyphMove = () => {
-    // TODO: we should do a fall move if the glyph is on a fall hex,
+    // TODO: GLYPH MOVE
     moveAction(selectedUnit, boardHexes[glyphMoveHexID], selectedUnitMoveRange)
     setGlyphMoveHexID('')
   }
@@ -341,7 +340,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     if (isMovementStage) {
       if (selectedUnitID && selectedUnit) {
         setSelectedUnitMoveRange(() =>
-          // TODO GRAPPLE GUN
           computeUnitMoveRange(
             selectedUnit,
             isFlying,

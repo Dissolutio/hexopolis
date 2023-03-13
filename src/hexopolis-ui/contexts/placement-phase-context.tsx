@@ -128,6 +128,7 @@ const PlacementContextProvider = ({
       .map((unit) => {
         return unit.unitID
       })
+  // the editing board hexes is a local set of board hexes (like where you are placing your units), it is edited during Placement Phase, The Drop
   const [editingBoardHexes, setEditingBoardHexes] =
     useState<BoardHexesUnitDeployment>(
       initialEditingBoardHexes(boardHexes, myUnitIds)

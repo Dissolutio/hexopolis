@@ -34,7 +34,7 @@ export const moveAction: Move<GameState> = (
   const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
   const movedUnitsCount = uniq(G.unitsMoved).length
   const allowedMoveCount = unitGameCard?.figures ?? 0
-  // TODO: Glyph move
+  // TODO: GLYPH move
   const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
   const isUnitMoved = G.unitsMoved.includes(unitID)
   const isDisallowedBecauseMaxUnitsMoved =

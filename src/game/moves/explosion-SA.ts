@@ -149,7 +149,7 @@ export const rollForExplosionSpecialAttack: Move<GameState> = (
 
     G.unitsAttacked = unitsAttacked
     // update game log
-    // TODO: pull this game log out of the loop like stageQueue
+    // TODO: gamelog: improve from regular attack log to a special one for explosion/grenade
     const gameLogForThisAttack = encodeGameLogMessage({
       type: gameLogTypes.attack,
       id: attackId,

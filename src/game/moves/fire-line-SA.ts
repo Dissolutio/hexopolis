@@ -29,7 +29,6 @@ export const rollForFireLineSpecialAttack: Move<GameState> = (
 ) => {
   // 0. get ready
   let newStageQueue: StageQueueItem[] = []
-  // TODO: Special Attack abilities should have attackRolled and range as data
   const attackRolled = 4
   const unitsAttacked = { ...G.unitsAttacked }
   const attackerHex = selectHexForUnit(attackerUnitID, G.boardHexes)

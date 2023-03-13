@@ -30,7 +30,6 @@ function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
   )
 }
 
-//TODO -- generate other maps -- WIP
 // function generateOrientedRectangle(mapSize: number): BoardHexes {
 //   const hexgridHexes = generateOrientedRectangleHexas(mapSize, mapSize)
 //   const boardHexes = hexesToBoardHexes(hexgridHexes)

@@ -103,7 +103,7 @@ const dropInUnits: Move<GameState> = (
       return
     }
     const playerID = cardDroppingIn.playerID
-    // TODO: add to gamelog that player dropped in some units
+    // TODO: add gamelog that player dropped in some units
     const propositions = Object.entries(deploymentProposition)
     // this will just flat out overwrite units, so be careful in the selectable hex generation
     propositions.forEach((proposition) => {
@@ -127,7 +127,7 @@ const dropInUnits: Move<GameState> = (
     G.theDropUsed.push(gameCardID)
   }
   // All below is done even if the player is not accepting the drop in
-  // TODO: add to gamelog that player did not drop in units
+  // TODO: add gamelog that player did not drop in units
   let newStageQueue: StageQueueItem[] = [...G.stageQueue]
   const nextStage = newStageQueue.shift()
   G.stageQueue = newStageQueue

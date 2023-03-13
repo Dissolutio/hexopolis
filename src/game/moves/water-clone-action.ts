@@ -17,7 +17,6 @@ export const rollForWaterClone: Move<GameState> = (
       const isOnWater =
         G.boardHexes[current.clonerHexID].terrain === HexTerrain.water
       const rollThreshhold = isOnWater ? 10 : 15
-      // TODO: Anything influencing the dice roll? i.e. SuBakNa Hive Supremacy, Glyph of Lodin (+1 d20)
       const roll = random.Die(20)
       const isRollSuccessful = roll >= rollThreshhold
       return {
@@ -90,10 +89,10 @@ export const placeWaterClone: Move<GameState> = (
   // unkill the unit
   G.gameUnits[clonedID] = {
     ...G.killedUnits[clonedID],
-    movePoints: 0, // TODO: over time, there may be many properties that need resetting upon death/resurrection
+    movePoints: 0,
   }
   delete G.killedUnits[clonedID]
-  // TODO: Glyph move
+  // TODO: GLYPH move
   // place the unit
   G.boardHexes[hexID].occupyingUnitID = clonedID
   G.waterClonesPlaced.push({ clonedID, hexID, clonerID })

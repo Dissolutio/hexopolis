@@ -144,7 +144,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
         // update game log for fatal disengagement
         const indexOfThisDisengage = G.disengagedUnitIds.length
         const id = `r${G.currentRound}:om${G.currentOrderMarker}:${unitSwipingID}:d-fatal-${indexOfThisDisengage}`
-        // TODO: pass info for unit that is swiping
         const gameLogForFatalSwipe = encodeGameLogMessage({
           type: gameLogTypes.disengageSwipeFatal,
           id,
@@ -206,7 +205,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           wounds: swipeWounds,
         })
         G.gameLog.push(gameLogForNonFatalSwipe)
-        // move the unit, it might fall to death
+        // is this is the last disengagement-swipe, move the unit, it might fall to death
         if (isAllEngagementsSettled) {
           const fallingDamageWounds = rollHeroscapeDice(
             fallDamage,
@@ -228,9 +227,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
                 defenderHexID: unitAttemptingToDisengageHex.id,
                 defenderTailHexID: unitAttemptingToDisengageTailHex?.id,
               })
-              // TODO: gamelog fatal fall
-
-              /* begin stage queue */
               if (isWarriorSpirit) {
                 newStageQueue.push({
                   playerID: unitDisengagingID,
@@ -257,8 +253,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
                 // end the current stage? is this necessary?
                 events.endStage()
               }
-              /* end stage queue */
-              // return // AKA don't do the move below
             }
             // if fall is not fatal, assign wounds
             else {
@@ -267,7 +261,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           }
           if (!isFallFatal) {
             // unit is not dead, move it
-            // TODO: Glyph move
+            // TODO: GLYPH move
             moveUnit_G({
               unitID: unitDisengagingID,
               startHexID: unitAttemptingToDisengageHex.id,
@@ -286,7 +280,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           G.boardHexes = { ...newBoardHexes }
           G.gameUnits = { ...newGameUnits }
           G.unitsMoved = newUnitsMoved
-          // copied from move-fall-action
+          // gamelog code copied from move-fall-action
           const indexOfThisMove = G.unitsMoved.length
           const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitDisengagingID}:m${indexOfThisMove}`
           const gameLogForThisMove = encodeGameLogMessage({
@@ -387,7 +381,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           }
         }
         if (!isFallFatal) {
-          // TODO: Glyph move
+          // TODO: GLYPH move
           moveUnit_G({
             unitID: unitDisengagingID,
             boardHexes: newBoardHexes,

@@ -46,7 +46,7 @@ export const moveFallAction: Move<GameState> = {
     const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
     const movedUnitsCount = uniq(G.unitsMoved).length
     const allowedMoveCount = unitGameCard?.figures ?? 0
-    // TODO: Glyph move
+    // TODO: GLYPH move
     const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
     const isUnitMoved = G.unitsMoved.includes(unitID)
     const isDisallowedBecauseMaxUnitsMoved =
@@ -106,7 +106,6 @@ export const moveFallAction: Move<GameState> = {
           defenderTailHexID: startTailHexID,
         })
         if (isWarriorSpirit) {
-          // TODO: we could add this only if they have moves left
           // mark this so after placing spirit we can get back to moving (or ending turn if we're out of moves)
           newStageQueue.push({
             playerID: unit.playerID,
@@ -123,7 +122,6 @@ export const moveFallAction: Move<GameState> = {
           })
         }
         if (isArmorSpirit) {
-          // TODO: we could add this only if they have moves left
           // mark this so after placing spirit we can get back to moving (or ending turn if we're out of moves)
           newStageQueue.push({
             playerID: unit.playerID,

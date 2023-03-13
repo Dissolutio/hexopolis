@@ -58,7 +58,6 @@ export function selectUnitGameCardForHex(
   const card = selectGameCardByID(gameArmyCards, unit?.gameCardID ?? '')
   return card
 }
-// TODO: the params on this fn are backwards by my convention of most specific to least, then G in usual order
 export function selectGameCardByID(
   gameArmyCards: GameArmyCard[],
   gameCardID: string
@@ -229,7 +228,7 @@ export function selectAreTwoAdjacentUnitsEngaged({
   bAltitude: number
 }) {
   // this just checks if the top of one unit is above the bottom of the other
-  // TODO: account for barriers between two hexes
+  // TODO: RUINS: account for barriers between two hexes
   return bAltitude < aAltitude + aHeight && bAltitude > aAltitude - bHeight
 }
 export const selectAttackerHasAttacksAllowed = ({
@@ -434,7 +433,7 @@ export function selectEngagementsForHex({
           h.occupyingUnitID &&
           h.occupyingUnitID !== overrideUnitID &&
           // filter for enemy units
-          // TODO: account for team play here, where adjacent units may be friendly
+          // TODO: TEAMPLAY: account for team play here, where adjacent units may be friendly
           (all
             ? true
             : friendly

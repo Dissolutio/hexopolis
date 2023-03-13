@@ -98,7 +98,6 @@ const PlayPage = () => {
       </p>
     )
   }
-  // TODO: This component, or its parent, needs to be responsible for decided which Game Client to render, depending on which game that the server offers that the player then chooses
   return (
     <MultiplayerGameClient
       matchID={matchID}

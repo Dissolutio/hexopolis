@@ -30,7 +30,7 @@ export const RopAttackControls = () => {
   const revealedGameCardName = revealedGameCard?.name ?? ''
   const { totalNumberOfAttacksAllowed } =
     selectGameArmyCardAttacksAllowed(revealedGameCard)
-  const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
+  const attacksUsed = Object.values(unitsAttacked).flat().length
   const isAllAttacksUsed = attacksLeft <= 0
   const isNoAttacksUsed = attacksUsed <= 0
 

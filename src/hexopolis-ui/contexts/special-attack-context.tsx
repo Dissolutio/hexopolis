@@ -96,11 +96,6 @@ export function SpecialAttackContextProvider({
       return {}
     }
 
-    // TODO: Mind Shackle could be an ability on anybody's card
-    // const tailHex = selectTailHexForUnit(
-    //   firstUnitOfRevealedGameCard?.unitID ?? '',
-    //   boardHexes
-    // )
     if (
       !isMyTurn ||
       !revealedGameCard ||
