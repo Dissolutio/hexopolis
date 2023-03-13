@@ -32,6 +32,7 @@ export type GameLogMessage = {
   endHexID?: string
   isGrappleGun?: boolean
   fallDamage?: number
+  revealedGlyphID?: string
   // disengage attempts
   unitIdsToAttemptToDisengage?: string[]
   // berserker charge logs, most generic roll format

@@ -5,7 +5,16 @@ export const getGlyphInfoByID = (glyphID: string) => {
   }
   return glyph
 }
-export const powerGlyphs = {
+export type HexoscapeGlyphs = {
+  [key: string]: {
+    id: string
+    name: string
+    type: string // power, temporary, ( someday?: permanent, treasure, objective)
+    effect: string
+    description: string
+  }
+}
+export const powerGlyphs: HexoscapeGlyphs = {
   attack: {
     id: 'attack',
     name: 'Glyph of Astrid',
@@ -75,8 +84,9 @@ export const powerGlyphs = {
   // },
 }
 
-export const temporaryGlyphs = {
+export const temporaryGlyphs: HexoscapeGlyphs = {
   healer: {
+    id: 'healer',
     name: 'Glyph of Kelda',
     type: 'temporary',
     effect: 'Heal hero',
@@ -84,12 +94,14 @@ export const temporaryGlyphs = {
       'When a Hero you control lands on this Glyph, remove all wound markers from it. If a Squad figure lands here, nothing happens.',
   },
   summoner: {
+    id: 'summoner',
     name: 'Glyph of Erland',
     type: 'temporary',
     effect: 'Summon figure',
     description: `When a figure lands on this Glyph, choose any one figure (yours, a teammate's or an opponent's) and to place on an adjacent space.`,
   },
   curse: {
+    id: 'curse',
     name: 'Glyph of Mitonsoul',
     type: 'temporary',
     effect: 'Massive Curse',
