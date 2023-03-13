@@ -21,8 +21,7 @@ import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { killUnit_G, moveUnit_G } from './G-mutators'
 
-export const undoableMoveAction: Move<GameState> = {
-  // the biggest difference between move-fall-action and what used to be move-action, is this "undoable: ({G, ctx}, undefined/BUMMER) => false" property not receiving the params that the move fn receives
+export const noUndoMoveAction: Move<GameState> = {
   undoable: false,
   move: (
     { G, events, random },

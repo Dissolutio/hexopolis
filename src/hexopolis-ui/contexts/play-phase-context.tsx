@@ -115,7 +115,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const {
     moves: {
       moveAction,
-      undoableMoveAction,
+      noUndoMoveAction,
       attackAction,
       attemptDisengage,
       placeWaterClone,
@@ -268,11 +268,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // FALL DAMAGE ATTEMPT
   const [fallHexID, setFallHexID] = useState<string>('')
   const confirmFallDamageMove = () => {
-    undoableMoveAction(
-      selectedUnit,
-      boardHexes[fallHexID],
-      selectedUnitMoveRange
-    )
+    noUndoMoveAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
     setFallHexID('')
   }
   const cancelFallDamageMove = () => {
