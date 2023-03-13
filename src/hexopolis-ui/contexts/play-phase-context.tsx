@@ -278,7 +278,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
   const confirmGlyphMove = () => {
     // TODO: GLYPH MOVE
-    moveAction(selectedUnit, boardHexes[glyphMoveHexID], selectedUnitMoveRange)
+    noUndoMoveAction(
+      selectedUnit,
+      boardHexes[glyphMoveHexID],
+      selectedUnitMoveRange
+    )
     setGlyphMoveHexID('')
   }
   const cancelGlyphMove = () => {
