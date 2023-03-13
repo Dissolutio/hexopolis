@@ -277,7 +277,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // MOVE-ONTO-GLYPH ATTEMPT
   const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
   const confirmGlyphMove = () => {
-    // TODO: GLYPH MOVE
     noUndoMoveAction(
       selectedUnit,
       boardHexes[glyphMoveHexID],
