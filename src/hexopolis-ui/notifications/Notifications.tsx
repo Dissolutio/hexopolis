@@ -33,6 +33,7 @@ export const Notifications = () => {
         const defaultDuration = 20000
         const moreRepetitiveMsgDuration = 5000
         switch (type) {
+          case gameLogTypes.glyphReveal:
           case gameLogTypes.disengageSwipeFatal:
           case gameLogTypes.disengageSwipeNonFatal:
           case gameLogTypes.theDropRoll:
