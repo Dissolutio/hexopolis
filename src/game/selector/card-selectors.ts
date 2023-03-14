@@ -18,7 +18,7 @@ import {
   selectUnitsForCard,
 } from '../selectors'
 import { finnID, grimnakID, raelinOneID, thorgrimID } from '../setup/unit-gen'
-import { glyphIDs } from 'game/glyphs'
+import { glyphIDs } from '../glyphs'
 
 // range abilities:
 // 1 D-9000's Range Enhancement

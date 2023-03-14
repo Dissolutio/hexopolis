@@ -1,5 +1,5 @@
 import type { Move } from 'boardgame.io'
-import { selectGlyphForHex } from 'game/selectors'
+import { selectGlyphForHex } from '../selectors'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { GameState, HexTerrain, UnitsCloning, WaterCloneRoll } from '../types'
 import { revealGlyph_G } from './G-mutators'
