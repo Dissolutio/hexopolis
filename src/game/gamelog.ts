@@ -32,6 +32,7 @@ export type GameLogMessage = {
   endHexID?: string
   isGrappleGun?: boolean
   fallDamage?: number
+  revealedGlyphID?: string
   // disengage attempts
   unitIdsToAttemptToDisengage?: string[]
   // berserker charge logs, most generic roll format
@@ -41,6 +42,7 @@ export type GameLogMessage = {
   // water clone
   cloneCount?: number
   rollsAndThreshholds?: number[][]
+  possibleRevivals?: number
   // chomp
   isChompSuccessful?: boolean
   unitChompedName?: string
@@ -66,6 +68,7 @@ export const gameLogTypes = {
   chomp: 'chomp',
   mindShackle: 'mindShackle',
   berserkerCharge: 'berserkerCharge',
+  glyphReveal: 'glyphReveal',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -124,6 +127,7 @@ export const decodeGameLogMessage = (
       // water clone
       rollsAndThreshholds,
       cloneCount,
+      possibleRevivals,
       // chomp
       isChompSuccessful,
       unitChompedName,
@@ -140,6 +144,10 @@ export const decodeGameLogMessage = (
     }
     switch (type) {
       case gameLogTypes.attack:
+        return {
+          ...gameLog,
+        }
+      case gameLogTypes.glyphReveal:
         return {
           ...gameLog,
         }
@@ -163,7 +171,12 @@ export const decodeGameLogMessage = (
         }
       case gameLogTypes.waterClone:
         const isWaterCloneSuccessful = cloneCount > 0
-        const waterCloneSuccessMsg = `${unitName} have cloned ${cloneCount} more ${unitName}! (rolled ${rollsAndThreshholds
+        const maxPossibleClones = Math.min(possibleRevivals, cloneCount)
+        const waterCloneSuccessMsg = `${unitName} succeeded their Water Clone roll ${cloneCount} time${
+          cloneCount === 1 ? '' : 's'
+        }, to bring back ${maxPossibleClones} warrior${
+          maxPossibleClones === 1 ? '' : 's'
+        }! (rolled ${rollsAndThreshholds
           .map((rat: number[][]) => rat.join('/'))
           .join(', ')})`
         const waterCloneFailureMsg = `${unitName} have failed their WaterClone roll (rolled ${rollsAndThreshholds

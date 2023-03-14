@@ -1,15 +1,11 @@
 import { Move } from 'boardgame.io'
-import {
-  getActivePlayersIdleStage,
-  stageNames,
-  transformMoveRangeToArraysOfIds,
-} from '../constants'
+import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { uniq } from 'lodash'
-import { encodeGameLogMessage } from '../gamelog'
+import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
   selectGameCardByID,
+  selectGlyphForHex,
   selectHexForUnit,
-  selectRevealedGameCard,
   selectTailHexForUnit,
 } from '../selectors'
 import {
@@ -23,10 +19,9 @@ import {
 } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
-import { killUnit_G, moveUnit_G } from './G-mutators'
+import { killUnit_G, moveUnit_G, revealGlyph_G } from './G-mutators'
 
-export const moveFallAction: Move<GameState> = {
-  // the biggest difference between move-fall-action and what used to be move-action, is this "undoable: ({G, ctx}, undefined/BUMMER) => false" property not receiving the params that the move fn receives
+export const noUndoMoveAction: Move<GameState> = {
   undoable: false,
   move: (
     { G, events, random },
@@ -38,6 +33,11 @@ export const moveFallAction: Move<GameState> = {
     const endHexID = endHex.id
     const endTailHexID = currentMoveRange[endHexID].fromHexID
     const fallDamage = currentMoveRange[endHexID]?.fallDamage ?? 0
+    const glyphOnHex = selectGlyphForHex({
+      hexID: endHexID,
+      glyphs: G.hexMap.glyphs,
+    })
+    const isGlyphOnHexUnrevealed = !glyphOnHex?.isRevealed
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const startTailHex = selectTailHexForUnit(unitID, G.boardHexes)
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
@@ -46,7 +46,6 @@ export const moveFallAction: Move<GameState> = {
     const movePointsLeft = currentMoveRange[endHexID].movePointsLeft
     const movedUnitsCount = uniq(G.unitsMoved).length
     const allowedMoveCount = unitGameCard?.figures ?? 0
-    // TODO: GLYPH move
     const isAvailableMoveToBeUsed = movedUnitsCount < allowedMoveCount
     const isUnitMoved = G.unitsMoved.includes(unitID)
     const isDisallowedBecauseMaxUnitsMoved =
@@ -69,6 +68,7 @@ export const moveFallAction: Move<GameState> = {
 
     // ALLOW
     // make copies
+    const newGlyphs = { ...G.hexMap.glyphs }
     const newBoardHexes: BoardHexes = { ...G.boardHexes }
     const newGameUnits: GameUnits = { ...G.gameUnits }
     const unitSingleName = `${unitGameCard.singleName}`
@@ -158,12 +158,20 @@ export const moveFallAction: Move<GameState> = {
       })
       // update unit move-points
       newGameUnits[unitID].movePoints = movePointsLeft
+      // Reveal or activate glyph on hex
+      if (glyphOnHex) {
+        revealGlyph_G({
+          endHexID: endHexID,
+          glyphOnHex: glyphOnHex,
+          glyphs: G.hexMap.glyphs,
+        })
+      }
     }
     // update game log
     const indexOfThisMove = G.unitsMoved.length
     const moveId = `r${G.currentRound}:om${G.currentOrderMarker}:${unitID}:m${indexOfThisMove}`
     const gameLogForThisMove = encodeGameLogMessage({
-      type: 'move',
+      type: gameLogTypes.move,
       id: moveId,
       playerID: unitPlayerID,
       unitID: unitID,
@@ -173,6 +181,8 @@ export const moveFallAction: Move<GameState> = {
       fallDamage: fallDamage,
       wounds: fallingDamageWounds,
       isFatal,
+      revealedGlyphID:
+        !isFatal && isGlyphOnHexUnrevealed ? glyphOnHex?.glyphID ?? '' : '',
     })
     G.gameLog.push(gameLogForThisMove)
     G.stageQueue = newStageQueue

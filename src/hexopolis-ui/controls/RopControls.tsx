@@ -57,15 +57,16 @@ export const RopControls = () => {
     isGrenadeSAStage,
   } = useBgioCtx()
   const { showDisengageConfirm, fallHexID, glyphMoveHexID } = usePlayContext()
+  // ORDER MATTERS HERE: we check for disengage first, then glyph, then fall damage
   if (showDisengageConfirm) {
     // also shows fall damage info, and glyph info, aside the disengagement info
     return <RopConfirmDisengageAttemptControls />
-  } else if (fallHexID) {
-    // also shows glyph info, aside the fall damage info
-    return <RopConfirmFallDamageControls />
   } else if (glyphMoveHexID) {
-    // just shows glyph info, aside the fall damage info
+    // shows the fall damage info aside the glyph info
     return <RopConfirmActionGlyphMoveControls />
+  } else if (fallHexID) {
+    // shows the fall damage info
+    return <RopConfirmFallDamageControls />
   }
   if (isIdleStage) {
     return (
@@ -252,13 +253,17 @@ const RopConfirmFallDamageControls = () => {
   return (
     <>
       <StyledControlsHeaderH2>
-        {`Confirm you want to risk ${fallDamage} wounds from fall damage?`}
+        {`Confirm you want to risk ${fallDamage} wound${
+          fallDamage === 1 ? '' : 's'
+        } from fall damage?`}
       </StyledControlsHeaderH2>
       <ConfirmOrResetButtons
         confirm={cancelFallDamageMove}
         confirmText={`No, we will find another way...`}
         reset={confirmFallDamageMove}
-        resetText={`It's not that high! (Confirm risk of ${fallDamage} wounds)`}
+        resetText={`It's not that high! (Confirm risk of ${fallDamage} wound${
+          fallDamage === 1 ? '' : 's'
+        })`}
       />
     </>
   )
@@ -277,16 +282,29 @@ const RopConfirmActionGlyphMoveControls = () => {
   } = useBgioG()
   const isGlyphAnUnrevealedPowerGlyph =
     Boolean(glyphs?.[glyphMoveHexID]?.isRevealed) === false
+  const fallDamage = selectedUnitMoveRange?.[glyphMoveHexID]?.fallDamage ?? 0
   return (
     <>
       <StyledControlsHeaderH2>
-        {`Confirm you want to move onto the unrevealed and potentially dangerous glyph?`}
+        {`Confirm you want to move onto the unrevealed and potentially dangerous glyph? ${
+          fallDamage > 0
+            ? `AND risk ${fallDamage} wound${
+                fallDamage === 1 ? '' : 's'
+              } from fall damage?`
+            : ''
+        }`}
       </StyledControlsHeaderH2>
       <ConfirmOrResetButtons
         confirm={cancelGlyphMove}
         confirmText={`No, do not move onto the glyph`}
         reset={confirmGlyphMove}
-        resetText={`Yes, move onto the glyph!`}
+        resetText={`Yes, move onto the glyph! ${
+          fallDamage > 0
+            ? `(Confirm risk of ${fallDamage} wound${
+                fallDamage === 1 ? '' : 's'
+              })`
+            : ''
+        }`}
       />
     </>
   )

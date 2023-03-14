@@ -4137,25 +4137,30 @@ export const giantsTable = {
     mapHeight: 15,
     glyphs: {
       '12,0,-12': {
-        glyphID: 'healer',
+        hexID: '12,0,-12',
+        glyphID: 'defense',
         isRevealed: true,
       },
-      '10,1,-11': {
-        glyphID: 'summoner',
-        isRevealed: true,
-      },
+      // '10,1,-11': {
+      //   hexID: '10,1,-11',
+      //   glyphID: 'summoner',
+      //   isRevealed: true,
+      // },
       '10,4,-14': {
-        glyphID: 'range',
+        hexID: '10,4,-14',
+        glyphID: 'attack',
         isRevealed: true,
       },
-      '9,7,-16': {
-        glyphID: 'move',
-        isRevealed: true,
-      },
-      '8,9,-17': {
-        glyphID: 'move',
-        isRevealed: true,
-      },
+      // '9,7,-16': {
+      //   hexID: '9,7,-16',
+      //   glyphID: 'move',
+      //   isRevealed: true,
+      // },
+      // '8,9,-17': {
+      //   hexID: '8,9,-17',
+      //   glyphID: 'move',
+      //   isRevealed: true,
+      // },
     },
   },
 }

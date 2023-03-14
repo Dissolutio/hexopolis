@@ -6,7 +6,7 @@ import {
   StageQueueItem,
 } from '../types'
 import { moveAction } from './move-action'
-import { moveFallAction } from './move-fall-action'
+import { noUndoMoveAction } from './no-undo-move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
@@ -21,6 +21,7 @@ import {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  undoablePlaceWaterClone,
 } from './water-clone-action'
 import { selectGameCardByID } from '../selectors'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
@@ -192,13 +193,14 @@ export const moves: MoveMap<GameState> = {
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,
   moveAction,
-  moveFallAction,
+  noUndoMoveAction,
   attemptDisengage,
   takeDisengagementSwipe,
   rollForBerserkerCharge,
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  undoablePlaceWaterClone,
   chompAction,
   mindShackleAction,
   attackAction,

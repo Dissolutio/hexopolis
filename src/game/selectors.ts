@@ -11,6 +11,8 @@ import {
   HexCoordinates,
   RangeScan,
   HexTerrain,
+  Glyphs,
+  Glyph,
 } from './types'
 import { generateHexID } from './constants'
 import {
@@ -45,6 +47,16 @@ export function selectUnitForHex(
   const unitID = hex?.occupyingUnitID
   const unit = gameUnits?.[unitID]
   return unit
+}
+export function selectGlyphForHex({
+  hexID,
+  glyphs,
+}: {
+  hexID: string
+  glyphs: Glyphs
+}): Glyph | undefined {
+  const glyph = Object.values(glyphs).find((g) => g.hexID === hexID)
+  return glyph
 }
 export function selectUnitGameCardForHex(
   hexID: string,

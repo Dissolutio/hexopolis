@@ -49,6 +49,7 @@ export const WaterCloneControls = () => {
     rollForWaterClone({
       unitsCloning,
       unitName: revealedGameCard?.name ?? '',
+      possibleRevivals: revealedGameCardKilledUnitsCount,
     })
   }
   const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
