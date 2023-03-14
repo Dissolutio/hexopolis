@@ -103,7 +103,7 @@ export const WaterCloneControls = () => {
         {isCloneSuccess && (
           <StyledControlsP>{`${clonesLeftToPlaceCount} clones remaining to be placed`}</StyledControlsP>
         )}
-        {/* <UndoRedoButtons /> */}
+        <UndoRedoButtons />
         {clonesLeftToPlaceCount < 1 && (
           <StyledButtonWrapper>
             <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>

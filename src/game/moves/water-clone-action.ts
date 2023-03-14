@@ -100,26 +100,55 @@ export const finishWaterCloningAndEndTurn: Move<GameState> = ({
 }
 export const placeWaterClone: Move<GameState> = {
   undoable: false,
-  move: ({ G }, { clonedID, hexID, clonerID }) => {
+  move: ({ G, ctx }, { clonedID, hexID, clonerID }) => {
     // unkill the unit
     G.gameUnits[clonedID] = {
       ...G.killedUnits[clonedID],
       movePoints: 0,
+      // wounds: 0,
     }
     delete G.killedUnits[clonedID]
-    // TODO: GLYPH move
     const glyphOnHex = selectGlyphForHex({
       hexID: hexID,
       glyphs: G.hexMap.glyphs,
     })
-    // 3. Reveal or activate glyph on hex
-    if (glyphOnHex) {
+    const isGlyphOnHexUnrevealed = glyphOnHex && !glyphOnHex.isRevealed
+    // reveal or activate glyph on hex
+    if (isGlyphOnHexUnrevealed) {
       revealGlyph_G({
         endHexID: hexID,
         glyphOnHex,
         glyphs: G.hexMap.glyphs,
       })
+      // gamelog glyph reveal
+      const indexOfThisClone = G.waterClonesPlaced.length
+      const gameLogID = `r${G.currentRound}:om${G.currentOrderMarker}:clone:${indexOfThisClone}`
+      const gameLogForGlyphReveal = encodeGameLogMessage({
+        type: gameLogTypes.glyphReveal,
+        id: gameLogID,
+        playerID: ctx.currentPlayer,
+        unitSingleName: 'Marro Warrior',
+        revealedGlyphID: glyphOnHex?.glyphID ?? '',
+      })
+      G.gameLog.push(gameLogForGlyphReveal)
     }
+
+    // place the unit
+    G.boardHexes[hexID].occupyingUnitID = clonedID
+    G.waterClonesPlaced.push({ clonedID, hexID, clonerID })
+  },
+}
+export const undoablePlaceWaterClone: Move<GameState> = {
+  undoable: true,
+  move: ({ G, ctx }, { clonedID, hexID, clonerID }) => {
+    // unkill the unit
+    G.gameUnits[clonedID] = {
+      ...G.killedUnits[clonedID],
+      movePoints: 0,
+      // wounds: 0,
+    }
+    delete G.killedUnits[clonedID]
+
     // place the unit
     G.boardHexes[hexID].occupyingUnitID = clonedID
     G.waterClonesPlaced.push({ clonedID, hexID, clonerID })

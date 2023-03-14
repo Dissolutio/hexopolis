@@ -151,14 +151,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       killedUnit.gameCardID === revealedGameCard?.gameCardID
     )
   })
-  const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
-  const clonesPlacedIDs = waterClonesPlaced.map((p) => p.clonedID)
-  const clonesPlacedCount = clonesPlacedIDs.length
-  const maxPossibleClones = Math.min(
-    revealedGameCardKilledUnits.length,
-    cloningsWon
-  )
-  const clonesLeftToPlaceCount = maxPossibleClones - clonesPlacedCount
   const {
     numberOfAttackingFigures,
     totalNumberOfAttacksAllowed,
@@ -379,11 +371,16 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   ])
 
   // WATER CLONE
+  const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
+  const maxPossibleClonesLeft = Math.min(
+    revealedGameCardKilledUnits.length,
+    cloningsWon
+  )
   const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
     (p) => p.clonerHexID
   )
   const waterClonesPlacedClonerIDs = waterClonesPlaced.map((p) => p.clonerID)
-  const isAllClonesPlaced = clonesLeftToPlaceCount <= 0
+  const isAllClonesPlaced = maxPossibleClonesLeft <= 0
   const clonePlaceableHexIDs = isAllClonesPlaced
     ? []
     : Object.values(waterCloneRoll?.placements ?? {})

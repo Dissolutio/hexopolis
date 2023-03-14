@@ -68,6 +68,7 @@ export const gameLogTypes = {
   chomp: 'chomp',
   mindShackle: 'mindShackle',
   berserkerCharge: 'berserkerCharge',
+  glyphReveal: 'glyphReveal',
 }
 
 export type GameLogMessageDecoded = GameLogMessage & {
@@ -143,6 +144,10 @@ export const decodeGameLogMessage = (
     }
     switch (type) {
       case gameLogTypes.attack:
+        return {
+          ...gameLog,
+        }
+      case gameLogTypes.glyphReveal:
         return {
           ...gameLog,
         }
