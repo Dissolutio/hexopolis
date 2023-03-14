@@ -18,6 +18,7 @@ import {
   selectRevealedGameCard,
   selectIsInRangeOfAttack,
   selectHexNeighbors,
+  selectGlyphForHex,
 } from '../../game/selectors'
 import {
   generateBlankMoveRange,
@@ -464,7 +465,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
               (h) =>
                 h.occupyingUnitID || editingBoardHexes[h.id]?.occupyingUnitID
             )
-            return isHexUnoccupied && isAllHexNeighborsUnoccupied
+            const glyphOnHex = selectGlyphForHex({
+              hexID: hex.id,
+              glyphs,
+            })
+            return isHexUnoccupied && isAllHexNeighborsUnoccupied && !glyphOnHex
           })
           .map((hex) => hex.id)
   function onConfirmDropPlacement() {
