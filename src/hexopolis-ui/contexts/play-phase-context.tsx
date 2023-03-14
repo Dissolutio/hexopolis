@@ -18,6 +18,7 @@ import {
   selectRevealedGameCard,
   selectIsInRangeOfAttack,
   selectHexNeighbors,
+  selectGlyphForHex,
 } from '../../game/selectors'
 import {
   generateBlankMoveRange,
@@ -115,10 +116,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const {
     moves: {
       moveAction,
-      moveFallAction,
+      noUndoMoveAction,
       attackAction,
       attemptDisengage,
       placeWaterClone,
+      undoablePlaceWaterClone,
       dropInUnits,
     },
   } = useBgioMoves()
@@ -151,13 +153,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       killedUnit.gameCardID === revealedGameCard?.gameCardID
     )
   })
-
   const {
     numberOfAttackingFigures,
     totalNumberOfAttacksAllowed,
     attacksAllowedPerFigure,
   } = selectGameArmyCardAttacksAllowed(revealedGameCard)
-  const attacksUsed = Object.values(unitsAttacked).flat().length // TODO: attacksUsed will get weird because something like explosion attack might hit 8 people but only count as 1 attack
+  const attacksUsed = Object.values(unitsAttacked).flat().length
   const attacksLeft =
     Math.min(
       totalNumberOfAttacksAllowed,
@@ -228,7 +229,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
               endHexUnitPlayerID !== attackerPlayerID // TODO: make this work for team games
             // If hex is enemy occupied...
             if (isEndHexEnemyOccupied) {
-              // TODO isInRange: a place where we may consider engagements requiring adjacent attacks / terrain blocking range-1 attacks etc.
               const { isInRange } = selectIsInRangeOfAttack({
                 attackingUnit: attackingUnit,
                 defenderHex: iteratedHex,
@@ -269,7 +269,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // FALL DAMAGE ATTEMPT
   const [fallHexID, setFallHexID] = useState<string>('')
   const confirmFallDamageMove = () => {
-    moveFallAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
+    noUndoMoveAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
     setFallHexID('')
   }
   const cancelFallDamageMove = () => {
@@ -278,8 +278,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // MOVE-ONTO-GLYPH ATTEMPT
   const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
   const confirmGlyphMove = () => {
-    // TODO: we should do a fall move if the glyph is on a fall hex,
-    moveAction(selectedUnit, boardHexes[glyphMoveHexID], selectedUnitMoveRange)
+    noUndoMoveAction(
+      selectedUnit,
+      boardHexes[glyphMoveHexID],
+      selectedUnitMoveRange
+    )
     setGlyphMoveHexID('')
   }
   const cancelGlyphMove = () => {
@@ -304,6 +307,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       return
     }
     const fallDamage = moveRangeSelection?.fallDamage ?? 0
+    // ORDER MATTERS HERE: we check for disengage first, then glyph, then fall damage
     if (moveRangeSelection.isDisengage) {
       const disengagementUnitIDs =
         selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
@@ -341,7 +345,6 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     if (isMovementStage) {
       if (selectedUnitID && selectedUnit) {
         setSelectedUnitMoveRange(() =>
-          // TODO GRAPPLE GUN
           computeUnitMoveRange(
             selectedUnit,
             isFlying,
@@ -371,13 +374,16 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   ])
 
   // WATER CLONE
+  const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
+  const maxPossibleClonesLeft = Math.min(
+    revealedGameCardKilledUnits.length,
+    cloningsWon
+  )
   const clonerHexes = Object.values(waterCloneRoll?.placements ?? {}).map(
     (p) => p.clonerHexID
   )
   const waterClonesPlacedClonerIDs = waterClonesPlaced.map((p) => p.clonerID)
-  const isAllClonesPlaced =
-    waterClonesPlacedClonerIDs.length ===
-    Object.values(waterCloneRoll?.placements ?? {}).length
+  const isAllClonesPlaced = maxPossibleClonesLeft <= 0
   const clonePlaceableHexIDs = isAllClonesPlaced
     ? []
     : Object.values(waterCloneRoll?.placements ?? {})
@@ -390,43 +396,50 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         }, [])
 
   const onClickClonePlaceableHex = (hex: BoardHex) => {
+    const hexID = hex.id
+    const glyphOnHex = selectGlyphForHex({ hexID: hexID, glyphs })
     // Since we know that marro warriors have 4 figures, the most that could be dead and cloned on one turn is 2 (2 dead, 2 successful clones)
     const validPlacements = Object.values(
       waterCloneRoll?.placements ?? {}
     ).filter(
       (placement) => !waterClonesPlacedClonerIDs.includes(placement.clonerID)
     )
-    const firstIndex = validPlacements.findIndex((p) =>
-      p.tails.includes(hex.id)
-    )
+    const firstIndex = validPlacements.findIndex((p) => p.tails.includes(hexID))
     const secondIndex =
       firstIndex > -1
         ? validPlacements
             .slice(firstIndex)
-            .findIndex((p) => p.tails.includes(hex.id))
+            .findIndex((p) => p.tails.includes(hexID))
         : 0
     // the number of placements should always be >= number of killed units, so accessing the first element is safe
     const clonedID = revealedGameCardKilledUnits.map((u) => u.unitID)[0]
     // 1. two matching, use the most exclusive one (the one that has the least tails), place the clone
-    if (firstIndex >= 0 && secondIndex > 0) {
-      const isSecondIndexMoreExclusive =
-        validPlacements[secondIndex].tails.length <
-        validPlacements[firstIndex].tails.length
-      placeWaterClone({
-        clonedID,
-        hexID: hex.id,
-        clonerID:
-          validPlacements[isSecondIndexMoreExclusive ? secondIndex : firstIndex]
-            .clonerID,
-      })
-    }
-    // 2. only one matching, great, place the clone
-    if (firstIndex >= 0) {
-      placeWaterClone({
-        clonedID,
-        hexID: hex.id,
-        clonerID: validPlacements[firstIndex].clonerID,
-      })
+    const isFirstIndex = firstIndex >= 0
+    const isMoreThanOneIndex = isFirstIndex && secondIndex > 0
+    const isSecondIndexMoreExclusive =
+      validPlacements[secondIndex].tails.length <
+      validPlacements[firstIndex].tails.length
+    const indexToUse =
+      isMoreThanOneIndex && isSecondIndexMoreExclusive
+        ? secondIndex
+        : isFirstIndex
+        ? firstIndex
+        : -1
+    if (indexToUse >= 0) {
+      if (glyphOnHex) {
+        // either this cloning is undoable (not onto a glyph), or it's not undoable (because it's onto a glyph)
+        placeWaterClone({
+          clonedID,
+          hexID: hexID,
+          clonerID: validPlacements[indexToUse].clonerID,
+        })
+      } else {
+        undoablePlaceWaterClone({
+          clonedID,
+          hexID: hexID,
+          clonerID: validPlacements[indexToUse].clonerID,
+        })
+      }
     }
   }
   // THE DROP
@@ -461,7 +474,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
               (h) =>
                 h.occupyingUnitID || editingBoardHexes[h.id]?.occupyingUnitID
             )
-            return isHexUnoccupied && isAllHexNeighborsUnoccupied
+            const glyphOnHex = selectGlyphForHex({
+              hexID: hex.id,
+              glyphs,
+            })
+            return isHexUnoccupied && isAllHexNeighborsUnoccupied && !glyphOnHex
           })
           .map((hex) => hex.id)
   function onConfirmDropPlacement() {

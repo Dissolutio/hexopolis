@@ -5,10 +5,25 @@ export const getGlyphInfoByID = (glyphID: string) => {
   }
   return glyph
 }
-export const powerGlyphs = {
+export const glyphIDs = {
+  attack: 'attack',
+  defense: 'defense',
+}
+export type HexoscapeGlyphs = {
+  [key: string]: {
+    id: string
+    name: string
+    shortName: string
+    type: string // power, temporary, ( someday?: permanent, treasure, objective)
+    effect: string
+    description: string
+  }
+}
+export const powerGlyphs: HexoscapeGlyphs = {
   attack: {
     id: 'attack',
     name: 'Glyph of Astrid',
+    shortName: 'Attack +1',
     type: 'power',
     effect: 'Attack +1',
     description:
@@ -17,6 +32,7 @@ export const powerGlyphs = {
   defense: {
     id: 'defense',
     name: 'Glyph of Gerda',
+    shortName: 'Defense +1',
     type: 'power',
     effect: 'Defense +1',
     description:
@@ -25,6 +41,7 @@ export const powerGlyphs = {
   move: {
     id: 'move',
     name: 'Glyph of Valda',
+    shortName: 'Move +2',
     type: 'power',
     effect: 'Move +2',
     description:
@@ -33,6 +50,7 @@ export const powerGlyphs = {
   range: {
     id: 'range',
     name: 'Glyph of Ivor',
+    shortName: 'Range +4',
     type: 'power',
     effect: 'Range +4',
     description:
@@ -41,6 +59,7 @@ export const powerGlyphs = {
   objective: {
     id: 'objective',
     name: 'Glyph of Brandar',
+    shortName: 'Objective',
     type: 'power',
     effect: 'Artifact',
     description: 'The rules for this Glyph changes for each scenario.',
@@ -48,6 +67,7 @@ export const powerGlyphs = {
   initiative: {
     id: 'initiative',
     name: 'Glyph of Dagmar',
+    shortName: 'Initiative +8',
     type: 'power',
     effect: 'Initiative +8',
     description:
@@ -75,22 +95,28 @@ export const powerGlyphs = {
   // },
 }
 
-export const temporaryGlyphs = {
+export const temporaryGlyphs: HexoscapeGlyphs = {
   healer: {
+    id: 'healer',
     name: 'Glyph of Kelda',
+    shortName: 'Healer',
     type: 'temporary',
     effect: 'Heal hero',
     description:
       'When a Hero you control lands on this Glyph, remove all wound markers from it. If a Squad figure lands here, nothing happens.',
   },
   summoner: {
+    id: 'summoner',
     name: 'Glyph of Erland',
+    shortName: 'Summoner',
     type: 'temporary',
     effect: 'Summon figure',
     description: `When a figure lands on this Glyph, choose any one figure (yours, a teammate's or an opponent's) and to place on an adjacent space.`,
   },
   curse: {
+    id: 'curse',
     name: 'Glyph of Mitonsoul',
+    shortName: 'Curse',
     type: 'temporary',
     effect: 'Massive Curse',
     description: `When a figure lands on this Glyph, all players must roll the 20 sided die for all their own figures. If a 1 is rolled, than that figure is destroyed, 2 or higher and the figure is safe.`,

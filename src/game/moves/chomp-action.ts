@@ -2,7 +2,11 @@ import type { Move } from 'boardgame.io'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
-import { selectTailHexForUnit, selectUnitForHex } from '../selectors'
+import {
+  selectHexForUnit,
+  selectTailHexForUnit,
+  selectUnitForHex,
+} from '../selectors'
 import { GameState, PossibleChomp, StageQueueItem } from '../types'
 import { killUnit_G } from './G-mutators'
 
@@ -13,7 +17,7 @@ export const chompAction: Move<GameState> = {
     { chompingUnitID, targetHexID, isSquad }: PossibleChomp
   ) => {
     const targetUnit = selectUnitForHex(targetHexID, G.boardHexes, G.gameUnits)
-    // TODO: Currently, we know that the UI sends the head hex, so we are ok getting the tail here knowing we have the head (but what if we MIGHT have the tail hex as targetHexID?)
+    const targetHeadHex = selectHexForUnit(targetUnit.unitID, G.boardHexes)
     const targetTailHex = selectTailHexForUnit(targetUnit.unitID, G.boardHexes)
     const targetGameCard = G.gameArmyCards.find(
       (gc) => gc.gameCardID === targetUnit.gameCardID
@@ -43,7 +47,7 @@ export const chompAction: Move<GameState> = {
         gameUnits: G.gameUnits,
         unitToKillID: chompedUnitID,
         killerUnitID: chompingUnitID,
-        defenderHexID: targetHexID,
+        defenderHexID: targetHeadHex?.id,
         defenderTailHexID: targetTailHex?.id,
       })
     }

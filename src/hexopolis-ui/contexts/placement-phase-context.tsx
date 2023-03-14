@@ -48,6 +48,7 @@ type PlacementContextValue = {
   }) => void
   startZoneForMy2HexUnits: string[]
   onResetPlacementState: () => void
+  onResetTheDropState: () => void
 }
 
 const initialEditingBoardHexes = (
@@ -128,6 +129,7 @@ const PlacementContextProvider = ({
       .map((unit) => {
         return unit.unitID
       })
+  // the editing board hexes is a local set of board hexes (like where you are placing your units), it is edited during Placement Phase, The Drop
   const [editingBoardHexes, setEditingBoardHexes] =
     useState<BoardHexesUnitDeployment>(
       initialEditingBoardHexes(boardHexes, myUnitIds)
@@ -171,7 +173,9 @@ const PlacementContextProvider = ({
     if (isPlacementPhase) {
       // at the beginning of the placement phase, we want to set the editing hexes to be the units that are already on the map (that we pre-placed for them, but that's still faster than them having to place each unit)
       setEditingBoardHexes(initialEditingBoardHexes(boardHexes, myUnitIds))
-    } else {
+    }
+    // else is The Drop, only other place currently that we use editingBoardHexes
+    else {
       // after placement phase, we want to clear out the editing hexes, for any ability (The Drop) that might want to use them
       setEditingBoardHexes({})
     }
@@ -213,6 +217,9 @@ const PlacementContextProvider = ({
   function onResetPlacementState() {
     setPlacementUnits(initialPlacementUnitsIfTotallyReset)
     setEditingBoardHexes(initialEditingBoardHexesIfTotallyReset)
+  }
+  function onResetTheDropState() {
+    setEditingBoardHexes({})
   }
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
@@ -388,6 +395,7 @@ const PlacementContextProvider = ({
         onPlaceUnitUpdateEditingBoardHexes,
         startZoneForMy2HexUnits,
         onResetPlacementState,
+        onResetTheDropState,
       }}
     >
       {children}

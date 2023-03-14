@@ -4,6 +4,8 @@ import {
   BoardHexes,
   GameArmyCard,
   GameUnits,
+  Glyph,
+  Glyphs,
   OrderMarkers,
   PlayerOrderMarkers,
   PlayerState,
@@ -96,7 +98,21 @@ export const moveUnit_G = ({
     boardHexes[endHexID].occupyingUnitID = unitID
   }
 }
-
+export const revealGlyph_G = ({
+  endHexID,
+  glyphOnHex,
+  glyphs,
+}: {
+  endHexID: string
+  glyphOnHex: Glyph
+  glyphs: Glyphs
+}) => {
+  const isUnrevealedGlyph = glyphOnHex.isRevealed === false
+  // reveal glyph
+  if (isUnrevealedGlyph) {
+    glyphs[endHexID].isRevealed = true
+  }
+}
 export const assignCardMovePointsToUnit_G = ({
   gameArmyCards,
   gameUnits,

@@ -6,7 +6,7 @@ import {
   StageQueueItem,
 } from '../types'
 import { moveAction } from './move-action'
-import { moveFallAction } from './move-fall-action'
+import { noUndoMoveAction } from './no-undo-move-action'
 import { attemptDisengage } from './attempt-disengage'
 import { takeDisengagementSwipe } from './disengagement-swipe'
 import { attackAction } from './attack-action'
@@ -21,6 +21,7 @@ import {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  undoablePlaceWaterClone,
 } from './water-clone-action'
 import { selectGameCardByID } from '../selectors'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
@@ -103,7 +104,7 @@ const dropInUnits: Move<GameState> = (
       return
     }
     const playerID = cardDroppingIn.playerID
-    // TODO: add to gamelog that player dropped in some units
+    // TODO: add gamelog that player dropped in some units
     const propositions = Object.entries(deploymentProposition)
     // this will just flat out overwrite units, so be careful in the selectable hex generation
     propositions.forEach((proposition) => {
@@ -127,7 +128,7 @@ const dropInUnits: Move<GameState> = (
     G.theDropUsed.push(gameCardID)
   }
   // All below is done even if the player is not accepting the drop in
-  // TODO: add to gamelog that player did not drop in units
+  // TODO: add gamelog that player did not drop in units
   let newStageQueue: StageQueueItem[] = [...G.stageQueue]
   const nextStage = newStageQueue.shift()
   G.stageQueue = newStageQueue
@@ -192,13 +193,14 @@ export const moves: MoveMap<GameState> = {
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,
   moveAction,
-  moveFallAction,
+  noUndoMoveAction,
   attemptDisengage,
   takeDisengagementSwipe,
   rollForBerserkerCharge,
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  undoablePlaceWaterClone,
   chompAction,
   mindShackleAction,
   attackAction,

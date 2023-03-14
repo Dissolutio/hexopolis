@@ -206,10 +206,10 @@ function recurseThroughMoves({
       ).map((hex) => hex.id)
       const isStartHexWater = prevHex.terrain === HexTerrain.water
       const isNeighborHexWater = neighbor.terrain === HexTerrain.water
-      // TODO: squad units cannot step on healer glyphs
+      // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
       const isGlyphStoppage = !!glyphs[neighbor.id]
       const isGlyphRevealed = !!glyphs[neighbor.id]?.isRevealed
-      // TODO: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
+      // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
       const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
       const isWaterStoppage =
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||

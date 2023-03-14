@@ -146,7 +146,6 @@ export const Hexoscape: Game<GameState> = {
               })
             }
           )
-          // TODO: glyph of lodin +1, any others
           const threshold = 13
           const rolls = playerIDsWithActiveTheDrop.map((id) => random.Die(20))
           const newDropResult: { [playerID: string]: TheDropRoll } =

@@ -6,7 +6,7 @@ html {
   --player-color: #f7edf0; /* gets reset in Layout styled component*/
   --sub-white: #b4b4b4;
   --gunmetal: #22333b;
-  --gunmetal-transparent: hsla(199, 27%, 18%, 0.2);
+  --gunmetal-transparent: hsla(199, 27%, 18%, 1);
   --gray: #5d576b;
   /* PLAYER COLORS */
   /* --bee-yellow: #e0bb00; */

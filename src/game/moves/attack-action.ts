@@ -145,11 +145,12 @@ export const attackAction: Move<GameState> = {
       defender: defenderGameUnit,
       attackerArmyCard: attackerGameCard,
       defenderArmyCard: defenderGameCard,
+      isMelee,
       boardHexes: G.boardHexes,
       gameArmyCards: G.gameArmyCards,
       gameUnits: G.gameUnits,
+      glyphs: G.hexMap.glyphs,
       unitsAttacked: G.unitsAttacked,
-      isMelee,
     })
     const defenseRolled = selectUnitDefenseDiceForAttack({
       attackerHex,
@@ -159,6 +160,7 @@ export const attackAction: Move<GameState> = {
       boardHexes: G.boardHexes,
       gameArmyCards: G.gameArmyCards,
       gameUnits: G.gameUnits,
+      glyphs: G.hexMap.glyphs,
     })
     const defenderLife = defenderGameCard.life - defenderGameUnit.wounds
     const attackerLife = attackerGameCard.life - attackingUnit.wounds

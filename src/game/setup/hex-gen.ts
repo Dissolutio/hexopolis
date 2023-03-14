@@ -15,7 +15,6 @@ function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
         ...curr,
         id: generateHexID(curr),
         occupyingUnitID: '',
-        glyphID: '',
         isUnitTail: false,
         altitude: 1,
         terrain: HexTerrain.grass,
@@ -30,7 +29,6 @@ function hexesToBoardHexes(hexgridHexes: HexCoordinates[]): BoardHexes {
   )
 }
 
-//TODO -- generate other maps -- WIP
 // function generateOrientedRectangle(mapSize: number): BoardHexes {
 //   const hexgridHexes = generateOrientedRectangleHexas(mapSize, mapSize)
 //   const boardHexes = hexesToBoardHexes(hexgridHexes)
