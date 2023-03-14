@@ -33,7 +33,10 @@ export function MapHexGlyph(props: Props) {
       <polygon className={'hex-glyph'} points={points} />
       <HexText
         style={{
-          fontSize: `${hexSize / 50}em`,
+          fontSize: isGlyphRevealed ? `${hexSize / 80}em` : `${hexSize / 50}em`,
+          transform: isGlyphRevealed
+            ? `translate(0, -${hexSize / 5}em)`
+            : 'translate(0, 0)',
         }}
         hexSize={hexSize}
       >
