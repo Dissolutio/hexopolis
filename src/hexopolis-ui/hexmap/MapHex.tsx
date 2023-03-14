@@ -210,6 +210,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const gameUnit = gameUnits?.[unitIdToShowOnHex]
   // we only show players their own units during placement phase
   const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
+  const unitName = gameUnitCard?.name ?? ''
   // const isGlyph = !!glyphs[hex.id]?.glyphID
   // computed
   // we only show players their own units during placement phase
