@@ -49,6 +49,7 @@ export const WaterCloneControls = () => {
     rollForWaterClone({
       unitsCloning,
       unitName: revealedGameCard?.name ?? '',
+      possibleRevivals: revealedGameCardKilledUnitsCount,
     })
   }
   const cloningsWon = Object.values(waterCloneRoll?.placements ?? {}).length
@@ -102,7 +103,7 @@ export const WaterCloneControls = () => {
         {isCloneSuccess && (
           <StyledControlsP>{`${clonesLeftToPlaceCount} clones remaining to be placed`}</StyledControlsP>
         )}
-        <UndoRedoButtons />
+        {/* <UndoRedoButtons /> */}
         {clonesLeftToPlaceCount < 1 && (
           <StyledButtonWrapper>
             <GreenButton onClick={() => finishWaterCloningAndEndTurn([])}>

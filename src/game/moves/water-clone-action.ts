@@ -8,7 +8,16 @@ export const rollForWaterClone: Move<GameState> = {
   undoable: false,
   move: (
     { G, ctx, random },
-    { unitsCloning, unitName }: { unitsCloning: UnitsCloning; unitName: string }
+    // this depends on the ui to only pass in the units that have valid hexes to place clones onto
+    {
+      unitsCloning,
+      unitName,
+      possibleRevivals,
+    }: {
+      unitsCloning: UnitsCloning
+      unitName: string
+      possibleRevivals: number
+    }
   ) => {
     const blankWaterCloneRoll = {
       diceRolls: {},
@@ -74,6 +83,7 @@ export const rollForWaterClone: Move<GameState> = {
       rollsAndThreshholds,
       cloneCount,
       unitName,
+      possibleRevivals,
     })
     G.gameLog.push(gameLogForThisMove)
     //
@@ -88,18 +98,30 @@ export const finishWaterCloningAndEndTurn: Move<GameState> = ({
   G.waterClonesPlaced = []
   events.endTurn()
 }
-export const placeWaterClone: Move<GameState> = (
-  { G },
-  { clonedID, hexID, clonerID }
-) => {
-  // unkill the unit
-  G.gameUnits[clonedID] = {
-    ...G.killedUnits[clonedID],
-    movePoints: 0,
-  }
-  delete G.killedUnits[clonedID]
-  // TODO: GLYPH move
-  // place the unit
-  G.boardHexes[hexID].occupyingUnitID = clonedID
-  G.waterClonesPlaced.push({ clonedID, hexID, clonerID })
+export const placeWaterClone: Move<GameState> = {
+  undoable: false,
+  move: ({ G }, { clonedID, hexID, clonerID }) => {
+    // unkill the unit
+    G.gameUnits[clonedID] = {
+      ...G.killedUnits[clonedID],
+      movePoints: 0,
+    }
+    delete G.killedUnits[clonedID]
+    // TODO: GLYPH move
+    const glyphOnHex = selectGlyphForHex({
+      hexID: hexID,
+      glyphs: G.hexMap.glyphs,
+    })
+    // 3. Reveal or activate glyph on hex
+    if (glyphOnHex) {
+      revealGlyph_G({
+        endHexID: hexID,
+        glyphOnHex,
+        glyphs: G.hexMap.glyphs,
+      })
+    }
+    // place the unit
+    G.boardHexes[hexID].occupyingUnitID = clonedID
+    G.waterClonesPlaced.push({ clonedID, hexID, clonerID })
+  },
 }
