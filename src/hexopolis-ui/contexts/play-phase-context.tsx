@@ -120,6 +120,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       attackAction,
       attemptDisengage,
       placeWaterClone,
+      undoablePlaceWaterClone,
       dropInUnits,
     },
   } = useBgioMoves()
@@ -394,43 +395,50 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
         }, [])
 
   const onClickClonePlaceableHex = (hex: BoardHex) => {
+    const hexID = hex.id
+    const glyphOnHex = selectGlyphForHex({ hexID: hexID, glyphs })
     // Since we know that marro warriors have 4 figures, the most that could be dead and cloned on one turn is 2 (2 dead, 2 successful clones)
     const validPlacements = Object.values(
       waterCloneRoll?.placements ?? {}
     ).filter(
       (placement) => !waterClonesPlacedClonerIDs.includes(placement.clonerID)
     )
-    const firstIndex = validPlacements.findIndex((p) =>
-      p.tails.includes(hex.id)
-    )
+    const firstIndex = validPlacements.findIndex((p) => p.tails.includes(hexID))
     const secondIndex =
       firstIndex > -1
         ? validPlacements
             .slice(firstIndex)
-            .findIndex((p) => p.tails.includes(hex.id))
+            .findIndex((p) => p.tails.includes(hexID))
         : 0
     // the number of placements should always be >= number of killed units, so accessing the first element is safe
     const clonedID = revealedGameCardKilledUnits.map((u) => u.unitID)[0]
     // 1. two matching, use the most exclusive one (the one that has the least tails), place the clone
-    if (firstIndex >= 0 && secondIndex > 0) {
-      const isSecondIndexMoreExclusive =
-        validPlacements[secondIndex].tails.length <
-        validPlacements[firstIndex].tails.length
-      placeWaterClone({
-        clonedID,
-        hexID: hex.id,
-        clonerID:
-          validPlacements[isSecondIndexMoreExclusive ? secondIndex : firstIndex]
-            .clonerID,
-      })
-    }
-    // 2. only one matching, great, place the clone
-    if (firstIndex >= 0) {
-      placeWaterClone({
-        clonedID,
-        hexID: hex.id,
-        clonerID: validPlacements[firstIndex].clonerID,
-      })
+    const isFirstIndex = firstIndex >= 0
+    const isMoreThanOneIndex = isFirstIndex && secondIndex > 0
+    const isSecondIndexMoreExclusive =
+      validPlacements[secondIndex].tails.length <
+      validPlacements[firstIndex].tails.length
+    const indexToUse =
+      isMoreThanOneIndex && isSecondIndexMoreExclusive
+        ? secondIndex
+        : isFirstIndex
+        ? firstIndex
+        : -1
+    if (indexToUse >= 0) {
+      if (glyphOnHex) {
+        // either this cloning is undoable (not onto a glyph), or it's not undoable (because it's onto a glyph)
+        placeWaterClone({
+          clonedID,
+          hexID: hexID,
+          clonerID: validPlacements[indexToUse].clonerID,
+        })
+      } else {
+        undoablePlaceWaterClone({
+          clonedID,
+          hexID: hexID,
+          clonerID: validPlacements[indexToUse].clonerID,
+        })
+      }
     }
   }
   // THE DROP

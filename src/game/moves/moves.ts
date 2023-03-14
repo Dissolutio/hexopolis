@@ -21,6 +21,7 @@ import {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  undoablePlaceWaterClone,
 } from './water-clone-action'
 import { selectGameCardByID } from '../selectors'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
@@ -199,6 +200,7 @@ export const moves: MoveMap<GameState> = {
   rollForWaterClone,
   finishWaterCloningAndEndTurn,
   placeWaterClone,
+  undoablePlaceWaterClone,
   chompAction,
   mindShackleAction,
   attackAction,

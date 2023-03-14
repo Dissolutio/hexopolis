@@ -105,9 +105,11 @@ export const placeWaterClone: Move<GameState> = {
     G.gameUnits[clonedID] = {
       ...G.killedUnits[clonedID],
       movePoints: 0,
+      // TODO: REVIVE: other properties may need resetting
       wounds: 0,
     }
     delete G.killedUnits[clonedID]
+    // so far, this is what differentiates this from undoablePlaceWaterClone
     const glyphOnHex = selectGlyphForHex({
       hexID: hexID,
       glyphs: G.hexMap.glyphs,
@@ -145,6 +147,7 @@ export const undoablePlaceWaterClone: Move<GameState> = {
     G.gameUnits[clonedID] = {
       ...G.killedUnits[clonedID],
       movePoints: 0,
+      // TODO: REVIVE: other properties may need resetting
       wounds: 0,
     }
     delete G.killedUnits[clonedID]
