@@ -105,7 +105,7 @@ export const placeWaterClone: Move<GameState> = {
     G.gameUnits[clonedID] = {
       ...G.killedUnits[clonedID],
       movePoints: 0,
-      // wounds: 0,
+      wounds: 0,
     }
     delete G.killedUnits[clonedID]
     const glyphOnHex = selectGlyphForHex({
@@ -145,7 +145,7 @@ export const undoablePlaceWaterClone: Move<GameState> = {
     G.gameUnits[clonedID] = {
       ...G.killedUnits[clonedID],
       movePoints: 0,
-      // wounds: 0,
+      wounds: 0,
     }
     delete G.killedUnits[clonedID]
 
