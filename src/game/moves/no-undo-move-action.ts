@@ -37,6 +37,7 @@ export const noUndoMoveAction: Move<GameState> = {
       hexID: endHexID,
       glyphs: G.hexMap.glyphs,
     })
+    const isGlyphOnHexUnrevealed = !glyphOnHex?.isRevealed
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const startTailHex = selectTailHexForUnit(unitID, G.boardHexes)
     const unitGameCard = selectGameCardByID(G.gameArmyCards, unit.gameCardID)
@@ -157,14 +158,14 @@ export const noUndoMoveAction: Move<GameState> = {
       })
       // update unit move-points
       newGameUnits[unitID].movePoints = movePointsLeft
-    }
-    // 3. Reveal or activate glyph on hex
-    if (glyphOnHex) {
-      revealGlyph_G({
-        endHexID: endHexID,
-        glyphOnHex: glyphOnHex,
-        glyphs: G.hexMap.glyphs,
-      })
+      // Reveal or activate glyph on hex
+      if (glyphOnHex) {
+        revealGlyph_G({
+          endHexID: endHexID,
+          glyphOnHex: glyphOnHex,
+          glyphs: G.hexMap.glyphs,
+        })
+      }
     }
     // update game log
     const indexOfThisMove = G.unitsMoved.length
@@ -180,7 +181,8 @@ export const noUndoMoveAction: Move<GameState> = {
       fallDamage: fallDamage,
       wounds: fallingDamageWounds,
       isFatal,
-      revealedGlyphID: glyphOnHex?.glyphID ?? '',
+      revealedGlyphID:
+        !isFatal && isGlyphOnHexUnrevealed ? glyphOnHex?.glyphID ?? '' : '',
     })
     G.gameLog.push(gameLogForThisMove)
     G.stageQueue = newStageQueue

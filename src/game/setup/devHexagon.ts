@@ -428,11 +428,16 @@ export const devHexagon = {
         glyphID: 'attack',
         isRevealed: false,
       },
-      '-2,2,0': {
-        hexID: '-2,2,0',
+      '0,0,0': {
+        hexID: '0,0,0',
         glyphID: 'defense',
         isRevealed: false,
       },
+      // '-2,2,0': {
+      //   hexID: '-2,2,0',
+      //   glyphID: 'defense',
+      //   isRevealed: false,
+      // },
       // '-3,3,0': {
       // hexID: '-3,3,0',
       //   glyphID: 'summoner',

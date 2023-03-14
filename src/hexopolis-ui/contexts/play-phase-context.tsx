@@ -307,6 +307,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       return
     }
     const fallDamage = moveRangeSelection?.fallDamage ?? 0
+    // ORDER MATTERS HERE: we check for disengage first, then glyph, then fall damage
     if (moveRangeSelection.isDisengage) {
       const disengagementUnitIDs =
         selectedUnitMoveRange[endHexID]?.disengagedUnitIDs

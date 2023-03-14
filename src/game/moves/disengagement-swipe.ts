@@ -4,12 +4,13 @@ import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import {
   selectGameCardByID,
+  selectGlyphForHex,
   selectHexForUnit,
   selectTailHexForUnit,
 } from '../selectors'
 import { BoardHexes, GameState, GameUnits, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
-import { killUnit_G, moveUnit_G } from './G-mutators'
+import { killUnit_G, moveUnit_G, revealGlyph_G } from './G-mutators'
 
 // accept => disengage => wounds last? => falling => wounds => move
 
@@ -86,6 +87,11 @@ export const takeDisengagementSwipe: Move<GameState> = {
     const unitDisengagingID = unitAttemptingToDisengage.unitID
     const unitDisengagingPlayerID = unitAttemptingToDisengage.playerID
     const endHexID = disengagesAttempting.endHexID
+    const glyphOnEndHex = selectGlyphForHex({
+      hexID: endHexID,
+      glyphs: G.hexMap.glyphs,
+    })
+    const isGlyphOnEndHexUnrevealed = glyphOnEndHex && !glyphOnEndHex.isRevealed
     const endTailHexID = disengagesAttempting.endFromHexID
     const isAllEngagementsSettled =
       G.disengagedUnitIds.length >=
@@ -261,7 +267,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
           }
           if (!isFallFatal) {
             // unit is not dead, move it
-            // TODO: GLYPH move
             moveUnit_G({
               unitID: unitDisengagingID,
               startHexID: unitAttemptingToDisengageHex.id,
@@ -271,6 +276,25 @@ export const takeDisengagementSwipe: Move<GameState> = {
               endTailHexID,
             })
             newUnitsMoved.push(unitDisengagingID)
+            // reveal glyph if necessary
+            if (isGlyphOnEndHexUnrevealed) {
+              revealGlyph_G({
+                endHexID,
+                glyphOnHex: glyphOnEndHex,
+                glyphs: G.hexMap.glyphs,
+              })
+              // gamelog glyph reveal
+              const indexOfThisClone = G.waterClonesPlaced.length
+              const gameLogID = `r${G.currentRound}:om${G.currentOrderMarker}:clone:${indexOfThisClone}`
+              const gameLogForGlyphReveal = encodeGameLogMessage({
+                type: gameLogTypes.glyphReveal,
+                id: gameLogID,
+                playerID: unitDisengagingPlayerID,
+                unitSingleName: unitAttemptingCard.singleName,
+                revealedGlyphID: glyphOnEndHex?.glyphID ?? '',
+              })
+              G.gameLog.push(gameLogForGlyphReveal)
+            }
 
             // update unit move-points from move-range
             newGameUnits[unitDisengagingID].movePoints =
@@ -381,7 +405,6 @@ export const takeDisengagementSwipe: Move<GameState> = {
           }
         }
         if (!isFallFatal) {
-          // TODO: GLYPH move
           moveUnit_G({
             unitID: unitDisengagingID,
             boardHexes: newBoardHexes,
@@ -391,6 +414,26 @@ export const takeDisengagementSwipe: Move<GameState> = {
             endTailHexID,
           })
           newUnitsMoved.push(unitDisengagingID)
+
+          // reveal glyph if necessary
+          if (isGlyphOnEndHexUnrevealed) {
+            revealGlyph_G({
+              endHexID,
+              glyphOnHex: glyphOnEndHex,
+              glyphs: G.hexMap.glyphs,
+            })
+            // gamelog glyph reveal
+            const indexOfThisClone = G.waterClonesPlaced.length
+            const gameLogID = `r${G.currentRound}:om${G.currentOrderMarker}:clone:${indexOfThisClone}`
+            const gameLogForGlyphReveal = encodeGameLogMessage({
+              type: gameLogTypes.glyphReveal,
+              id: gameLogID,
+              playerID: unitDisengagingPlayerID,
+              unitSingleName: unitAttemptingCard.singleName,
+              revealedGlyphID: glyphOnEndHex?.glyphID ?? '',
+            })
+            G.gameLog.push(gameLogForGlyphReveal)
+          }
 
           // update unit move-points from move-range
           newGameUnits[unitDisengagingID].movePoints =
