@@ -132,6 +132,7 @@ export const attackAction: Move<GameState> = {
       gameArmyCards: G.gameArmyCards,
       boardHexes: G.boardHexes,
       gameUnits: G.gameUnits,
+      glyphs: G.hexMap.glyphs,
     })
     // DISALLOW - defender is out of range
     if (!isInRange) {

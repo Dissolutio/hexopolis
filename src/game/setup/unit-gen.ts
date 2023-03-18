@@ -40,11 +40,11 @@ export const startingArmies: { [playerID: string]: string[] } = {
   ],
   '1': [
     // grimnakID,
-    // raelinOneID,
+    raelinOneID,
     // kravMagaID,
     // tarnID,
-    // airbornID,
     syvarrisID,
+    // airbornID,
     // zettianID,
     // carrID,
   ],

@@ -34,8 +34,10 @@ export const rollForBerserkerCharge: Move<GameState> = (
       const { unitID } = unit
       // G mutator
       assignCardMovePointsToUnit_G({
+        boardHexes: G.boardHexes,
         gameArmyCards: G.gameArmyCards,
         gameUnits: G.gameUnits,
+        glyphs: G.hexMap.glyphs,
         unitID,
       })
     })
@@ -45,9 +47,11 @@ export const rollForBerserkerCharge: Move<GameState> = (
       const { unitID } = unit
       // G mutator
       assignCardMovePointsToUnit_G({
+        boardHexes: G.boardHexes,
         gameArmyCards: G.gameArmyCards,
         gameUnits: G.gameUnits,
         unitID,
+        glyphs: G.hexMap.glyphs,
         overrideMovePoints: 0,
       })
     })

@@ -1,5 +1,6 @@
 import { generateBlankPlayersOrderMarkers } from '../constants'
 import { selectGameCardByID } from '../selectors'
+import { selectCardMoveValue } from '../selector/card-selectors'
 import {
   BoardHexes,
   GameArmyCard,
@@ -114,14 +115,18 @@ export const revealGlyph_G = ({
   }
 }
 export const assignCardMovePointsToUnit_G = ({
+  unitID,
+  boardHexes,
   gameArmyCards,
   gameUnits,
-  unitID,
+  glyphs,
   overrideMovePoints,
 }: {
+  unitID: string
+  boardHexes: BoardHexes
   gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
-  unitID: string
+  glyphs: Glyphs
   overrideMovePoints?: number
 }) => {
   const gameCard = selectGameCardByID(
@@ -129,7 +134,16 @@ export const assignCardMovePointsToUnit_G = ({
     gameUnits[unitID].gameCardID
   )
   // TODO: move point card selector
-  const movePoints = overrideMovePoints ?? gameCard?.move ?? 0
+  if (!gameCard) {
+    return 0
+  }
+  const startingMovePoints = selectCardMoveValue({
+    gameArmyCard: gameCard,
+    boardHexes,
+    gameUnits,
+    glyphs,
+  })
+  const movePoints = overrideMovePoints ?? startingMovePoints ?? 0
   // move-points
   const unitWithMovePoints = {
     ...gameUnits[unitID],

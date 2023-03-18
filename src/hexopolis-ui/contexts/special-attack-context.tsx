@@ -54,7 +54,13 @@ export function SpecialAttackContextProvider({
   children,
 }: SpecialAttackContextProviderProps) {
   const { playerID } = useBgioClientInfo()
-  const { boardHexes, gameUnits, gameArmyCards, unitsAttacked } = useBgioG()
+  const {
+    boardHexes,
+    gameUnits,
+    gameArmyCards,
+    unitsAttacked,
+    hexMap: { glyphs },
+  } = useBgioG()
   const {
     isMyTurn,
     isGrenadeSAStage,
@@ -431,6 +437,7 @@ export function SpecialAttackContextProvider({
           gameArmyCards: gameArmyCards,
           boardHexes: boardHexes,
           gameUnits: gameUnits,
+          glyphs,
           overrideUnitRange: isGrenadeSAStage
             ? 5
             : isExplosionSAStage
