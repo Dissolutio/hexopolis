@@ -408,6 +408,41 @@ export const selectUnitDefenseDiceForAttack = ({
   )
 }
 
+// MOVE POINTS FOR UNIT:
+export const selectCardMoveValue = ({
+  gameArmyCard,
+  boardHexes,
+  gameUnits,
+  glyphs,
+}: {
+  gameArmyCard: GameArmyCard
+  // unit: GameUnit
+  boardHexes: BoardHexes
+  // gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+  glyphs: Glyphs
+}): number => {
+  let movePoints = gameArmyCard.move
+  const glyphBonus = () => {
+    const glyph = Object.values(glyphs).find((g) => g.glyphID === glyphIDs.move)
+    if (!glyph) {
+      return 0
+    }
+    const allPlayersUnitIDs = Object.values(gameUnits)
+      .filter((u) => u.playerID === gameArmyCard.playerID)
+      .map((u) => u.unitID)
+    const allHexIDsPlayersUnitsOccupy = Object.values(boardHexes)
+      .filter(
+        (h) =>
+          h.occupyingUnitID && allPlayersUnitIDs.includes(h.occupyingUnitID)
+      )
+      .map((h) => h.id)
+    const isMyGlyph = allHexIDsPlayersUnitsOccupy.includes(glyph.hexID)
+    return isMyGlyph ? 2 : 0
+  }
+  return movePoints + glyphBonus()
+}
+
 // attacks allowed
 export const selectGameArmyCardAttacksAllowed = (
   gameArmyCard?: GameArmyCard
