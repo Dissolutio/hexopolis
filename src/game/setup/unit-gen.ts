@@ -45,7 +45,7 @@ export const startingArmies: { [playerID: string]: string[] } = {
     // tarnID,
     // airbornID,
     syvarrisID,
-    // zettianID,
+    zettianID,
     // carrID,
   ],
   '2': [tarnID],

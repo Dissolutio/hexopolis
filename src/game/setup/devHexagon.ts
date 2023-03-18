@@ -425,9 +425,14 @@ export const devHexagon = {
       // },
       '-3,3,0': {
         hexID: '-3,3,0',
-        glyphID: 'attack',
+        glyphID: 'move',
         isRevealed: false,
       },
+      // '-3,3,0': {
+      //   hexID: '-3,3,0',
+      //   glyphID: 'attack',
+      //   isRevealed: false,
+      // },
       '0,0,0': {
         hexID: '0,0,0',
         glyphID: 'defense',

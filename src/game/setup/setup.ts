@@ -15,7 +15,7 @@ import { scenarioNames } from './scenarios'
 import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
-} from './om-gen'
+} from './order-marker-gen'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { keyBy } from 'lodash'
 import { selectGameCardByID } from '../selectors'
