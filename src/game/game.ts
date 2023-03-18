@@ -352,7 +352,9 @@ export const Hexoscape: Game<GameState> = {
               const { unitID } = unit
               // G mutator
               assignCardMovePointsToUnit_G({
+                boardHexes: G.boardHexes,
                 gameArmyCards: G.gameArmyCards,
+                glyphs: G.hexMap.glyphs,
                 gameUnits: G.gameUnits,
                 unitID,
               })

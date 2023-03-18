@@ -235,6 +235,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
                 gameArmyCards: gameArmyCards,
                 boardHexes: boardHexes,
                 gameUnits: gameUnits,
+                glyphs,
               })
               if (isInRange) {
                 return [...resultHexIDs, iteratedHex.id]
@@ -570,6 +571,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             gameArmyCards: gameArmyCards,
             boardHexes: boardHexes,
             gameUnits: gameUnits,
+            glyphs,
           })
           if (isInRange) {
             const isStillAttacksLeftAfterThisOne = attacksLeft - 1 > 0

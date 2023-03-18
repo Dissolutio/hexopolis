@@ -15,7 +15,7 @@ import { scenarioNames } from './scenarios'
 import {
   generatePreplacedOrderMarkers,
   playersStateWithPrePlacedOMs,
-} from './om-gen'
+} from './order-marker-gen'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { keyBy } from 'lodash'
 import { selectGameCardByID } from '../selectors'
@@ -158,14 +158,14 @@ function makeTestScenario(
   //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
-  // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: Boolean(withPrePlacedUnits),
-    gameUnits: gameUnitsWithoutTheDrop,
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits: gameUnitsWithoutTheDrop,
+  // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,

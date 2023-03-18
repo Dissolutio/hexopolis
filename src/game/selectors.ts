@@ -299,6 +299,7 @@ export const selectIsInRangeOfAttack = ({
   gameArmyCards,
   boardHexes,
   gameUnits,
+  glyphs,
   isSpecialAttack,
   overrideUnitRange,
 }: {
@@ -307,6 +308,7 @@ export const selectIsInRangeOfAttack = ({
   gameArmyCards: GameArmyCard[]
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  glyphs: Glyphs
   isSpecialAttack?: boolean
   overrideUnitRange?: number
 }): RangeScan => {
@@ -324,6 +326,7 @@ export const selectIsInRangeOfAttack = ({
         gameArmyCards,
         boardHexes,
         gameUnits,
+        glyphs,
       })
   const attackerHex = selectHexForUnit(unitID, boardHexes)
   const attackerTailHex = selectTailHexForUnit(unitID, boardHexes)

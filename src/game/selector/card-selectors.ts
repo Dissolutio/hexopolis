@@ -28,11 +28,13 @@ export const selectUnitRange = ({
   gameArmyCards,
   boardHexes,
   gameUnits,
+  glyphs,
 }: {
   attackingUnit: GameUnit
   gameArmyCards: GameArmyCard[]
   boardHexes: BoardHexes
   gameUnits: GameUnits
+  glyphs: Glyphs
 }): number => {
   const attackerGameCard = selectGameCardByID(
     gameArmyCards,
@@ -42,19 +44,43 @@ export const selectUnitRange = ({
   const attackerTailHex = selectTailHexForUnit(attackingUnit.unitID, boardHexes)
   const is2Hex = attackingUnit.is2Hex && attackerTailHex
 
-  // early out: necessary ingredients missing
+  // 1. early out: necessary ingredients missing
   if (!attackerGameCard || !attackerHex || (!attackerTailHex && is2Hex)) {
     return 0
   }
+  // 2. a unit who is engaged can only attack the units it is engaged with
   const unitEngagements = selectEngagementsForHex({
     hexID: attackerHex.id,
     boardHexes,
     gameUnits,
     armyCards: gameArmyCards,
   })
-  // a unit who is engaged can only attack the units it is engaged with
   if (unitEngagements.length > 0) {
     return 1
+  }
+
+  // 3. calculate final range value
+  const baseRange = attackerGameCard.range
+  const glyphBonus = () => {
+    const glyph = Object.values(glyphs).find(
+      (g) => g.glyphID === glyphIDs.range
+    )
+    if (!glyph) {
+      return 0
+    }
+    const allAttackerUnitIDs = Object.values(gameUnits)
+      .filter((u) => u.playerID === attackerGameCard.playerID)
+      .map((u) => u.unitID)
+    const allHexIDsAttackerOccupies = Object.values(boardHexes)
+      .filter(
+        (h) =>
+          h.occupyingUnitID && allAttackerUnitIDs.includes(h.occupyingUnitID)
+      )
+      .map((h) => h.id)
+    const isMyGlyph = allHexIDsAttackerOccupies.includes(glyph.hexID)
+    const isMyRangeEligibleForGlyph = baseRange >= 4
+    const bonus = 4
+    return isMyGlyph && isMyRangeEligibleForGlyph ? bonus : 0
   }
   const isAttackerSoulbourg = attackerGameCard.race === 'soulborg'
   const isD9000RangeEnhancement =
@@ -80,7 +106,7 @@ export const selectUnitRange = ({
         })
       )
     })
-  const unitRange = attackerGameCard.range + (isD9000RangeEnhancement ? 2 : 0)
+  const unitRange = baseRange + glyphBonus() + (isD9000RangeEnhancement ? 2 : 0)
   return unitRange
 }
 // FLYING
@@ -406,6 +432,41 @@ export const selectUnitDefenseDiceForAttack = ({
     thorgrimDefensiveAura() +
     grimnaksOrcEnhancement()
   )
+}
+
+// MOVE POINTS FOR UNIT:
+export const selectCardMoveValue = ({
+  gameArmyCard,
+  boardHexes,
+  gameUnits,
+  glyphs,
+}: {
+  gameArmyCard: GameArmyCard
+  // unit: GameUnit
+  boardHexes: BoardHexes
+  // gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+  glyphs: Glyphs
+}): number => {
+  let movePoints = gameArmyCard.move
+  const glyphBonus = () => {
+    const glyph = Object.values(glyphs).find((g) => g.glyphID === glyphIDs.move)
+    if (!glyph) {
+      return 0
+    }
+    const allPlayersUnitIDs = Object.values(gameUnits)
+      .filter((u) => u.playerID === gameArmyCard.playerID)
+      .map((u) => u.unitID)
+    const allHexIDsPlayersUnitsOccupy = Object.values(boardHexes)
+      .filter(
+        (h) =>
+          h.occupyingUnitID && allPlayersUnitIDs.includes(h.occupyingUnitID)
+      )
+      .map((h) => h.id)
+    const isMyGlyph = allHexIDsPlayersUnitsOccupy.includes(glyph.hexID)
+    return isMyGlyph ? 2 : 0
+  }
+  return movePoints + glyphBonus()
 }
 
 // attacks allowed
