@@ -4151,6 +4151,11 @@ export const giantsTable = {
         glyphID: 'attack',
         isRevealed: true,
       },
+      '15,8,-23': {
+        hexID: '15,8,-23',
+        glyphID: 'range',
+        isRevealed: true,
+      },
       // '9,7,-16': {
       //   hexID: '9,7,-16',
       //   glyphID: 'move',

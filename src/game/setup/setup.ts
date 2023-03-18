@@ -158,14 +158,14 @@ function makeTestScenario(
   //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
-  // const map = makeGiantsTableMap({
-  //   withPrePlacedUnits: true,
-  //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
-  // })
-  const map = makeDevHexagonMap({
-    withPrePlacedUnits: Boolean(withPrePlacedUnits),
-    gameUnits: gameUnitsWithoutTheDrop,
+  const map = makeGiantsTableMap({
+    withPrePlacedUnits: true,
+    gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   })
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits: gameUnitsWithoutTheDrop,
+  // })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,

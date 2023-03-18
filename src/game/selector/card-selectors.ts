@@ -44,10 +44,22 @@ export const selectUnitRange = ({
   const attackerTailHex = selectTailHexForUnit(attackingUnit.unitID, boardHexes)
   const is2Hex = attackingUnit.is2Hex && attackerTailHex
 
-  // early out: necessary ingredients missing
+  // 1. early out: necessary ingredients missing
   if (!attackerGameCard || !attackerHex || (!attackerTailHex && is2Hex)) {
     return 0
   }
+  // 2. a unit who is engaged can only attack the units it is engaged with
+  const unitEngagements = selectEngagementsForHex({
+    hexID: attackerHex.id,
+    boardHexes,
+    gameUnits,
+    armyCards: gameArmyCards,
+  })
+  if (unitEngagements.length > 0) {
+    return 1
+  }
+
+  // 3. calculate final range value
   const baseRange = attackerGameCard.range
   const glyphBonus = () => {
     const glyph = Object.values(glyphs).find(
@@ -67,17 +79,8 @@ export const selectUnitRange = ({
       .map((h) => h.id)
     const isMyGlyph = allHexIDsAttackerOccupies.includes(glyph.hexID)
     const isMyRangeEligibleForGlyph = baseRange >= 4
-    return isMyGlyph && isMyRangeEligibleForGlyph ? 4 : 0
-  }
-  const unitEngagements = selectEngagementsForHex({
-    hexID: attackerHex.id,
-    boardHexes,
-    gameUnits,
-    armyCards: gameArmyCards,
-  })
-  // a unit who is engaged can only attack the units it is engaged with
-  if (unitEngagements.length > 0) {
-    return 1
+    const bonus = 4
+    return isMyGlyph && isMyRangeEligibleForGlyph ? bonus : 0
   }
   const isAttackerSoulbourg = attackerGameCard.race === 'soulborg'
   const isD9000RangeEnhancement =
