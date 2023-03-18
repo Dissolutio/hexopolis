@@ -9,6 +9,7 @@ export const glyphIDs = {
   attack: 'attack',
   defense: 'defense',
   move: 'move',
+  range: 'range',
 }
 export type HexoscapeGlyphs = {
   [key: string]: {
