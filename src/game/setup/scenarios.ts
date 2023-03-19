@@ -1,5 +1,6 @@
 export const scenarioNames = {
   clashingFrontsAtTableOfTheGiants2: 'clashingFrontsAtTableOfTheGiants2',
+  forsakenWaters2: 'forsakenWaters2',
   clashingFrontsAtTableOfTheGiants4: 'clashingFrontsAtTableOfTheGiants4',
   theBigHexagon2: 'theBigHexagon2',
   theBigHexagon3: 'theBigHexagon3',
@@ -13,6 +14,13 @@ export const hexoscapeScenarios = {
     numPlayers: 2,
     description: `The Table of the Giants has long been a meeting place-but this one was unexpected. Two enemy Valkerie Gernerals' armies have been marching in this direction all winter, unknowingly on a major collision course. In the end, which side will be left to march on to their destination?`,
     armyPoints: 400,
+    maxRounds: 12,
+  },
+  [scenarioNames.forsakenWaters2]: {
+    numPlayers: 2,
+    // teams: [2, 2],
+    description: `For centuries, the Dark Lakes separated the Regions of Laur and Nastralund. When the search for wellsprings began, the lakes became a source of dispute between the Archkyries on each side. They each built a fort on their shore, but dozens of skirmishes quickly reduced the area to ruins.`,
+    armyPoints: 300,
     maxRounds: 12,
   },
   [scenarioNames.theBigHexagon2]: {

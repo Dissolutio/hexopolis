@@ -8,6 +8,7 @@ import {
   makeDevHexagonMap,
   makeGiantsTableMap,
   makeHexagonShapedMap,
+  makeForsakenWatersMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { armyCardsToGameArmyCardsForTest } from './unit-gen'
@@ -21,7 +22,7 @@ import { keyBy } from 'lodash'
 import { selectGameCardByID } from '../selectors'
 
 const someInitialGameState = {
-  maxArmyValue: 160,
+  maxArmyValue: 300,
   maxRounds: 12,
   currentRound: 1,
   currentOrderMarker: 0,
@@ -52,8 +53,10 @@ const frequentlyChangedDevState = (
   isDevOverrideState
     ? {
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
-        placementReady: generateReadyStateForNumPlayers(numPlayers, true),
-        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        // placementReady: generateReadyStateForNumPlayers(numPlayers, true),
+        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        placementReady: generateReadyStateForNumPlayers(numPlayers, false),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
         players: playersStateWithPrePlacedOMs(numPlayers),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers),
         ...someInitialGameState,
@@ -80,6 +83,9 @@ export const gameSetupInitialGameState = ({
 }) => {
   if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants2) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.forsakenWaters2) {
+    return makeForsakenWaters2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   if (
     numPlayers === 2 &&
@@ -129,6 +135,39 @@ function makeGiantsTable2PlayerScenario(
     startZones: map.startZones,
   }
 }
+function makeForsakenWaters2PlayerScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const armyCardIDsWithTheDrop = armyCards
+    .filter((card) => {
+      return selectIfGameArmyCardHasAbility('The Drop', card)
+    })
+    .map((ac) => ac.gameCardID)
+  const gameUnitsToPrePlace = keyBy(
+    Object.values(gameUnits).filter(
+      (u) => !armyCardIDsWithTheDrop.includes(u.gameCardID)
+    ),
+    'unitID'
+  )
+  const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsToPrePlace)
+  return {
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    maxArmyValue: 400,
+    maxRounds: 12,
+    gameArmyCards: withPrePlacedUnits ? armyCards : [],
+    gameUnits: withPrePlacedUnits ? gameUnits : {},
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
 function makeTestScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
@@ -158,10 +197,11 @@ function makeTestScenario(
   //   gameUnits: gameUnitsWithoutTheDrop,
   //   flat: false,
   // })
-  const map = makeGiantsTableMap({
-    withPrePlacedUnits: true,
-    gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
-  })
+  // const map = makeGiantsTableMap({
+  //   withPrePlacedUnits: true,
+  //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
+  // })
+  const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
   // const map = makeDevHexagonMap({
   //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
   //   gameUnits: gameUnitsWithoutTheDrop,

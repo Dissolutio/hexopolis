@@ -7,6 +7,7 @@ import {
   StartZones,
 } from '../types'
 import { giantsTable } from './giantsTable'
+import { forsakenWaters } from './forsakenWaters'
 import { devHexagon } from './devHexagon'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
@@ -19,6 +20,36 @@ function generateUID() {
   firstPart = ('000' + firstPart.toString(36)).slice(-3)
   secondPart = ('000' + secondPart.toString(36)).slice(-3)
   return firstPart + secondPart
+}
+export function makeForsakenWatersMap(
+  withPrePlacedUnits?: boolean,
+  gameUnitsToPrePlace?: GameUnits
+): GameMap {
+  const boardHexes = forsakenWaters.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('forsakenWaters.boardHexes is not defined')
+  }
+  for (const hex in boardHexes) {
+    if (Object.prototype.hasOwnProperty.call(boardHexes, hex)) {
+      const element = boardHexes[hex]
+      if (element.terrain === 'void') {
+        delete boardHexes[hex]
+      }
+    }
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnitsToPrePlace ?? {}
+    )
+  }
+  return {
+    boardHexes: forsakenWaters.boardHexes as unknown as BoardHexes,
+    hexMap: forsakenWaters.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
 }
 export function makeGiantsTableMap({
   withPrePlacedUnits,
