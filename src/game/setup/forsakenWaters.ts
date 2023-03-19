@@ -4185,11 +4185,16 @@ export const forsakenWaters = {
         glyphID: 'defense',
         isRevealed: true,
       },
-      '9,2,-11': {
-        hexID: '9,2,-11',
+      '2,5,-7': {
+        hexID: '2,5,-7',
         glyphID: 'move',
         isRevealed: true,
       },
+      // '9,2,-11': {
+      //   hexID: '9,2,-11',
+      //   glyphID: 'move',
+      //   isRevealed: true,
+      // },
     },
   },
 }
