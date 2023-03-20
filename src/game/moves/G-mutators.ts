@@ -1,5 +1,5 @@
 import { generateBlankPlayersOrderMarkers } from '../constants'
-import { selectGameCardByID } from '../selectors'
+import { selectGameCardByID, selectUnitsForCard } from '../selectors'
 import { selectCardMoveValue } from '../selector/card-selectors'
 import {
   BoardHexes,
@@ -151,6 +151,52 @@ export const assignCardMovePointsToUnit_G = ({
   }
   gameUnits[unitID] = unitWithMovePoints
 }
+// So, this function gets called:
+// 1. when we assign initial move points (start of turn, after BerserkerCharge success)
+// 2. AND when we move onto a move glyph, we will update the move points of all units appropriately
+export const updateMovePointsForCard_G = ({
+  gameCardID,
+  boardHexes,
+  gameArmyCards,
+  gameUnits,
+  glyphs,
+  currentPlayersOrderMarkers,
+  overrideMovePoints,
+}: {
+  gameCardID: string
+  boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+  glyphs: Glyphs
+  currentPlayersOrderMarkers: PlayerOrderMarkers
+  overrideMovePoints?: number
+}) => {
+  const gameCard = selectGameCardByID(gameArmyCards, gameCardID)
+  const currentTurnUnits = selectUnitsForCard(
+    gameCard?.gameCardID ?? '',
+    gameUnits
+  )
+  // TODO: move point card selector
+  if (!gameCard) {
+    return 0
+  }
+  const startingMovePoints = selectCardMoveValue({
+    gameArmyCard: gameCard,
+    boardHexes,
+    gameUnits,
+    glyphs,
+  })
+  const movePoints = overrideMovePoints ?? startingMovePoints ?? 0
+  // move-points
+  currentTurnUnits.forEach((unit) => {
+    const unitWithMovePoints = {
+      ...gameUnits[unit.unitID],
+      movePoints,
+    }
+    gameUnits[unit.unitID] = unitWithMovePoints
+  })
+}
+
 export const wipeCardOrderMarkers_G = ({
   gameCardToWipeID,
   playerID,
