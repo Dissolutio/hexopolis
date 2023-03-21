@@ -135,7 +135,7 @@ export const assignCardMovePointsToUnit_G = ({
   )
   // TODO: move point card selector
   if (!gameCard) {
-    return 0
+    return
   }
   const startingMovePoints = selectCardMoveValue({
     gameArmyCard: gameCard,
