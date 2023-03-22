@@ -61,12 +61,8 @@ export function computeUnitMoveRange(
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
-  // mutate tailHex if unit is 2-space
-  let tailHex
-  const isTwoSpace = unit.is2Hex
-  if (isTwoSpace) {
-    tailHex = selectTailHexForUnit(unitUid, boardHexes)
-  }
+  const isTwoSpace = unit?.is2Hex ?? false
+  const tailHex = selectTailHexForUnit(unitUid, boardHexes)
   //*early out
   if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
     return initialMoveRange
