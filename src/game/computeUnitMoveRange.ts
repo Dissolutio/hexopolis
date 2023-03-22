@@ -354,18 +354,20 @@ function recurseThroughMoves({
         if (isFallDamage) {
           return acc
         }
-        return {
-          ...acc,
-          ...recurseThroughMoves({
-            unmutatedContext,
-            prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
-            prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-            prevHexFallDamage: newFallDamage,
-            prevHex: neighbor,
-            movePoints: movePointsLeft,
-            initialMoveRange: acc,
-          }),
-        }
+        return isMovePointsLeftAfterMove
+          ? {
+              ...acc,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHexFallDamage: newFallDamage,
+                prevHex: neighbor,
+                movePoints: movePointsLeft,
+                initialMoveRange: acc,
+              }),
+            }
+          : acc
       } else if (isCausingEngagement) {
         // we can stop there
         if (canStopHere) {
@@ -375,19 +377,21 @@ function recurseThroughMoves({
             isGrappleGun,
           }
         }
-        return {
-          ...acc,
-          ...recurseThroughMoves({
-            unmutatedContext,
-            prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-            prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-            prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
-            prevHex: neighbor,
-            startTailHex: isUnit2Hex ? prevHex : undefined,
-            movePoints: movePointsLeft,
-            initialMoveRange: acc,
-          }),
-        }
+        return isMovePointsLeftAfterMove
+          ? {
+              ...acc,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
+                prevHex: neighbor,
+                startTailHex: isUnit2Hex ? prevHex : undefined,
+                movePoints: movePointsLeft,
+                initialMoveRange: acc,
+              }),
+            }
+          : acc
       }
       // safe hexes
       else {
