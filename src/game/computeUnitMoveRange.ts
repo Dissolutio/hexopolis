@@ -83,6 +83,7 @@ export function computeUnitMoveRange(
       unmutatedContext: {
         playerID,
         unit,
+        initialMovePoints,
         initialEngagements,
         isFlying,
         hasStealth,
@@ -115,6 +116,7 @@ export function computeUnitMoveRange(
       unmutatedContext: {
         playerID,
         unit,
+        initialMovePoints,
         initialEngagements,
         isFlying,
         // only passing isGrappleGun to one spacers because Sgt. Drake is a 1-space unit
@@ -151,6 +153,7 @@ function recurseThroughMoves({
   unmutatedContext: {
     playerID: string
     unit: GameUnit
+    initialMovePoints: number
     initialEngagements: string[]
     isFlying: boolean
     isGrappleGun?: boolean
@@ -174,6 +177,7 @@ function recurseThroughMoves({
   const {
     playerID,
     unit,
+    initialMovePoints,
     initialEngagements,
     isFlying,
     isGrappleGun,
