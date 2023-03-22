@@ -26,7 +26,7 @@ export const HeaderNav = ({
 
 const StyledNavbar = styled.nav`
   background-color: var(--black);
-  padding: 4px 16px 0px 16px;
+  padding: 4px 36px 0px 36px;
   z-index: 10;
   & button:focus,
   & button:hover {
