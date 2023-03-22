@@ -290,13 +290,15 @@ export const Hexoscape: Game<GameState> = {
       onBegin: ({ G, ctx }) => {
         const playerIDs = Object.keys(G.players)
         const initiativeRoll = rollD20Initiative(playerIDs)
+        // TODO gamelog initiative roll
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,
           playerID: '',
           initiativeRolls: initiativeRoll.rolls,
         })
-        G.initiative = initiativeRoll.initiative
+        // G.initiative = initiativeRoll.initiative
+        G.initiative = ['1', '0']
         G.currentOrderMarker = 0
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },

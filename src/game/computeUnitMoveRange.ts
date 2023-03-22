@@ -244,6 +244,7 @@ function recurseThroughMoves({
             disengagedUnitIDs
           : initialMoveRange?.[neighbor.id]?.movePointsLeft > movePointsLeft
       if (isVisitedAlready) {
+        console.count(neighbor.id)
         return acc
       }
       const totalDisengagedIDsSoFar = uniq([
