@@ -215,14 +215,15 @@ function recurseThroughMoves({
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
         (!isUnit2Hex && isNeighborHexWater)
       // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+      const walkCost = selectMoveCostBetweenNeighbors(prevHex, neighbor)
       const fromCost =
-        // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
+        // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
         isWaterStoppage || isGlyphStoppage
-          ? movePoints
+          ? Math.max(movePoints, walkCost)
           : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
           isFlying || isGrappleGun
           ? 1
-          : selectMoveCostBetweenNeighbors(prevHex, neighbor)
+          : walkCost
       const movePointsLeft = movePoints - fromCost
       const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
       // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
