@@ -50,7 +50,7 @@ export function computeUnitMoveRange(
   glyphs: Glyphs
 ): MoveRange {
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
-  const initialMoveRange = generateBlankMoveRange()
+  const blankMoveRange = {}
   const unitUid = unit.unitID
   const unitGameCard = armyCards.find(
     (card) => card.gameCardID === unit?.gameCardID
@@ -65,8 +65,22 @@ export function computeUnitMoveRange(
   const tailHex = selectTailHexForUnit(unitUid, boardHexes)
   //*early out
   if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
-    return initialMoveRange
+    return blankMoveRange
   }
+  const initialMoveRange = blankMoveRange
+  // const initialMoveRange = {
+  //   [startHex.id]: {
+  //     fromHexID: string
+  //   fromCost: number
+  //   movePointsLeft: number
+  //   disengagedUnitIDs: string[]
+  //   engagedUnitIDs: string[]
+  //   fallDamage?: number
+  //   isSafe?: boolean
+  //   isEngage?: boolean
+  //   isDisengage?: boolean
+  //   }
+  // }
   const initialEngagements: string[] = selectEngagementsForHex({
     hexID: startHex.id,
     boardHexes,
@@ -240,11 +254,13 @@ function recurseThroughMoves({
       // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
       const isVisitedAlready =
         initialMoveRange?.[neighbor.id]?.movePointsLeft === movePointsLeft
-          ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs <=
-            disengagedUnitIDs
+          ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs.length <=
+            disengagedUnitIDs.length
           : initialMoveRange?.[neighbor.id]?.movePointsLeft > movePointsLeft
       if (isVisitedAlready) {
+        // console.count(neighbor.id)
         console.count(neighbor.id)
+        console.log(initialMoveRange?.[neighbor.id]?.movePointsLeft)
         return acc
       }
       const totalDisengagedIDsSoFar = uniq([
