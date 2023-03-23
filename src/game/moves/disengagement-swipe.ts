@@ -349,11 +349,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
       })
       G.gameLog.push(gameLogForDeniedSwipe)
       if (isAllEngagementsSettled) {
-        // const fallingDamageWounds = rollHeroscapeDice(
-        //   fallDamage,
-        //   random
-        // ).skulls
-        const fallingDamageWounds = 1
+        const fallingDamageWounds = rollHeroscapeDice(fallDamage, random).skulls
         let isFallFatal = false
         if (fallDamage > 0) {
           isFallFatal = unitLifeLeft - fallingDamageWounds <= 0
