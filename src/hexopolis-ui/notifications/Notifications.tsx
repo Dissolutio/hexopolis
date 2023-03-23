@@ -207,19 +207,18 @@ const GameLogDisplay = ({
       const woundedFallMsg = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
       const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
       const moveMsgText = `${unitSingleName} is on the move`
-      // TODO: Robustify this multi-line readout of an undoable move, really, we were just checking if the unit was destroyed, otherwise we display a litany of other messages
-      const moveMsg = isFatal
+      const fallingDamageMsg = isFatal
         ? diedFallingMsg
         : (wounds ?? 0) > 0
         ? woundedFallMsg
         : (fallDamage ?? 0) > 0 && wounds === 0
         ? unwoundedFallMsg
-        : isGrappleGun
-        ? grappleGunMoveMsg
-        : moveMsgText
+        : ''
+      const moveMsg = isGrappleGun ? grappleGunMoveMsg : moveMsgText
       return (
         <span style={{ color: playerColors[playerID] }}>
           <div>{moveMsg}</div>
+          {fallingDamageMsg && <div>{fallingDamageMsg}</div>}
           {revealedGlyphMsg && <div>{revealedGlyphMsg}</div>}
           {reclaimedGlyphMsg && <div>{reclaimedGlyphMsg}</div>}
         </span>

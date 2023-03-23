@@ -201,11 +201,11 @@ function makeTestScenario(
   //   withPrePlacedUnits: true,
   //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   // })
-  const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
-  //   gameUnits: gameUnitsWithoutTheDrop,
-  // })
+  // const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
+  const map = makeDevHexagonMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,

@@ -10,7 +10,13 @@ import {
 } from '../selectors'
 import { BoardHexes, GameState, GameUnits, StageQueueItem } from '../types'
 import { rollHeroscapeDice } from './attack-action'
-import { killUnit_G, moveUnit_G, revealGlyph_G } from './G-mutators'
+import {
+  killUnit_G,
+  moveUnit_G,
+  revealGlyph_G,
+  updateMovePointsUponMovingOntoMoveGlyph_G,
+} from './G-mutators'
+import { glyphIDs } from 'game/glyphs'
 
 // accept => disengage => wounds last? => falling => wounds => move
 
@@ -91,7 +97,10 @@ export const takeDisengagementSwipe: Move<GameState> = {
       hexID: endHexID,
       glyphs: G.hexMap.glyphs,
     })
-    const isGlyphOnEndHexUnrevealed = glyphOnEndHex && !glyphOnEndHex.isRevealed
+    const isRevealingGlyph = glyphOnEndHex && !glyphOnEndHex.isRevealed
+    const isReclaimingGlyph = glyphOnEndHex && glyphOnEndHex.isRevealed
+    const glyphID = glyphOnEndHex?.glyphID ?? ''
+    const isMovingOntoMoveGlyph = glyphID === glyphIDs.move
     const endTailHexID = disengagesAttempting.endFromHexID
     const isAllEngagementsSettled =
       G.disengagedUnitIds.length >=
@@ -209,6 +218,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
           defenderSingleName: unitAttemptingCard.singleName,
           defenderPlayerID: unitAttemptingCard.playerID,
           wounds: swipeWounds,
+          revealedGlyphID: isRevealingGlyph ? glyphID : undefined,
+          reclaimedGlyphID: isReclaimingGlyph ? glyphID : undefined,
         })
         G.gameLog.push(gameLogForNonFatalSwipe)
         // is this is the last disengagement-swipe, move the unit, it might fall to death
@@ -277,25 +288,25 @@ export const takeDisengagementSwipe: Move<GameState> = {
             })
             newUnitsMoved.push(unitDisengagingID)
             // reveal glyph if necessary
-            if (isGlyphOnEndHexUnrevealed) {
+            if (isRevealingGlyph) {
               revealGlyph_G({
                 endHexID,
                 glyphOnHex: glyphOnEndHex,
                 glyphs: G.hexMap.glyphs,
               })
-              // gamelog glyph reveal
-              const indexOfThisClone = G.waterClonesPlaced.length
-              const gameLogID = `r${G.currentRound}:om${G.currentOrderMarker}:clone:${indexOfThisClone}`
-              const gameLogForGlyphReveal = encodeGameLogMessage({
-                type: gameLogTypes.glyphReveal,
-                id: gameLogID,
-                playerID: unitDisengagingPlayerID,
-                unitSingleName: unitAttemptingCard.singleName,
-                revealedGlyphID: glyphOnEndHex?.glyphID ?? '',
-              })
-              G.gameLog.push(gameLogForGlyphReveal)
             }
-
+            if (isMovingOntoMoveGlyph) {
+              // update move-points of all the other units for this turn (not the one on the glyph)
+              updateMovePointsUponMovingOntoMoveGlyph_G({
+                gameCardID: unitAttemptingCard.gameCardID,
+                unitIdOnGlyph: unitAttemptingToDisengage.unitID,
+                boardHexes: newBoardHexes,
+                gameArmyCards: G.gameArmyCards,
+                glyphs: G.hexMap.glyphs,
+                // mutated: gameUnits
+                gameUnits: newGameUnits,
+              })
+            }
             // update unit move-points from move-range
             newGameUnits[unitDisengagingID].movePoints =
               disengagesAttempting.movePointsLeft
@@ -317,6 +328,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
             fallDamage: fallDamage,
             wounds: fallingDamageWounds,
             isFatal: isFallFatal,
+            revealedGlyphID: isRevealingGlyph ? glyphID : undefined,
+            reclaimedGlyphID: isReclaimingGlyph ? glyphID : undefined,
           })
           G.gameLog.push(gameLogForThisMove)
           // send players back to movement/idle stages
@@ -412,25 +425,25 @@ export const takeDisengagementSwipe: Move<GameState> = {
           newUnitsMoved.push(unitDisengagingID)
 
           // reveal glyph if necessary
-          if (isGlyphOnEndHexUnrevealed) {
+          if (isRevealingGlyph) {
             revealGlyph_G({
               endHexID,
               glyphOnHex: glyphOnEndHex,
               glyphs: G.hexMap.glyphs,
             })
-            // gamelog glyph reveal
-            const indexOfThisClone = G.waterClonesPlaced.length
-            const gameLogID = `r${G.currentRound}:om${G.currentOrderMarker}:clone:${indexOfThisClone}`
-            const gameLogForGlyphReveal = encodeGameLogMessage({
-              type: gameLogTypes.glyphReveal,
-              id: gameLogID,
-              playerID: unitDisengagingPlayerID,
-              unitSingleName: unitAttemptingCard.singleName,
-              revealedGlyphID: glyphOnEndHex?.glyphID ?? '',
-            })
-            G.gameLog.push(gameLogForGlyphReveal)
           }
-
+          if (isMovingOntoMoveGlyph) {
+            // update move-points of all the other units for this turn (not the one on the glyph)
+            updateMovePointsUponMovingOntoMoveGlyph_G({
+              gameCardID: unitAttemptingCard.gameCardID,
+              unitIdOnGlyph: unitAttemptingToDisengage.unitID,
+              boardHexes: newBoardHexes,
+              gameArmyCards: G.gameArmyCards,
+              glyphs: G.hexMap.glyphs,
+              // mutated: gameUnits
+              gameUnits: newGameUnits,
+            })
+          }
           // update unit move-points from move-range
           newGameUnits[unitDisengagingID].movePoints =
             disengagesAttempting.movePointsLeft
@@ -454,6 +467,8 @@ export const takeDisengagementSwipe: Move<GameState> = {
           fallDamage: fallDamage,
           wounds: fallingDamageWounds,
           isFatal: isFallFatal,
+          revealedGlyphID: isRevealingGlyph ? glyphID : undefined,
+          reclaimedGlyphID: isReclaimingGlyph ? glyphID : undefined,
         })
         G.gameLog.push(gameLogForThisMove)
         /* END MOVE */
