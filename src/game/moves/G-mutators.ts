@@ -112,6 +112,7 @@ export const revealGlyph_G = ({
   const isUnrevealedGlyph = glyphOnHex.isRevealed === false
   // reveal glyph
   if (isUnrevealedGlyph) {
+    // mutate glyphs
     glyphs[endHexID].isRevealed = true
   }
 }
