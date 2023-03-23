@@ -137,6 +137,7 @@ const GameLogDisplay = ({
     isGrappleGun,
     fallDamage,
     revealedGlyphID,
+    reclaimedGlyphID,
     // berserker charge: most generic roll format
     roll,
     isRollSuccessful,
@@ -151,8 +152,14 @@ const GameLogDisplay = ({
   const revealedGlyphName = revealedGlyphID
     ? powerGlyphs?.[revealedGlyphID]?.name
     : ''
+  const recalimedGlyphName = reclaimedGlyphID
+    ? powerGlyphs?.[reclaimedGlyphID]?.name
+    : ''
   const revealedGlyphEffect = revealedGlyphID
     ? powerGlyphs?.[revealedGlyphID]?.effect
+    : ''
+  const reclaimedGlyphEffect = reclaimedGlyphID
+    ? powerGlyphs?.[reclaimedGlyphID]?.effect
     : ''
   switch (type) {
     case gameLogTypes.glyphReveal:
@@ -192,6 +199,9 @@ const GameLogDisplay = ({
       const revealedGlyphMsg = revealedGlyphID
         ? `${unitSingleName} has revealed the ${revealedGlyphName}! (${revealedGlyphEffect})`
         : ''
+      const reclaimedGlyphMsg = reclaimedGlyphID
+        ? `${unitSingleName} has reclaimed the ${recalimedGlyphName}! (${reclaimedGlyphEffect})`
+        : ''
       const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} / ${fallDamage} possible wounds)`
       const unwoundedFallMsg = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
       const woundedFallMsg = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
@@ -211,6 +221,7 @@ const GameLogDisplay = ({
         <span style={{ color: playerColors[playerID] }}>
           <div>{moveMsg}</div>
           {revealedGlyphMsg && <div>{revealedGlyphMsg}</div>}
+          {reclaimedGlyphMsg && <div>{reclaimedGlyphMsg}</div>}
         </span>
       )
     case gameLogTypes.theDropRoll:

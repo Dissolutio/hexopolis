@@ -82,7 +82,8 @@ export const moveAction: Move<GameState> = (
     hexID: endHexID,
     glyphs: G.hexMap.glyphs,
   })
-  const isMovingOntoMoveGlyph = glyphOnEndHex?.glyphID === glyphIDs.move
+  const glyphID = glyphOnEndHex?.glyphID ?? ''
+  const isMovingOntoMoveGlyph = glyphID === glyphIDs.move
   if (isMovingOntoMoveGlyph) {
     // update move-points of all the other units for this turn (not the one on the glyph)
     updateMovePointsUponMovingOntoMoveGlyph_G({
@@ -107,6 +108,7 @@ export const moveAction: Move<GameState> = (
     unitSingleName,
     startHexID,
     endHexID,
+    reclaimedGlyphID: glyphID,
   })
   G.gameLog.push(gameLogForThisMove)
   G.stageQueue = newStageQueue

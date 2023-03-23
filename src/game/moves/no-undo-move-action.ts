@@ -203,6 +203,7 @@ export const noUndoMoveAction: Move<GameState> = {
       isFatal,
       revealedGlyphID:
         !isFatal && isGlyphOnHexUnrevealed ? glyphOnHex?.glyphID ?? '' : '',
+      reclaimedGlyphID: !isFatal ? glyphOnHex?.glyphID ?? '' : '',
     })
     G.gameLog.push(gameLogForThisMove)
     G.stageQueue = newStageQueue
