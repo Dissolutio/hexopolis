@@ -29,9 +29,8 @@ export const Notifications = () => {
         if (!gameLogMessage) {
           continue
         }
-        const { type, playerID, wounds, isFatal } = gameLogMessage
+        const { type, playerID } = gameLogMessage
         const defaultDuration = 20000
-        const moreRepetitiveMsgDuration = 5000
         switch (type) {
           case gameLogTypes.glyphReveal:
           case gameLogTypes.disengageSwipeFatal:
@@ -46,12 +45,13 @@ export const Notifications = () => {
             })
             break
           case gameLogTypes.move:
-            const duration =
-              isFatal || (wounds ?? 0) > 0
-                ? defaultDuration
-                : moreRepetitiveMsgDuration
+            // const moreRepetitiveMsgDuration = 5000
+            // const duration =
+            //   isFatal || (wounds ?? 0) > 0
+            //     ? defaultDuration
+            //     : moreRepetitiveMsgDuration
             toast(<GameLogDisplay gameLogMessage={gameLogMessage} />, {
-              duration: duration,
+              duration: defaultDuration,
               id: gameLogMessage?.id,
             })
             break
