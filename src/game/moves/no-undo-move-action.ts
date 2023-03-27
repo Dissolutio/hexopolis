@@ -19,7 +19,13 @@ import {
 } from '../types'
 import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
-import { killUnit_G, moveUnit_G, revealGlyph_G } from './G-mutators'
+import {
+  killUnit_G,
+  moveUnit_G,
+  revealGlyph_G,
+  updateMovePointsUponMovingOntoMoveGlyph_G,
+} from './G-mutators'
+import { glyphIDs } from 'game/glyphs'
 
 export const noUndoMoveAction: Move<GameState> = {
   undoable: false,
@@ -37,6 +43,7 @@ export const noUndoMoveAction: Move<GameState> = {
       hexID: endHexID,
       glyphs: G.hexMap.glyphs,
     })
+    const isMovingOntoMoveGlyph = glyphOnHex?.glyphID === glyphIDs.move
     const isGlyphOnHexUnrevealed = !glyphOnHex?.isRevealed
     const startHex = selectHexForUnit(unitID, G.boardHexes)
     const startTailHex = selectTailHexForUnit(unitID, G.boardHexes)
@@ -163,7 +170,20 @@ export const noUndoMoveAction: Move<GameState> = {
         revealGlyph_G({
           endHexID: endHexID,
           glyphOnHex: glyphOnHex,
+          // mutated: glyphs
           glyphs: G.hexMap.glyphs,
+        })
+      }
+      if (isMovingOntoMoveGlyph) {
+        // update move-points of all the other units for this turn (not the one on the glyph)
+        updateMovePointsUponMovingOntoMoveGlyph_G({
+          gameCardID: unit.gameCardID,
+          unitIdOnGlyph: unitID,
+          boardHexes: newBoardHexes,
+          gameArmyCards: G.gameArmyCards,
+          glyphs: G.hexMap.glyphs,
+          // mutated: gameUnits
+          gameUnits: newGameUnits,
         })
       }
     }
@@ -183,6 +203,7 @@ export const noUndoMoveAction: Move<GameState> = {
       isFatal,
       revealedGlyphID:
         !isFatal && isGlyphOnHexUnrevealed ? glyphOnHex?.glyphID ?? '' : '',
+      reclaimedGlyphID: !isFatal ? glyphOnHex?.glyphID ?? '' : '',
     })
     G.gameLog.push(gameLogForThisMove)
     G.stageQueue = newStageQueue

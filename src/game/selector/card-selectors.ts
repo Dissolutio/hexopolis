@@ -435,37 +435,39 @@ export const selectUnitDefenseDiceForAttack = ({
 }
 
 // MOVE POINTS FOR UNIT:
-export const selectCardMoveValue = ({
+export const selectUnitMoveValue = ({
+  unitID,
   gameArmyCard,
   boardHexes,
   gameUnits,
   glyphs,
 }: {
+  unitID: string
   gameArmyCard: GameArmyCard
-  // unit: GameUnit
   boardHexes: BoardHexes
-  // gameArmyCards: GameArmyCard[]
   gameUnits: GameUnits
   glyphs: Glyphs
 }): number => {
   let movePoints = gameArmyCard.move
   const glyphBonus = () => {
-    const glyph = Object.values(glyphs).find((g) => g.glyphID === glyphIDs.move)
-    if (!glyph) {
+    const moveGlyph = Object.values(glyphs).find(
+      (g) => g.glyphID === glyphIDs.move
+    )
+    if (!moveGlyph) {
       return 0
     }
-    const allPlayersUnitIDs = Object.values(gameUnits)
-      .filter((u) => u.playerID === gameArmyCard.playerID)
-      .map((u) => u.unitID)
-    const allHexIDsPlayersUnitsOccupy = Object.values(boardHexes)
-      .filter(
-        (h) =>
-          h.occupyingUnitID && allPlayersUnitIDs.includes(h.occupyingUnitID)
-      )
-      .map((h) => h.id)
-    const isMyGlyph = allHexIDsPlayersUnitsOccupy.includes(glyph.hexID)
-    return isMyGlyph ? 2 : 0
+    const unitIdOnMoveGlyph =
+      Object.values(boardHexes).find((h) => h.id === moveGlyph.hexID)
+        ?.occupyingUnitID ?? ''
+    const unitOnGlyph = gameUnits?.[unitIdOnMoveGlyph]
+    const isMyGlyph = unitOnGlyph?.playerID === gameArmyCard.playerID
+    if (!unitOnGlyph || !isMyGlyph) {
+      return 0
+    }
+    const isNotUnitOnMoveGlyph = unitID !== unitIdOnMoveGlyph
+    return isMyGlyph && isNotUnitOnMoveGlyph ? 2 : 0
   }
+
   return movePoints + glyphBonus()
 }
 

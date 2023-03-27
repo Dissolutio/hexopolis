@@ -8,7 +8,6 @@ import {
   HexTerrain,
   Glyphs,
 } from './types'
-import { generateBlankMoveRange } from './constants'
 import {
   selectHexForUnit,
   selectEngagementsForHex,
@@ -28,9 +27,9 @@ import {
 import { uniq } from 'lodash'
 
 const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
-  // returns a new object with the highest movePointsLeft for each hex
   const mergedMoveRange: MoveRange = { ...a }
   for (const key in b) {
+    // TODO: MOVERANGE: measure disengaged IDs before movePoints (maybe soon have a custom move mode? Or a toggle for risky-VS-safe moves?)
     if (b[key].movePointsLeft > (a?.[key]?.movePointsLeft ?? -1)) {
       mergedMoveRange[key] = b[key]
     }
@@ -38,7 +37,12 @@ const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
   return mergedMoveRange
 }
 
-// This function splits on flying/walking/ghostwalking/disengage/stealth-flying
+/* 
+    This function splits on flying/walking/ghostwalking/disengage/stealth-flying
+    Possible outcomes:
+    A. 2-hex unit: calculate starting from head, then tail, then merge
+    B. 1-hex unit: calculate starting from head
+ */
 export function computeUnitMoveRange(
   unit: GameUnit,
   isFlying: boolean,
@@ -49,6 +53,8 @@ export function computeUnitMoveRange(
   armyCards: GameArmyCard[],
   glyphs: Glyphs
 ): MoveRange {
+  // TODO: GRAPPLE-GUN-HACK :: hasMoved is used to hack the move-range/move-points for the grapple gun (which can only move 1 hex, so lends itself to a boolean parameter)
+  const movePointsForGrappleGun = hasMoved ? 0 : 1
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
   const blankMoveRange = {}
   const unitUid = unit.unitID
@@ -68,19 +74,6 @@ export function computeUnitMoveRange(
     return blankMoveRange
   }
   const initialMoveRange = blankMoveRange
-  // const initialMoveRange = {
-  //   [startHex.id]: {
-  //     fromHexID: string
-  //   fromCost: number
-  //   movePointsLeft: number
-  //   disengagedUnitIDs: string[]
-  //   engagedUnitIDs: string[]
-  //   fallDamage?: number
-  //   isSafe?: boolean
-  //   isEngage?: boolean
-  //   isDisengage?: boolean
-  //   }
-  // }
   const initialEngagements: string[] = selectEngagementsForHex({
     hexID: startHex.id,
     boardHexes,
@@ -129,7 +122,7 @@ export function computeUnitMoveRange(
         initialMovePoints,
         initialEngagements,
         isFlying,
-        // only passing isGrappleGun to one spacers because Sgt. Drake is a 1-space unit
+        // TODO: GRAPPLE-GUN-HACK :: only passing isGrappleGun to one spacers because Sgt. Drake is a 1-space unit
         isGrappleGun,
         hasStealth,
         hasDisengage,
@@ -140,10 +133,9 @@ export function computeUnitMoveRange(
         glyphs,
       },
       prevHex: startHex,
-      prevHexesEngagedUnitIDs: initialEngagements,
       prevHexFallDamage: 0,
-      // grapple gun is not a normal move, we treat it like flying so we make up the notion of a move point for it, and give Drake 1 move point
-      movePoints: isGrappleGun ? (hasMoved ? 0 : 1) : initialMovePoints,
+      // TODO: GRAPPLE-GUN-HACK :: grapple gun is not a normal move, we treat it like flying so we make up the notion of a move point for it, and give Drake 1 move point
+      movePoints: isGrappleGun ? movePointsForGrappleGun : initialMovePoints,
       initialMoveRange,
     })
   }
@@ -153,7 +145,6 @@ export function computeUnitMoveRange(
 function recurseThroughMoves({
   unmutatedContext,
   prevHexesDisengagedUnitIDs,
-  prevHexesEngagedUnitIDs,
   prevHexFallDamage,
   prevHex,
   startTailHex,
@@ -176,7 +167,6 @@ function recurseThroughMoves({
     glyphs: Glyphs
   }
   prevHexesDisengagedUnitIDs?: string[]
-  prevHexesEngagedUnitIDs: string[]
   prevHexFallDamage: number
   // !! these inputs below get mutated in the recursion
   prevHex: BoardHex
@@ -372,7 +362,6 @@ function recurseThroughMoves({
               ...recurseThroughMoves({
                 unmutatedContext,
                 prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
-                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
                 prevHexFallDamage: newFallDamage,
                 prevHex: neighbor,
                 movePoints: movePointsLeft,
@@ -395,7 +384,6 @@ function recurseThroughMoves({
               ...recurseThroughMoves({
                 unmutatedContext,
                 prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
                 prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
                 prevHex: neighbor,
                 startTailHex: isUnit2Hex ? prevHex : undefined,
@@ -421,7 +409,6 @@ function recurseThroughMoves({
               ...recurseThroughMoves({
                 unmutatedContext,
                 prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-                prevHexesEngagedUnitIDs: latestEngagedUnitIDs, // this should be 0 here, as the hex would be an engagement-hex ^^
                 prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
                 prevHex: neighbor,
                 startTailHex: isUnit2Hex ? prevHex : undefined,

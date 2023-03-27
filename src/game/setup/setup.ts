@@ -53,10 +53,10 @@ const frequentlyChangedDevState = (
   isDevOverrideState
     ? {
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
-        // placementReady: generateReadyStateForNumPlayers(numPlayers, true),
-        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        placementReady: generateReadyStateForNumPlayers(numPlayers, false),
-        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        placementReady: generateReadyStateForNumPlayers(numPlayers, true),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        // placementReady: generateReadyStateForNumPlayers(numPlayers, false),
+        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
         players: playersStateWithPrePlacedOMs(numPlayers),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers),
         ...someInitialGameState,
@@ -159,7 +159,7 @@ function makeForsakenWaters2PlayerScenario(
   const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsToPrePlace)
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
-    maxArmyValue: 400,
+    maxArmyValue: 300,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
     gameUnits: withPrePlacedUnits ? gameUnits : {},
@@ -201,11 +201,11 @@ function makeTestScenario(
   //   withPrePlacedUnits: true,
   //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   // })
-  const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
-  // const map = makeDevHexagonMap({
-  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
-  //   gameUnits: gameUnitsWithoutTheDrop,
-  // })
+  // const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
+  const map = makeDevHexagonMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
   return {
     ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,

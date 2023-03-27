@@ -121,7 +121,7 @@ export const Hexoscape: Game<GameState> = {
           }
         )
         if (playerIDsWithActiveTheDrop.length > 0) {
-          // we initialise the drop result to an empty object here, so that we can check if it's empty in the next phase's onBegin hook (all because that hook is oddly called AFTER the onEnd hook)
+          // we initialise the drop result to an empty object here, so that we can check if it's empty in the next phase's onBegin hook (all because the onBegin hook is oddly called AFTER the onEnd hook)
           G.theDropResult = {}
         }
       },
@@ -290,13 +290,15 @@ export const Hexoscape: Game<GameState> = {
       onBegin: ({ G, ctx }) => {
         const playerIDs = Object.keys(G.players)
         const initiativeRoll = rollD20Initiative(playerIDs)
+        // TODO gamelog initiative roll
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,
           playerID: '',
           initiativeRolls: initiativeRoll.rolls,
         })
-        G.initiative = initiativeRoll.initiative
+        // G.initiative = initiativeRoll.initiative
+        G.initiative = ['1', '0']
         G.currentOrderMarker = 0
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },

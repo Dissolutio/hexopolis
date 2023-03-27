@@ -1,6 +1,6 @@
 import { generateBlankPlayersOrderMarkers } from '../constants'
-import { selectGameCardByID } from '../selectors'
-import { selectCardMoveValue } from '../selector/card-selectors'
+import { selectGameCardByID, selectUnitsForCard } from '../selectors'
+import { selectUnitMoveValue } from '../selector/card-selectors'
 import {
   BoardHexes,
   GameArmyCard,
@@ -12,6 +12,7 @@ import {
   PlayerState,
   UnitsKilled,
 } from '../types'
+import { MOVE_GLYPH_BONUS } from 'game/glyphs'
 
 export const killUnit_G = ({
   boardHexes,
@@ -111,6 +112,7 @@ export const revealGlyph_G = ({
   const isUnrevealedGlyph = glyphOnHex.isRevealed === false
   // reveal glyph
   if (isUnrevealedGlyph) {
+    // mutate glyphs
     glyphs[endHexID].isRevealed = true
   }
 }
@@ -135,9 +137,10 @@ export const assignCardMovePointsToUnit_G = ({
   )
   // TODO: move point card selector
   if (!gameCard) {
-    return 0
+    return
   }
-  const startingMovePoints = selectCardMoveValue({
+  const startingMovePoints = selectUnitMoveValue({
+    unitID,
     gameArmyCard: gameCard,
     boardHexes,
     gameUnits,
@@ -151,6 +154,46 @@ export const assignCardMovePointsToUnit_G = ({
   }
   gameUnits[unitID] = unitWithMovePoints
 }
+// So, this function gets called:
+// NOT REPLACED YET: 1. when we assign initial move points (start of turn, after BerserkerCharge success)
+// 2. AND when we move onto a move glyph, we will update the move points of the current turn's units (except the one on the glyph, since they do not get the bonus when moving off the glyph)
+export const updateMovePointsUponMovingOntoMoveGlyph_G = ({
+  gameCardID,
+  unitIdOnGlyph,
+  gameArmyCards,
+  gameUnits,
+}: {
+  gameCardID: string
+  unitIdOnGlyph: string
+  boardHexes: BoardHexes
+  gameArmyCards: GameArmyCard[]
+  gameUnits: GameUnits
+  glyphs: Glyphs
+}) => {
+  const gameCard = selectGameCardByID(gameArmyCards, gameCardID)
+  const currentTurnUnits = selectUnitsForCard(
+    gameCard?.gameCardID ?? '',
+    gameUnits
+  )
+  if (!gameCard) {
+    return
+  }
+  // move-points
+  currentTurnUnits.forEach((unit) => {
+    //ignore the unit on the glyph, it does not get the bonus when moving off of the glyph (moving at all, really)
+    if (unit.unitID === unitIdOnGlyph) {
+      return
+    }
+    // all the other units for this turn's card get the bonus
+    const unitWithMovePoints = {
+      ...gameUnits[unit.unitID],
+      movePoints: gameUnits[unit.unitID].movePoints + MOVE_GLYPH_BONUS,
+    }
+    // gameUnits is what gets mutated
+    gameUnits[unit.unitID] = unitWithMovePoints
+  })
+}
+
 export const wipeCardOrderMarkers_G = ({
   gameCardToWipeID,
   playerID,

@@ -421,7 +421,7 @@ export const devHexagon = {
       '-3,3,0': {
         hexID: '-3,3,0',
         glyphID: 'move',
-        isRevealed: false,
+        isRevealed: true,
       },
       '0,0,0': {
         hexID: '0,0,0',
