@@ -210,6 +210,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const gameUnit = gameUnits?.[unitIdToShowOnHex]
   // we only show players their own units during placement phase
   const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
+  const unitName = gameUnitCard?.name ?? ''
   // const isGlyph = !!glyphs[hex.id]?.glyphID
   // computed
   // we only show players their own units during placement phase
@@ -232,11 +233,11 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
       {/* Hex text */}
       <HexIDText
         hexSize={hexSize}
-        text={`${hex.id}`}
-        textLine2={`${hex.altitude}`}
-        // text={`${hex.altitude}`}
+        // text={`${hex.id}`}
+        // textLine2={`${hex.altitude}`}
         // only show unit name on head-hex
-        // textLine2={!hex.isUnitTail ? `${unitName}` : ''}
+        text={`${hex.altitude}`}
+        textLine2={!hex.isUnitTail ? `${unitName}` : ''}
       />
       {/* Glyph display */}
       <MapHexGlyph hex={hex} />
