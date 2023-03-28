@@ -92,6 +92,11 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
           viewBox={viewBox}
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
+          style={{
+            transform: 'rotateX(30deg) rotateY(0deg)',
+            transformStyle: 'preserve-3d',
+            transformOrigin: 'center 65%',
+          }}
         >
           <g className="hexgrid-layout">
             {/* This displays the base hexagons and the hex-text (unit name, altitude, hex.id) */}

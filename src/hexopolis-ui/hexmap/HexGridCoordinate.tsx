@@ -21,7 +21,8 @@ export function HexGridCoordinate(props: Props) {
 
   return (
     <g
-      transform={`translate(${pixel.x}, ${pixel.y})`}
+      // each hex to its spot, and also a little elevation
+      transform={`translate(${pixel.x}, ${pixel.y - hex.altitude / 5})`}
       onClick={(e) => {
         if (onClick) {
           onClick(e, hex)
