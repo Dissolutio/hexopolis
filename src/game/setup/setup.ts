@@ -9,6 +9,7 @@ import {
   makeGiantsTableMap,
   makeHexagonShapedMap,
   makeForsakenWatersMap,
+  makeMoveRangeTestMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { armyCardsToGameArmyCardsForTest } from './unit-gen'
@@ -97,7 +98,8 @@ export const gameSetupInitialGameState = ({
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
   // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  return makeDefaultScenario(numPlayers, withPrePlacedUnits)
+  // return makeDefaultScenario(numPlayers, withPrePlacedUnits)
+  return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -215,7 +217,29 @@ function makeDefaultScenario(
     startZones: map.startZones,
   }
 }
-  const map = makeDevHexagonMap({
+export function makeMoveRangeTestScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    : []
+  // GameUnits
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+  // Map
+  const map = makeMoveRangeTestMap({
     withPrePlacedUnits: Boolean(withPrePlacedUnits),
     gameUnits: gameUnitsWithoutTheDrop,
   })

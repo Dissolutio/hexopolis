@@ -43,16 +43,25 @@ const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
     A. 2-hex unit: calculate starting from head, then tail, then merge
     B. 1-hex unit: calculate starting from head
  */
-export function computeUnitMoveRange2(
-  unit: GameUnit,
-  isFlying: boolean,
-  isGrappleGun: boolean,
-  hasMoved: boolean,
-  boardHexes: BoardHexes,
-  gameUnits: GameUnits,
-  armyCards: GameArmyCard[],
+export function computeUnitMoveRange2({
+  unit,
+  isFlying,
+  isGrappleGun,
+  hasMoved,
+  boardHexes,
+  gameUnits,
+  armyCards,
+  glyphs,
+}: {
+  unit: GameUnit
+  isFlying: boolean
+  isGrappleGun: boolean
+  hasMoved: boolean
+  boardHexes: BoardHexes
+  gameUnits: GameUnits
+  armyCards: GameArmyCard[]
   glyphs: Glyphs
-): MoveRange {
+}): MoveRange {
   // TODO: GRAPPLE-GUN-HACK :: hasMoved is used to hack the move-range/move-points for the grapple gun (which can only move 1 hex, so lends itself to a boolean parameter)
   const movePointsForGrappleGun = hasMoved ? 0 : 1
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
@@ -211,6 +220,10 @@ function computeMovesForStartHex({
     disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
   }))
   const toBeChecked: ToBeChecked[] = [...neighborsAsToBeChecked]
+  console.log(
+    '🚀 ~ file: computeUnitMoveRange2.ts:214 ~ toBeChecked:',
+    toBeChecked
+  )
   const isVisitedAlready = false
   // early out if no move points!
   if (movePoints <= 0) {
@@ -219,9 +232,6 @@ function computeMovesForStartHex({
   const isUnit2Hex = unit?.is2Hex
   const isUnitInitiallyEngaged = initialEngagements.length > 0
   return initialMoveRange
-  // Neighbors are either passable or unpassable
-  // let nextResults = neighbors.reduce(
-  //   (acc: MoveRange, neighbor: BoardHex): MoveRange => {
   //     const isFromOccupied =
   //       startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
   //     const validTailSpotsForNeighbor = selectValidTailHexes(
@@ -353,92 +363,4 @@ function computeMovesForStartHex({
   //       movePointsLeft,
   //       disengagedUnitIDs: totalDisengagedIDsSoFar,
   //       engagedUnitIDs: latestEngagedUnitIDs,
-  //     }
-  //     // 1. unpassable
-  //     if (isUnpassable) {
-  //       return acc
-  //     }
-  //     // 2. passable: we can get here, maybe stop, maybe pass thru
-  //     if (isDangerousHex) {
-  //       if (canStopHere) {
-  //         acc[neighborHexID] = {
-  //           ...moveRangeData,
-  //           isDisengage: isCausingDisengagement,
-  //           isGrappleGun,
-  //           fallDamage: newFallDamage,
-  //           isActionGlyph,
-  //         }
-  //       }
-  //       // ONLY for falling damage hexes will be not recurse, because I don't want to deal with applying disengage/fall damage in the right order (you will take all disengagement swipes, and THEN fall)
-  //       if (isFallDamage) {
-  //         return acc
-  //       }
-  //       return isMovePointsLeftAfterMove
-  //         ? {
-  //             ...acc,
-  //             ...computeMovesForStartHex({
-  //               unmutatedContext,
-  //               prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
-  //               prevHexFallDamage: newFallDamage,
-  //               startHex: neighbor,
-  //               movePoints: movePointsLeft,
-  //               initialMoveRange: acc,
-  //             }),
-  //           }
-  //         : acc
-  //     } else if (isCausingEngagement) {
-  //       // we can stop there
-  //       if (canStopHere) {
-  //         acc[neighborHexID] = {
-  //           ...moveRangeData,
-  //           isEngage: true,
-  //           isGrappleGun,
-  //         }
-  //       }
-  //       return isMovePointsLeftAfterMove
-  //         ? {
-  //             ...acc,
-  //             ...computeMovesForStartHex({
-  //               unmutatedContext,
-  //               prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-  //               prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
-  //               startHex: neighbor,
-  //               startTailHex: isUnit2Hex ? startHex : undefined,
-  //               movePoints: movePointsLeft,
-  //               initialMoveRange: acc,
-  //             }),
-  //           }
-  //         : acc
-  //     }
-  //     // safe hexes
-  //     else {
-  //       // we can stop there if it's not occupied
-  //       if (canStopHere) {
-  //         acc[neighborHexID] = {
-  //           ...moveRangeData,
-  //           isSafe: true,
-  //           isGrappleGun,
-  //         }
-  //       }
-  //       return isMovePointsLeftAfterMove
-  //         ? {
-  //             ...acc,
-  //             ...computeMovesForStartHex({
-  //               unmutatedContext,
-  //               prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-  //               prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
-  //               startHex: neighbor,
-  //               startTailHex: isUnit2Hex ? startHex : undefined,
-  //               movePoints: movePointsLeft,
-  //               initialMoveRange: acc,
-  //             }),
-  //           }
-  //         : acc
-  //     }
-  //   },
-  //   // accumulator for reduce fn
-  //   initialMoveRange
-  // )
-  // const result = nextResults
-  // return result
 }
