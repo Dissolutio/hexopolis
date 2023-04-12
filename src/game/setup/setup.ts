@@ -97,7 +97,7 @@ export const gameSetupInitialGameState = ({
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
   // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  return makeTestScenario(numPlayers, withPrePlacedUnits)
+  return makeDefaultScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -168,7 +168,7 @@ function makeForsakenWaters2PlayerScenario(
     startZones: map.startZones,
   }
 }
-function makeTestScenario(
+function makeDefaultScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
 ): GameState {
@@ -190,18 +190,31 @@ function makeTestScenario(
     'unitID'
   )
   // Map
-  // const map = makeHexagonShapedMap({
-  //   // mapSize: Math.max(numPlayers * 2, 8),
-  //   mapSize: 0,
-  //   withPrePlacedUnits,
-  //   gameUnits: gameUnitsWithoutTheDrop,
-  //   flat: false,
-  // })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   // })
   // const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits: gameUnitsWithoutTheDrop,
+  // })
+  const map = makeHexagonShapedMap({
+    // mapSize: Math.max(numPlayers * 2, 8),
+    mapSize: 1,
+    withPrePlacedUnits,
+    gameUnits: gameUnitsWithoutTheDrop,
+    flat: false,
+  })
+  return {
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
   const map = makeDevHexagonMap({
     withPrePlacedUnits: Boolean(withPrePlacedUnits),
     gameUnits: gameUnitsWithoutTheDrop,
