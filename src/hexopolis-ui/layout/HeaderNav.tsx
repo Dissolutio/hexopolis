@@ -57,7 +57,7 @@ const PlayerTeamLogo = ({
     return (
       <a href={localLink}>
         <PlayerTeamLogoH1>
-          Hexopolis: {playerIDDisplay(playerID)}
+          Hexoscape: {playerIDDisplay(playerID)}
         </PlayerTeamLogoH1>
       </a>
     )
@@ -66,7 +66,7 @@ const PlayerTeamLogo = ({
   const lobbyLink = `/`
   return (
     // <Link to={lobbyLink}>
-    <PlayerTeamLogoH1>Hexopolis: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
+    <PlayerTeamLogoH1>Hexoscape: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
     // </Link>
   )
 }
