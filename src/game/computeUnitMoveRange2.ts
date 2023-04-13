@@ -106,7 +106,7 @@ export function computeUnitMoveRange2({
         gameUnits,
         glyphs,
       },
-      prevHexesEngagedUnitIDs: initialEngagements,
+      // prevHexesEngagedUnitIDs: initialEngagements,
       prevHexFallDamage: 0,
       movePoints: initialMovePoints,
       initialMoveRange,
@@ -152,6 +152,7 @@ export function computeUnitMoveRange2({
 }
 
 type ToBeChecked = {
+  id: string
   fromHexID: string
   movePoints: number
   disenagedUnitIDs: string[]
@@ -211,10 +212,11 @@ function computeMovesForStartHex({
    2. For each neighbor, we are looking at if we can get there, if we can stop there, and if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
    3. We keep doing this until we run out of "to be checked" hexes
   */
-
+  const result = { ...initialMoveRange }
   const startHexID = startHex.id
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
   const neighborsAsToBeChecked = neighbors.map((neighbor) => ({
+    id: neighbor.id,
     fromHexID: startHexID,
     movePoints: movePoints,
     disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
@@ -224,13 +226,46 @@ function computeMovesForStartHex({
     '🚀 ~ file: computeUnitMoveRange2.ts:214 ~ toBeChecked:',
     toBeChecked
   )
-  const isVisitedAlready = false
   // early out if no move points!
   if (movePoints <= 0) {
     return initialMoveRange
   }
   const isUnit2Hex = unit?.is2Hex
   const isUnitInitiallyEngaged = initialEngagements.length > 0
+  const isVisitedAlready = false
+  while (toBeChecked.length > 0) {
+    const next = toBeChecked.shift()
+    const neighbor = boardHexes[next?.id ?? '']
+    console.log('🚀 ~ file: computeUnitMoveRange2.ts:239 ~ neighbor:', neighbor)
+  }
+
+  //     const isFromOccupied =
+  //       startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
+  //     const validTailSpotsForNeighbor = selectValidTailHexes(
+  //       neighbor.id,
+  //       boardHexes
+  //     ).map((hex) => hex.id)
+  //     const isStartHexWater = startHex.terrain === HexTerrain.water
+  //     const isNeighborHexWater = neighbor.terrain === HexTerrain.water
+  //     // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
+  //     const isGlyphStoppage = !!glyphs[neighbor.id]
+  //     const isGlyphRevealed = !!glyphs[neighbor.id]?.isRevealed
+  //     // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
+  //     const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
+  //     const isWaterStoppage =
+  //       (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
+  //       (!isUnit2Hex && isNeighborHexWater)
+  //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+  //     const walkCost = selectMoveCostBetweenNeighbors(startHex, neighbor)
+  //     const fromCost =
+  //       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
+  //       isWaterStoppage || isGlyphStoppage
+  //         ? Math.max(movePoints, walkCost)
+  //         : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
+  //         isFlying || isGrappleGun
+  //         ? 1
+  //         : walkCost
+
   return initialMoveRange
   //     const isFromOccupied =
   //       startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
