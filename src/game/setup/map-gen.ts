@@ -122,7 +122,6 @@ export function makeMoveRangeTestMap({
     throw new Error('moveRangeMap.boardHexes is not defined')
   }
   const startZones = getStartZonesFromBoardHexes(boardHexes)
-  console.log('🚀 ~ file: map-gen.ts:125 ~ startZones:', startZones)
   if (withPrePlacedUnits) {
     transformBoardHexesWithPrePlacedUnits(
       boardHexes,
