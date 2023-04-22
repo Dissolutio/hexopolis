@@ -211,21 +211,18 @@ function computeMovesForStartHex({
    1. We put the neighbors as our first "to be checked" hexes
    2. For each neighbor, we are looking at if we can get there, if we can stop there, and if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
    3. We keep doing this until we run out of "to be checked" hexes
-  */
+   */
   const result = { ...initialMoveRange }
   const startHexID = startHex.id
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
-  const neighborsAsToBeChecked = neighbors.map((neighbor) => ({
-    id: neighbor.id,
-    fromHexID: startHexID,
-    movePoints: movePoints,
-    disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
-  }))
-  const toBeChecked: ToBeChecked[] = [...neighborsAsToBeChecked]
-  console.log(
-    '🚀 ~ file: computeUnitMoveRange2.ts:214 ~ toBeChecked:',
-    toBeChecked
-  )
+  const toBeChecked: ToBeChecked[] = [
+    ...neighbors.map((neighbor) => ({
+      id: neighbor.id,
+      fromHexID: startHexID,
+      movePoints: movePoints,
+      disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
+    })),
+  ]
   // early out if no move points!
   if (movePoints <= 0) {
     return initialMoveRange
@@ -236,7 +233,10 @@ function computeMovesForStartHex({
   while (toBeChecked.length > 0) {
     const next = toBeChecked.shift()
     const neighbor = boardHexes[next?.id ?? '']
-    console.log('🚀 ~ file: computeUnitMoveRange2.ts:239 ~ neighbor:', neighbor)
+    // const fromHex =boardHexes
+    // if we can get there
+    // if we can stop there
+    // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
   }
 
   //     const isFromOccupied =
