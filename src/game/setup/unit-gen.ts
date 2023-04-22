@@ -6,6 +6,7 @@ import {
   PlayerState,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
+import { testCards } from '../coreHeroscapeCards'
 import { makeGameCardID } from '../transformers'
 
 const marroID = 'hs1000'
@@ -13,6 +14,7 @@ const deathwalker9000ID = 'hs1001'
 const izumiID = 'hs1002'
 const drake1ID = 'hs1003'
 const syvarrisID = 'hs1004'
+const testDummyID = 'test001'
 const kravMagaID = 'hs1005'
 const tarnID = 'hs1006'
 const carrID = 'hs1007'
@@ -43,7 +45,8 @@ export const startingArmies: { [playerID: string]: string[] } = {
     // raelinOneID,
     // kravMagaID,
     // tarnID,
-    syvarrisID,
+    // syvarrisID,
+    testDummyID,
     // airbornID,
     // zettianID,
     // carrID,
@@ -87,7 +90,7 @@ function hsCardsToArmyCards(
     }
   })
 }
-
+const cardsUsed = [...MS1Cards, ...testCards]
 export function armyCardsToGameArmyCardsForTest(
   numPlayers: number
 ): GameArmyCard[] {
@@ -102,10 +105,10 @@ export function armyCardsToGameArmyCardsForTest(
 
       const playerArmyCards = playerHSCardIDs
         .filter((hsCardID) => {
-          return MS1Cards.find((card) => card.armyCardID === hsCardID)
+          return cardsUsed.find((card) => card.armyCardID === hsCardID)
         })
         .map((hsCardID) => {
-          return MS1Cards.find((card) => card.armyCardID === hsCardID)
+          return cardsUsed.find((card) => card.armyCardID === hsCardID)
         })
       return {
         ...acc,

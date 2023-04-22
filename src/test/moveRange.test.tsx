@@ -8,7 +8,7 @@ test('see if move range is working correctly on the moveRangeTest map', () => {
     return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
   }
   const gameState = makeGameState()
-  // this test assumes there are two players, and each has one unit, so there's 'p0u1' and this one
+  // this test assumes there are two players, and each has one unit, so 2 unitIDs: p0u0,p1u1
   const unitMovingID = 'p1u1'
   const unitMoving = {
     ...gameState.gameUnits[unitMovingID],
