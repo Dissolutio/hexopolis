@@ -238,6 +238,8 @@ function computeMovesForStartHex({
     }
     const toHexID = next.id
     const toHex = boardHexes[toHexID]
+    const unitIDOnToHex = toHex.occupyingUnitID
+    const endHexUnit = gameUnits[unitIDOnToHex]
     const movePointsBeforeMove = next.movePoints
     const fromHex = boardHexes[next.fromHexID]
     const fromTailHex = boardHexes?.[next?.fromTailHexID ?? '']
@@ -309,139 +311,79 @@ function computeMovesForStartHex({
       gameUnits,
       armyCards,
     })
-    //     const neighborHexEngagements = selectEngagementsForHex({
-    //       hexID: neighbor.id,
-    //       boardHexes,
-    //       gameUnits,
-    //       armyCards,
-    //       override: {
-    //         overrideUnitID: unit.unitID,
-    //         overrideTailHexID: startHex.id,
-    //       },
-    //     })
-    //     const isCausingEngagement =
-    //       latestEngagedUnitIDs.length > 0 ||
-    //       // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
-    //       neighborHexEngagements.some((id) => !initialEngagements.includes(id))
-    //     // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
-    //     const isCausingDisengagementIfFlying =
-    //       isUnitInitiallyEngaged && !hasStealth
-    //     const isCausingDisengagementIfWalking = hasDisengage
-    //       ? false
-    //       : totalDisengagedIDsSoFar.length > 0
-    //     const isCausingDisengagement = isFlying
-    //       ? isCausingDisengagementIfFlying
-    //       : isCausingDisengagementIfWalking
-    //     const endHexUnit = { ...gameUnits[neighborUnitID] }
-    //     const endHexUnitPlayerID = endHexUnit.playerID
-    //     const isMovePointsLeftAfterMove = movePointsLeft > 0
-    //     const isEndHexUnoccupied = !Boolean(neighborUnitID)
-    //     const isTooCostly = movePointsLeft < 0
-    //     const isEndHexEnemyOccupied =
-    //       !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
-    //     const isEndHexUnitEngaged =
-    //       selectEngagementsForHex({
-    //         hexID: neighbor.id,
-    //         boardHexes,
-    //         gameUnits,
-    //         armyCards,
-    //       }).length > 0
+    const neighborHexEngagements = selectEngagementsForHex({
+      hexID: toHexID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+      override: {
+        overrideUnitID: unit.unitID,
+        overrideTailHexID: fromTailHex?.id,
+      },
+    })
+    const isCausingEngagement =
+      latestEngagedUnitIDs.length > 0 ||
+      // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
+      neighborHexEngagements.some((id) => !initialEngagements.includes(id))
+    // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
+    const isCausingDisengagementIfFlying = isUnitInitiallyEngaged && !hasStealth
+    const isCausingDisengagementIfWalking = hasDisengage
+      ? false
+      : totalDisengagedIDsSoFar.length > 0
+    const isCausingDisengagement = isFlying
+      ? isCausingDisengagementIfFlying
+      : isCausingDisengagementIfWalking
+    const endHexUnitPlayerID = endHexUnit?.playerID
+    const isMovePointsLeftAfterMove = movePointsLeft > 0
+    const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
+    const isTooCostly = movePointsLeft < 0
+    // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
+    const isEndHexEnemyOccupied =
+      !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
+    const isEndHexUnitEngaged =
+      selectEngagementsForHex({
+        hexID: toHexID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+      }).length > 0
+    const isTooTallOfClimb = !selectIsClimbable(
+      unit,
+      armyCards,
+      fromHex,
+      toHex,
+      // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
+      isGrappleGun ? 26 : undefined
+    )
+    const newFallDamage =
+      prevHexFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
+    const isFallDamage = newFallDamage > 0
+    const isUnpassable = isFlying
+      ? isTooCostly
+      : isTooCostly ||
+        // ghost walk can move through enemy occupied hexes, or hexes with engaged units
+        (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
+        (hasGhostWalk ? false : isEndHexUnitEngaged) ||
+        isTooTallOfClimb
+    const can2HexUnitStopHere =
+      isEndHexUnoccupied &&
+      !isFromOccupied &&
+      validTailSpotsForNeighbor?.includes(startHexID)
+    const canStopHere = isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied
+    const isDangerousHex =
+      isCausingDisengagement || isFallDamage || isActionGlyph
+    // TODO: moveRangeData is outdated?
+    const moveRangeData = {
+      fromHexID: startHexID,
+      fromCost,
+      isFromOccupied,
+      movePointsLeft,
+      disengagedUnitIDs: totalDisengagedIDsSoFar,
+      engagedUnitIDs: latestEngagedUnitIDs,
+    }
 
     // if we can stop there
     // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
   }
   return initialMoveRange
-  //     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
-  //     const isVisitedAlready =
-  //       initialMoveRange?.[neighbor.id]?.movePointsLeft === movePointsLeft
-  //         ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs.length <=
-  //           disengagedUnitIDs.length
-  //       // console.count(neighbor.id)
-  //       console.count(neighbor.id)
-  //       console.log(initialMoveRange?.[neighbor.id]?.movePointsLeft)
-  //       return acc
-  //         : initialMoveRange?.[neighbor.id]?.movePointsLeft > movePointsLeft
-  //     }
-  //     const totalDisengagedIDsSoFar = uniq([
-  //       ...(prevHexesDisengagedUnitIDs ?? []),
-  //       ...disengagedUnitIDs,
-  //     ])
-  //     const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
-  //       unit,
-  //       startHexID,
-  //       neighborHexID,
-  //       boardHexes,
-  //       gameUnits,
-  //       armyCards,
-  //     })
-  //     const neighborHexEngagements = selectEngagementsForHex({
-  //       hexID: neighbor.id,
-  //       boardHexes,
-  //       gameUnits,
-  //       armyCards,
-  //       override: {
-  //         overrideUnitID: unit.unitID,
-  //         overrideTailHexID: startHex.id,
-  //       },
-  //     })
-  //     const isCausingEngagement =
-  //       latestEngagedUnitIDs.length > 0 ||
-  //       // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
-  //       neighborHexEngagements.some((id) => !initialEngagements.includes(id))
-  //     // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
-  //     const isCausingDisengagementIfFlying =
-  //       isUnitInitiallyEngaged && !hasStealth
-  //     const isCausingDisengagementIfWalking = hasDisengage
-  //       ? false
-  //       : totalDisengagedIDsSoFar.length > 0
-  //     const isCausingDisengagement = isFlying
-  //       ? isCausingDisengagementIfFlying
-  //       : isCausingDisengagementIfWalking
-  //     const endHexUnit = { ...gameUnits[neighborUnitID] }
-  //     const endHexUnitPlayerID = endHexUnit.playerID
-  //     const isMovePointsLeftAfterMove = movePointsLeft > 0
-  //     const isEndHexUnoccupied = !Boolean(neighborUnitID)
-  //     const isTooCostly = movePointsLeft < 0
-  //     const isEndHexEnemyOccupied =
-  //       !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
-  //     const isEndHexUnitEngaged =
-  //       selectEngagementsForHex({
-  //         hexID: neighbor.id,
-  //         boardHexes,
-  //         gameUnits,
-  //         armyCards,
-  //       }).length > 0
-  //     const isTooTallOfClimb = !selectIsClimbable(
-  //       unit,
-  //       armyCards,
-  //       startHex,
-  //       neighbor,
-  //       // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
-  //       isGrappleGun ? 26 : undefined
-  //     )
-  //     const newFallDamage =
-  //       prevHexFallDamage +
-  //       selectIsFallDamage(unit, armyCards, startHex, neighbor)
-  //     const isFallDamage = newFallDamage > 0
-  //     const isUnpassable = isFlying
-  //       ? isTooCostly
-  //       : isTooCostly ||
-  //         // ghost walk can move through enemy occupied hexes, or hexes with engaged units
-  //         (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
-  //         (hasGhostWalk ? false : isEndHexUnitEngaged) ||
-  //         isTooTallOfClimb
-  //     const can2HexUnitStopHere =
-  //       isEndHexUnoccupied &&
-  //       !isFromOccupied &&
-  //       validTailSpotsForNeighbor?.includes(startHexID)
-  //     const canStopHere = isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied
-  //     const isDangerousHex =
-  //       isCausingDisengagement || isFallDamage || isActionGlyph
-  //     const moveRangeData = {
-  //       fromHexID: startHexID,
-  //       fromCost,
-  //       isFromOccupied,
-  //       movePointsLeft,
-  //       disengagedUnitIDs: totalDisengagedIDsSoFar,
-  //       engagedUnitIDs: latestEngagedUnitIDs,
 }
