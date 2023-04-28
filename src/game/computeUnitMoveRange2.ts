@@ -365,6 +365,10 @@ function computeMovesForStartHex({
         (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
         (hasGhostWalk ? false : isEndHexUnitEngaged) ||
         isTooTallOfClimb
+    // 1. unpassable
+    if (isUnpassable) {
+      break
+    }
     const can2HexUnitStopHere =
       isEndHexUnoccupied &&
       !isFromOccupied &&
@@ -381,9 +385,95 @@ function computeMovesForStartHex({
       disengagedUnitIDs: totalDisengagedIDsSoFar,
       engagedUnitIDs: latestEngagedUnitIDs,
     }
-
-    // if we can stop there
-    // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
+    // 2. passable: we can get here, maybe stop, maybe pass thru
+    // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
+    if (isDangerousHex) {
+      if (canStopHere) {
+        // we can disengage or fall to this space, update result
+        finalMoveRange[toHexID] = {
+          ...moveRangeData,
+          isDisengage: isCausingDisengagement,
+          isGrappleGun,
+          fallDamage: newFallDamage,
+          isActionGlyph,
+        }
+      }
+      if (isFallDamage) {
+        /* 
+          for falling damage, we will not explore further, but we will for disengaging,
+          because I don't want to deal with applying disengage/fall damage 
+          in a certain order (current impl: you will receive all disengagement swipes, and THEN fall)
+        */
+        break
+      }
+      // TODO: how to add neighbors into the new loop, for the disengage hexes
+      // return isMovePointsLeftAfterMove
+      //   ? {
+      //       ...acc,
+      //       ...recurseThroughMoves({
+      //         unmutatedContext,
+      //         prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
+      //         prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+      //         prevHexFallDamage: newFallDamage,
+      //         prevHex: neighbor,
+      //         movePoints: movePointsLeft,
+      //         initialMoveRange: acc,
+      //       }),
+      //     }
+      //   : acc
+    } else if (isCausingEngagement) {
+      // we can stop there
+      if (canStopHere) {
+        finalMoveRange[toHexID] = {
+          ...moveRangeData,
+          isEngage: true,
+          isGrappleGun,
+        }
+      }
+      // TODO: how to add neighbors into the new loop, for engagement hexes
+      // return isMovePointsLeftAfterMove
+      //   ? {
+      //       ...acc,
+      //       ...recurseThroughMoves({
+      //         unmutatedContext,
+      //         prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
+      //         prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+      //         prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
+      //         prevHex: neighbor,
+      //         startTailHex: isUnit2Hex ? prevHex : undefined,
+      //         movePoints: movePointsLeft,
+      //         initialMoveRange: acc,
+      //       }),
+      //     }
+      //   : acc
+    }
+    // safe hexes
+    else {
+      // we can stop there if it's not occupied
+      if (canStopHere) {
+        finalMoveRange[toHexID] = {
+          ...moveRangeData,
+          isSafe: true,
+          isGrappleGun,
+        }
+      }
+      // TODO: how to add neighbors into the new loop, for safe hexes
+      // return isMovePointsLeftAfterMove
+      //   ? {
+      //       ...acc,
+      //       ...recurseThroughMoves({
+      //         unmutatedContext,
+      //         prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
+      //         prevHexesEngagedUnitIDs: latestEngagedUnitIDs, // this should be 0 here, as the hex would be an engagement-hex ^^
+      //         prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
+      //         prevHex: neighbor,
+      //         startTailHex: isUnit2Hex ? prevHex : undefined,
+      //         movePoints: movePointsLeft,
+      //         initialMoveRange: acc,
+      //       }),
+      //     }
+      //   : acc
+    }
   }
   return initialMoveRange
 }
