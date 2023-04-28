@@ -154,6 +154,7 @@ export function computeUnitMoveRange2({
 type ToBeChecked = {
   id: string
   fromHexID: string
+  fromTailHexID?: string
   movePoints: number
   disenagedUnitIDs: string[]
 }
@@ -212,7 +213,7 @@ function computeMovesForStartHex({
    2. For each neighbor, we are looking at if we can get there, if we can stop there, and if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
    3. We keep doing this until we run out of "to be checked" hexes
    */
-  const result = { ...initialMoveRange }
+  const finalMoveRange = { ...initialMoveRange }
   const startHexID = startHex.id
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
   const toBeChecked: ToBeChecked[] = [
@@ -232,79 +233,124 @@ function computeMovesForStartHex({
   const isVisitedAlready = false
   while (toBeChecked.length > 0) {
     const next = toBeChecked.shift()
-    const neighbor = boardHexes[next?.id ?? '']
-    // const fromHex =boardHexes
+    if (!next) {
+      break
+    }
+    const toHexID = next.id
+    const toHex = boardHexes[toHexID]
+    const movePointsBeforeMove = next.movePoints
+    const fromHex = boardHexes[next.fromHexID]
+    const fromTailHex = boardHexes?.[next?.fromTailHexID ?? '']
+    const fromHexDisengagedUnitIDs = next.disenagedUnitIDs
+    // const isVisitedAlready = finalMoveRange[neighborID].movePointsLeft === movePointsLeft
+    const preVisitedEntry = finalMoveRange[toHexID]
+    const isFromOccupied =
+      fromHex.occupyingUnitID && fromHex.occupyingUnitID !== unit.unitID
+    const validTailSpotsForNeighbor = selectValidTailHexes(
+      toHexID,
+      boardHexes
+    ).map((hex) => hex.id)
+    const isStartHexWater = fromHex.terrain === HexTerrain.water
+    const isNeighborHexWater = toHex.terrain === HexTerrain.water
+    // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
+    const isGlyphStoppage = !!glyphs[toHexID]
+    const isGlyphRevealed = !!glyphs[toHexID]?.isRevealed
+    //     // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
+    const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
+    const isWaterStoppage =
+      (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
+      (!isUnit2Hex && isNeighborHexWater)
+    const walkCost = selectMoveCostBetweenNeighbors(startHex, toHex)
+    //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+    const fromCost =
+      // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
+      isWaterStoppage || isGlyphStoppage
+        ? Math.max(movePoints, walkCost)
+        : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
+        isFlying || isGrappleGun
+        ? 1
+        : walkCost
+    const movePointsLeft = movePoints - fromCost
+    const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
+      unit,
+      isFlying,
+      startHexID: toHexID,
+      startTailHexID: fromTailHex?.id,
+      neighborHexID: toHexID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+    })
+    //     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
+    const isVisitedAlready =
+      preVisitedEntry?.movePointsLeft === movePointsBeforeMove
+        ? preVisitedEntry?.movePointsLeft > movePointsBeforeMove
+        : preVisitedEntry?.disengagedUnitIDs?.length <=
+          fromHexDisengagedUnitIDs.length
+    if (isVisitedAlready) {
+      // TODO: Handle this
+      break
+    }
     // if we can get there
     // if we can stop there
     // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
+
+    // if we can get there
+    const totalDisengagedIDsSoFar = uniq([
+      ...(prevHexesDisengagedUnitIDs ?? []),
+      ...disengagedUnitIDs,
+    ])
+    const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
+      unit,
+      startHexID,
+      startTailHexID: startTailHex?.id,
+      neighborHexID: toHexID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+    })
+    //     const neighborHexEngagements = selectEngagementsForHex({
+    //       hexID: neighbor.id,
+    //       boardHexes,
+    //       gameUnits,
+    //       armyCards,
+    //       override: {
+    //         overrideUnitID: unit.unitID,
+    //         overrideTailHexID: startHex.id,
+    //       },
+    //     })
+    //     const isCausingEngagement =
+    //       latestEngagedUnitIDs.length > 0 ||
+    //       // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
+    //       neighborHexEngagements.some((id) => !initialEngagements.includes(id))
+    //     // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
+    //     const isCausingDisengagementIfFlying =
+    //       isUnitInitiallyEngaged && !hasStealth
+    //     const isCausingDisengagementIfWalking = hasDisengage
+    //       ? false
+    //       : totalDisengagedIDsSoFar.length > 0
+    //     const isCausingDisengagement = isFlying
+    //       ? isCausingDisengagementIfFlying
+    //       : isCausingDisengagementIfWalking
+    //     const endHexUnit = { ...gameUnits[neighborUnitID] }
+    //     const endHexUnitPlayerID = endHexUnit.playerID
+    //     const isMovePointsLeftAfterMove = movePointsLeft > 0
+    //     const isEndHexUnoccupied = !Boolean(neighborUnitID)
+    //     const isTooCostly = movePointsLeft < 0
+    //     const isEndHexEnemyOccupied =
+    //       !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
+    //     const isEndHexUnitEngaged =
+    //       selectEngagementsForHex({
+    //         hexID: neighbor.id,
+    //         boardHexes,
+    //         gameUnits,
+    //         armyCards,
+    //       }).length > 0
+
+    // if we can stop there
+    // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
   }
-
-  //     const isFromOccupied =
-  //       startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
-  //     const validTailSpotsForNeighbor = selectValidTailHexes(
-  //       neighbor.id,
-  //       boardHexes
-  //     ).map((hex) => hex.id)
-  //     const isStartHexWater = startHex.terrain === HexTerrain.water
-  //     const isNeighborHexWater = neighbor.terrain === HexTerrain.water
-  //     // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
-  //     const isGlyphStoppage = !!glyphs[neighbor.id]
-  //     const isGlyphRevealed = !!glyphs[neighbor.id]?.isRevealed
-  //     // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
-  //     const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
-  //     const isWaterStoppage =
-  //       (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
-  //       (!isUnit2Hex && isNeighborHexWater)
-  //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
-  //     const walkCost = selectMoveCostBetweenNeighbors(startHex, neighbor)
-  //     const fromCost =
-  //       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
-  //       isWaterStoppage || isGlyphStoppage
-  //         ? Math.max(movePoints, walkCost)
-  //         : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
-  //         isFlying || isGrappleGun
-  //         ? 1
-  //         : walkCost
-
   return initialMoveRange
-  //     const isFromOccupied =
-  //       startHex.occupyingUnitID && startHex.occupyingUnitID !== unit.unitID
-  //     const validTailSpotsForNeighbor = selectValidTailHexes(
-  //       neighbor.id,
-  //       boardHexes
-  //     ).map((hex) => hex.id)
-  //     const isStartHexWater = startHex.terrain === HexTerrain.water
-  //     const isNeighborHexWater = neighbor.terrain === HexTerrain.water
-  //     // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
-  //     const isGlyphStoppage = !!glyphs[neighbor.id]
-  //     const isGlyphRevealed = !!glyphs[neighbor.id]?.isRevealed
-  //     // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
-  //     const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
-  //     const isWaterStoppage =
-  //       (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
-  //       (!isUnit2Hex && isNeighborHexWater)
-  //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
-  //     const walkCost = selectMoveCostBetweenNeighbors(startHex, neighbor)
-  //     const fromCost =
-  //       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
-  //       isWaterStoppage || isGlyphStoppage
-  //         ? Math.max(movePoints, walkCost)
-  //         : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
-  //         isFlying || isGrappleGun
-  //         ? 1
-  //         : walkCost
-  //     const movePointsLeft = movePoints - fromCost
-  //     const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
-  //     const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
-  //       unit,
-  //       isFlying,
-  //       startHexID: startHexID,
-  //       startTailHexID: startTailHex?.id,
-  //       neighborHexID,
-  //       boardHexes,
-  //       gameUnits,
-  //       armyCards,
-  //     })
   //     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
   //     const isVisitedAlready =
   //       initialMoveRange?.[neighbor.id]?.movePointsLeft === movePointsLeft
