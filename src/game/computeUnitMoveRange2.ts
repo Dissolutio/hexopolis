@@ -475,5 +475,5 @@ function computeMovesForStartHex({
       //   : acc
     }
   }
-  return initialMoveRange
+  return finalMoveRange
 }
