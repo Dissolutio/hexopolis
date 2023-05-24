@@ -4,6 +4,7 @@ export const moveRangeTestHexIDs = {
   disengageOne_id: '-2,1,1',
   basicAdjacentFall_id: '-1,1,0',
   majorAdjacentFall_id: '-1,2,-1',
+  cannotClimbOver_id: '-2,3,-1',
 }
 
 export const moveRangeMap = {
@@ -29,6 +30,18 @@ export const moveRangeMap = {
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: -9,
+      terrain: 'grass',
+      startzonePlayerIDs: [''],
+    },
+    [moveRangeTestHexIDs.cannotClimbOver_id]: {
+      // adjacent fall, jumping into a hole
+      q: -2,
+      r: 3,
+      s: -1,
+      id: moveRangeTestHexIDs.cannotClimbOver_id,
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
@@ -128,7 +141,7 @@ export const moveRangeMap = {
     mapShape: 'hexagon',
     mapName: 'Move Range Test Map',
     flat: false,
-    mapSize: 2,
+    mapSize: 3,
     hexSize: 10,
     mapWidth: 1,
     mapHeight: 1,

@@ -26,6 +26,9 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
     armyCards: gameState.gameArmyCards,
     glyphs: gameState.hexMap.glyphs,
   })
+  test('cannot climb to this hex, not enough move points / height', () => {
+    expect(myMoveRange[moveRangeTestHexIDs.cannotClimbOver_id]).toBe(undefined)
+  })
   test('adjacent safe hex, engaging no one', () => {
     expect(
       myMoveRange[moveRangeTestHexIDs.safeAdjacentSameLevel_id]?.isSafe
