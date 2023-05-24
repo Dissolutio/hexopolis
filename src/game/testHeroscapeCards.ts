@@ -15,7 +15,7 @@ export const testCards: ICoreHeroscapeCard[] = [
     height: '4', // so that he can fall 4 altitude-levels in the move range test
     heightClass: 'medium',
     life: '1',
-    move: '1',
+    move: '5',
     range: '1',
     attack: '3',
     defense: '3',
