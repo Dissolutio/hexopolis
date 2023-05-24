@@ -5,6 +5,7 @@ export const moveRangeTestHexIDs = {
   basicAdjacentFall_id: '-1,1,0',
   majorAdjacentFall_id: '-1,2,-1',
   cannotClimbOver_id: '-2,3,-1',
+  disengageOneAndFall_id: '-2,0,2',
 }
 
 export const moveRangeMap = {
@@ -54,6 +55,18 @@ export const moveRangeMap = {
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: [''],
+    },
+    [moveRangeTestHexIDs.disengageOneAndFall_id]: {
+      // the disengagement of bad-guy-1
+      q: -2,
+      r: 0,
+      s: 2,
+      id: moveRangeTestHexIDs.disengageOneAndFall_id,
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 1,
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },

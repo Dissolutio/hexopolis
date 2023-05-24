@@ -71,4 +71,15 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
       myMoveRange[moveRangeTestHexIDs.disengageOne_id]?.disengagedUnitIDs.length
     ).toBe(1)
   })
+  test('fall damage AND disengage from bad guy #1', () => {
+    expect(
+      myMoveRange[moveRangeTestHexIDs.disengageOneAndFall_id]?.isDisengage
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRangeTestHexIDs.disengageOneAndFall_id]?.isFallDamage
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRangeTestHexIDs.disengageOneAndFall_id]?.fallDamage
+    ).toBe(MINOR_FALL_DAMAGE)
+  })
 })
