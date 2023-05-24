@@ -216,7 +216,7 @@ function computeMovesForStartHex({
   const finalMoveRange = { ...initialMoveRange }
   const startHexID = startHex.id
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
-  const toBeChecked: ToBeChecked[] = [
+  const initialToBeChecked = [
     ...neighbors.map((neighbor) => ({
       id: neighbor.id,
       fromHexID: startHexID,
@@ -224,6 +224,7 @@ function computeMovesForStartHex({
       disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
     })),
   ]
+  const toBeChecked: ToBeChecked[] = [...initialToBeChecked]
   // early out if no move points!
   if (movePoints <= 0) {
     return initialMoveRange
@@ -388,6 +389,12 @@ function computeMovesForStartHex({
     // 2. passable: we can get here, maybe stop, maybe pass thru
     // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
     if (isDangerousHex) {
+      // for dangerous hexes:
+      /* 
+      1. if we can stop there, then update the move range for that hex, and...
+      2. if there is fall damage, we can exit the while loop without adding any neighbors because we don't want to consider the order in which fall/disengagement damage is applied (so we only add neighbors for one of them)
+      3. 
+      */
       if (canStopHere) {
         // we can disengage or fall to this space, update result
         finalMoveRange[toHexID] = {
@@ -395,6 +402,7 @@ function computeMovesForStartHex({
           isDisengage: isCausingDisengagement,
           isGrappleGun,
           fallDamage: newFallDamage,
+          isFallDamage,
           isActionGlyph,
         }
       }
@@ -406,21 +414,9 @@ function computeMovesForStartHex({
         */
         break
       }
-      // TODO: how to add neighbors into the new loop, for the disengage hexes
-      // return isMovePointsLeftAfterMove
-      //   ? {
-      //       ...acc,
-      //       ...recurseThroughMoves({
-      //         unmutatedContext,
-      //         prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
-      //         prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-      //         prevHexFallDamage: newFallDamage,
-      //         prevHex: neighbor,
-      //         movePoints: movePointsLeft,
-      //         initialMoveRange: acc,
-      //       }),
-      //     }
-      //   : acc
+      /* 
+        // TODO: how to add neighbors into the new loop, for the disengage hexes
+      */
     } else if (isCausingEngagement) {
       // we can stop there
       if (canStopHere) {
