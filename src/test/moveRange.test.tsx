@@ -82,4 +82,5 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
       myMoveRange[moveRangeTestHexIDs.disengageOneAndFall_id]?.fallDamage
     ).toBe(MINOR_FALL_DAMAGE)
   })
+  // TODO: add test for glyph moves
 })
