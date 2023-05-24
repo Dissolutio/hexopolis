@@ -1,4 +1,5 @@
 import { computeUnitMoveRange2 } from 'game/computeUnitMoveRange2'
+import { MAJOR_FALL_DAMAGE, MINOR_FALL_DAMAGE } from 'game/constants'
 import { moveRangeTestHexIDs } from 'game/setup/moveRangeMap'
 import { makeMoveRangeTestScenario } from 'game/setup/setup'
 
@@ -33,6 +34,22 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
       myMoveRange[moveRangeTestHexIDs.safeAdjacentSameLevel_id].engagedUnitIDs
         .length
     ).toBe(0)
+  })
+  test('adjacent fall damage, engaging no one (jumping into a shallow hole)', () => {
+    expect(
+      myMoveRange[moveRangeTestHexIDs.basicAdjacentFall_id]?.isFallDamage
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRangeTestHexIDs.basicAdjacentFall_id].fallDamage
+    ).toBe(MINOR_FALL_DAMAGE)
+  })
+  test('adjacent major fall damage, engaging no one (jumping into a deep hole)', () => {
+    expect(
+      myMoveRange[moveRangeTestHexIDs.majorAdjacentFall_id]?.isFallDamage
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRangeTestHexIDs.majorAdjacentFall_id].fallDamage
+    ).toBe(MAJOR_FALL_DAMAGE)
   })
   test('adjacent engagement hex, engaging bad guy #1', () => {
     expect(
