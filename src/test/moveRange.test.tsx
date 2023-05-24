@@ -1,7 +1,8 @@
 import { computeUnitMoveRange2 } from 'game/computeUnitMoveRange2'
+import { moveRangeTestHexIDs } from 'game/setup/moveRangeMap'
 import { makeMoveRangeTestScenario } from 'game/setup/setup'
 
-test('see if move range is working correctly on the moveRangeTest map', () => {
+describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRangeTest map', () => {
   const makeGameState = () => {
     const numPlayers = 2
     const withPrePlacedUnits = true
@@ -24,12 +25,30 @@ test('see if move range is working correctly on the moveRangeTest map', () => {
     armyCards: gameState.gameArmyCards,
     glyphs: gameState.hexMap.glyphs,
   })
-  // 1. The hex adjacent to Us, same level, and not adjacent to Them, should be safe
-  const safeAdjacentSameLevel_id = '1,0,-1'
-  expect(myMoveRange[safeAdjacentSameLevel_id]?.isSafe).toBe(true)
-  expect(myMoveRange[safeAdjacentSameLevel_id].engagedUnitIDs.length).toBe(0)
-
-  const engagedAdjacentSameLevel_id = '0,0,0'
-  expect(myMoveRange[engagedAdjacentSameLevel_id]?.isEngage).toBe(true)
-  expect(myMoveRange[engagedAdjacentSameLevel_id].engagedUnitIDs.length).toBe(1)
+  test('adjacent safe hex, engaging no one', () => {
+    expect(
+      myMoveRange[moveRangeTestHexIDs.safeAdjacentSameLevel_id]?.isSafe
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRangeTestHexIDs.safeAdjacentSameLevel_id].engagedUnitIDs
+        .length
+    ).toBe(0)
+  })
+  test('adjacent engagement hex, engaging bad guy #1', () => {
+    expect(
+      myMoveRange[moveRangeTestHexIDs.engagedAdjacentSameLevel_id]?.isEngage
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRangeTestHexIDs.engagedAdjacentSameLevel_id]
+        .engagedUnitIDs.length
+    ).toBe(1)
+  })
+  test('go one hex next to bad guy #1, then disengage from bad guy #1', () => {
+    expect(myMoveRange[moveRangeTestHexIDs.disengageOne_id]?.isDisengage).toBe(
+      true
+    )
+    expect(
+      myMoveRange[moveRangeTestHexIDs.disengageOne_id]?.disengagedUnitIDs.length
+    ).toBe(1)
+  })
 })

@@ -130,7 +130,7 @@ export function makeMoveRangeTestMap({
     )
   }
   return {
-    boardHexes: moveRangeMap.boardHexes as unknown as BoardHexes,
+    boardHexes: moveRangeMap.boardHexes,
     hexMap: moveRangeMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
