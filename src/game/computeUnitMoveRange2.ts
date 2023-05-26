@@ -263,7 +263,7 @@ function computeMovesForStartHex({
     const isWaterStoppage =
       (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
       (!isUnit2Hex && isNeighborHexWater)
-    const walkCost = selectMoveCostBetweenNeighbors(startHex, toHex)
+    const walkCost = selectMoveCostBetweenNeighbors(fromHex, toHex)
     //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
     const fromCost =
       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
@@ -377,7 +377,6 @@ function computeMovesForStartHex({
     const canStopHere = isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied
     const isDangerousHex =
       isCausingDisengagement || isFallDamage || isActionGlyph
-    // TODO: moveRangeData is outdated?
     const moveRangeData = {
       fromHexID: startHexID,
       fromCost,
@@ -386,6 +385,18 @@ function computeMovesForStartHex({
       disengagedUnitIDs: totalDisengagedIDsSoFar,
       engagedUnitIDs: latestEngagedUnitIDs,
     }
+
+    // NEIGHBORS prepare the neighbors to be added to to-be-checked
+    const nextNeighbors = selectHexNeighbors(startHexID, boardHexes)
+    const nextToBeChecked = [
+      ...nextNeighbors.map((neighbor) => ({
+        id: neighbor.id,
+        fromHexID: startHexID,
+        movePoints: movePointsLeft,
+        disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
+      })),
+    ]
+
     // 2. passable: we can get here, maybe stop, maybe pass thru
     // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
     if (isDangerousHex) {
