@@ -232,6 +232,8 @@ function computeMovesForStartHex({
   const isUnit2Hex = unit?.is2Hex
   const isUnitInitiallyEngaged = initialEngagements.length > 0
   const isVisitedAlready = false
+
+  // BEGIN WHILE LOOP
   while (toBeChecked.length > 0) {
     const next = toBeChecked.shift()
     if (!next) {
@@ -241,7 +243,7 @@ function computeMovesForStartHex({
     const toHex = boardHexes[toHexID]
     const unitIDOnToHex = toHex.occupyingUnitID
     const endHexUnit = gameUnits[unitIDOnToHex]
-    const movePointsBeforeMove = next.movePoints
+    const movePointsToBeChecked = next.movePoints
     const fromHex = boardHexes[next.fromHexID]
     const fromTailHex = boardHexes?.[next?.fromTailHexID ?? '']
     const fromHexDisengagedUnitIDs = next.disenagedUnitIDs
@@ -266,14 +268,14 @@ function computeMovesForStartHex({
     const walkCost = selectMoveCostBetweenNeighbors(fromHex, toHex)
     //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
     const fromCost =
-      // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
+      // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all of their move points)
       isWaterStoppage || isGlyphStoppage
-        ? Math.max(movePoints, walkCost)
-        : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
+        ? Math.max(movePointsToBeChecked, walkCost)
+        : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height) (furthermore, because of how we coded grapple-gun, a grapple-gun-using-unit only has one move point)
         isFlying || isGrappleGun
         ? 1
         : walkCost
-    const movePointsLeft = movePoints - fromCost
+    const movePointsLeft = movePointsToBeChecked - fromCost
     const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
       unit,
       isFlying,
@@ -286,8 +288,8 @@ function computeMovesForStartHex({
     })
     //     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
     const isVisitedAlready =
-      preVisitedEntry?.movePointsLeft === movePointsBeforeMove
-        ? preVisitedEntry?.movePointsLeft > movePointsBeforeMove
+      preVisitedEntry?.movePointsLeft === movePointsToBeChecked
+        ? preVisitedEntry?.movePointsLeft > movePointsToBeChecked
         : preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
     if (isVisitedAlready) {

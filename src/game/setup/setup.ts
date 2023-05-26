@@ -53,13 +53,17 @@ const frequentlyChangedDevState = (
 ) =>
   isDevOverrideState
     ? {
-        draftReady: generateReadyStateForNumPlayers(numPlayers, true),
-        placementReady: generateReadyStateForNumPlayers(numPlayers, true),
-        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        // placementReady: generateReadyStateForNumPlayers(numPlayers, false),
-        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
-        players: playersStateWithPrePlacedOMs(numPlayers),
-        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        // draftReady: generateReadyStateForNumPlayers(numPlayers, true),
+        // placementReady: generateReadyStateForNumPlayers(numPlayers, true),
+        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
+        // players: playersStateWithPrePlacedOMs(numPlayers),
+        // orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        // TOGGLE Off above, on below, for local 2-player game
+        draftReady: generateReadyStateForNumPlayers(numPlayers, false),
+        placementReady: generateReadyStateForNumPlayers(numPlayers, false),
+        orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
+        players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
     : {
