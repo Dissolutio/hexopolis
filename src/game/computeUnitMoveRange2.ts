@@ -294,7 +294,7 @@ function computeMovesForStartHex({
           fromHexDisengagedUnitIDs.length
     if (isVisitedAlready) {
       // TODO: Handle this
-      break
+      //   break
     }
     // if we can get there
     // if we can stop there
@@ -370,7 +370,7 @@ function computeMovesForStartHex({
         isTooTallOfClimb
     // 1. unpassable
     if (isUnpassable) {
-      break
+      // break
     }
     const can2HexUnitStopHere =
       isEndHexUnoccupied &&
@@ -425,7 +425,7 @@ function computeMovesForStartHex({
           because I don't want to deal with applying disengage/fall damage 
           in a certain order (current impl: you will receive all disengagement swipes, and THEN fall)
         */
-        break
+        // break
       }
       /* 
         // TODO: how to add neighbors into the new loop, for the disengage hexes
