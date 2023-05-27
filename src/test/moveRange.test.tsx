@@ -14,7 +14,7 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
   const unitMovingID = 'p1u1'
   const unitMoving = {
     ...gameState.gameUnits[unitMovingID],
-    movePoints: 1,
+    movePoints: 5,
   }
   const myMoveRange = computeUnitMoveRange2({
     isFlying: false,
