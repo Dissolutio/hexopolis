@@ -30,6 +30,7 @@ const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
   const mergedMoveRange: MoveRange = { ...a }
   for (const key in b) {
     // TODO: MOVERANGE: measure disengaged IDs before movePoints (maybe soon have a custom move mode? Or a toggle for risky-VS-safe moves?)
+    // TODO ADDENDUM: It turns out, in heroscape your character can turn around for free any time during their move
     if (b[key].movePointsLeft > (a?.[key]?.movePointsLeft ?? -1)) {
       mergedMoveRange[key] = b[key]
     }
@@ -404,9 +405,9 @@ function computeMovesForStartHex({
     if (isDangerousHex) {
       // for dangerous hexes:
       /* 
-      1. if we can stop there, then update the move range for that hex, and...
-      2. if there is fall damage, we can exit the while loop without adding any neighbors because we don't want to consider the order in which fall/disengagement damage is applied (so we only add neighbors for one of them)
-      3. 
+      1. UPDATE MOVE RANGE: if we can stop there, then update the move range for that hex
+      2. NEXT NEIGHBORS FOR DISENGAGE: we continue the path-finding beyond disengage hexes
+      3. NO NEXT NEIGHBORS FOR FALL: if there is fall damage, we can exit the while loop without adding any neighbors because we don't want to consider the order in which fall/disengagement damage is applied (so we only add neighbors for one of them)
       */
       if (canStopHere) {
         // we can disengage or fall to this space, update result
@@ -419,19 +420,12 @@ function computeMovesForStartHex({
           isActionGlyph,
         }
       }
-      if (isFallDamage) {
+      if (isDangerousHex) {
         /* 
-          for falling damage, we will not explore further, but we will for disengaging,
-          because I don't want to deal with applying disengage/fall damage 
-          in a certain order (current impl: you will receive all disengagement swipes, and THEN fall)
+          // TODO: how to add neighbors into the new loop, for the disengage hexes
         */
-        // break
       }
-      /* 
-        // TODO: how to add neighbors into the new loop, for the disengage hexes
-      */
     } else if (isCausingEngagement) {
-      // we can stop there
       if (canStopHere) {
         finalMoveRange[toHexID] = {
           ...moveRangeData,
@@ -440,21 +434,6 @@ function computeMovesForStartHex({
         }
       }
       // TODO: how to add neighbors into the new loop, for engagement hexes
-      // return isMovePointsLeftAfterMove
-      //   ? {
-      //       ...acc,
-      //       ...recurseThroughMoves({
-      //         unmutatedContext,
-      //         prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-      //         prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-      //         prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
-      //         prevHex: neighbor,
-      //         startTailHex: isUnit2Hex ? prevHex : undefined,
-      //         movePoints: movePointsLeft,
-      //         initialMoveRange: acc,
-      //       }),
-      //     }
-      //   : acc
     }
     // safe hexes
     else {
@@ -467,21 +446,6 @@ function computeMovesForStartHex({
         }
       }
       // TODO: how to add neighbors into the new loop, for safe hexes
-      // return isMovePointsLeftAfterMove
-      //   ? {
-      //       ...acc,
-      //       ...recurseThroughMoves({
-      //         unmutatedContext,
-      //         prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-      //         prevHexesEngagedUnitIDs: latestEngagedUnitIDs, // this should be 0 here, as the hex would be an engagement-hex ^^
-      //         prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
-      //         prevHex: neighbor,
-      //         startTailHex: isUnit2Hex ? prevHex : undefined,
-      //         movePoints: movePointsLeft,
-      //         initialMoveRange: acc,
-      //       }),
-      //     }
-      //   : acc
     }
   }
   return finalMoveRange
