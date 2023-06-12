@@ -225,7 +225,7 @@ function computeMovesForStartHex({
       disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
     })),
   ]
-  const toBeChecked: ToBeChecked[] = [...initialToBeChecked]
+  let toBeChecked: ToBeChecked[] = [...initialToBeChecked]
   // early out if no move points!
   if (movePoints <= 0) {
     return initialMoveRange
@@ -235,6 +235,10 @@ function computeMovesForStartHex({
 
   // BEGIN WHILE LOOP
   while (toBeChecked.length > 0) {
+    console.log(
+      '🚀 ~ file: computeUnitMoveRange2.ts:238 ~ toBeChecked:',
+      toBeChecked
+    )
     const next = toBeChecked.shift()
     if (!next) {
       break
@@ -244,8 +248,10 @@ function computeMovesForStartHex({
     const unitIDOnToHex = toHex.occupyingUnitID
     const endHexUnit = gameUnits[unitIDOnToHex]
     const movePointsToBeChecked = next.movePoints
-    const fromHex = boardHexes[next.fromHexID]
-    const fromTailHex = boardHexes?.[next?.fromTailHexID ?? '']
+    const fromHexID = next.fromHexID
+    const fromTailHexID = next?.fromTailHexID ?? ''
+    const fromHex = boardHexes[fromHexID]
+    const fromTailHex = boardHexes?.[fromTailHexID]
     const fromHexDisengagedUnitIDs = next.disenagedUnitIDs
     const preVisitedEntry = finalMoveRange[toHexID]
     const isFromOccupied =
@@ -291,160 +297,177 @@ function computeMovesForStartHex({
         ? preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
         : preVisitedEntry?.movePointsLeft > movePointsToBeChecked
+
+    // BEGIN isVisitedAlready else block
     if (isVisitedAlready) {
       // TODO: Handle this
-      //   break
-    }
-    // if we can get there
-    // if we can stop there
-    // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
+    } else {
+      // if we can get there
+      // if we can stop there
+      // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
 
-    // if we can get there
-    const totalDisengagedIDsSoFar = uniq([
-      ...(prevHexesDisengagedUnitIDs ?? []),
-      ...disengagedUnitIDs,
-    ])
-    const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
-      unit,
-      startHexID,
-      startTailHexID: startTailHex?.id,
-      neighborHexID: toHexID,
-      boardHexes,
-      gameUnits,
-      armyCards,
-    })
-    const neighborHexEngagements = selectEngagementsForHex({
-      hexID: toHexID,
-      boardHexes,
-      gameUnits,
-      armyCards,
-      override: {
-        overrideUnitID: unit.unitID,
-        overrideTailHexID: fromTailHex?.id,
-      },
-    })
-    const isCausingEngagement =
-      latestEngagedUnitIDs.length > 0 ||
-      // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
-      neighborHexEngagements.some((id) => !initialEngagements.includes(id))
-    // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
-    const isCausingDisengagementIfFlying = isUnitInitiallyEngaged && !hasStealth
-    const isCausingDisengagementIfWalking = hasDisengage
-      ? false
-      : totalDisengagedIDsSoFar.length > 0
-    const isCausingDisengagement = isFlying
-      ? isCausingDisengagementIfFlying
-      : isCausingDisengagementIfWalking
-    const endHexUnitPlayerID = endHexUnit?.playerID
-    const isMovePointsLeftAfterMove = movePointsLeft > 0
-    const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
-    const isTooCostly = movePointsLeft < 0
-    // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
-    const isEndHexEnemyOccupied =
-      !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
-    const isEndHexUnitEngaged =
-      selectEngagementsForHex({
+      // if we can get there
+      const totalDisengagedIDsSoFar = uniq([
+        ...(prevHexesDisengagedUnitIDs ?? []),
+        ...disengagedUnitIDs,
+      ])
+      const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
+        unit,
+        startHexID,
+        startTailHexID: startTailHex?.id,
+        neighborHexID: toHexID,
+        boardHexes,
+        gameUnits,
+        armyCards,
+      })
+      const neighborHexEngagements = selectEngagementsForHex({
         hexID: toHexID,
         boardHexes,
         gameUnits,
         armyCards,
-      }).length > 0
-    const isTooTallOfClimb = !selectIsClimbable(
-      unit,
-      armyCards,
-      fromHex,
-      toHex,
-      // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
-      isGrappleGun ? 26 : undefined
-    )
-    const newFallDamage =
-      prevHexFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
-    const isFallDamage = newFallDamage > 0
-    const isUnpassable = isFlying
-      ? isTooCostly
-      : isTooCostly ||
-        // ghost walk can move through enemy occupied hexes, or hexes with engaged units
-        (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
-        (hasGhostWalk ? false : isEndHexUnitEngaged) ||
-        isTooTallOfClimb
-    // 1. unpassable
-    if (isUnpassable) {
-      // break
-    }
-    const can2HexUnitStopHere =
-      isEndHexUnoccupied &&
-      !isFromOccupied &&
-      validTailSpotsForNeighbor?.includes(startHexID)
-    const canStopHere = isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied
-    const isDangerousHex =
-      isCausingDisengagement || isFallDamage || isActionGlyph
-    const moveRangeData = {
-      fromHexID: startHexID,
-      fromCost,
-      isFromOccupied,
-      movePointsLeft,
-      disengagedUnitIDs: totalDisengagedIDsSoFar,
-      engagedUnitIDs: latestEngagedUnitIDs,
-    }
-
-    // NEIGHBORS prepare the neighbors to be added to to-be-checked
-    const nextNeighbors = selectHexNeighbors(startHexID, boardHexes)
-    const nextToBeChecked = [
-      ...nextNeighbors.map((neighbor) => ({
-        id: neighbor.id,
+        override: {
+          overrideUnitID: unit.unitID,
+          overrideTailHexID: fromTailHex?.id,
+        },
+      })
+      const isCausingEngagement =
+        latestEngagedUnitIDs.length > 0 ||
+        // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
+        neighborHexEngagements.some((id) => !initialEngagements.includes(id))
+      // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
+      const isCausingDisengagementIfFlying =
+        isUnitInitiallyEngaged && !hasStealth
+      const isCausingDisengagementIfWalking = hasDisengage
+        ? false
+        : totalDisengagedIDsSoFar.length > 0
+      const isCausingDisengagement = isFlying
+        ? isCausingDisengagementIfFlying
+        : isCausingDisengagementIfWalking
+      const endHexUnitPlayerID = endHexUnit?.playerID
+      const isMovePointsLeftAfterMove = movePointsLeft > 0
+      const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
+      const isTooCostly = movePointsLeft < 0
+      // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
+      const isEndHexEnemyOccupied =
+        !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
+      const isEndHexUnitEngaged =
+        selectEngagementsForHex({
+          hexID: toHexID,
+          boardHexes,
+          gameUnits,
+          armyCards,
+        }).length > 0
+      const isTooTallOfClimb = !selectIsClimbable(
+        unit,
+        armyCards,
+        fromHex,
+        toHex,
+        // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
+        isGrappleGun ? 26 : undefined
+      )
+      const newFallDamage =
+        prevHexFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
+      const isFallDamage = newFallDamage > 0
+      const isUnpassable = isFlying
+        ? isTooCostly
+        : isTooCostly ||
+          // ghost walk can move through enemy occupied hexes, or hexes with engaged units
+          (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
+          (hasGhostWalk ? false : isEndHexUnitEngaged) ||
+          isTooTallOfClimb
+      // 1. unpassable
+      if (isUnpassable) {
+        // break
+      }
+      const can2HexUnitStopHere =
+        isEndHexUnoccupied &&
+        !isFromOccupied &&
+        validTailSpotsForNeighbor?.includes(startHexID)
+      const canStopHere = isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied
+      const isDangerousHex =
+        isCausingDisengagement || isFallDamage || isActionGlyph
+      const moveRangeData = {
         fromHexID: startHexID,
-        movePoints: movePointsLeft,
-        disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
-      })),
-    ]
+        fromCost,
+        isFromOccupied,
+        movePointsLeft,
+        disengagedUnitIDs: totalDisengagedIDsSoFar,
+        engagedUnitIDs: latestEngagedUnitIDs,
+      }
 
-    // 2. passable: we can get here, maybe stop, maybe pass thru
-    // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
-    if (isDangerousHex) {
-      // for dangerous hexes:
-      /* 
+      // NEIGHBORS prepare the neighbors to be added to to-be-checked
+      const nextNeighbors = selectHexNeighbors(startHexID, boardHexes)
+      const nextToBeChecked = [
+        ...nextNeighbors.map((neighbor) => ({
+          id: neighbor.id,
+          fromHexID,
+          movePoints: movePointsLeft,
+          disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
+        })),
+      ]
+      // 2. passable: we can get here, maybe stop, maybe pass thru
+      // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
+      if (isDangerousHex) {
+        // for dangerous hexes:
+        /* 
       1. UPDATE MOVE RANGE: if we can stop there, then update the move range for that hex
       2. NEXT NEIGHBORS FOR DISENGAGE: we continue the path-finding beyond disengage hexes
       3. NO NEXT NEIGHBORS FOR FALL: if there is fall damage, we can exit the while loop without adding any neighbors because we don't want to consider the order in which fall/disengagement damage is applied (so we only add neighbors for one of them)
       */
-      if (canStopHere) {
-        // we can disengage or fall to this space, update result
-        finalMoveRange[toHexID] = {
-          ...moveRangeData,
-          isDisengage: isCausingDisengagement,
-          isGrappleGun,
-          fallDamage: newFallDamage,
-          isFallDamage,
-          isActionGlyph,
+        if (canStopHere) {
+          // we can disengage or fall to this space, update result
+          finalMoveRange[toHexID] = {
+            ...moveRangeData,
+            isDisengage: isCausingDisengagement,
+            isGrappleGun,
+            fallDamage: newFallDamage,
+            isFallDamage,
+            isActionGlyph,
+          }
+        }
+        if (!isFallDamage) {
+          // toBeChecked = [...toBeChecked, ...nextToBeChecked]
+          if (isMovePointsLeftAfterMove) {
+            for (const hexToCheck of nextToBeChecked) {
+              toBeChecked.push(hexToCheck)
+            }
+          }
+        }
+      } else if (isCausingEngagement) {
+        if (canStopHere) {
+          finalMoveRange[toHexID] = {
+            ...moveRangeData,
+            isEngage: true,
+            isGrappleGun,
+          }
+        }
+        // toBeChecked = [...toBeChecked, ...nextToBeChecked]
+        if (isMovePointsLeftAfterMove) {
+          for (const hexToCheck of nextToBeChecked) {
+            toBeChecked.push(hexToCheck)
+          }
         }
       }
-      if (isDangerousHex) {
-        /* 
-          // TODO: how to add neighbors into the new loop, for the disengage hexes
-        */
-      }
-    } else if (isCausingEngagement) {
-      if (canStopHere) {
-        finalMoveRange[toHexID] = {
-          ...moveRangeData,
-          isEngage: true,
-          isGrappleGun,
+      // safe hexes
+      else {
+        // we can stop there if it's not occupied
+        if (canStopHere) {
+          finalMoveRange[toHexID] = {
+            ...moveRangeData,
+            isSafe: true,
+            isGrappleGun,
+          }
+        }
+        // toBeChecked = [...toBeChecked, ...nextToBeChecked]
+        if (isMovePointsLeftAfterMove) {
+          for (const hexToCheck of nextToBeChecked) {
+            toBeChecked.push(hexToCheck)
+          }
         }
       }
-      // TODO: how to add neighbors into the new loop, for engagement hexes
+      // END isVisitedAlready else block
     }
-    // safe hexes
-    else {
-      // we can stop there if it's not occupied
-      if (canStopHere) {
-        finalMoveRange[toHexID] = {
-          ...moveRangeData,
-          isSafe: true,
-          isGrappleGun,
-        }
-      }
-      // TODO: how to add neighbors into the new loop, for safe hexes
-    }
+    // END WHILE LOOP
   }
   return finalMoveRange
 }
