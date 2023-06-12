@@ -232,7 +232,6 @@ function computeMovesForStartHex({
   }
   const isUnit2Hex = unit?.is2Hex
   const isUnitInitiallyEngaged = initialEngagements.length > 0
-  const isVisitedAlready = false
 
   // BEGIN WHILE LOOP
   while (toBeChecked.length > 0) {
@@ -248,7 +247,6 @@ function computeMovesForStartHex({
     const fromHex = boardHexes[next.fromHexID]
     const fromTailHex = boardHexes?.[next?.fromTailHexID ?? '']
     const fromHexDisengagedUnitIDs = next.disenagedUnitIDs
-    // const isVisitedAlready = finalMoveRange[neighborID].movePointsLeft === movePointsLeft
     const preVisitedEntry = finalMoveRange[toHexID]
     const isFromOccupied =
       fromHex.occupyingUnitID && fromHex.occupyingUnitID !== unit.unitID
