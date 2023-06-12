@@ -288,9 +288,9 @@ function computeMovesForStartHex({
     //     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
     const isVisitedAlready =
       preVisitedEntry?.movePointsLeft === movePointsToBeChecked
-        ? preVisitedEntry?.movePointsLeft > movePointsToBeChecked
-        : preVisitedEntry?.disengagedUnitIDs?.length <=
+        ? preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
+        : preVisitedEntry?.movePointsLeft > movePointsToBeChecked
     if (isVisitedAlready) {
       // TODO: Handle this
       //   break
