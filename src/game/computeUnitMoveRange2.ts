@@ -394,10 +394,9 @@ function computeMovesForStartHex({
       }
 
       // NEIGHBORS prepare the neighbors to be added to to-be-checked
-      const nextNeighbors = selectHexNeighbors(toHexID, boardHexes)
-      console.log(
-        '🚀 ~ file: computeUnitMoveRange2.ts:398 ~ nextNeighbors:',
-        nextNeighbors
+      const nextNeighbors = selectHexNeighbors(toHexID, boardHexes).filter(
+        //  no need to add our current hex as a neighbor of the next hex
+        (n) => !(n.id === fromHexID)
       )
       const nextToBeChecked = [
         ...nextNeighbors.map((neighbor) => ({
