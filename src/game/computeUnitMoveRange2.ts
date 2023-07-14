@@ -235,10 +235,6 @@ function computeMovesForStartHex({
 
   // BEGIN WHILE LOOP
   while (toBeChecked.length > 0) {
-    console.log(
-      '🚀 ~ file: computeUnitMoveRange2.ts:238 ~ toBeChecked:',
-      toBeChecked
-    )
     const next = toBeChecked.shift()
     if (!next) {
       break
@@ -398,6 +394,10 @@ function computeMovesForStartHex({
 
       // NEIGHBORS prepare the neighbors to be added to to-be-checked
       const nextNeighbors = selectHexNeighbors(toHexID, boardHexes)
+      console.log(
+        '🚀 ~ file: computeUnitMoveRange2.ts:398 ~ nextNeighbors:',
+        nextNeighbors
+      )
       const nextToBeChecked = [
         ...nextNeighbors.map((neighbor) => ({
           id: neighbor.id,
