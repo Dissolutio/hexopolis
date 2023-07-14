@@ -397,7 +397,7 @@ function computeMovesForStartHex({
       }
 
       // NEIGHBORS prepare the neighbors to be added to to-be-checked
-      const nextNeighbors = selectHexNeighbors(startHexID, boardHexes)
+      const nextNeighbors = selectHexNeighbors(toHexID, boardHexes)
       const nextToBeChecked = [
         ...nextNeighbors.map((neighbor) => ({
           id: neighbor.id,
