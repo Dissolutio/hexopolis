@@ -387,7 +387,7 @@ function computeMovesForStartHex({
       const isDangerousHex =
         isCausingDisengagement || isFallDamage || isActionGlyph
       const moveRangeData = {
-        fromHexID: startHexID,
+        fromHexID: fromHexID,
         fromCost,
         isFromOccupied,
         movePointsLeft,
