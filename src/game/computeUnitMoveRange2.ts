@@ -225,11 +225,11 @@ function computeMovesForStartHex({
       disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
     })),
   ]
-  let toBeChecked: ToBeChecked[] = [...initialToBeChecked]
-  // early out if no move points!
   if (movePoints <= 0) {
     return initialMoveRange
   }
+  let toBeChecked: ToBeChecked[] = [...initialToBeChecked]
+  // early out if no move points!
   const isUnit2Hex = unit?.is2Hex
   const isUnitInitiallyEngaged = initialEngagements.length > 0
 
@@ -298,11 +298,6 @@ function computeMovesForStartHex({
     if (isVisitedAlready) {
       // TODO: Handle this
     } else {
-      // if we can get there
-      // if we can stop there
-      // if we can move on from there (adding the neighbors of that neighbor to the "to be checked" list)
-
-      // if we can get there
       const totalDisengagedIDsSoFar = uniq([
         ...(prevHexesDisengagedUnitIDs ?? []),
         ...disengagedUnitIDs,
@@ -371,7 +366,7 @@ function computeMovesForStartHex({
           (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
           (hasGhostWalk ? false : isEndHexUnitEngaged) ||
           isTooTallOfClimb
-      // 1. unpassable
+      // BREAK IF UNPASSABLE
       if (isUnpassable) {
         // break
       }
@@ -425,8 +420,8 @@ function computeMovesForStartHex({
             isActionGlyph,
           }
         }
+        // fall damage does not get next-neighbors added, but disengage moves DO
         if (!isFallDamage) {
-          // toBeChecked = [...toBeChecked, ...nextToBeChecked]
           if (isMovePointsLeftAfterMove) {
             for (const hexToCheck of nextToBeChecked) {
               toBeChecked.push(hexToCheck)
