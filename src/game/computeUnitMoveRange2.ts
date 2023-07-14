@@ -280,7 +280,7 @@ function computeMovesForStartHex({
     const disengagedUnitIDs = selectMoveDisengagedUnitIDs({
       unit,
       isFlying,
-      startHexID: toHexID,
+      startHexID: fromHexID,
       startTailHexID: fromTailHex?.id,
       neighborHexID: toHexID,
       boardHexes,
@@ -396,9 +396,9 @@ function computeMovesForStartHex({
       const nextToBeChecked = [
         ...nextNeighbors.map((neighbor) => ({
           id: neighbor.id,
-          fromHexID,
+          fromHexID: toHexID,
           movePoints: movePointsLeft,
-          disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
+          disenagedUnitIDs: totalDisengagedIDsSoFar,
         })),
       ]
       // 2. passable: we can get here, maybe stop, maybe pass thru
