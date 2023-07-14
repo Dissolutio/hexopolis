@@ -391,6 +391,7 @@ function computeMovesForStartHex({
         fromCost,
         isFromOccupied,
         movePointsLeft,
+        isGrappleGun,
         disengagedUnitIDs: totalDisengagedIDsSoFar,
         engagedUnitIDs: latestEngagedUnitIDs,
       }
@@ -419,7 +420,6 @@ function computeMovesForStartHex({
           finalMoveRange[toHexID] = {
             ...moveRangeData,
             isDisengage: isCausingDisengagement,
-            isGrappleGun,
             fallDamage: newFallDamage,
             isFallDamage,
             isActionGlyph,
@@ -438,7 +438,6 @@ function computeMovesForStartHex({
           finalMoveRange[toHexID] = {
             ...moveRangeData,
             isEngage: true,
-            isGrappleGun,
           }
         }
         // toBeChecked = [...toBeChecked, ...nextToBeChecked]
@@ -455,7 +454,6 @@ function computeMovesForStartHex({
           finalMoveRange[toHexID] = {
             ...moveRangeData,
             isSafe: true,
-            isGrappleGun,
           }
         }
         // toBeChecked = [...toBeChecked, ...nextToBeChecked]
