@@ -88,8 +88,7 @@ export const noUndoMoveAction: Move<GameState> = {
 
     // 1. They fall, and die or take wounds
     if (fallDamage > 0) {
-      // fallingDamageWounds = rollHeroscapeDice(fallDamage, random).skulls
-      fallingDamageWounds = 0
+      fallingDamageWounds = rollHeroscapeDice(fallDamage, random).skulls
       isFatal = fallingDamageWounds >= unitLife
       // 1.A kill the unit
       if (isFatal) {
