@@ -30,9 +30,9 @@ export const grimnakID = 'hs1015'
 // TEST SCENARIO ARMYCARDS
 export const startingArmies: { [playerID: string]: string[] } = {
   '0': [
-    // marroID,
     drake1ID,
-    // negoksaID,
+    marroID,
+    negoksaID,
     // airbornID,
     // thorgrimID,
     // izumiID,
@@ -43,10 +43,10 @@ export const startingArmies: { [playerID: string]: string[] } = {
   '1': [
     // grimnakID,
     // raelinOneID,
-    // kravMagaID,
+    kravMagaID,
     // tarnID,
-    // syvarrisID,
-    testDummyID,
+    syvarrisID,
+    // testDummyID,
     // airbornID,
     // zettianID,
     // carrID,
@@ -90,6 +90,7 @@ function hsCardsToArmyCards(
     }
   })
 }
+// in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
 const cardsUsed = [...MS1Cards, ...testCards]
 export function armyCardsToGameArmyCardsForTest(
   numPlayers: number

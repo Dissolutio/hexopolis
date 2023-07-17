@@ -63,6 +63,7 @@ export function computeUnitMoveRange2({
   armyCards: GameArmyCard[]
   glyphs: Glyphs
 }): MoveRange {
+  const timeA = performance.now()
   // TODO: GRAPPLE-GUN-HACK :: hasMoved is used to hack the move-range/move-points for the grapple gun (which can only move 1 hex, so lends itself to a boolean parameter)
   const movePointsForGrappleGun = hasMoved ? 0 : 1
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
@@ -149,6 +150,8 @@ export function computeUnitMoveRange2({
       initialMoveRange,
     })
   }
+  const timeB = performance.now()
+  console.log(`TOOK: ${timeA - timeB} ms`)
   return moveRange
 }
 
