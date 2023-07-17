@@ -102,9 +102,9 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
-  return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   // return makeDefaultScenario(numPlayers, withPrePlacedUnits)
-  // return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
+  return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
