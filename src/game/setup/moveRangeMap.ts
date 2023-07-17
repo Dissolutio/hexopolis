@@ -6,6 +6,8 @@ export const moveRangeTestHexIDs = {
   majorAdjacentFall_id: '-1,2,-1',
   cannotClimbOver_id: '-2,3,-1',
   disengageOneAndFall_id: '-2,0,2',
+  revealedGlyph_id: '0,2,-2',
+  beyondRevealedGlyph_id: '-1,3,-2',
 }
 
 export const moveRangeMap = {
@@ -148,6 +150,28 @@ export const moveRangeMap = {
       terrain: 'grass',
       startzonePlayerIDs: [],
     },
+    [moveRangeTestHexIDs.revealedGlyph_id]: {
+      q: 0,
+      r: 2,
+      s: -2,
+      id: moveRangeTestHexIDs.revealedGlyph_id,
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: [],
+    },
+    [moveRangeTestHexIDs.beyondRevealedGlyph_id]: {
+      q: -1,
+      r: 3,
+      s: -2,
+      id: moveRangeTestHexIDs.beyondRevealedGlyph_id,
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: [],
+    },
   },
   hexMap: {
     mapId: 'moveRangeMap',
@@ -159,11 +183,11 @@ export const moveRangeMap = {
     mapWidth: 1,
     mapHeight: 1,
     glyphs: {
-      // '0,0,0': {
-      //   hexID: '0,0,0',
-      //   glyphID: 'move',
-      //   isRevealed: true,
-      // },
+      '0,2,-2': {
+        hexID: '0,2,-2',
+        glyphID: 'move',
+        isRevealed: true,
+      },
     },
   },
 }

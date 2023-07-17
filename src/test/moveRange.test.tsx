@@ -82,5 +82,12 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
       myMoveRange[moveRangeTestHexIDs.disengageOneAndFall_id]?.fallDamage
     ).toBe(MINOR_FALL_DAMAGE)
   })
-  // TODO: add test for glyph moves
+  test('moving onto adjacent revealed glyph ends our move, and keeps us from reaching the hex beyond', () => {
+    expect(
+      myMoveRange[moveRangeTestHexIDs.revealedGlyph_id]?.movePointsLeft
+    ).toBe(0)
+    expect(myMoveRange[moveRangeTestHexIDs.beyondRevealedGlyph_id]).toBe(
+      undefined
+    )
+  })
 })
