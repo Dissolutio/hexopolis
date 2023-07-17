@@ -90,4 +90,5 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
       undefined
     )
   })
+  // TODO: add test for stepping on an unrevealed glyph, should trigger a confirm state, and be an non-undoable move
 })
