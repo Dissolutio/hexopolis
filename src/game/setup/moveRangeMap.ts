@@ -135,7 +135,7 @@ export const moveRangeMap = {
     //   isUnitTail: false,
     //   altitude: 5,
     //   terrain: 'grass',
-    //   startzonePlayerIDs: ['5'],
+    //   startzonePlayerIDs: [],
     // },
     [moveRangeTestHexIDs.safeAdjacentSameLevel_id]: {
       q: 1,
@@ -146,7 +146,7 @@ export const moveRangeMap = {
       isUnitTail: false,
       altitude: 5,
       terrain: 'grass',
-      startzonePlayerIDs: ['3'],
+      startzonePlayerIDs: [],
     },
   },
   hexMap: {
