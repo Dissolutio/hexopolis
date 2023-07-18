@@ -1,5 +1,5 @@
 import { Move } from 'boardgame.io'
-import { glyphIDs } from 'game/glyphs'
+import { glyphIDs } from '../glyphs'
 import { uniq } from 'lodash'
 import { encodeGameLogMessage } from '../gamelog'
 import {
