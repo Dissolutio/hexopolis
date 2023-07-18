@@ -87,20 +87,21 @@ export const gameSetupInitialGameState = ({
   scenarioName?: string
   withPrePlacedUnits?: boolean
 }) => {
+  const isDemoGame =
+    numPlayers === 2 &&
+    isLocalOrDemoGame &&
+    process.env.NODE_ENV === 'production'
+
   if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants2) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   if (scenarioName === scenarioNames.forsakenWaters2) {
     return makeForsakenWaters2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
-  if (
-    numPlayers === 2 &&
-    isLocalOrDemoGame &&
-    process.env.NODE_ENV === 'production'
-  ) {
+  if (isDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
-  // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
+  // DEFAULT RETURN BELOW::
   // return makeGiantsTable2PlayerScenario(2, false)
   // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   return makeDefaultScenario(numPlayers, withPrePlacedUnits)
