@@ -102,8 +102,8 @@ export const gameSetupInitialGameState = ({
   }
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
-  return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  // return makeDefaultScenario(numPlayers, withPrePlacedUnits)
+  // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
+  return makeDefaultScenario(numPlayers, withPrePlacedUnits)
   // return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
@@ -207,8 +207,8 @@ function makeDefaultScenario(
   //   gameUnits: gameUnitsWithoutTheDrop,
   // })
   const map = makeHexagonShapedMap({
-    // mapSize: Math.max(numPlayers * 2, 8),
-    mapSize: 1,
+    mapSize: Math.max(numPlayers * 2, 8),
+    // mapSize: 1,
     withPrePlacedUnits,
     gameUnits: gameUnitsWithoutTheDrop,
     flat: false,
