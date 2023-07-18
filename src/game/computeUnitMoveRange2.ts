@@ -29,8 +29,6 @@ import { uniq } from 'lodash'
 const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
   const mergedMoveRange: MoveRange = { ...a }
   for (const key in b) {
-    // TODO: MOVERANGE: measure disengaged IDs before movePoints (maybe soon have a custom move mode? Or a toggle for risky-VS-safe moves?)
-    // TODO ADDENDUM: It turns out, in heroscape your character can turn around for free any time during their move
     if (b[key].movePointsLeft > (a?.[key]?.movePointsLeft ?? -1)) {
       mergedMoveRange[key] = b[key]
     }
@@ -63,7 +61,6 @@ export function computeUnitMoveRange2({
   armyCards: GameArmyCard[]
   glyphs: Glyphs
 }): MoveRange {
-  const timeA = performance.now()
   // TODO: GRAPPLE-GUN-HACK :: hasMoved is used to hack the move-range/move-points for the grapple gun (which can only move 1 hex, so lends itself to a boolean parameter)
   const movePointsForGrappleGun = hasMoved ? 0 : 1
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
@@ -145,13 +142,10 @@ export function computeUnitMoveRange2({
       },
       startHex: startHex,
       prevHexFallDamage: 0,
-      // TODO: GRAPPLE-GUN-HACK :: grapple gun is not a normal move, we treat it like flying so we make up the notion of a move point for it, and give Drake 1 move point
       movePoints: isGrappleGun ? movePointsForGrappleGun : initialMovePoints,
       initialMoveRange,
     })
   }
-  const timeB = performance.now()
-  console.log(`TOOK: ${timeA - timeB} ms`)
   return moveRange
 }
 
