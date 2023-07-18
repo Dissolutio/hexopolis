@@ -45,8 +45,7 @@ export const MultiplayerLobby = () => {
       <hr></hr>
       {/* DISABLED GAME SWITCHING SECTION BELOW, change the false && */}
       {/* Either we errored, or we connected to server and received games list */}
-      {false &&
-        (lobbyGamesError ? (
+      {/* (lobbyGamesError ? (
           <p style={{ color: 'red' }}>
             {`Error -- Could not retrieve games from server : ${lobbyGamesError}`}
             <button onClick={updateLobbyGames}>
@@ -60,7 +59,8 @@ export const MultiplayerLobby = () => {
               <GameSelect />
             </details>
           </>
-        ))}
+        )) */}
+
       {/* <hr></hr> */}
 
       {/* If no games/connection, don't show anything below */}
