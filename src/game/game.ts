@@ -46,11 +46,9 @@ export const Hexoscape: Game<GameState> = {
           ? scenarioNames.clashingFrontsAtTableOfTheGiants2
           : ''
       }
+      return setupData?.scenarioName ?? ''
     }
-    const scenarioName =
-      isLocalOrDemoGame && ctx.ctx.numPlayers === 2
-        ? scenarioNames.clashingFrontsAtTableOfTheGiants2
-        : ''
+    const scenarioName = computeScenarioName()
     return gameSetupInitialGameState({
       // numPlayers is decided either by createMatch, or what was passed to Bgio-Client (for local and demo games)
       numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
