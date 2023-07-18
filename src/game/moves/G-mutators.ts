@@ -12,7 +12,7 @@ import {
   PlayerState,
   UnitsKilled,
 } from '../types'
-import { MOVE_GLYPH_BONUS } from 'game/glyphs'
+import { MOVE_GLYPH_BONUS } from '../glyphs'
 
 export const killUnit_G = ({
   boardHexes,

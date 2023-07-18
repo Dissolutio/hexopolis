@@ -16,7 +16,7 @@ import {
   revealGlyph_G,
   updateMovePointsUponMovingOntoMoveGlyph_G,
 } from './G-mutators'
-import { glyphIDs } from 'game/glyphs'
+import { glyphIDs } from '../glyphs'
 
 // accept => disengage => wounds last? => falling => wounds => move
 
