@@ -6937,7 +6937,6 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     ],
   },
 ]
-
 export const MS1Cards: ICoreHeroscapeCard[] =
   coreHeroscapeCards.filter(filterMasterSetROTV)
 export const MS1Heroes = MS1Cards.filter(filterHero)

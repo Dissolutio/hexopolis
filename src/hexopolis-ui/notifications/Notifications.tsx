@@ -29,9 +29,8 @@ export const Notifications = () => {
         if (!gameLogMessage) {
           continue
         }
-        const { type, playerID, wounds, isFatal } = gameLogMessage
+        const { type, playerID } = gameLogMessage
         const defaultDuration = 20000
-        const moreRepetitiveMsgDuration = 5000
         switch (type) {
           case gameLogTypes.glyphReveal:
           case gameLogTypes.disengageSwipeFatal:
@@ -46,12 +45,13 @@ export const Notifications = () => {
             })
             break
           case gameLogTypes.move:
-            const duration =
-              isFatal || (wounds ?? 0) > 0
-                ? defaultDuration
-                : moreRepetitiveMsgDuration
+            // const moreRepetitiveMsgDuration = 5000
+            // const duration =
+            //   isFatal || (wounds ?? 0) > 0
+            //     ? defaultDuration
+            //     : moreRepetitiveMsgDuration
             toast(<GameLogDisplay gameLogMessage={gameLogMessage} />, {
-              duration: duration,
+              duration: defaultDuration,
               id: gameLogMessage?.id,
             })
             break
@@ -137,6 +137,7 @@ const GameLogDisplay = ({
     isGrappleGun,
     fallDamage,
     revealedGlyphID,
+    reclaimedGlyphID,
     // berserker charge: most generic roll format
     roll,
     isRollSuccessful,
@@ -151,8 +152,14 @@ const GameLogDisplay = ({
   const revealedGlyphName = revealedGlyphID
     ? powerGlyphs?.[revealedGlyphID]?.name
     : ''
+  const recalimedGlyphName = reclaimedGlyphID
+    ? powerGlyphs?.[reclaimedGlyphID]?.name
+    : ''
   const revealedGlyphEffect = revealedGlyphID
     ? powerGlyphs?.[revealedGlyphID]?.effect
+    : ''
+  const reclaimedGlyphEffect = reclaimedGlyphID
+    ? powerGlyphs?.[reclaimedGlyphID]?.effect
     : ''
   switch (type) {
     case gameLogTypes.glyphReveal:
@@ -192,25 +199,28 @@ const GameLogDisplay = ({
       const revealedGlyphMsg = revealedGlyphID
         ? `${unitSingleName} has revealed the ${revealedGlyphName}! (${revealedGlyphEffect})`
         : ''
+      const reclaimedGlyphMsg = reclaimedGlyphID
+        ? `${unitSingleName} has reclaimed the ${recalimedGlyphName}! (${reclaimedGlyphEffect})`
+        : ''
       const diedFallingMsg = `${unitSingleName} was destroyed from falling damage! (${wounds} / ${fallDamage} possible wounds)`
       const unwoundedFallMsg = `${unitSingleName} jumped down a great distance! (${wounds} / ${fallDamage} possible wounds)`
       const woundedFallMsg = `${unitSingleName} took falling damage while moving! (${wounds} wounds)`
       const grappleGunMoveMsg = `${unitSingleName} has moved with Grapple Gun`
       const moveMsgText = `${unitSingleName} is on the move`
-      // TODO: Robustify this multi-line readout of an undoable move, really, we were just checking if the unit was destroyed, otherwise we display a litany of other messages
-      const moveMsg = isFatal
+      const fallingDamageMsg = isFatal
         ? diedFallingMsg
         : (wounds ?? 0) > 0
         ? woundedFallMsg
         : (fallDamage ?? 0) > 0 && wounds === 0
         ? unwoundedFallMsg
-        : isGrappleGun
-        ? grappleGunMoveMsg
-        : moveMsgText
+        : ''
+      const moveMsg = isGrappleGun ? grappleGunMoveMsg : moveMsgText
       return (
         <span style={{ color: playerColors[playerID] }}>
           <div>{moveMsg}</div>
+          {fallingDamageMsg && <div>{fallingDamageMsg}</div>}
           {revealedGlyphMsg && <div>{revealedGlyphMsg}</div>}
+          {reclaimedGlyphMsg && <div>{reclaimedGlyphMsg}</div>}
         </span>
       )
     case gameLogTypes.theDropRoll:

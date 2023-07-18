@@ -25,6 +25,7 @@ import {
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 import { selectIfGameArmyCardHasAbility } from './selector/card-selectors'
+import { scenarioNames } from './setup/scenarios'
 
 const isDevOverrideState =
   process.env.NODE_ENV === 'production'
@@ -39,10 +40,19 @@ export const Hexoscape: Game<GameState> = {
   // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatch()
   setup: (ctx, setupData) => {
     const isLocalOrDemoGame = setupData === undefined
+    const computeScenarioName = () => {
+      if (isLocalOrDemoGame) {
+        return ctx.ctx.numPlayers === 2
+          ? scenarioNames.clashingFrontsAtTableOfTheGiants2
+          : ''
+      }
+      return setupData?.scenarioName ?? ''
+    }
+    const scenarioName = computeScenarioName()
     return gameSetupInitialGameState({
       // numPlayers is decided either by createMatch, or what was passed to Bgio-Client (for local and demo games)
       numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
-      scenarioName: setupData?.scenarioName || '',
+      scenarioName,
       withPrePlacedUnits: isDevOverrideState,
       isLocalOrDemoGame,
     })
@@ -121,7 +131,7 @@ export const Hexoscape: Game<GameState> = {
           }
         )
         if (playerIDsWithActiveTheDrop.length > 0) {
-          // we initialise the drop result to an empty object here, so that we can check if it's empty in the next phase's onBegin hook (all because that hook is oddly called AFTER the onEnd hook)
+          // we initialise the drop result to an empty object here, so that we can check if it's empty in the next phase's onBegin hook (all because the onBegin hook is oddly called AFTER the onEnd hook)
           G.theDropResult = {}
         }
       },
@@ -290,13 +300,15 @@ export const Hexoscape: Game<GameState> = {
       onBegin: ({ G, ctx }) => {
         const playerIDs = Object.keys(G.players)
         const initiativeRoll = rollD20Initiative(playerIDs)
+        // TODO gamelog initiative roll
         const roundBeginGameLog = encodeGameLogMessage({
           type: gameLogTypes.roundBegin,
           id: `${G.currentRound}`,
           playerID: '',
           initiativeRolls: initiativeRoll.rolls,
         })
-        G.initiative = initiativeRoll.initiative
+        // G.initiative = initiativeRoll.initiative
+        G.initiative = ['1', '0']
         G.currentOrderMarker = 0
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },

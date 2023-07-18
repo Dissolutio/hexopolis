@@ -26,7 +26,7 @@ export const HeaderNav = ({
 
 const StyledNavbar = styled.nav`
   background-color: var(--black);
-  padding: 4px 16px 0px 16px;
+  padding: 4px 36px 0px 36px;
   z-index: 10;
   & button:focus,
   & button:hover {
@@ -57,7 +57,7 @@ const PlayerTeamLogo = ({
     return (
       <a href={localLink}>
         <PlayerTeamLogoH1>
-          Hexopolis: {playerIDDisplay(playerID)}
+          Hexoscape: {playerIDDisplay(playerID)}
         </PlayerTeamLogoH1>
       </a>
     )
@@ -66,7 +66,7 @@ const PlayerTeamLogo = ({
   const lobbyLink = `/`
   return (
     // <Link to={lobbyLink}>
-    <PlayerTeamLogoH1>Hexopolis: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
+    <PlayerTeamLogoH1>Hexoscape: {playerIDDisplay(playerID)}</PlayerTeamLogoH1>
     // </Link>
   )
 }

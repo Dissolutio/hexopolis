@@ -6,7 +6,7 @@ export function CreateMatchForm() {
   const { handleCreateMatch } = useMultiplayerLobby()
   //   const [matchName, setMatchName] = useState('')
   const [scenarioName, setScenarioName] = useState(
-    scenarioNames.clashingFrontsAtTableOfTheGiants2
+    scenarioNames.forsakenWaters2
   )
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     handleCreateMatch(scenarioName)
@@ -25,26 +25,6 @@ export function CreateMatchForm() {
           onChange={(e) => setMatchName(e.target.value)}
         />
       </label> */}
-      <p>Currently there is only one map/scenario, and it is for 2 players</p>
-      These are the available characters:
-      <ul>
-        <li>Krav Maga Agents</li>
-        <li>Tarn Viking Warriors</li>
-        <li>Airborn Elite</li>
-        <li>Izumi Samurari</li>
-        <li>Marro Warriors</li>
-        <li>Zettian Guards</li>
-        <li>Grimnak</li>
-        <li>Ne-Gok-Sa</li>
-        <li>Agent Carr</li>
-        <li>Thorgrim</li>
-        <li>Syvarris</li>
-        <li>Sgt. Drake Alexander</li>
-        <li>Deathwalker 9000</li>
-        <li>Mimring</li>
-        <li>Finn the Viking Champion</li>
-        <li>Raelin the Kyrie Warrior</li>
-      </ul>
       <label htmlFor="numPlayersSelect">Select map/scenario:</label>
       <select
         name="numPlayersSelect"
@@ -52,6 +32,9 @@ export function CreateMatchForm() {
         onChange={handleChange}
         id="numPlayersSelect"
       >
+        <option value={scenarioNames.forsakenWaters2}>
+          2 players: Forsaken Waters
+        </option>
         <option value={scenarioNames.clashingFrontsAtTableOfTheGiants2}>
           2 players: Clashing Fronts at The Table of the Giants
         </option>

@@ -256,6 +256,7 @@ export type MoveRange = {
     fallDamage?: number
     isSafe?: boolean
     isEngage?: boolean
+    isFallDamage?: boolean
     isDisengage?: boolean
     isGrappleGun?: boolean
     isActionGlyph?: boolean

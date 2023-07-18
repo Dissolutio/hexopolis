@@ -85,7 +85,7 @@ export const DraftControls = () => {
         </StyledControlsHeaderH2>
       ) : (
         <StyledControlsHeaderH2>
-          Your draft! Select a card:
+          Your draft! {myDraftPointsLeft} points left, select a card:
         </StyledControlsHeaderH2>
       )}
       {(isPickedCardThisTurn && (

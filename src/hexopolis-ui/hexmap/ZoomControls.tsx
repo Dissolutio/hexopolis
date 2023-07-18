@@ -23,13 +23,11 @@ export const ZoomControls = ({
 }
 const StyledZoomControls = styled.span`
   position: absolute;
-  top: 0%;
-  left: 0%;
-  padding-top: 36px;
-  padding-left: 36px;
+  top: calc(0% + 36px);
+  left: calc(0% + 36px);
   @media screen and (max-width: 1100px) {
-    padding-top: 14px;
-    padding-left: 14px;
+    top: calc(0% + 14px);
+    left: calc(0% + 14px);
   }
   z-index: 2;
   button {

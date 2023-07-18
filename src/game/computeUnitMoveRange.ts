@@ -50,7 +50,7 @@ export function computeUnitMoveRange(
   glyphs: Glyphs
 ): MoveRange {
   // 1. return blank move-range if we can't find the unit, its move points, or its start hex
-  const initialMoveRange = generateBlankMoveRange()
+  const blankMoveRange = {}
   const unitUid = unit.unitID
   const unitGameCard = armyCards.find(
     (card) => card.gameCardID === unit?.gameCardID
@@ -61,16 +61,26 @@ export function computeUnitMoveRange(
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
   const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
-  // mutate tailHex if unit is 2-space
-  let tailHex
-  const isTwoSpace = unit.is2Hex
-  if (isTwoSpace) {
-    tailHex = selectTailHexForUnit(unitUid, boardHexes)
-  }
+  const isTwoSpace = unit?.is2Hex ?? false
+  const tailHex = selectTailHexForUnit(unitUid, boardHexes)
   //*early out
   if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
-    return initialMoveRange
+    return blankMoveRange
   }
+  const initialMoveRange = blankMoveRange
+  // const initialMoveRange = {
+  //   [startHex.id]: {
+  //     fromHexID: string
+  //   fromCost: number
+  //   movePointsLeft: number
+  //   disengagedUnitIDs: string[]
+  //   engagedUnitIDs: string[]
+  //   fallDamage?: number
+  //   isSafe?: boolean
+  //   isEngage?: boolean
+  //   isDisengage?: boolean
+  //   }
+  // }
   const initialEngagements: string[] = selectEngagementsForHex({
     hexID: startHex.id,
     boardHexes,
@@ -83,6 +93,7 @@ export function computeUnitMoveRange(
       unmutatedContext: {
         playerID,
         unit,
+        initialMovePoints,
         initialEngagements,
         isFlying,
         hasStealth,
@@ -115,6 +126,7 @@ export function computeUnitMoveRange(
       unmutatedContext: {
         playerID,
         unit,
+        initialMovePoints,
         initialEngagements,
         isFlying,
         // only passing isGrappleGun to one spacers because Sgt. Drake is a 1-space unit
@@ -151,6 +163,7 @@ function recurseThroughMoves({
   unmutatedContext: {
     playerID: string
     unit: GameUnit
+    initialMovePoints: number
     initialEngagements: string[]
     isFlying: boolean
     isGrappleGun?: boolean
@@ -174,6 +187,7 @@ function recurseThroughMoves({
   const {
     playerID,
     unit,
+    initialMovePoints,
     initialEngagements,
     isFlying,
     isGrappleGun,
@@ -215,14 +229,15 @@ function recurseThroughMoves({
         (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
         (!isUnit2Hex && isNeighborHexWater)
       // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+      const walkCost = selectMoveCostBetweenNeighbors(prevHex, neighbor)
       const fromCost =
-        // when a unit enters water, or a 2-spacer enters its second space of water, it causes their movement to end (we charge all their move points)
+        // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all their move points)
         isWaterStoppage || isGlyphStoppage
-          ? movePoints
+          ? Math.max(movePoints, walkCost)
           : // flying is just one point to go hex-to-hex, so is grapple-gun (up to 25-height)
           isFlying || isGrappleGun
           ? 1
-          : selectMoveCostBetweenNeighbors(prevHex, neighbor)
+          : walkCost
       const movePointsLeft = movePoints - fromCost
       const { id: neighborHexID, occupyingUnitID: neighborUnitID } = neighbor
       // selectIsMoveCausingEngagements should return the unitID of the unit that is being engaged
@@ -239,10 +254,13 @@ function recurseThroughMoves({
       // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
       const isVisitedAlready =
         initialMoveRange?.[neighbor.id]?.movePointsLeft === movePointsLeft
-          ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs <=
-            disengagedUnitIDs
+          ? initialMoveRange?.[neighbor.id]?.disengagedUnitIDs.length <=
+            disengagedUnitIDs.length
           : initialMoveRange?.[neighbor.id]?.movePointsLeft > movePointsLeft
       if (isVisitedAlready) {
+        // console.count(neighbor.id)
+        console.count(neighbor.id)
+        console.log(initialMoveRange?.[neighbor.id]?.movePointsLeft)
         return acc
       }
       const totalDisengagedIDsSoFar = uniq([
@@ -252,6 +270,7 @@ function recurseThroughMoves({
       const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
         unit,
         startHexID,
+        startTailHexID: startTailHex?.id,
         neighborHexID,
         boardHexes,
         gameUnits,
@@ -348,18 +367,20 @@ function recurseThroughMoves({
         if (isFallDamage) {
           return acc
         }
-        return {
-          ...acc,
-          ...recurseThroughMoves({
-            unmutatedContext,
-            prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
-            prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-            prevHexFallDamage: newFallDamage,
-            prevHex: neighbor,
-            movePoints: movePointsLeft,
-            initialMoveRange: acc,
-          }),
-        }
+        return isMovePointsLeftAfterMove
+          ? {
+              ...acc,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                prevHexesDisengagedUnitIDs: totalDisengagedIDsSoFar,
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHexFallDamage: newFallDamage,
+                prevHex: neighbor,
+                movePoints: movePointsLeft,
+                initialMoveRange: acc,
+              }),
+            }
+          : acc
       } else if (isCausingEngagement) {
         // we can stop there
         if (canStopHere) {
@@ -369,19 +390,21 @@ function recurseThroughMoves({
             isGrappleGun,
           }
         }
-        return {
-          ...acc,
-          ...recurseThroughMoves({
-            unmutatedContext,
-            prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
-            prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
-            prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
-            prevHex: neighbor,
-            startTailHex: isUnit2Hex ? prevHex : undefined,
-            movePoints: movePointsLeft,
-            initialMoveRange: acc,
-          }),
-        }
+        return isMovePointsLeftAfterMove
+          ? {
+              ...acc,
+              ...recurseThroughMoves({
+                unmutatedContext,
+                prevHexesDisengagedUnitIDs: disengagedUnitIDs, // this should be 0 here, as the hex would be a dangerous hex ^^
+                prevHexesEngagedUnitIDs: latestEngagedUnitIDs,
+                prevHexFallDamage: newFallDamage, // this should be 0 here, as the hex would be a dangerous hex ^^
+                prevHex: neighbor,
+                startTailHex: isUnit2Hex ? prevHex : undefined,
+                movePoints: movePointsLeft,
+                initialMoveRange: acc,
+              }),
+            }
+          : acc
       }
       // safe hexes
       else {

@@ -121,6 +121,7 @@ export function transformBoardHexesWithPrePlacedUnits(
 ): BoardHexes {
   const copy = { ...boardHexes }
   const gameUnitsArr = Object.values(gameUnits)
+  // TODO: Wipe all hex.occupyingUnitIDs first
   gameUnitsArr.forEach((unit) => {
     const is2Hex = unit.is2Hex
     try {

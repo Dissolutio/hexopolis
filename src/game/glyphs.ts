@@ -21,6 +21,8 @@ export type HexoscapeGlyphs = {
     description: string
   }
 }
+export const MOVE_GLYPH_BONUS = 2
+
 export const powerGlyphs: HexoscapeGlyphs = {
   attack: {
     id: 'attack',

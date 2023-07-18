@@ -7,7 +7,9 @@ import {
   StartZones,
 } from '../types'
 import { giantsTable } from './giantsTable'
+import { forsakenWaters } from './forsakenWaters'
 import { devHexagon } from './devHexagon'
+import { moveRangeMap } from './moveRangeMap'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
 
@@ -19,6 +21,36 @@ function generateUID() {
   firstPart = ('000' + firstPart.toString(36)).slice(-3)
   secondPart = ('000' + secondPart.toString(36)).slice(-3)
   return firstPart + secondPart
+}
+export function makeForsakenWatersMap(
+  withPrePlacedUnits?: boolean,
+  gameUnitsToPrePlace?: GameUnits
+): GameMap {
+  const boardHexes = forsakenWaters.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('forsakenWaters.boardHexes is not defined')
+  }
+  for (const hex in boardHexes) {
+    if (Object.prototype.hasOwnProperty.call(boardHexes, hex)) {
+      const element = boardHexes[hex]
+      if (element.terrain === 'void') {
+        delete boardHexes[hex]
+      }
+    }
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnitsToPrePlace ?? {}
+    )
+  }
+  return {
+    boardHexes: forsakenWaters.boardHexes as unknown as BoardHexes,
+    hexMap: forsakenWaters.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
 }
 export function makeGiantsTableMap({
   withPrePlacedUnits,
@@ -75,6 +107,31 @@ export function makeDevHexagonMap({
   return {
     boardHexes: devHexagon.boardHexes as unknown as BoardHexes,
     hexMap: devHexagon.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRangeTestMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRangeMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangeMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRangeMap.boardHexes,
+    hexMap: moveRangeMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }
@@ -159,13 +216,13 @@ const transformBoardHexesToHaveStartZones = (
     }
   }, {})
 }
-const getStartZonesFromBoardHexes = (map: BoardHexes): StartZones => {
+const getStartZonesFromBoardHexes = (boardHexes: BoardHexes): StartZones => {
   let result: StartZones = {}
-  for (const boardHex in map) {
-    if (Object.prototype.hasOwnProperty.call(map, boardHex)) {
-      map[boardHex].startzonePlayerIDs.forEach(
-        (id) => (result[id] = [...(result?.[id] ?? []), map[boardHex].id])
-      )
+  for (const boardHex in boardHexes) {
+    if (Object.prototype.hasOwnProperty.call(boardHexes, boardHex)) {
+      boardHexes[boardHex].startzonePlayerIDs.forEach((id) => {
+        result[id] = [...(result?.[id] ?? []), boardHexes[boardHex].id]
+      })
     }
   }
   return result

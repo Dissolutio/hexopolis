@@ -418,36 +418,16 @@ export const devHexagon = {
     mapWidth: 3,
     mapHeight: 3,
     glyphs: {
-      // '0,0,0': {
-      // hexID: '0,0,0',
-      //   glyphID: 'healer',
-      //   isRevealed: true,
-      // },
       '-3,3,0': {
         hexID: '-3,3,0',
         glyphID: 'move',
-        isRevealed: false,
+        isRevealed: true,
       },
-      // '-3,3,0': {
-      //   hexID: '-3,3,0',
-      //   glyphID: 'attack',
-      //   isRevealed: false,
-      // },
       '0,0,0': {
         hexID: '0,0,0',
         glyphID: 'defense',
         isRevealed: false,
       },
-      // '-2,2,0': {
-      //   hexID: '-2,2,0',
-      //   glyphID: 'defense',
-      //   isRevealed: false,
-      // },
-      // '-3,3,0': {
-      // hexID: '-3,3,0',
-      //   glyphID: 'summoner',
-      //   isRevealed: false,
-      // },
     },
   },
 }

@@ -2,6 +2,7 @@ import { playerColors } from 'hexopolis-ui/theme'
 import React from 'react'
 import { IconBaseProps } from 'react-icons'
 import {
+  GiTargetDummy,
   GiDiabloSkull,
   GiNinjaArmor,
   GiMissileMech,
@@ -71,6 +72,9 @@ export const UnitIcon = ({
   }
 
   switch (armyCardID) {
+    case 'test001':
+      // marro warriors
+      return <GiTargetDummy {...gameIconProps} />
     case 'hs1000':
       // marro warriors
       return <GiDiabloSkull {...gameIconProps} />
