@@ -14,7 +14,11 @@ import {
   Glyphs,
   Glyph,
 } from './types'
-import { generateHexID } from './constants'
+import {
+  MAJOR_FALL_DAMAGE,
+  MINOR_FALL_DAMAGE,
+  generateHexID,
+} from './constants'
 import {
   hexUtilsDistance,
   hexUtilsNeighbor,
@@ -585,5 +589,5 @@ export function selectIsFallDamage(
   const altitudeDelta = startHex.altitude - endHex.altitude
   const isMinorFall = altitudeDelta >= unitHeight
   const isMajorFall = altitudeDelta >= unitHeight + 10
-  return isMajorFall ? 3 : isMinorFall ? 1 : 0
+  return isMajorFall ? MAJOR_FALL_DAMAGE : isMinorFall ? MINOR_FALL_DAMAGE : 0
 }

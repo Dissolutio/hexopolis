@@ -45,6 +45,9 @@ const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
   return [...prev, { gameCardID: '', order: curr }]
 }, [] as OrderMarker[])
 
+export const MINOR_FALL_DAMAGE = 1
+export const MAJOR_FALL_DAMAGE = 3
+
 export function generateStateForNumPlayers(
   numPlayers: number,
   defaultValue: boolean

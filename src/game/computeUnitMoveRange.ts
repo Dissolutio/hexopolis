@@ -270,6 +270,7 @@ function recurseThroughMoves({
       const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
         unit,
         startHexID,
+        startTailHexID: startTailHex?.id,
         neighborHexID,
         boardHexes,
         gameUnits,

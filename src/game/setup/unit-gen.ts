@@ -6,6 +6,7 @@ import {
   PlayerState,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
+import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
 
 const marroID = 'hs1000'
@@ -13,6 +14,7 @@ const deathwalker9000ID = 'hs1001'
 const izumiID = 'hs1002'
 const drake1ID = 'hs1003'
 const syvarrisID = 'hs1004'
+const testDummyID = 'test001'
 const kravMagaID = 'hs1005'
 const tarnID = 'hs1006'
 const carrID = 'hs1007'
@@ -28,8 +30,8 @@ export const grimnakID = 'hs1015'
 // TEST SCENARIO ARMYCARDS
 export const startingArmies: { [playerID: string]: string[] } = {
   '0': [
-    marroID,
     drake1ID,
+    // marroID,
     // negoksaID,
     // airbornID,
     // thorgrimID,
@@ -39,13 +41,14 @@ export const startingArmies: { [playerID: string]: string[] } = {
     // finnID,
   ],
   '1': [
+    testDummyID,
     // grimnakID,
     // raelinOneID,
-    kravMagaID,
+    // kravMagaID,
     // tarnID,
     // syvarrisID,
     // airbornID,
-    zettianID,
+    // zettianID,
     // carrID,
   ],
   '2': [tarnID],
@@ -87,7 +90,8 @@ function hsCardsToArmyCards(
     }
   })
 }
-
+// in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
+const cardsUsed = [...MS1Cards, ...testCards]
 export function armyCardsToGameArmyCardsForTest(
   numPlayers: number
 ): GameArmyCard[] {
@@ -102,10 +106,10 @@ export function armyCardsToGameArmyCardsForTest(
 
       const playerArmyCards = playerHSCardIDs
         .filter((hsCardID) => {
-          return MS1Cards.find((card) => card.armyCardID === hsCardID)
+          return cardsUsed.find((card) => card.armyCardID === hsCardID)
         })
         .map((hsCardID) => {
-          return MS1Cards.find((card) => card.armyCardID === hsCardID)
+          return cardsUsed.find((card) => card.armyCardID === hsCardID)
         })
       return {
         ...acc,

@@ -9,6 +9,7 @@ import {
   makeGiantsTableMap,
   makeHexagonShapedMap,
   makeForsakenWatersMap,
+  makeMoveRangeTestMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import { armyCardsToGameArmyCardsForTest } from './unit-gen'
@@ -52,13 +53,18 @@ const frequentlyChangedDevState = (
 ) =>
   isDevOverrideState
     ? {
+        // Use the state below to start a game in the play-phase already
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        // placementReady: generateReadyStateForNumPlayers(numPlayers, false),
-        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
         players: playersStateWithPrePlacedOMs(numPlayers),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        // Use the state below for a From-the-draft-phase local 2-player game
+        // draftReady: generateReadyStateForNumPlayers(numPlayers, false),
+        // placementReady: generateReadyStateForNumPlayers(numPlayers, false),
+        // orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, false),
+        // orderMarkers: generateBlankOrderMarkersForNumPlayers(numPlayers),
+        // players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
     : {
@@ -97,7 +103,8 @@ export const gameSetupInitialGameState = ({
   // THIS IS THE LINE YOU CHANGE WHEN DEVVING::
   // return makeGiantsTable2PlayerScenario(2, false)
   // return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
-  return makeTestScenario(numPlayers, withPrePlacedUnits)
+  // return makeDefaultScenario(numPlayers, withPrePlacedUnits)
+  return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
 }
 function makeGiantsTable2PlayerScenario(
   numPlayers: number,
@@ -168,7 +175,7 @@ function makeForsakenWaters2PlayerScenario(
     startZones: map.startZones,
   }
 }
-function makeTestScenario(
+function makeDefaultScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
 ): GameState {
@@ -190,19 +197,54 @@ function makeTestScenario(
     'unitID'
   )
   // Map
-  // const map = makeHexagonShapedMap({
-  //   // mapSize: Math.max(numPlayers * 2, 8),
-  //   mapSize: 0,
-  //   withPrePlacedUnits,
-  //   gameUnits: gameUnitsWithoutTheDrop,
-  //   flat: false,
-  // })
   // const map = makeGiantsTableMap({
   //   withPrePlacedUnits: true,
   //   gameUnitsToPrePlace: gameUnitsWithoutTheDrop,
   // })
   // const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsWithoutTheDrop)
-  const map = makeDevHexagonMap({
+  // const map = makeDevHexagonMap({
+  //   withPrePlacedUnits: Boolean(withPrePlacedUnits),
+  //   gameUnits: gameUnitsWithoutTheDrop,
+  // })
+  const map = makeHexagonShapedMap({
+    // mapSize: Math.max(numPlayers * 2, 8),
+    mapSize: 1,
+    withPrePlacedUnits,
+    gameUnits: gameUnitsWithoutTheDrop,
+    flat: false,
+  })
+  return {
+    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+export function makeMoveRangeTestScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    : []
+  // GameUnits
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+  // Map
+  const map = makeMoveRangeTestMap({
     withPrePlacedUnits: Boolean(withPrePlacedUnits),
     gameUnits: gameUnitsWithoutTheDrop,
   })

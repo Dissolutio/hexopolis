@@ -9,6 +9,7 @@ import {
 import { giantsTable } from './giantsTable'
 import { forsakenWaters } from './forsakenWaters'
 import { devHexagon } from './devHexagon'
+import { moveRangeMap } from './moveRangeMap'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
 
@@ -109,6 +110,31 @@ export function makeDevHexagonMap({
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }
+export function makeMoveRangeTestMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRangeMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangeMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRangeMap.boardHexes,
+    hexMap: moveRangeMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false
@@ -190,13 +216,13 @@ const transformBoardHexesToHaveStartZones = (
     }
   }, {})
 }
-const getStartZonesFromBoardHexes = (map: BoardHexes): StartZones => {
+const getStartZonesFromBoardHexes = (boardHexes: BoardHexes): StartZones => {
   let result: StartZones = {}
-  for (const boardHex in map) {
-    if (Object.prototype.hasOwnProperty.call(map, boardHex)) {
-      map[boardHex].startzonePlayerIDs.forEach(
-        (id) => (result[id] = [...(result?.[id] ?? []), map[boardHex].id])
-      )
+  for (const boardHex in boardHexes) {
+    if (Object.prototype.hasOwnProperty.call(boardHexes, boardHex)) {
+      boardHexes[boardHex].startzonePlayerIDs.forEach((id) => {
+        result[id] = [...(result?.[id] ?? []), boardHexes[boardHex].id]
+      })
     }
   }
   return result
