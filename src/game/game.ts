@@ -25,6 +25,7 @@ import {
 } from './constants'
 import { assignCardMovePointsToUnit_G } from './moves/G-mutators'
 import { selectIfGameArmyCardHasAbility } from './selector/card-selectors'
+import { scenarioNames } from './setup/scenarios'
 
 const isDevOverrideState =
   process.env.NODE_ENV === 'production'
@@ -39,10 +40,21 @@ export const Hexoscape: Game<GameState> = {
   // passed through the Game Creation API, currently in useMultiplayerLobby.tsx.handleCreateMatch()
   setup: (ctx, setupData) => {
     const isLocalOrDemoGame = setupData === undefined
+    const computeScenarioName = () => {
+      if (isLocalOrDemoGame) {
+        return ctx.ctx.numPlayers === 2
+          ? scenarioNames.clashingFrontsAtTableOfTheGiants2
+          : ''
+      }
+    }
+    const scenarioName =
+      isLocalOrDemoGame && ctx.ctx.numPlayers === 2
+        ? scenarioNames.clashingFrontsAtTableOfTheGiants2
+        : ''
     return gameSetupInitialGameState({
       // numPlayers is decided either by createMatch, or what was passed to Bgio-Client (for local and demo games)
       numPlayers: setupData?.numPlayers || ctx.ctx.numPlayers,
-      scenarioName: setupData?.scenarioName || '',
+      scenarioName,
       withPrePlacedUnits: isDevOverrideState,
       isLocalOrDemoGame,
     })
