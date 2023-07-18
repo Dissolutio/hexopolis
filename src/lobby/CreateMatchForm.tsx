@@ -25,7 +25,6 @@ export function CreateMatchForm() {
           onChange={(e) => setMatchName(e.target.value)}
         />
       </label> */}
-      <p>Currently there is only one map/scenario, and it is for 2 players</p>
       <label htmlFor="numPlayersSelect">Select map/scenario:</label>
       <select
         name="numPlayersSelect"
