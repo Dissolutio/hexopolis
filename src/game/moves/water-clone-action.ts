@@ -30,8 +30,8 @@ export const rollForWaterClone: Move<GameState> = {
         const isOnWater =
           G.boardHexes[current.clonerHexID].terrain === HexTerrain.water
         const rollThreshhold = isOnWater ? 10 : 15
-        // const roll = random.Die(20)
-        const roll = 20
+        const roll = random.Die(20)
+        // const roll = 20
         const isRollSuccessful = roll >= rollThreshhold
         return {
           ...result,
