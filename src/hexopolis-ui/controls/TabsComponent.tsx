@@ -20,12 +20,12 @@ type Tab = {
 }
 const tabs: Tab[] = [
   {
-    title: 'Command',
+    title: 'Controls',
     id: 'tab1',
     icon: <GiConsoleController />,
   },
   {
-    title: 'Scout',
+    title: 'Armies',
     id: 'tab2',
     icon: <GiCardPick />,
   },
@@ -143,9 +143,17 @@ const StyledClickableButtonThing = styled.span`
   align-items: center;
   padding: 16px;
   overflow: hidden;
-  font-size: 20px;
+  font-size: 1.3rem;
   text-decoration: none;
   cursor: pointer;
+  @media screen and (max-width: 1100px) {
+    padding: 8px;
+    font-size: 1rem;
+  }
+  @media screen and (max-width: 600px) {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
   svg {
     height: 30px;
     width: 30px;
@@ -153,11 +161,27 @@ const StyledClickableButtonThing = styled.span`
     stroke: var(--player-color);
     fill: var(--player-color);
     transition: fill 0.5s ease;
+    @media screen and (max-width: 1100px) {
+      height: 23px;
+      width: 23px;
+      min-width: 23px;
+    }
+    @media screen and (max-width: 600px) {
+      height: 18px;
+      width: 18px;
+      min-width: 18px;
+    }
   }
   span {
     margin-left: 10px;
     font-weight: 700;
     transition: color 0.5s ease;
+    @media screen and (max-width: 1100px) {
+      margin-left: 8px;
+    }
+    @media screen and (max-width: 600px) {
+      margin-left: 6px;
+    }
   }
 `
 const StyledLinkList = styled.ul`
