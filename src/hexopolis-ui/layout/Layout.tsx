@@ -1,4 +1,4 @@
-import { useBgioClientInfo, useBgioCtx } from 'bgio-contexts'
+import { useBgioClientInfo } from 'bgio-contexts'
 import { modalStates, useUIContext } from 'hexopolis-ui/contexts'
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
