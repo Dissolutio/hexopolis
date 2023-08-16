@@ -91,7 +91,7 @@ export const gameSetupInitialGameState = ({
     numPlayers === 2 &&
     isLocalOrDemoGame &&
     process.env.NODE_ENV === 'production'
-
+  return makeMoveRangeTestScenario(numPlayers, true)
   if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants2) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }

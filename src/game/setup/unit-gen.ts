@@ -31,8 +31,8 @@ export const grimnakID = 'hs1015'
 export const startingArmies: { [playerID: string]: string[] } = {
   '0': [
     drake1ID,
-    marroID,
-    negoksaID,
+    // marroID,
+    // negoksaID,
     // airbornID,
     // thorgrimID,
     // izumiID,
@@ -43,10 +43,10 @@ export const startingArmies: { [playerID: string]: string[] } = {
   '1': [
     // grimnakID,
     // raelinOneID,
-    kravMagaID,
+    // kravMagaID,
     // tarnID,
-    syvarrisID,
-    // testDummyID,
+    // syvarrisID,
+    testDummyID,
     // airbornID,
     // zettianID,
     // carrID,
