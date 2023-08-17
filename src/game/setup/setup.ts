@@ -47,7 +47,8 @@ const someInitialGameState = {
   stageQueue: [],
   // secret: { glyphs: {} },
 }
-const frequentlyChangedDevState = (
+// These are the initial states frequently changed while devving (i.e. to start the game in placement, or play, or draft phase, or with order-markers already placed)
+const generatePlayerAndReadyAndOMStates = (
   numPlayers: number,
   isDevOverrideState?: boolean
 ) =>
@@ -91,7 +92,7 @@ export const gameSetupInitialGameState = ({
     numPlayers === 2 &&
     isLocalOrDemoGame &&
     process.env.NODE_ENV === 'production'
-  return makeMoveRangeTestScenario(numPlayers, true)
+  // return makeMoveRangeTestScenario(numPlayers, true)
   if (scenarioName === scenarioNames.clashingFrontsAtTableOfTheGiants2) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }
@@ -133,7 +134,7 @@ function makeGiantsTable2PlayerScenario(
     gameUnitsToPrePlace,
   })
   return {
-    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
     maxArmyValue: 400,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
@@ -166,7 +167,7 @@ function makeForsakenWaters2PlayerScenario(
   )
   const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsToPrePlace)
   return {
-    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
     maxArmyValue: 300,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
@@ -215,7 +216,7 @@ function makeDefaultScenario(
     flat: false,
   })
   return {
-    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
     gameUnits,
     hexMap: map.hexMap,
@@ -250,7 +251,7 @@ export function makeMoveRangeTestScenario(
     gameUnits: gameUnitsWithoutTheDrop,
   })
   return {
-    ...frequentlyChangedDevState(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
     gameArmyCards: armyCards,
     gameUnits,
     hexMap: map.hexMap,
