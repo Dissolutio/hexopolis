@@ -107,6 +107,7 @@ export function armyCardsToGameArmyCardsForTest(
     (acc, [playerID, playerHSCardIDs]) => {
       // bail early for non-existent players
       if (parseInt(playerID) >= numPlayers) {
+        // i.e. if it's a 3-player game, then players 0,1, and 2 would be in the game
         return acc
       }
 
