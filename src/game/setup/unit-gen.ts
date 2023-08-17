@@ -57,6 +57,11 @@ export const startingArmies: StartingArmies = {
   '4': [mimringID, tarnID],
   '5': [mimringID, tarnID],
 }
+export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummyID],
+}
+
 function hsCardsToArmyCards(
   params: Array<ICoreHeroscapeCard>,
   playerID: string
