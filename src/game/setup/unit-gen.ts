@@ -4,6 +4,7 @@ import {
   ICoreHeroscapeCard,
   OrderMarkers,
   PlayerState,
+  StartingArmies,
 } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
@@ -28,7 +29,7 @@ const negoksaID = 'hs1014'
 export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
-export const startingArmies: { [playerID: string]: string[] } = {
+export const startingArmies: StartingArmies = {
   '0': [
     drake1ID,
     // marroID,

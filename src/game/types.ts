@@ -263,6 +263,8 @@ export type MoveRange = {
   }
 }
 
+export type StartingArmies = { [playerID: string]: string[] }
+
 export type DisengageAttempt = {
   unit: GameUnit
   endHexID: string
