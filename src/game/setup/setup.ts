@@ -57,8 +57,8 @@ const frequentlyChangedDevState = (
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        players: playersStateWithPrePlacedOMs(numPlayers),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers),
+        players: playersStateWithPrePlacedOMs(numPlayers),
         // Use the state below for a From-the-draft-phase local 2-player game
         // draftReady: generateReadyStateForNumPlayers(numPlayers, false),
         // placementReady: generateReadyStateForNumPlayers(numPlayers, false),
