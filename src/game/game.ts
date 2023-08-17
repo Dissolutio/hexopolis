@@ -41,6 +41,7 @@ export const Hexoscape: Game<GameState> = {
   setup: (ctx, setupData) => {
     const isLocalOrDemoGame = setupData === undefined
     const computeScenarioName = () => {
+      // scenario-name can be passed from multiplayer lobby, otherwise we determine here which scenario-name to pass based on number of players
       if (isLocalOrDemoGame) {
         return ctx.ctx.numPlayers === 2
           ? scenarioNames.clashingFrontsAtTableOfTheGiants2
