@@ -1,4 +1,4 @@
-import { GameArmyCard, GameState, GameUnits } from '../types'
+import { GameArmyCard, GameState, GameUnits, StartingArmies } from '../types'
 import {
   generateBlankPlayersStateForNumPlayers,
   generateBlankOrderMarkersForNumPlayers,
@@ -54,10 +54,15 @@ const someInitialGameState = {
   // secret: { glyphs: {} },
 }
 // These are the initial states frequently changed while devving (i.e. to start the game in placement, or play, or draft phase, or with order-markers already placed)
-const generatePlayerAndReadyAndOMStates = (
-  numPlayers: number,
+const generatePlayerAndReadyAndOMStates = ({
+  numPlayers,
+  startingArmies,
+  isDevOverrideState,
+}: {
+  numPlayers: number
+  startingArmies: StartingArmies
   isDevOverrideState?: boolean
-) =>
+}) =>
   isDevOverrideState
     ? {
         // Use the state below to start a game in the play-phase already
@@ -140,7 +145,11 @@ function makeGiantsTable2PlayerScenario(
     gameUnitsToPrePlace,
   })
   return {
-    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForGiantsTable2Player,
+    }),
     maxArmyValue: 400,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
@@ -176,7 +185,11 @@ function makeForsakenWaters2PlayerScenario(
   )
   const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsToPrePlace)
   return {
-    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForForsakenWaters2Player,
+    }),
     maxArmyValue: 300,
     maxRounds: 12,
     gameArmyCards: withPrePlacedUnits ? armyCards : [],
@@ -225,7 +238,11 @@ function makeDefaultScenario(
     flat: false,
   })
   return {
-    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForDefaultScenario,
+    }),
     gameArmyCards: armyCards,
     gameUnits,
     hexMap: map.hexMap,
@@ -263,7 +280,11 @@ export function makeMoveRange1HexWalkScenario(
     gameUnits: gameUnitsWithoutTheDrop,
   })
   return {
-    ...generatePlayerAndReadyAndOMStates(numPlayers, withPrePlacedUnits),
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForMoveRange1HexWalkMap,
+    }),
     gameArmyCards: armyCards,
     gameUnits,
     hexMap: map.hexMap,

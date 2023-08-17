@@ -1,7 +1,6 @@
 import { OrderMarkers, PlayerState, StartingArmies } from '../types'
 import { startingArmiesForDefaultScenario } from './unit-gen'
 
-// TEST SCENARIO ORDER MARKERS
 const generateOrderMarkerIDsFromStartingArmies = (
   startingArmies: StartingArmies
 ) => {
