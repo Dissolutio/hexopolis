@@ -224,7 +224,7 @@ function makeDefaultScenario(
     startZones: map.startZones,
   }
 }
-export function makeMoveRangeTestScenario(
+export function makeMoveRange1HexWalkScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
 ): GameState {

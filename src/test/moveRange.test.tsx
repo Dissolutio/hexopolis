@@ -1,13 +1,13 @@
 import { computeUnitMoveRange2 } from 'game/computeUnitMoveRange2'
 import { MAJOR_FALL_DAMAGE, MINOR_FALL_DAMAGE } from 'game/constants'
 import { moveRangeTestHexIDs } from 'game/setup/moveRangeMap'
-import { makeMoveRangeTestScenario } from 'game/setup/setup'
+import { makeMoveRange1HexWalkScenario } from 'game/setup/setup'
 
 describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRangeTest map', () => {
   const makeGameState = () => {
     const numPlayers = 2
     const withPrePlacedUnits = true
-    return makeMoveRangeTestScenario(numPlayers, withPrePlacedUnits)
+    return makeMoveRange1HexWalkScenario(numPlayers, withPrePlacedUnits)
   }
   const gameState = makeGameState()
   // this test assumes there are two players, and each has one unit, so 2 unitIDs: p0u0,p1u1
