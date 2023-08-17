@@ -12,7 +12,13 @@ import {
   makeMoveRangeTestMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
-import { armyCardsToGameArmyCardsForTest } from './unit-gen'
+import {
+  startingArmiesForDefaultScenario,
+  startingArmiesForForsakenWaters2Player,
+  startingArmiesForGiantsTable2Player,
+  startingArmiesForMoveRange1HexWalkMap,
+  startingArmiesToGameCards,
+} from './unit-gen'
 import { scenarioNames } from './scenarios'
 import {
   generatePreplacedOrderMarkers,
@@ -113,7 +119,7 @@ function makeGiantsTable2PlayerScenario(
   withPrePlacedUnits?: boolean
 ): GameState {
   const armyCards: GameArmyCard[] = withPrePlacedUnits
-    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    ? startingArmiesToGameCards(numPlayers, startingArmiesForGiantsTable2Player)
     : []
   const gameUnits: GameUnits = withPrePlacedUnits
     ? transformGameArmyCardsToGameUnits(armyCards)
@@ -149,7 +155,10 @@ function makeForsakenWaters2PlayerScenario(
   withPrePlacedUnits?: boolean
 ): GameState {
   const armyCards: GameArmyCard[] = withPrePlacedUnits
-    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForForsakenWaters2Player
+      )
     : []
   const gameUnits: GameUnits = withPrePlacedUnits
     ? transformGameArmyCardsToGameUnits(armyCards)
@@ -184,7 +193,7 @@ function makeDefaultScenario(
   // ArmyCards to GameArmyCards
   // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   const armyCards: GameArmyCard[] = withPrePlacedUnits
-    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    ? startingArmiesToGameCards(numPlayers, startingArmiesForDefaultScenario)
     : []
   // GameUnits
   // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
@@ -231,7 +240,10 @@ export function makeMoveRange1HexWalkScenario(
   // ArmyCards to GameArmyCards
   // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
   const armyCards: GameArmyCard[] = withPrePlacedUnits
-    ? armyCardsToGameArmyCardsForTest(numPlayers)
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForMoveRange1HexWalkMap
+      )
     : []
   // GameUnits
   // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)

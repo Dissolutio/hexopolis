@@ -1,5 +1,5 @@
 import { OrderMarkers, PlayerState, StartingArmies } from '../types'
-import { startingArmies } from './unit-gen'
+import { startingArmiesForDefaultScenario } from './unit-gen'
 
 // TEST SCENARIO ORDER MARKERS
 const generateOrderMarkerIDsFromStartingArmies = (
@@ -32,7 +32,9 @@ const generateOrderMarkerIDsFromStartingArmies = (
     p5_X: `p5_${startingArmies['5'][0]}`,
   }
 }
-const oms = generateOrderMarkerIDsFromStartingArmies(startingArmies)
+const oms = generateOrderMarkerIDsFromStartingArmies(
+  startingArmiesForDefaultScenario
+)
 export function generatePreplacedOrderMarkers(
   numPlayers: number
 ): OrderMarkers {

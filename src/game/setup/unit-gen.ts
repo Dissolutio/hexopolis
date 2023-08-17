@@ -1,11 +1,4 @@
-import {
-  ArmyCard,
-  GameArmyCard,
-  ICoreHeroscapeCard,
-  OrderMarkers,
-  PlayerState,
-  StartingArmies,
-} from '../types'
+import { GameArmyCard, ICoreHeroscapeCard, StartingArmies } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
@@ -29,33 +22,21 @@ const negoksaID = 'hs1014'
 export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
-export const startingArmies: StartingArmies = {
-  '0': [
-    drake1ID,
-    // marroID,
-    // negoksaID,
-    // airbornID,
-    // thorgrimID,
-    // izumiID,
-    // deathwalker9000ID,
-    // mimringID,
-    // finnID,
-  ],
-  '1': [
-    // grimnakID,
-    // raelinOneID,
-    // kravMagaID,
-    // tarnID,
-    // syvarrisID,
-    testDummyID,
-    // airbornID,
-    // zettianID,
-    // carrID,
-  ],
-  '2': [tarnID],
-  '3': [tarnID],
-  '4': [mimringID, tarnID],
-  '5': [mimringID, tarnID],
+export const startingArmiesForDefaultScenario: StartingArmies = {
+  '0': [finnID, grimnakID, raelinOneID, marroID],
+  '1': [tarnID, izumiID, syvarrisID, carrID],
+  '2': [marroID, negoksaID, thorgrimID, izumiID],
+  '3': [drake1ID, airbornID, raelinOneID],
+  '4': [zettianID, deathwalker9000ID, kravMagaID],
+  '5': [mimringID, tarnID, carrID],
+}
+export const startingArmiesForGiantsTable2Player: StartingArmies = {
+  '0': [drake1ID, thorgrimID, finnID, marroID, raelinOneID],
+  '1': [mimringID, kravMagaID, carrID, tarnID],
+}
+export const startingArmiesForForsakenWaters2Player: StartingArmies = {
+  '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
+  '1': [izumiID, syvarrisID, airbornID, carrID],
 }
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
@@ -98,8 +79,10 @@ function hsCardsToArmyCards(
 }
 // in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
 const cardsUsed = [...MS1Cards, ...testCards]
-export function armyCardsToGameArmyCardsForTest(
-  numPlayers: number
+
+export function startingArmiesToGameCards(
+  numPlayers: number,
+  startingArmies: StartingArmies
 ): GameArmyCard[] {
   const theArmiesTurnedIntoGameArmyCards: {
     [pid: string]: GameArmyCard[]
