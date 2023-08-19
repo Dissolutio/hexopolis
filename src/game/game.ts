@@ -75,7 +75,11 @@ export const Hexoscape: Game<GameState> = {
       onBegin: ({ G, ctx }) => {
         const playerIDs = Object.keys(G.players)
         const initiativeRoll = rollD20Initiative(playerIDs)
-        G.initiative = initiativeRoll.initiative
+        if (process.env.NODE_ENV === 'test') {
+          G.initiative = ['1', '0']
+        } else {
+          G.initiative = initiativeRoll.initiative
+        }
         // TODO add gamelog of draft begin
         // const draftBeginGameLog = encodeGameLogMessage({
         //   type: gameLogTypes.roundBegin,
@@ -308,8 +312,11 @@ export const Hexoscape: Game<GameState> = {
           playerID: '',
           initiativeRolls: initiativeRoll.rolls,
         })
-        // G.initiative = initiativeRoll.initiative
-        G.initiative = ['1', '0']
+        if (process.env.NODE_ENV === 'test') {
+          G.initiative = ['1', '0']
+        } else {
+          G.initiative = initiativeRoll.initiative
+        }
         G.currentOrderMarker = 0
         G.gameLog = [...G.gameLog, roundBeginGameLog]
       },
