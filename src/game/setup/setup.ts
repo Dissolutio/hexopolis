@@ -56,8 +56,8 @@ const someInitialGameState = {
 // These are the initial states frequently changed while devving (i.e. to start the game in placement, or play, or draft phase, or with order-markers already placed)
 const generatePlayerAndReadyAndOMStates = ({
   numPlayers,
-  startingArmies,
   isDevOverrideState,
+  startingArmies,
 }: {
   numPlayers: number
   startingArmies: StartingArmies
@@ -69,8 +69,8 @@ const generatePlayerAndReadyAndOMStates = ({
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, true),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
-        orderMarkers: generatePreplacedOrderMarkers(numPlayers),
-        players: playersStateWithPrePlacedOMs(numPlayers),
+        orderMarkers: generatePreplacedOrderMarkers(numPlayers, startingArmies),
+        players: playersStateWithPrePlacedOMs(numPlayers, startingArmies),
         // Use the state below for a From-the-draft-phase local 2-player game
         // draftReady: generateReadyStateForNumPlayers(numPlayers, false),
         // placementReady: generateReadyStateForNumPlayers(numPlayers, false),
