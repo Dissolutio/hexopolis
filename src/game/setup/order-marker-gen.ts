@@ -1,36 +1,41 @@
-import { OrderMarkers, PlayerState } from '../types'
-import { startingArmies } from './unit-gen'
+import { OrderMarkers, PlayerState, StartingArmies } from '../types'
 
-// TEST SCENARIO ORDER MARKERS
-const oms = {
-  p0_0: `p0_${startingArmies['0'][0]}`,
-  p0_1: `p0_${startingArmies['0'][0]}`,
-  p0_2: `p0_${startingArmies['0'][0]}`,
-  p0_X: `p0_${startingArmies['0'][0]}`,
-  p1_0: `p1_${startingArmies['1'][0]}`,
-  p1_1: `p1_${startingArmies['1'][0]}`,
-  p1_2: `p1_${startingArmies['1'][0]}`,
-  p1_X: `p1_${startingArmies['1'][0]}`,
-  p2_0: `p2_${startingArmies['2'][0]}`,
-  p2_1: `p2_${startingArmies['2'][0]}`,
-  p2_2: `p2_${startingArmies['2'][0]}`,
-  p2_X: `p2_${startingArmies['2'][0]}`,
-  p3_0: `p3_${startingArmies['3'][0]}`,
-  p3_1: `p3_${startingArmies['3'][0]}`,
-  p3_2: `p3_${startingArmies['3'][0]}`,
-  p3_X: `p3_${startingArmies['3'][0]}`,
-  p4_0: `p4_${startingArmies['4'][0]}`,
-  p4_1: `p4_${startingArmies['4'][0]}`,
-  p4_2: `p4_${startingArmies['4'][0]}`,
-  p4_X: `p4_${startingArmies['4'][0]}`,
-  p5_0: `p5_${startingArmies['5'][0]}`,
-  p5_1: `p5_${startingArmies['5'][0]}`,
-  p5_2: `p5_${startingArmies['5'][0]}`,
-  p5_X: `p5_${startingArmies['5'][0]}`,
+const generateOrderMarkerIDsFromStartingArmies = (
+  startingArmies: StartingArmies
+) => {
+  return {
+    p0_0: `p0_${startingArmies?.['0']?.[0] ?? ''}`,
+    p0_1: `p0_${startingArmies?.['0']?.[0] ?? ''}`,
+    p0_2: `p0_${startingArmies?.['0']?.[0] ?? ''}`,
+    p0_X: `p0_${startingArmies?.['0']?.[0] ?? ''}`,
+    p1_0: `p1_${startingArmies?.['1']?.[0] ?? ''}`,
+    p1_1: `p1_${startingArmies?.['1']?.[0] ?? ''}`,
+    p1_2: `p1_${startingArmies?.['1']?.[0] ?? ''}`,
+    p1_X: `p1_${startingArmies?.['1']?.[0] ?? ''}`,
+    p2_0: `p2_${startingArmies?.['2']?.[0] ?? ''}`,
+    p2_1: `p2_${startingArmies?.['2']?.[0] ?? ''}`,
+    p2_2: `p2_${startingArmies?.['2']?.[0] ?? ''}`,
+    p2_X: `p2_${startingArmies?.['2']?.[0] ?? ''}`,
+    p3_0: `p3_${startingArmies?.['3']?.[0] ?? ''}`,
+    p3_1: `p3_${startingArmies?.['3']?.[0] ?? ''}`,
+    p3_2: `p3_${startingArmies?.['3']?.[0] ?? ''}`,
+    p3_X: `p3_${startingArmies?.['3']?.[0] ?? ''}`,
+    p4_0: `p4_${startingArmies?.['4']?.[0] ?? ''}`,
+    p4_1: `p4_${startingArmies?.['4']?.[0] ?? ''}`,
+    p4_2: `p4_${startingArmies?.['4']?.[0] ?? ''}`,
+    p4_X: `p4_${startingArmies?.['4']?.[0] ?? ''}`,
+    p5_0: `p5_${startingArmies?.['5']?.[0] ?? ''}`,
+    p5_1: `p5_${startingArmies?.['5']?.[0] ?? ''}`,
+    p5_2: `p5_${startingArmies?.['5']?.[0] ?? ''}`,
+    p5_X: `p5_${startingArmies?.['5']?.[0] ?? ''}`,
+  }
 }
+
 export function generatePreplacedOrderMarkers(
-  numPlayers: number
+  numPlayers: number,
+  startingArmies: StartingArmies
 ): OrderMarkers {
+  const oms = generateOrderMarkerIDsFromStartingArmies(startingArmies)
   const orderMarkers: OrderMarkers = {
     '0': [
       { order: '0', gameCardID: oms.p0_0 },
@@ -75,7 +80,11 @@ export function generatePreplacedOrderMarkers(
   }
   return orderMarkers
 }
-export function playersStateWithPrePlacedOMs(numPlayers: number): PlayerState {
+export function playersStateWithPrePlacedOMs(
+  numPlayers: number,
+  startingArmies: StartingArmies
+): PlayerState {
+  const oms = generateOrderMarkerIDsFromStartingArmies(startingArmies)
   const orderMarkers: { [key: number]: any } = {
     0: {
       '0': oms.p0_0,
