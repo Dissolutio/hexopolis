@@ -1,4 +1,4 @@
-import { useBgioCtx, useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import {
   StyledControlsHeaderH2,
   StyledControlsP,
@@ -18,8 +18,11 @@ export const DropControls = () => {
     onDenyDrop,
     theDropPlaceableHexIDs,
   } = usePlayContext()
+  const { playerID } = useBgioClientInfo()
   const { onResetTheDropState } = usePlacementContext()
-  const { myCards } = useBgioG()
+  const { myCards, theDropResult } = useBgioG()
+  const myDropRoll = theDropResult?.[playerID]?.roll ?? 0
+  const myDropThreshhold = theDropResult?.[playerID].threshold ?? 0
   const theCard = myCards.filter((c) =>
     selectIfGameArmyCardHasAbility('The Drop', c)
   )[0]
@@ -31,6 +34,9 @@ export const DropControls = () => {
       <StyledControlsHeaderH2>
         The Drop: place {numberUnitsRemainingToDrop} more {theCard.singleName}
       </StyledControlsHeaderH2>
+      <StyledControlsP>
+        You rolled a {myDropRoll} and needed a {myDropThreshhold}.
+      </StyledControlsP>
       {isCouldBeDone ? (
         <StyledButtonWrapper>
           <GreenButton onClick={onConfirmDropPlacement}>
