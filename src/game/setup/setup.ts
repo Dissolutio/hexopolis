@@ -299,8 +299,10 @@ export function makeMoveRange1HexWalkScenario(
     startZones: map.startZones,
   }
 }
-const gameCardsToPreplaceableUnits = (cards: GameArmyCard[]) => {
-  const units = transformGameArmyCardsToGameUnits(cards)
+const gameCardsToPreplaceableUnits = (
+  cards: GameArmyCard[],
+  units: GameUnits
+) => {
   return keyBy(
     Object.values(units).filter((u) => {
       const card = selectGameCardByID(cards, u.gameCardID)
@@ -322,9 +324,12 @@ export function makeMoveRange2HexWalkScenario(
   const gameUnits: GameUnits = withPrePlacedUnits
     ? transformGameArmyCardsToGameUnits(armyCards)
     : {}
-  const map = makeMoveRangeTestMap({
+  const gameUnitsWithoutTheDrop = withPrePlacedUnits
+    ? gameCardsToPreplaceableUnits(armyCards, gameUnits)
+    : {}
+  const map = makeMoveRangeTest2HexWalkMap({
     withPrePlacedUnits: Boolean(withPrePlacedUnits),
-    gameUnits: gameCardsToPreplaceableUnits(armyCards),
+    gameUnits: gameUnitsWithoutTheDrop,
   })
   return {
     ...generatePlayerAndReadyAndOMStates({
