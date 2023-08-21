@@ -9,6 +9,7 @@ const izumiID = 'hs1002'
 const drake1ID = 'hs1003'
 const syvarrisID = 'hs1004'
 const testDummyID = 'test001'
+const test2HexDummyID = 'test002'
 const kravMagaID = 'hs1005'
 const tarnID = 'hs1006'
 const carrID = 'hs1007'
@@ -41,6 +42,10 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
   '1': [testDummyID],
+}
+export const startingArmiesForMoveRange2HexWalkMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [test2HexDummyID],
 }
 
 function hsCardsToArmyCards(
