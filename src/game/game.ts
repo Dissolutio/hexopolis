@@ -324,6 +324,11 @@ export const Hexoscape: Game<GameState> = {
           initiativeRolls: initiativeRoll.rolls,
         })
         if (process.env.NODE_ENV === 'test') {
+          // enable pre-determined initiative in tests
+          G.initiative = ['1', '0']
+        } else if (process.env.NODE_ENV === 'development') {
+          // G.initiative = initiativeRoll.initiative
+          // enable pre-determined initiative in dev
           G.initiative = ['1', '0']
         } else {
           G.initiative = initiativeRoll.initiative

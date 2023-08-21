@@ -149,7 +149,6 @@ export function makeMoveRangeTest2HexWalkMap({
     throw new Error('moveRangeTest2HexWalkMap.boardHexes is not defined')
   }
   const startZones = getStartZonesFromBoardHexes(boardHexes)
-  console.log('🚀 ~ file: map-gen.ts:152 ~ startZones:', startZones)
   if (withPrePlacedUnits) {
     transformBoardHexesWithPrePlacedUnits(
       boardHexes,
