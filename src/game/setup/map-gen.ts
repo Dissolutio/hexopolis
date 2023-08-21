@@ -12,6 +12,7 @@ import { devHexagon } from './devHexagon'
 import { moveRangeMap } from './moveRangeMap'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
+import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -142,11 +143,13 @@ export function makeMoveRangeTest2HexWalkMap({
   withPrePlacedUnits: boolean
   gameUnits: GameUnits
 }): GameMap {
-  const boardHexes = moveRangeMap.boardHexes as unknown as BoardHexes
+  const boardHexes =
+    moveRangeTest2HexWalkMap.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
-    throw new Error('moveRangeMap.boardHexes is not defined')
+    throw new Error('moveRangeTest2HexWalkMap.boardHexes is not defined')
   }
   const startZones = getStartZonesFromBoardHexes(boardHexes)
+  console.log('🚀 ~ file: map-gen.ts:152 ~ startZones:', startZones)
   if (withPrePlacedUnits) {
     transformBoardHexesWithPrePlacedUnits(
       boardHexes,
@@ -155,8 +158,8 @@ export function makeMoveRangeTest2HexWalkMap({
     )
   }
   return {
-    boardHexes: moveRangeMap.boardHexes,
-    hexMap: moveRangeMap.hexMap,
+    boardHexes: moveRangeTest2HexWalkMap.boardHexes,
+    hexMap: moveRangeTest2HexWalkMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }

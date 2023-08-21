@@ -10,6 +10,7 @@ import {
   makeHexagonShapedMap,
   makeForsakenWatersMap,
   makeMoveRangeTestMap,
+  makeMoveRangeTest2HexWalkMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
@@ -335,7 +336,7 @@ export function makeMoveRange2HexWalkScenario(
     ...generatePlayerAndReadyAndOMStates({
       numPlayers,
       isDevOverrideState: withPrePlacedUnits,
-      startingArmies: startingArmiesForMoveRange1HexWalkMap,
+      startingArmies: startingArmiesForMoveRange2HexWalkMap,
     }),
     gameArmyCards: armyCards,
     gameUnits,
