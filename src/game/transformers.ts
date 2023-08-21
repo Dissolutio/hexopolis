@@ -126,15 +126,17 @@ export function transformBoardHexesWithPrePlacedUnits(
     const is2Hex = unit.is2Hex
     try {
       const { playerID } = unit
-      const sz = startZones?.[playerID].filter(
-        (sz) => copy[sz].occupyingUnitID === ''
+      const sz = startZones?.[playerID].filter((sz) =>
+        Boolean(copy[sz].occupyingUnitID === '')
       )
       // find an empty hex in the start zone, for a two spacer we must find one that has tail hexes
       const validHex =
         sz?.find((hexID) => {
           if (is2Hex) {
             const validTails = selectValidTailHexes(hexID, copy).filter(
-              (t) => t?.occupyingUnitID === ''
+              (t) =>
+                t?.occupyingUnitID === '' &&
+                t.startzonePlayerIDs.includes(playerID)
             )
             return copy[hexID].occupyingUnitID === '' && validTails.length > 0
           } else {
@@ -142,7 +144,10 @@ export function transformBoardHexesWithPrePlacedUnits(
           }
         }) ?? ''
       const validTail = selectValidTailHexes(validHex ?? '', copy)
-        .filter((t) => t.occupyingUnitID === '')
+        .filter(
+          (t) =>
+            t.occupyingUnitID === '' && t.startzonePlayerIDs.includes(playerID)
+        )
         .map((h) => h.id)[0]
       // update boardHex
       if (unit.is2Hex) {
