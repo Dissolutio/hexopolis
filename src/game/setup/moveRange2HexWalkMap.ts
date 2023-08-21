@@ -1,4 +1,4 @@
-const moveRange2HexWalkTestHexIDs = {
+export const moveRange2HexWalkTestHexIDs = {
   initialHead_id: '0,1,-1',
   initialTail_id: '1,1,-2',
   // not updated below
