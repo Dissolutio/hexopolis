@@ -41,11 +41,20 @@ export const Hexoscape: Game<GameState> = {
   setup: (ctx, setupData) => {
     const isLocalOrDemoGame = setupData === undefined
     const computeScenarioName = () => {
-      // scenario-name can be passed from multiplayer lobby, otherwise we determine here which scenario-name to pass based on number of players
+      // scenario-name can be passed from multiplayer lobby, otherwise we determine here which scenario-name to pass
       if (isLocalOrDemoGame) {
-        return ctx.ctx.numPlayers === 2
-          ? scenarioNames.clashingFrontsAtTableOfTheGiants2
-          : ''
+        if (ctx.ctx.numPlayers === 2) {
+          if (process.env.NODE_ENV === 'development') {
+            // DEV: change this to change 2 player local game
+            // return scenarioNames.makeMoveRange1HexWalkScenario
+            return scenarioNames.makeMoveRange2HexWalkScenario
+          } else {
+            // the online 2 player demo scenario:
+            return scenarioNames.clashingFrontsAtTableOfTheGiants2
+          }
+        }
+        // gameSetupInitialGameState will return a default setup if we return empty string here
+        return ''
       }
       return setupData?.scenarioName ?? ''
     }
@@ -75,12 +84,14 @@ export const Hexoscape: Game<GameState> = {
       onBegin: ({ G, ctx }) => {
         const playerIDs = Object.keys(G.players)
         const initiativeRoll = rollD20Initiative(playerIDs)
-        if (process.env.NODE_ENV === 'test') {
-          G.initiative = ['1', '0']
-        } else {
-          G.initiative = initiativeRoll.initiative
-        }
-        // TODO add gamelog of draft begin
+        // DEV: can make it so a certain player is first, etc.
+        // if (process.env.NODE_ENV === 'test') {
+        //   G.initiative = ['1', '0']
+        // } else {
+        //   G.initiative = initiativeRoll.initiative
+        // }
+        G.initiative = initiativeRoll.initiative
+        // TODO: add gamelog of draft begin
         // const draftBeginGameLog = encodeGameLogMessage({
         //   type: gameLogTypes.roundBegin,
         //   id: `draftBegin`,
