@@ -135,6 +135,31 @@ export function makeMoveRangeTestMap({
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }
+export function makeMoveRangeTest2HexWalkMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRangeMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangeMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRangeMap.boardHexes,
+    hexMap: moveRangeMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
 export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
   const mapSize = mapOptions?.mapSize ?? 3
   const withPrePlacedUnits = mapOptions?.withPrePlacedUnits ?? false

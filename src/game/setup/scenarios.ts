@@ -7,6 +7,8 @@ export const scenarioNames = {
   theBigHexagon4: 'theBigHexagon4',
   theBigHexagon5: 'theBigHexagon5',
   theBigHexagon6: 'theBigHexagon6',
+  makeMoveRange1HexWalkScenario: 'makeMoveRange1HexWalkScenario',
+  makeMoveRange2HexWalkScenario: 'makeMoveRange2HexWalkScenario',
 }
 
 export const hexoscapeScenarios = {
