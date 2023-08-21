@@ -45,7 +45,7 @@ export const testCards: ICoreHeroscapeCard[] = [
     defense: '3',
     points: '100',
     figures: '1',
-    hexes: '1',
+    hexes: '2',
     setWave: 'Hexoscape Test',
     abilities: [],
   },

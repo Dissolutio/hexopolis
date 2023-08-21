@@ -36,6 +36,7 @@ import {
   GiThornHelix,
   GiBoneKnife,
   GiAnubis,
+  GiGiant,
 } from 'react-icons/gi'
 
 type Props = IconBaseProps & {
@@ -75,6 +76,9 @@ export const UnitIcon = ({
     case 'test001':
       // marro warriors
       return <GiTargetDummy {...gameIconProps} />
+    case 'test002':
+      // marro warriors
+      return <GiGiant {...gameIconProps} />
     case 'hs1000':
       // marro warriors
       return <GiDiabloSkull {...gameIconProps} />
