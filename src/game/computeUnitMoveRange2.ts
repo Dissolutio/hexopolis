@@ -290,6 +290,10 @@ function computeMovesForStartHex({
         ? preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
         : preVisitedEntry?.movePointsLeft > movePointsToBeChecked
+        ? true
+        : preVisitedEntry?.movePointsLeft === movePointsLeft
+        ? preVisitedEntry?.fromCost >= fromCost
+        : false
 
     // BEGIN isVisitedAlready else block
     if (isVisitedAlready) {
