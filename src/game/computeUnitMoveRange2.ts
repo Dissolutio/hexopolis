@@ -374,7 +374,7 @@ function computeMovesForStartHex({
       const can2HexUnitStopHere =
         isEndHexUnoccupied &&
         !isFromOccupied &&
-        validTailSpotsForNeighbor?.includes(startHexID)
+        validTailSpotsForNeighbor?.includes(fromHexID)
       const canStopHere =
         !isTooCostly && (isUnit2Hex ? can2HexUnitStopHere : isEndHexUnoccupied)
       const isDangerousHex =
