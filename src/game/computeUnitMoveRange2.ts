@@ -94,7 +94,6 @@ export function computeUnitMoveRange2({
       unmutatedContext: {
         playerID,
         unit,
-        initialMovePoints,
         initialEngagements,
         isFlying,
         hasStealth,
@@ -105,8 +104,6 @@ export function computeUnitMoveRange2({
         gameUnits,
         glyphs,
       },
-      // prevHexesEngagedUnitIDs: initialEngagements,
-      prevHexFallDamage: 0,
       movePoints: initialMovePoints,
       initialMoveRange,
     }
@@ -127,7 +124,6 @@ export function computeUnitMoveRange2({
       unmutatedContext: {
         playerID,
         unit,
-        initialMovePoints,
         initialEngagements,
         isFlying,
         // TODO: GRAPPLE-GUN-HACK :: only passing isGrappleGun to one spacers because Sgt. Drake is a 1-space unit
@@ -141,7 +137,6 @@ export function computeUnitMoveRange2({
         glyphs,
       },
       startHex: startHex,
-      prevHexFallDamage: 0,
       movePoints: isGrappleGun ? movePointsForGrappleGun : initialMovePoints,
       initialMoveRange,
     })
@@ -154,13 +149,12 @@ type ToBeChecked = {
   fromHexID: string
   fromTailHexID?: string
   movePoints: number
-  disenagedUnitIDs: string[]
+  prevDisengagedUnitIDs: string[]
+  prevFallDamage: number
 }
 
 function computeMovesForStartHex({
   unmutatedContext,
-  prevHexesDisengagedUnitIDs,
-  prevHexFallDamage,
   startHex,
   startTailHex,
   movePoints,
@@ -169,7 +163,6 @@ function computeMovesForStartHex({
   unmutatedContext: {
     playerID: string
     unit: GameUnit
-    initialMovePoints: number
     initialEngagements: string[]
     isFlying: boolean
     isGrappleGun?: boolean
@@ -181,18 +174,14 @@ function computeMovesForStartHex({
     gameUnits: GameUnits
     glyphs: Glyphs
   }
-  prevHexesDisengagedUnitIDs?: string[]
-  prevHexFallDamage: number
-  // !! these inputs below get mutated in the recursion
   startHex: BoardHex
-  startTailHex?: BoardHex
   movePoints: number
   initialMoveRange: MoveRange
+  startTailHex?: BoardHex
 }): MoveRange {
   const {
     playerID,
     unit,
-    initialMovePoints,
     initialEngagements,
     isFlying,
     isGrappleGun,
@@ -219,7 +208,8 @@ function computeMovesForStartHex({
       id: neighbor.id,
       fromHexID: startHexID,
       movePoints: movePoints,
-      disenagedUnitIDs: prevHexesDisengagedUnitIDs ?? [],
+      prevDisengagedUnitIDs: [],
+      prevFallDamage: 0,
     })),
   ]
   if (movePoints <= 0) {
@@ -245,7 +235,10 @@ function computeMovesForStartHex({
     const fromTailHexID = next?.fromTailHexID ?? ''
     const fromHex = boardHexes[fromHexID]
     const fromTailHex = boardHexes?.[fromTailHexID]
-    const fromHexDisengagedUnitIDs = next.disenagedUnitIDs
+    // prevDisengagedUnitIDs
+    // prevFallDamage
+    const fromHexDisengagedUnitIDs = next.prevDisengagedUnitIDs
+    const prevFallDamage = next.prevFallDamage
     const preVisitedEntry = finalMoveRange[toHexID]
     const isFromOccupied =
       fromHex.occupyingUnitID && fromHex.occupyingUnitID !== unit.unitID
@@ -284,8 +277,9 @@ function computeMovesForStartHex({
       gameUnits,
       armyCards,
     })
-    //     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
+    // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
     const isVisitedAlready =
+      // TODO: make this readable
       preVisitedEntry?.movePointsLeft === movePointsToBeChecked
         ? preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
@@ -300,7 +294,7 @@ function computeMovesForStartHex({
       // TODO: Handle this
     } else {
       const totalDisengagedIDsSoFar = uniq([
-        ...(prevHexesDisengagedUnitIDs ?? []),
+        ...(fromHexDisengagedUnitIDs ?? []),
         ...disengagedUnitIDs,
       ])
       const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
@@ -358,7 +352,7 @@ function computeMovesForStartHex({
         isGrappleGun ? 26 : undefined
       )
       const newFallDamage =
-        prevHexFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
+        prevFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
       const isFallDamage = newFallDamage > 0
       const isUnpassable = isFlying
         ? isTooCostly
@@ -399,7 +393,8 @@ function computeMovesForStartHex({
           id: neighbor.id,
           fromHexID: toHexID,
           movePoints: movePointsLeft,
-          disenagedUnitIDs: totalDisengagedIDsSoFar,
+          prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
+          prevFallDamage: newFallDamage,
         })),
       ]
       // 2. passable: we can get here, maybe stop, maybe pass thru
