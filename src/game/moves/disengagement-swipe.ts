@@ -9,7 +9,6 @@ import {
   selectTailHexForUnit,
 } from '../selectors'
 import { BoardHexes, GameState, GameUnits, StageQueueItem } from '../types'
-import { rollHeroscapeDice } from './attack-action'
 import {
   killUnit_G,
   moveUnit_G,
@@ -17,6 +16,7 @@ import {
   updateMovePointsUponMovingOntoMoveGlyph_G,
 } from './G-mutators'
 import { glyphIDs } from '../glyphs'
+import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
 
 // accept => disengage => wounds last? => falling => wounds => move
 

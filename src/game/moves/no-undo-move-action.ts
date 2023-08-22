@@ -17,7 +17,6 @@ import {
   MoveRange,
   StageQueueItem,
 } from '../types'
-import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import {
   killUnit_G,
@@ -26,6 +25,7 @@ import {
   updateMovePointsUponMovingOntoMoveGlyph_G,
 } from './G-mutators'
 import { glyphIDs } from '../glyphs'
+import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
 
 export const noUndoMoveAction: Move<GameState> = {
   undoable: false,
