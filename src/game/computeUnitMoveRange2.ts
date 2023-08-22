@@ -417,12 +417,13 @@ function computeMovesForStartHex({
           }
         }
         // fall damage does not get next-neighbors added, but disengage moves DO
-        if (!isFallDamage) {
-          if (isMovePointsLeftAfterMove) {
-            for (const hexToCheck of nextToBeChecked) {
-              toBeChecked.push(hexToCheck)
-            }
+        // if (!isFallDamage || (!canStopHere && isUnit2Hex && isFallDamage)) {
+        // if (!isFallDamage) {
+        if (isMovePointsLeftAfterMove) {
+          for (const hexToCheck of nextToBeChecked) {
+            toBeChecked.push(hexToCheck)
           }
+          // }
         }
       } else if (isCausingEngagement) {
         if (canStopHere) {
