@@ -148,7 +148,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
           killedArmyCards: G.killedArmyCards,
           unitsKilled: G.unitsKilled,
           killedUnits: G.killedUnits,
-          gameUnits: G.gameUnits,
+          gameUnits: newGameUnits,
           unitToKillID: unitDisengagingID,
           killerUnitID: unitSwipingID,
           defenderHexID: unitAttemptingToDisengageHex.id,
@@ -242,7 +242,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
                 killedArmyCards: G.killedArmyCards,
                 unitsKilled: G.unitsKilled,
                 killedUnits: G.killedUnits,
-                gameUnits: G.gameUnits,
+                gameUnits: newGameUnits,
                 unitToKillID: unitDisengagingID,
                 killerUnitID: unitDisengagingID, // falling damage is a unit killing itself
                 defenderHexID: unitAttemptingToDisengageHex.id,
@@ -377,7 +377,7 @@ export const takeDisengagementSwipe: Move<GameState> = {
               killedArmyCards: G.killedArmyCards,
               unitsKilled: G.unitsKilled,
               killedUnits: G.killedUnits,
-              gameUnits: G.gameUnits,
+              gameUnits: newGameUnits,
               unitToKillID: unitDisengagingID,
               killerUnitID: unitDisengagingID, // falling damage is a unit killing itself
               defenderHexID: unitAttemptingToDisengageHex.id,

@@ -106,7 +106,7 @@ export const noUndoMoveAction: Move<GameState> = {
           killedArmyCards: G.killedArmyCards,
           unitsKilled: G.unitsKilled,
           killedUnits: G.killedUnits,
-          gameUnits: G.gameUnits,
+          gameUnits: newGameUnits,
           unitToKillID: unitID,
           killerUnitID: unitID, // falling damage is a unit killing itself
           defenderHexID: startHexID,
