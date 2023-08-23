@@ -230,7 +230,6 @@ export type GameUnit = {
   armyCardID: string
   wounds: number
   movePoints: number
-  moveRange: MoveRange
   is2Hex: boolean
 }
 

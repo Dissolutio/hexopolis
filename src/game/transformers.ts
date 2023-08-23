@@ -98,7 +98,6 @@ export function transformGameArmyCardsToGameUnits(
         gameCardID: card.gameCardID,
         wounds: 0,
         movePoints: 0,
-        moveRange: { safe: [], engage: [], disengage: [], denied: [] },
         is2Hex: card.hexes === 2,
       }
       return {
