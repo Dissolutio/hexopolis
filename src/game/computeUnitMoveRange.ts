@@ -37,7 +37,6 @@ const mergeTwoMoveRanges = (a: MoveRange, b: MoveRange): MoveRange => {
 }
 
 /* 
-    This function splits on flying/walking/ghostwalking/disengage/stealth-flying
     Possible outcomes:
     A. 2-hex unit: calculate starting from head, then tail, then merge
     B. 1-hex unit: calculate starting from head
@@ -384,10 +383,11 @@ function computeMovesForStartHex({
       }
 
       // NEIGHBORS prepare the neighbors to be added to to-be-checked
-      const nextNeighbors = selectHexNeighbors(toHexID, boardHexes).filter(
-        //  no need to add our current hex as a neighbor of the next hex
-        (n) => !(n.id === fromHexID)
-      )
+      const nextNeighbors = selectHexNeighbors(toHexID, boardHexes)
+      // .filter(
+      // // no need to add our current hex as a neighbor of the next hex
+      // (n) => !(n.id === fromHexID)
+      // )
       const nextToBeChecked = [
         ...nextNeighbors.map((neighbor) => ({
           id: neighbor.id,
