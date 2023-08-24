@@ -10,6 +10,7 @@ import {
   makeHexagonShapedMap,
   makeForsakenWatersMap,
   makeMoveRangeTestMap,
+  makeMoveRangeTest2HexWalkMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
@@ -17,6 +18,7 @@ import {
   startingArmiesForForsakenWaters2Player,
   startingArmiesForGiantsTable2Player,
   startingArmiesForMoveRange1HexWalkMap,
+  startingArmiesForMoveRange2HexWalkMap,
   startingArmiesToGameCards,
 } from './unit-gen'
 import { scenarioNames } from './scenarios'
@@ -109,6 +111,12 @@ export const gameSetupInitialGameState = ({
   }
   if (scenarioName === scenarioNames.forsakenWaters2) {
     return makeForsakenWaters2PlayerScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.makeMoveRange1HexWalkScenario) {
+    return makeMoveRange1HexWalkScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.makeMoveRange2HexWalkScenario) {
+    return makeMoveRange2HexWalkScenario(numPlayers, withPrePlacedUnits)
   }
   if (isDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
@@ -284,6 +292,51 @@ export function makeMoveRange1HexWalkScenario(
       numPlayers,
       isDevOverrideState: withPrePlacedUnits,
       startingArmies: startingArmiesForMoveRange1HexWalkMap,
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+const gameCardsToPreplaceableUnits = (
+  cards: GameArmyCard[],
+  units: GameUnits
+) => {
+  return keyBy(
+    Object.values(units).filter((u) => {
+      const card = selectGameCardByID(cards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+}
+export function makeMoveRange2HexWalkScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForMoveRange2HexWalkMap
+      )
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = withPrePlacedUnits
+    ? gameCardsToPreplaceableUnits(armyCards, gameUnits)
+    : {}
+  const map = makeMoveRangeTest2HexWalkMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForMoveRange2HexWalkMap,
     }),
     gameArmyCards: armyCards,
     gameUnits,

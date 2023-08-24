@@ -12,6 +12,41 @@ export const moveRangeTestHexIDs = {
 
 export const moveRangeMap = {
   boardHexes: {
+    '1,1,-2': {
+      q: 1,
+      r: 1,
+      s: -2,
+      id: '1,1,-2',
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: [''],
+    },
+    '0,1,-1': {
+      // player 2's test dummy start hex
+      q: 0,
+      r: 1,
+      s: -1,
+      id: '0,1,-1',
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: ['1'],
+    },
+    '0,-1,1': {
+      // player 1's enemy unit
+      q: 0,
+      r: -1,
+      s: 1,
+      id: '0,-1,1',
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: ['0'],
+    },
     [moveRangeTestHexIDs.basicAdjacentFall_id]: {
       // adjacent fall, jumping into a hole
       q: -1,
@@ -95,17 +130,6 @@ export const moveRangeMap = {
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
-    '0,-1,1': {
-      q: 0,
-      r: -1,
-      s: 1,
-      id: '0,-1,1',
-      occupyingUnitID: '',
-      isUnitTail: false,
-      altitude: 5,
-      terrain: 'grass',
-      startzonePlayerIDs: ['0'],
-    },
     [moveRangeTestHexIDs.engagedAdjacentSameLevel_id]: {
       q: 0,
       r: 0,
@@ -116,17 +140,6 @@ export const moveRangeMap = {
       altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [],
-    },
-    '0,1,-1': {
-      q: 0,
-      r: 1,
-      s: -1,
-      id: '0,1,-1',
-      occupyingUnitID: '',
-      isUnitTail: false,
-      altitude: 5,
-      terrain: 'grass',
-      startzonePlayerIDs: ['1'],
     },
     // '1,-1,0': {
     //   q: 1,

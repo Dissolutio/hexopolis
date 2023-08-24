@@ -17,7 +17,6 @@ import {
   MoveRange,
   StageQueueItem,
 } from '../types'
-import { rollHeroscapeDice } from './attack-action'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import {
   killUnit_G,
@@ -26,6 +25,7 @@ import {
   updateMovePointsUponMovingOntoMoveGlyph_G,
 } from './G-mutators'
 import { glyphIDs } from '../glyphs'
+import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
 
 export const noUndoMoveAction: Move<GameState> = {
   undoable: false,
@@ -106,7 +106,7 @@ export const noUndoMoveAction: Move<GameState> = {
           killedArmyCards: G.killedArmyCards,
           unitsKilled: G.unitsKilled,
           killedUnits: G.killedUnits,
-          gameUnits: G.gameUnits,
+          gameUnits: newGameUnits,
           unitToKillID: unitID,
           killerUnitID: unitID, // falling damage is a unit killing itself
           defenderHexID: startHexID,

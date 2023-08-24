@@ -1,4 +1,4 @@
-import { computeUnitMoveRange2 } from 'game/computeUnitMoveRange2'
+import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import { MAJOR_FALL_DAMAGE, MINOR_FALL_DAMAGE } from 'game/constants'
 import { moveRangeTestHexIDs } from 'game/setup/moveRangeMap'
 import { makeMoveRange1HexWalkScenario } from 'game/setup/setup'
@@ -16,7 +16,7 @@ describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRa
     ...gameState.gameUnits[unitMovingID],
     movePoints: 5,
   }
-  const myMoveRange = computeUnitMoveRange2({
+  const myMoveRange = computeUnitMoveRange({
     isFlying: false,
     isGrappleGun: false,
     hasMoved: false,
