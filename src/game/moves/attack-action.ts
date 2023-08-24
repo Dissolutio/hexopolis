@@ -16,7 +16,7 @@ import {
 } from '../selector/card-selectors'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { killUnit_G } from './G-mutators'
-import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
+import { rollHeroscapeDice } from '../rollHeroscapeDice'
 
 export const attackAction: Move<GameState> = {
   undoable: false,

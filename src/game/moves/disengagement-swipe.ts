@@ -16,7 +16,7 @@ import {
   updateMovePointsUponMovingOntoMoveGlyph_G,
 } from './G-mutators'
 import { glyphIDs } from '../glyphs'
-import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
+import { rollHeroscapeDice } from '../rollHeroscapeDice'
 
 // accept => disengage => wounds last? => falling => wounds => move
 

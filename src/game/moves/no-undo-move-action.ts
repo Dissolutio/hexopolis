@@ -25,7 +25,7 @@ import {
   updateMovePointsUponMovingOntoMoveGlyph_G,
 } from './G-mutators'
 import { glyphIDs } from '../glyphs'
-import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
+import { rollHeroscapeDice } from '../rollHeroscapeDice'
 
 export const noUndoMoveAction: Move<GameState> = {
   undoable: false,

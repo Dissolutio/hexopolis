@@ -13,7 +13,7 @@ import { GameState, PossibleExplosionAttack, StageQueueItem } from '../types'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { killUnit_G } from './G-mutators'
-import { rollHeroscapeDice } from 'game/rollHeroscapeDice'
+import { rollHeroscapeDice } from '../rollHeroscapeDice'
 
 export const rollForExplosionSpecialAttack: Move<GameState> = (
   { G, events, random },
