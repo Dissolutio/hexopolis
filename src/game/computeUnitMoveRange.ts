@@ -201,11 +201,13 @@ function computeMovesForStartHex({
    */
   const finalMoveRange = { ...initialMoveRange }
   const startHexID = startHex.id
+  const startTailHexID = startTailHex?.id ?? ''
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
   const initialToBeChecked = [
     ...neighbors.map((neighbor) => ({
       id: neighbor.id,
       fromHexID: startHexID,
+      fromTailHexID: startTailHexID,
       movePoints: movePoints,
       prevDisengagedUnitIDs: [],
       prevFallDamage: 0,
@@ -234,8 +236,6 @@ function computeMovesForStartHex({
     const fromTailHexID = next?.fromTailHexID ?? ''
     const fromHex = boardHexes[fromHexID]
     const fromTailHex = boardHexes?.[fromTailHexID]
-    // prevDisengagedUnitIDs
-    // prevFallDamage
     const fromHexDisengagedUnitIDs = next.prevDisengagedUnitIDs
     const prevFallDamage = next.prevFallDamage
     const preVisitedEntry = finalMoveRange[toHexID]
@@ -392,6 +392,7 @@ function computeMovesForStartHex({
         ...nextNeighbors.map((neighbor) => ({
           id: neighbor.id,
           fromHexID: toHexID,
+          fromTailHexID: fromHexID,
           movePoints: movePointsLeft,
           prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
           prevFallDamage: newFallDamage,
