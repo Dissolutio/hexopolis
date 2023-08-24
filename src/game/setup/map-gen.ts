@@ -9,7 +9,7 @@ import {
 import { giantsTable } from './giantsTable'
 import { forsakenWaters } from './forsakenWaters'
 import { devHexagon } from './devHexagon'
-import { moveRangeMap } from './moveRangeMap'
+import { moveRange1HexWalkMap } from './moveRange1HexWalkMap'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
 import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
@@ -118,7 +118,7 @@ export function makeMoveRangeTestMap({
   withPrePlacedUnits: boolean
   gameUnits: GameUnits
 }): GameMap {
-  const boardHexes = moveRangeMap.boardHexes as unknown as BoardHexes
+  const boardHexes = moveRange1HexWalkMap.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
     throw new Error('moveRangeMap.boardHexes is not defined')
   }
@@ -131,8 +131,8 @@ export function makeMoveRangeTestMap({
     )
   }
   return {
-    boardHexes: moveRangeMap.boardHexes,
-    hexMap: moveRangeMap.hexMap,
+    boardHexes: moveRange1HexWalkMap.boardHexes,
+    hexMap: moveRange1HexWalkMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }
