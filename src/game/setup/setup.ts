@@ -11,6 +11,7 @@ import {
   makeForsakenWatersMap,
   makeMoveRangeTestMap,
   makeMoveRangeTest2HexWalkMap,
+  makeMoveRangePassThruMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
@@ -19,6 +20,7 @@ import {
   startingArmiesForGiantsTable2Player,
   startingArmiesForMoveRange1HexWalkMap,
   startingArmiesForMoveRange2HexWalkMap,
+  startingArmiesForMoveRangePassThruMap,
   startingArmiesToGameCards,
 } from './unit-gen'
 import { scenarioNames } from './scenarios'
@@ -117,6 +119,14 @@ export const gameSetupInitialGameState = ({
   }
   if (scenarioName === scenarioNames.makeMoveRange2HexWalkScenario) {
     return makeMoveRange2HexWalkScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.makeMoveRangePassThruScenario) {
+    const withGhostWalk = false
+    return makeMoveRangePassThruScenario(
+      withGhostWalk,
+      numPlayers,
+      withPrePlacedUnits
+    )
   }
   if (isDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
@@ -292,6 +302,49 @@ export function makeMoveRange1HexWalkScenario(
       numPlayers,
       isDevOverrideState: withPrePlacedUnits,
       startingArmies: startingArmiesForMoveRange1HexWalkMap,
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+export function makeMoveRangePassThruScenario(
+  withGhostWalk: boolean,
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForMoveRangePassThruMap(withGhostWalk)
+      )
+    : []
+  // GameUnits
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+  // Map
+  const map = makeMoveRangePassThruMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForMoveRangePassThruMap(withGhostWalk),
     }),
     gameArmyCards: armyCards,
     gameUnits,

@@ -203,7 +203,7 @@ function computeMovesForStartHex({
   const startHexID = startHex.id
   const startTailHexID = startTailHex?.id ?? ''
   const neighbors = selectHexNeighbors(startHexID, boardHexes)
-  const initialToBeChecked = [
+  const initialToBeChecked: ToBeChecked[] = [
     ...neighbors.map((neighbor) => ({
       id: neighbor.id,
       fromHexID: startHexID,
@@ -216,7 +216,7 @@ function computeMovesForStartHex({
   if (movePoints <= 0) {
     return initialMoveRange
   }
-  let toBeChecked: ToBeChecked[] = [...initialToBeChecked]
+  let toBeChecked = [...initialToBeChecked]
   // early out if no move points!
   const isUnit2Hex = unit?.is2Hex
   const isUnitInitiallyEngaged = initialEngagements.length > 0
@@ -239,8 +239,13 @@ function computeMovesForStartHex({
     const fromHexDisengagedUnitIDs = next.prevDisengagedUnitIDs
     const prevFallDamage = next.prevFallDamage
     const preVisitedEntry = finalMoveRange[toHexID]
+    const fromHexOccupyingUnitID = fromHex.occupyingUnitID
+    const fromHexUnit = gameUnits[fromHexOccupyingUnitID]
     const isFromOccupied =
       fromHex.occupyingUnitID && fromHex.occupyingUnitID !== unit.unitID
+    // TODO: Team play
+    const isFromEnemyOccupied =
+      fromHexUnit && fromHexUnit.playerID !== unit.playerID
     const validTailSpotsForNeighbor = selectValidTailHexes(
       toHexID,
       boardHexes
@@ -375,7 +380,6 @@ function computeMovesForStartHex({
       const moveRangeData = {
         fromHexID: fromHexID,
         fromCost,
-        isFromOccupied,
         movePointsLeft,
         isGrappleGun,
         disengagedUnitIDs: totalDisengagedIDsSoFar,
@@ -388,15 +392,19 @@ function computeMovesForStartHex({
       // // no need to add our current hex as a neighbor of the next hex
       // (n) => !(n.id === fromHexID)
       // )
-      const nextToBeChecked = [
-        ...nextNeighbors.map((neighbor) => ({
-          id: neighbor.id,
-          fromHexID: toHexID,
-          fromTailHexID: fromHexID,
-          movePoints: movePointsLeft,
-          prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
-          prevFallDamage: newFallDamage,
-        })),
+      const nextToBeChecked: ToBeChecked[] = [
+        ...nextNeighbors
+          .map((neighbor) => ({
+            id: neighbor.id,
+            fromHexID: toHexID,
+            fromTailHexID: fromHexID,
+            movePoints: movePointsLeft,
+            prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
+            prevFallDamage: newFallDamage,
+          }))
+          .filter((neighbor) => {
+            return hasGhostWalk ? true : !isEndHexEnemyOccupied
+          }),
       ]
       // 2. passable: we can get here, maybe stop, maybe pass thru
       // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last

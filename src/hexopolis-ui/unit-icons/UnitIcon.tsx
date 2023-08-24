@@ -37,6 +37,10 @@ import {
   GiBoneKnife,
   GiAnubis,
   GiGiant,
+  GiNinjaMask,
+  GiStoneStack,
+  GiSpiderEye,
+  GiSpoon,
 } from 'react-icons/gi'
 
 type Props = IconBaseProps & {
@@ -79,6 +83,9 @@ export const UnitIcon = ({
     case 'test002':
       // marro warriors
       return <GiGiant {...gameIconProps} />
+    case 'test003':
+      // marro warriors
+      return <GiSpoon {...gameIconProps} />
     case 'hs1000':
       // marro warriors
       return <GiDiabloSkull {...gameIconProps} />
