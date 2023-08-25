@@ -76,6 +76,7 @@ export function transformDraftableCardToGameCard(
     }
   })
 }
+// TODO: UnitIDs : this needs to consistently start at 0, for tests
 let unitID = 0
 export function transformGameArmyCardsToGameUnits(
   armyCards: GameArmyCard[]

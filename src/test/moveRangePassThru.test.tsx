@@ -36,7 +36,7 @@ describe('MOVE RANGE PASS THRU TESTS: test that a unit cannot move thru enemy un
     ).toBe(undefined)
   })
 })
-describe('MOVE RANGE PASS THRU TESTS: test ghost walk units moving through other units', () => {
+describe('phantom walking unit should be able to move thru an enemy unit', () => {
   const makeGameState = () => {
     const numPlayers = 2
     const withPrePlacedUnits = true
@@ -49,9 +49,11 @@ describe('MOVE RANGE PASS THRU TESTS: test ghost walk units moving through other
   }
   const gameState = makeGameState()
   // this test assumes there are two players, and each has one unit, so 2 unitIDs: p0u0,p1u1
-  const unitMovingID = 'p1u1'
+  // TODO: UnitIDs: so, because this test runs second and our id generation for units is wonky, the id changes here
+  const unitMovingID = 'p1u3'
+  const gameUnit = gameState.gameUnits[unitMovingID]
   const unitMoving = {
-    ...gameState.gameUnits[unitMovingID],
+    ...gameUnit,
     movePoints: 5,
   }
   const myMoveRange = computeUnitMoveRange({
@@ -71,7 +73,7 @@ describe('MOVE RANGE PASS THRU TESTS: test ghost walk units moving through other
     ).toBe(3)
     expect(
       myMoveRange[moveRangePassThruTestHexIDs.unreachableWithoutGhostWalk]
-        ?.isEngage
+        ?.isSafe
     ).toBe(true)
   })
 })

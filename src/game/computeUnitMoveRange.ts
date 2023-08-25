@@ -77,7 +77,13 @@ export function computeUnitMoveRange({
   const isTwoSpace = unit?.is2Hex ?? false
   const tailHex = selectTailHexForUnit(unitUid, boardHexes)
   //*early out
-  if (!unit || !startHex || !initialMovePoints || (isTwoSpace && !tailHex)) {
+  if (
+    !unit ||
+    !unit.gameCardID ||
+    !startHex ||
+    !initialMovePoints ||
+    (isTwoSpace && !tailHex)
+  ) {
     return blankMoveRange
   }
   const initialMoveRange = blankMoveRange
