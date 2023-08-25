@@ -459,16 +459,18 @@ export function selectEngagementsForHex({
             ? gameUnits?.[h.occupyingUnitID]?.playerID === playerID
             : gameUnits?.[h.occupyingUnitID]?.playerID !== playerID) &&
           // filter for engaged units
-          selectAreTwoAdjacentUnitsEngaged({
-            aHeight: armyCardForUnitOnHex?.height ?? 0,
-            aAltitude: hex?.altitude ?? 0,
-            bHeight:
-              selectGameCardByID(
-                armyCards,
-                gameUnits[h.occupyingUnitID]?.gameCardID
-              )?.height ?? 0,
-            bAltitude: h?.altitude ?? 0,
-          })
+          Boolean(
+            selectAreTwoAdjacentUnitsEngaged({
+              aHeight: armyCardForUnitOnHex?.height ?? 0,
+              aAltitude: hex?.altitude ?? 0,
+              bHeight:
+                selectGameCardByID(
+                  armyCards,
+                  gameUnits[h.occupyingUnitID]?.gameCardID
+                )?.height ?? 0,
+              bAltitude: h?.altitude ?? 0,
+            })
+          )
       )
       .map((h) => h.occupyingUnitID)
   )
