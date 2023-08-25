@@ -505,14 +505,14 @@ export function selectMoveDisengagedUnitIDs({
     },
   })
   const engagementsForCurrentHex = selectEngagementsForHex({
-    override: {
-      overrideUnitID: unit.unitID,
-      overrideTailHexID: startHexID,
-    },
     hexID: neighborHexID,
     boardHexes,
     gameUnits,
     armyCards,
+    override: {
+      overrideUnitID: unit.unitID,
+      overrideTailHexID: startHexID,
+    },
   })
   const defendersToDisengage = initialEngagements
     // flyers disengage everybody once they start flying, but walkers might stay engaged to some units
