@@ -49,8 +49,8 @@ export const testCards: ICoreHeroscapeCard[] = [
     setWave: 'Hexoscape Test',
     abilities: [
       {
-        name: 'Ghost Walk',
-        desc: 'This Dummy can move through all figures.',
+        name: 'Phantom Walk',
+        desc: 'This Dummy can move through all figures and is never attacked when leaving an engagement..',
       },
     ],
   },
