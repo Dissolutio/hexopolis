@@ -121,7 +121,7 @@ export const gameSetupInitialGameState = ({
     return makeMoveRange2HexWalkScenario(numPlayers, withPrePlacedUnits)
   }
   if (scenarioName === scenarioNames.makeMoveRangePassThruScenario) {
-    const withGhostWalk = false
+    const withGhostWalk = true
     return makeMoveRangePassThruScenario(
       withGhostWalk,
       numPlayers,
