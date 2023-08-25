@@ -402,8 +402,10 @@ function computeMovesForStartHex({
             prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
             prevFallDamage: newFallDamage,
           }))
-          .filter((neighbor) => {
-            return hasGhostWalk ? true : !isEndHexEnemyOccupied
+          .filter(() => {
+            return hasGhostWalk
+              ? true
+              : !isEndHexEnemyOccupied && !isEndHexUnitEngaged
           }),
       ]
       // 2. passable: we can get here, maybe stop, maybe pass thru
