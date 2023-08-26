@@ -41,6 +41,8 @@ import {
   GiStoneStack,
   GiSpiderEye,
   GiSpoon,
+  GiWingCloak,
+  GiWifiRouter,
 } from 'react-icons/gi'
 
 type Props = IconBaseProps & {
@@ -78,14 +80,15 @@ export const UnitIcon = ({
 
   switch (armyCardID) {
     case 'test001':
-      // marro warriors
       return <GiTargetDummy {...gameIconProps} />
     case 'test002':
-      // marro warriors
       return <GiGiant {...gameIconProps} />
     case 'test003':
-      // marro warriors
       return <GiSpoon {...gameIconProps} />
+    case 'test004':
+      return <GiWingCloak {...gameIconProps} />
+    case 'test005':
+      return <GiWifiRouter {...gameIconProps} />
     case 'hs1000':
       // marro warriors
       return <GiDiabloSkull {...gameIconProps} />

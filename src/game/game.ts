@@ -48,7 +48,8 @@ export const Hexoscape: Game<GameState> = {
             // DEV: change this to change 2 player local game
             // return scenarioNames.makeMoveRange1HexWalkScenario
             // return scenarioNames.makeMoveRange2HexWalkScenario
-            return scenarioNames.makeMoveRangePassThruScenario
+            // return scenarioNames.makeMoveRangePassThruScenario
+            return scenarioNames.makeMoveRange1HexFlyEngagedScenario
           } else {
             // the online 2 player demo scenario:
             return scenarioNames.clashingFrontsAtTableOfTheGiants2

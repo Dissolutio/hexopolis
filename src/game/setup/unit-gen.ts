@@ -10,6 +10,8 @@ const drake1ID = 'hs1003'
 const syvarrisID = 'hs1004'
 const testDummyID = 'test001'
 const testDummyGhostWalkID = 'test003'
+const testDummyFlyerID = 'test004'
+const testDummyStealthFlyerID = 'test005'
 const test2HexDummyID = 'test002'
 const kravMagaID = 'hs1005'
 const tarnID = 'hs1006'
@@ -56,6 +58,21 @@ export const startingArmiesForMoveRangePassThruMap = (
     return {
       '0': [drake1ID],
       '1': [testDummyID],
+    }
+  }
+}
+export const startingArmiesFor1HexFlyingEngagedMap = (
+  withStealth: boolean
+): StartingArmies => {
+  if (withStealth) {
+    return {
+      '0': [zettianID],
+      '1': [testDummyStealthFlyerID],
+    }
+  } else {
+    return {
+      '0': [zettianID],
+      '1': [testDummyFlyerID],
     }
   }
 }

@@ -12,9 +12,11 @@ import {
   makeMoveRangeTestMap,
   makeMoveRangeTest2HexWalkMap,
   makeMoveRangePassThruMap,
+  makeMoveRange1HexFlyingEngagedMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
+  startingArmiesFor1HexFlyingEngagedMap,
   startingArmiesForDefaultScenario,
   startingArmiesForForsakenWaters2Player,
   startingArmiesForGiantsTable2Player,
@@ -116,6 +118,14 @@ export const gameSetupInitialGameState = ({
   }
   if (scenarioName === scenarioNames.makeMoveRange1HexWalkScenario) {
     return makeMoveRange1HexWalkScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.makeMoveRange1HexFlyEngagedScenario) {
+    const withStealth = false
+    return makeMoveRange1HexFlyEngagedScenario(
+      withStealth,
+      numPlayers,
+      withPrePlacedUnits
+    )
   }
   if (scenarioName === scenarioNames.makeMoveRange2HexWalkScenario) {
     return makeMoveRange2HexWalkScenario(numPlayers, withPrePlacedUnits)
@@ -345,6 +355,45 @@ export function makeMoveRangePassThruScenario(
       numPlayers,
       isDevOverrideState: withPrePlacedUnits,
       startingArmies: startingArmiesForMoveRangePassThruMap(withGhostWalk),
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+export function makeMoveRange1HexFlyEngagedScenario(
+  withStealth: boolean,
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesFor1HexFlyingEngagedMap(withStealth)
+      )
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+  // Map
+  const map = makeMoveRange1HexFlyingEngagedMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesFor1HexFlyingEngagedMap(withStealth),
     }),
     gameArmyCards: armyCards,
     gameUnits,
