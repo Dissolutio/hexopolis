@@ -53,9 +53,9 @@ export const moveRange1HexFlyEngagedMap = {
     },
   },
   hexMap: {
-    mapId: 'moveRangePassThruMap',
+    mapId: 'moveRange1HexFlyEngagedMap',
     mapShape: 'hexagon',
-    mapName: 'Move Range Pass Thru Test Map',
+    mapName: 'Move Range 1-Hex Fly Engaged Test Map',
     flat: false,
     mapSize: 1,
     hexSize: 10,
