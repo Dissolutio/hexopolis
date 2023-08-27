@@ -15,7 +15,6 @@ describe('phantom walking unit should be able to move thru an enemy unit', () =>
   }
   const gameState = makeGameState()
   // this test assumes there are two players, and each has one unit, so 2 unitIDs: p0u0,p1u1
-  // TODO: UnitIDs: so, because this test runs second and our id generation for units is wonky, the id changes here
   const unitMovingID = 'p1u1'
   // const unitMovingID = 'p1u3'
   const gameUnit = gameState.gameUnits[unitMovingID]
