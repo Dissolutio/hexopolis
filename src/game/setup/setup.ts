@@ -93,6 +93,19 @@ const generatePlayerAndReadyAndOMStates = ({
         players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
+
+const gameCardsToPreplaceableUnits = (
+  cards: GameArmyCard[],
+  units: GameUnits
+) => {
+  return keyBy(
+    Object.values(units).filter((u) => {
+      const card = selectGameCardByID(cards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+}
 //!! TEST SCENARIO
 export const gameSetupInitialGameState = ({
   numPlayers,
@@ -412,18 +425,7 @@ export function makeMoveRange1HexFlyEngagedScenario(
     startZones: map.startZones,
   }
 }
-const gameCardsToPreplaceableUnits = (
-  cards: GameArmyCard[],
-  units: GameUnits
-) => {
-  return keyBy(
-    Object.values(units).filter((u) => {
-      const card = selectGameCardByID(cards, u.gameCardID)
-      return !selectIfGameArmyCardHasAbility('The Drop', card)
-    }),
-    'unitID'
-  )
-}
+
 export function makeMoveRange2HexWalkScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean
