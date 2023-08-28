@@ -15,6 +15,7 @@ import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
 import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
 import { moveRangePassThruMap } from './moveRangePassThruMap'
 import { moveRange1HexFlyEngagedMap } from './moveRange1HexFlyingEngagedMap'
+import { moveRange1HexFlyMap } from './moveRange1HexFlyMap'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -135,6 +136,31 @@ export function makeMoveRangeTestMap({
   return {
     boardHexes: moveRange1HexWalkMap.boardHexes,
     hexMap: moveRange1HexWalkMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRange1HexFlyMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRange1HexFlyMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangeMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRange1HexFlyMap.boardHexes,
+    hexMap: moveRange1HexFlyMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }

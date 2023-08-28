@@ -13,6 +13,7 @@ import {
   makeMoveRangeTest2HexWalkMap,
   makeMoveRangePassThruMap,
   makeMoveRange1HexFlyingEngagedMap,
+  makeMoveRange1HexFlyMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
@@ -20,6 +21,7 @@ import {
   startingArmiesForDefaultScenario,
   startingArmiesForForsakenWaters2Player,
   startingArmiesForGiantsTable2Player,
+  startingArmiesForMoveRange1HexFlyMap,
   startingArmiesForMoveRange1HexWalkMap,
   startingArmiesForMoveRange2HexWalkMap,
   startingArmiesForMoveRangePassThruMap,
@@ -160,6 +162,9 @@ export const gameSetupInitialGameState = ({
       numPlayers,
       withPrePlacedUnits
     )
+  }
+  if (scenarioName === scenarioNames.makeMoveRange1HexFlyScenario) {
+    return makeMoveRange1HexFlyScenario(numPlayers, withPrePlacedUnits)
   }
   if (isDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
@@ -335,6 +340,44 @@ export function makeMoveRange1HexWalkScenario(
       numPlayers,
       isDevOverrideState: withPrePlacedUnits,
       startingArmies: startingArmiesForMoveRange1HexWalkMap,
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+export function makeMoveRange1HexFlyScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForMoveRange1HexFlyMap
+      )
+    : []
+  // GameUnits
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = withPrePlacedUnits
+    ? gameCardsToPreplaceableUnits(armyCards, gameUnits)
+    : {}
+  // Map
+  const map = makeMoveRange1HexFlyMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForMoveRange1HexFlyMap,
     }),
     gameArmyCards: armyCards,
     gameUnits,

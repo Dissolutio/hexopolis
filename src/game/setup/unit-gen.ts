@@ -46,6 +46,10 @@ export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
   '1': [testDummyID],
 }
+export const startingArmiesForMoveRange1HexFlyMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummyFlyerID],
+}
 export const startingArmiesForMoveRangePassThruMap = (
   withGhostWalk: boolean
 ): StartingArmies => {
