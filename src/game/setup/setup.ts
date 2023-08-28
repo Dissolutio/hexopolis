@@ -138,6 +138,16 @@ export const gameSetupInitialGameState = ({
       withPrePlacedUnits
     )
   }
+  if (
+    scenarioName === scenarioNames.makeMoveRange1HexFlyEngagedStealthScenario
+  ) {
+    const withStealth = true
+    return makeMoveRange1HexFlyEngagedScenario(
+      withStealth,
+      numPlayers,
+      withPrePlacedUnits
+    )
+  }
   if (isDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
   }

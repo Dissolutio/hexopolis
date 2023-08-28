@@ -11,6 +11,8 @@ export const scenarioNames = {
   makeMoveRange2HexWalkScenario: 'makeMoveRange2HexWalkScenario',
   makeMoveRangePassThruScenario: 'makeMoveRangePassThruScenario',
   makeMoveRange1HexFlyEngagedScenario: 'makeMoveRange1HexFlyEngagedScenario',
+  makeMoveRange1HexFlyEngagedStealthScenario:
+    'makeMoveRange1HexFlyEngagedStealthScenario',
 }
 
 export const hexoscapeScenarios = {
