@@ -44,9 +44,16 @@ describe('Move range, 2-hex fly: see if move range is working correctly on the m
       myMoveRange[moveRange2HexFlyTestHexIDs.noFall2Damage_id].fallDamage
     ).toBeFalsy() // 0 or undefined
   })
-  //   test('can fly onto a peak of great height, beyond a chasm', () => {
-  //     expect(myMoveRange[moveRange2HexFlyTestHexIDs.peak_id]?.isSafe).toBe(true)
-  //   })
+  test('can fly onto a peak of great height, beyond a chasm, and putting the head or tail on either hex should not change move cost (flipping a 2-hex unit is free)', () => {
+    expect(myMoveRange[moveRange2HexFlyTestHexIDs.peak_id]?.isSafe).toBe(true)
+    expect(
+      myMoveRange[moveRange2HexFlyTestHexIDs.peak_id]?.movePointsLeft
+    ).toBe(1)
+    expect(myMoveRange[moveRange2HexFlyTestHexIDs.peak2_id]?.isSafe).toBe(true)
+    expect(
+      myMoveRange[moveRange2HexFlyTestHexIDs.peak2_id]?.movePointsLeft
+    ).toBe(1)
+  })
   //   test('can fly beyond peak of great height', () => {
   //     expect(
   //       myMoveRange[moveRange2HexFlyTestHexIDs.beyondPeak_id]?.movePointsLeft
