@@ -96,5 +96,13 @@ describe('Move range, 1-hex fly: see if move range is working correctly on the m
       myMoveRange[moveRange1HexFlyTestHexIDs.revealedGlyph_id]?.movePointsLeft
     ).toBe(0)
   })
+  test('can fly over the glyph, not having to stop or lose all move points', () => {
+    expect(myMoveRange[moveRange1HexFlyTestHexIDs.beyondGlyph_id]?.isSafe).toBe(
+      true
+    )
+    expect(
+      myMoveRange[moveRange1HexFlyTestHexIDs.beyondGlyph_id]?.movePointsLeft
+    ).toBe(3)
+  })
   // TODO: add test for stepping on an unrevealed glyph, should trigger a confirm state, and be an non-undoable move
 })
