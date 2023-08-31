@@ -16,6 +16,7 @@ import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
 import { moveRangePassThruMap } from './moveRangePassThruMap'
 import { moveRange1HexFlyEngagedMap } from './moveRange1HexFlyingEngagedMap'
 import { moveRange1HexFlyMap } from './moveRange1HexFlyMap'
+import { moveRange2HexFlyEngagedMap } from './moveRange2HexFlyingEngagedMap'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -212,6 +213,32 @@ export function makeMoveRange1HexFlyingEngagedMap({
   return {
     boardHexes: moveRange1HexFlyEngagedMap.boardHexes,
     hexMap: moveRange1HexFlyEngagedMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRange2HexFlyingEngagedMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes =
+    moveRange2HexFlyEngagedMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRange2HexFlyEngagedMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRange2HexFlyEngagedMap.boardHexes,
+    hexMap: moveRange2HexFlyEngagedMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }

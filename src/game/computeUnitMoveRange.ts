@@ -268,6 +268,7 @@ function computeMovesForStartHex({
       (!isUnit2Hex && isNeighborHexWater)
     const walkCost = selectMoveCostBetweenNeighbors(fromHex, toHex)
     //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+    const fromCostFlyOver = 1
     const fromCost =
       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all of their move points)
       isWaterStoppage || isGlyphStoppage
@@ -348,7 +349,9 @@ function computeMovesForStartHex({
         ? isCausingDisengagementIfFlying
         : isCausingDisengagementIfWalking
       const endHexUnitPlayerID = endHexUnit?.playerID
-      const isMovePointsLeftAfterMove = movePointsLeft > 0
+      const isMovePointsLeftAfterMove = isFlying
+        ? movePointsToBeChecked - 1 > 0
+        : movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
       const isTooCostly = movePointsLeft < 0
       // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
@@ -412,7 +415,8 @@ function computeMovesForStartHex({
             id: neighbor.id,
             fromHexID: toHexID,
             fromTailHexID: fromHexID,
-            movePoints: movePointsLeft,
+            // TODO: move points for next to-check: Slither, Water Suits, Lava Resistant, Snow and Ice Enhanced Movement, Ice Cold, Amphibious
+            movePoints: isFlying ? movePointsToBeChecked - 1 : movePointsLeft, // here is where we account for flyers able to fly over glyphs
             prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
             prevFallDamage: newFallDamage,
           }))

@@ -43,6 +43,8 @@ import {
   GiSpoon,
   GiWingCloak,
   GiWifiRouter,
+  GiUfo,
+  GiGriffinSymbol,
 } from 'react-icons/gi'
 
 type Props = IconBaseProps & {
@@ -89,6 +91,10 @@ export const UnitIcon = ({
       return <GiWingCloak {...gameIconProps} />
     case 'test005':
       return <GiWifiRouter {...gameIconProps} />
+    case 'test006':
+      return <GiGriffinSymbol {...gameIconProps} />
+    case 'test007':
+      return <GiUfo {...gameIconProps} />
     case 'hs1000':
       // marro warriors
       return <GiDiabloSkull {...gameIconProps} />
