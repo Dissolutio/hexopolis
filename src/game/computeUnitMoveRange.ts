@@ -287,17 +287,19 @@ function computeMovesForStartHex({
       gameUnits,
       armyCards,
     })
-    // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
     const getIsVisitedAlready = () => {
+      // if previous entry had more move points left, then it wins
+      if (preVisitedEntry?.movePointsLeft > movePointsToBeChecked) {
+        return true
+      }
+      // if we had same move points left as our starting move points, tie breaker is less-disengaged-units
       if (preVisitedEntry?.movePointsLeft === movePointsToBeChecked) {
         return (
           preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
         )
       }
-      if (preVisitedEntry?.movePointsLeft > movePointsToBeChecked) {
-        return true
-      }
+      // ?? if we had same move points left as our ending move points, tie breaker is whichever had cheapest from cost
       if (preVisitedEntry?.movePointsLeft === movePointsLeft) {
         return preVisitedEntry?.fromCost >= fromCost
       }
