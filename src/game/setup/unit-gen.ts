@@ -54,6 +54,7 @@ export const startingArmiesForMoveRange1HexFlyMap: StartingArmies = {
 }
 export const startingArmiesForMoveRange2HexFlyMap: StartingArmies = {
   '0': [drake1ID],
+  '1': [testDummy2HexFlyerID],
 }
 export const startingArmiesFor2HexFlyingEngagedMap = (
   withStealth: boolean
