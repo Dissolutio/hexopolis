@@ -25,11 +25,6 @@ describe('Move range, 1-hex fly: see if move range is working correctly on the m
     armyCards: gameState.gameArmyCards,
     glyphs: gameState.hexMap.glyphs,
   })
-  //   test('cannot climb to this hex, not enough move points / height', () => {
-  //     expect(myMoveRange[moveRange1HexFlyTestHexIDs.cannotClimbOver_id]).toBe(
-  //       undefined
-  //     )
-  //   })
   test('adjacent safe hex, engaging no one', () => {
     expect(
       myMoveRange[moveRange1HexFlyTestHexIDs.safeAdjacentSameLevel_id]?.isSafe
