@@ -145,7 +145,7 @@ export function transformBoardHexesWithPrePlacedUnits(
         )
         .map((h) => h.id)[0]
       // update boardHex
-      if (unit.is2Hex) {
+      if (is2Hex) {
         // update boardHex
         copy[validHex].occupyingUnitID = unit.unitID
         copy[validTail].occupyingUnitID = unit.unitID
@@ -154,11 +154,12 @@ export function transformBoardHexesWithPrePlacedUnits(
         copy[validHex].occupyingUnitID = unit.unitID
       }
     } catch (error) {
-      console.error(
-        '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
-        `🚔 The problem is likely the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
-        error
-      )
+      // TODO: TOO NOISY, REFACTOR
+      // console.error(
+      //   '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
+      //   `🚔 The problem is likely the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
+      //   error
+      // )
     }
   })
   return copy
