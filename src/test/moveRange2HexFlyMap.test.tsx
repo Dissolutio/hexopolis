@@ -54,19 +54,27 @@ describe('Move range, 2-hex fly: see if move range is working correctly on the m
       myMoveRange[moveRange2HexFlyTestHexIDs.peak2_id]?.movePointsLeft
     ).toBe(1)
   })
+  test('adjacent engagement hex, engaging bad guy #1', () => {
+    expect(
+      myMoveRange[moveRange2HexFlyTestHexIDs.engagedAdjacentSameLevel_id]
+        ?.isEngage
+    ).toBe(true)
+    expect(
+      myMoveRange[moveRange2HexFlyTestHexIDs.engagedAdjacentSameLevel_id]
+        ?.movePointsLeft
+    ).toBe(3)
+    expect(
+      myMoveRange[moveRange2HexFlyTestHexIDs.engagedAdjacentSameLevel2_id]
+        .engagedUnitIDs.length
+    ).toBe(1)
+    expect(
+      myMoveRange[moveRange2HexFlyTestHexIDs.engagedAdjacentSameLevel2_id]
+        ?.movePointsLeft
+    ).toBe(3)
+  })
   //   test('can fly beyond peak of great height', () => {
   //     expect(
   //       myMoveRange[moveRange2HexFlyTestHexIDs.beyondPeak_id]?.movePointsLeft
-  //     ).toBe(1)
-  //   })
-  //   test('adjacent engagement hex, engaging bad guy #1', () => {
-  //     expect(
-  //       myMoveRange[moveRange2HexFlyTestHexIDs.engagedAdjacentSameLevel_id]
-  //         ?.isEngage
-  //     ).toBe(true)
-  //     expect(
-  //       myMoveRange[moveRange2HexFlyTestHexIDs.engagedAdjacentSameLevel_id]
-  //         .engagedUnitIDs.length
   //     ).toBe(1)
   //   })
   //   test('flying over enemy unit, engaging bad guy #1', () => {
