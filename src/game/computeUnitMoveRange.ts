@@ -288,16 +288,22 @@ function computeMovesForStartHex({
       armyCards,
     })
     // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
-    const isVisitedAlready =
-      // TODO: make this readable
-      preVisitedEntry?.movePointsLeft === movePointsToBeChecked
-        ? preVisitedEntry?.disengagedUnitIDs?.length <=
+    const getIsVisitedAlready = () => {
+      if (preVisitedEntry?.movePointsLeft === movePointsToBeChecked) {
+        return (
+          preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
-        : preVisitedEntry?.movePointsLeft > movePointsToBeChecked
-        ? true
-        : preVisitedEntry?.movePointsLeft === movePointsLeft
-        ? preVisitedEntry?.fromCost >= fromCost
-        : false
+        )
+      }
+      if (preVisitedEntry?.movePointsLeft > movePointsToBeChecked) {
+        return true
+      }
+      if (preVisitedEntry?.movePointsLeft === movePointsLeft) {
+        return preVisitedEntry?.fromCost >= fromCost
+      }
+      return false
+    }
+    const isVisitedAlready = getIsVisitedAlready()
 
     // BEGIN isVisitedAlready else block
     if (isVisitedAlready) {
