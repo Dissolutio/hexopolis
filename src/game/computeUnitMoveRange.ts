@@ -245,13 +245,13 @@ function computeMovesForStartHex({
     const fromHexDisengagedUnitIDs = next.prevDisengagedUnitIDs
     const prevFallDamage = next.prevFallDamage
     const preVisitedEntry = finalMoveRange[toHexID]
-    const fromHexOccupyingUnitID = fromHex.occupyingUnitID
-    const fromHexUnit = gameUnits[fromHexOccupyingUnitID]
+    // const fromHexOccupyingUnitID = fromHex.occupyingUnitID
+    // const fromHexUnit = gameUnits[fromHexOccupyingUnitID]
     const isFromOccupied =
       fromHex.occupyingUnitID && fromHex.occupyingUnitID !== unit.unitID
     // TODO: Team play
-    const isFromEnemyOccupied =
-      fromHexUnit && fromHexUnit.playerID !== unit.playerID
+    // const isFromEnemyOccupied =
+    //   fromHexUnit && fromHexUnit.playerID !== unit.playerID
     const validTailSpotsForNeighbor = selectValidTailHexes(
       toHexID,
       boardHexes
