@@ -409,7 +409,7 @@ function computeMovesForStartHex({
             prevFallDamage: newFallDamage,
           }))
           .filter(() => {
-            return hasGhostWalk
+            return hasGhostWalk || isFlying
               ? true
               : !isEndHexEnemyOccupied && !isEndHexUnitEngaged
           }),
