@@ -72,6 +72,12 @@ describe('Move range, 2-hex fly: see if move range is working correctly on the m
         ?.movePointsLeft
     ).toBe(3)
   })
+  /* 
+  Future tests:
+  1. Flying over glyph but still landing on it? move points left = 0! Put a ledge of 2 hexes beyond those two hexes. Should be reachable, 1 move points left (cost 4)!
+  2. Flying over enemy but landing still next to him should be orange (engaged)
+  3. Flying onto peak should not cost 5 points, it should cost 4 (figure out the flipping)
+  */
   //   test('can fly beyond peak of great height', () => {
   //     expect(
   //       myMoveRange[moveRange2HexFlyTestHexIDs.beyondPeak_id]?.movePointsLeft

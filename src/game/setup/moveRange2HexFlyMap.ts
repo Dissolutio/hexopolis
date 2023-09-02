@@ -10,6 +10,7 @@ export const moveRange2HexFlyTestHexIDs = {
   peak2_id: '4,-2,-2',
   beyondPeak_id: '4,-3,-1',
   overEnemy_id: '-1,-1,2',
+  overEnemy2_id: '-1,-2,3',
 }
 
 export const moveRange2HexFlyMap = {
@@ -122,6 +123,17 @@ export const moveRange2HexFlyMap = {
       r: -1,
       s: 2,
       id: moveRange2HexFlyTestHexIDs.overEnemy_id,
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: [''],
+    },
+    [moveRange2HexFlyTestHexIDs.overEnemy2_id]: {
+      q: -1,
+      r: -2,
+      s: 3,
+      id: moveRange2HexFlyTestHexIDs.overEnemy2_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
