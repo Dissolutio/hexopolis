@@ -268,7 +268,6 @@ function computeMovesForStartHex({
       (!isUnit2Hex && isNeighborHexWater)
     const walkCost = selectMoveCostBetweenNeighbors(fromHex, toHex)
     //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
-    const fromCostFlyOver = 1
     const fromCost =
       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all of their move points)
       isWaterStoppage || isGlyphStoppage
