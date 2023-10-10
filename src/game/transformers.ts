@@ -109,6 +109,7 @@ export function transformGameArmyCardsToGameUnits(
 }
 
 // WARNING: might be guilty of mutating state accidentally
+// Is definitely breaking the game in draft phase usage
 export function transformBoardHexesWithPrePlacedUnits(
   boardHexes: BoardHexes,
   startZones: StartZones,
