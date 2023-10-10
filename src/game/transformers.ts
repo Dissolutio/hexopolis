@@ -81,7 +81,8 @@ function makeUnitID(index: number, playerID: string) {
   return `p${playerID}u${index}`
 }
 export function transformGameArmyCardsToGameUnits(
-  armyCards: GameArmyCard[]
+  armyCards: GameArmyCard[],
+  numberOfUnitsPlayerAlreadyHas?: number
 ): GameUnits {
   const preUnits = armyCards.reduce((result: any[], card) => {
     const numberOfFiguresForThisCard = card.figures * card.cardQuantity
@@ -92,7 +93,10 @@ export function transformGameArmyCardsToGameUnits(
   }, [])
 
   const unitsArr = preUnits.map((preUnit, i, arr) => {
-    const unitID = makeUnitID(i, preUnit.playerID)
+    const unitID = makeUnitID(
+      i + (numberOfUnitsPlayerAlreadyHas ?? 0),
+      preUnit.playerID
+    )
     const newGameUnit = {
       unitID,
       armyCardID: preUnit.armyCardID,
