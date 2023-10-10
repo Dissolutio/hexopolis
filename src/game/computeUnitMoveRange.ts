@@ -158,6 +158,10 @@ type ToBeChecked = {
   prevFallDamage: number
 }
 
+/*
+ * this function follows the breadth first search concept
+ * https://www.redblobgames.com/pathfinding/a-star/introduction.html#breadth-first-search
+ */
 function computeMovesForStartHex({
   unmutatedContext,
   startHex,
@@ -261,13 +265,13 @@ function computeMovesForStartHex({
     // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
     const isGlyphStoppage = !!glyphs[toHexID]
     const isGlyphRevealed = !!glyphs[toHexID]?.isRevealed
-    //     // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
+    // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
     const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
     const isWaterStoppage =
       (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
       (!isUnit2Hex && isNeighborHexWater)
     const walkCost = selectMoveCostBetweenNeighbors(fromHex, toHex)
-    //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+    // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
     const fromCost =
       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all of their move points)
       isWaterStoppage || isGlyphStoppage
