@@ -158,6 +158,10 @@ type ToBeChecked = {
   prevFallDamage: number
 }
 
+/*
+ * this function follows the breadth first search concept
+ * https://www.redblobgames.com/pathfinding/a-star/introduction.html#breadth-first-search
+ */
 function computeMovesForStartHex({
   unmutatedContext,
   startHex,
@@ -245,13 +249,13 @@ function computeMovesForStartHex({
     const fromHexDisengagedUnitIDs = next.prevDisengagedUnitIDs
     const prevFallDamage = next.prevFallDamage
     const preVisitedEntry = finalMoveRange[toHexID]
-    const fromHexOccupyingUnitID = fromHex.occupyingUnitID
-    const fromHexUnit = gameUnits[fromHexOccupyingUnitID]
+    // const fromHexOccupyingUnitID = fromHex.occupyingUnitID
+    // const fromHexUnit = gameUnits[fromHexOccupyingUnitID]
     const isFromOccupied =
       fromHex.occupyingUnitID && fromHex.occupyingUnitID !== unit.unitID
     // TODO: Team play
-    const isFromEnemyOccupied =
-      fromHexUnit && fromHexUnit.playerID !== unit.playerID
+    // const isFromEnemyOccupied =
+    //   fromHexUnit && fromHexUnit.playerID !== unit.playerID
     const validTailSpotsForNeighbor = selectValidTailHexes(
       toHexID,
       boardHexes
@@ -261,13 +265,13 @@ function computeMovesForStartHex({
     // TODO: GLYPH SPECIAL: squad units cannot step on healer glyphs
     const isGlyphStoppage = !!glyphs[toHexID]
     const isGlyphRevealed = !!glyphs[toHexID]?.isRevealed
-    //     // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
+    // TODO: GLYPH SPECIAL: isActionGlyph: Also if it's a special stage glyph (healer, summoner, curse)
     const isActionGlyph = isGlyphStoppage && !isGlyphRevealed
     const isWaterStoppage =
       (isUnit2Hex && isStartHexWater && isNeighborHexWater) ||
       (!isUnit2Hex && isNeighborHexWater)
     const walkCost = selectMoveCostBetweenNeighbors(fromHex, toHex)
-    //     // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
+    // fromCost is where we consider non-flyers and the water or glyphs they might walk onto
     const fromCost =
       // when a unit enters water, or a 2-spacer enters its second space of water, or a unit steps on a glyph with its leading hex (AKA stepping ONTO glyphs) it causes their movement to end (we charge all of their move points)
       isWaterStoppage || isGlyphStoppage
@@ -287,17 +291,25 @@ function computeMovesForStartHex({
       gameUnits,
       armyCards,
     })
-    // if we had same move points left, tie breaker is less-disengaged-units, otherwise, more move points left
-    const isVisitedAlready =
-      // TODO: make this readable
-      preVisitedEntry?.movePointsLeft === movePointsToBeChecked
-        ? preVisitedEntry?.disengagedUnitIDs?.length <=
+    const getIsVisitedAlready = () => {
+      // if previous entry had more move points left, then it wins
+      if (preVisitedEntry?.movePointsLeft > movePointsToBeChecked) {
+        return true
+      }
+      // if we had same move points left as our starting move points, tie breaker is less-disengaged-units
+      if (preVisitedEntry?.movePointsLeft === movePointsToBeChecked) {
+        return (
+          preVisitedEntry?.disengagedUnitIDs?.length <=
           fromHexDisengagedUnitIDs.length
-        : preVisitedEntry?.movePointsLeft > movePointsToBeChecked
-        ? true
-        : preVisitedEntry?.movePointsLeft === movePointsLeft
-        ? preVisitedEntry?.fromCost >= fromCost
-        : false
+        )
+      }
+      // ?? if we had same move points left as our ending move points, tie breaker is whichever had cheapest from cost
+      if (preVisitedEntry?.movePointsLeft === movePointsLeft) {
+        return preVisitedEntry?.fromCost >= fromCost
+      }
+      return false
+    }
+    const isVisitedAlready = getIsVisitedAlready()
 
     // BEGIN isVisitedAlready else block
     if (isVisitedAlready) {
@@ -340,7 +352,9 @@ function computeMovesForStartHex({
         ? isCausingDisengagementIfFlying
         : isCausingDisengagementIfWalking
       const endHexUnitPlayerID = endHexUnit?.playerID
-      const isMovePointsLeftAfterMove = movePointsLeft > 0
+      const isMovePointsLeftAfterMove = isFlying
+        ? movePointsToBeChecked - 1 > 0
+        : movePointsLeft > 0
       const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
       const isTooCostly = movePointsLeft < 0
       // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
@@ -404,12 +418,13 @@ function computeMovesForStartHex({
             id: neighbor.id,
             fromHexID: toHexID,
             fromTailHexID: fromHexID,
-            movePoints: movePointsLeft,
+            // TODO: move points for next to-check: Slither, Water Suits, Lava Resistant, Snow and Ice Enhanced Movement, Ice Cold, Amphibious
+            movePoints: isFlying ? movePointsToBeChecked - 1 : movePointsLeft, // here is where we account for flyers able to fly over glyphs
             prevDisengagedUnitIDs: totalDisengagedIDsSoFar,
             prevFallDamage: newFallDamage,
           }))
           .filter(() => {
-            return hasGhostWalk
+            return hasGhostWalk || isFlying
               ? true
               : !isEndHexEnemyOccupied && !isEndHexUnitEngaged
           }),

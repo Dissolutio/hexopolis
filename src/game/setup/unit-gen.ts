@@ -3,14 +3,18 @@ import { MS1Cards } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
 
+const testDummyID = 'test001'
+const test2HexDummyID = 'test002'
+const testDummyGhostWalkID = 'test003'
+const testDummyFlyerID = 'test004'
+const testDummyStealthFlyerID = 'test005'
+const testDummy2HexFlyerID = 'test006'
+const testDummy2HexStealthFlyerID = 'test007'
 const marroID = 'hs1000'
 const deathwalker9000ID = 'hs1001'
 const izumiID = 'hs1002'
 const drake1ID = 'hs1003'
 const syvarrisID = 'hs1004'
-const testDummyID = 'test001'
-const testDummyGhostWalkID = 'test003'
-const test2HexDummyID = 'test002'
 const kravMagaID = 'hs1005'
 const tarnID = 'hs1006'
 const carrID = 'hs1007'
@@ -44,6 +48,29 @@ export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
   '1': [testDummyID],
 }
+export const startingArmiesForMoveRange1HexFlyMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummyFlyerID],
+}
+export const startingArmiesForMoveRange2HexFlyMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummy2HexFlyerID],
+}
+export const startingArmiesFor2HexFlyingEngagedMap = (
+  withStealth: boolean
+): StartingArmies => {
+  if (withStealth) {
+    return {
+      '0': [zettianID],
+      '1': [testDummy2HexStealthFlyerID],
+    }
+  } else {
+    return {
+      '0': [zettianID],
+      '1': [testDummy2HexFlyerID],
+    }
+  }
+}
 export const startingArmiesForMoveRangePassThruMap = (
   withGhostWalk: boolean
 ): StartingArmies => {
@@ -56,6 +83,21 @@ export const startingArmiesForMoveRangePassThruMap = (
     return {
       '0': [drake1ID],
       '1': [testDummyID],
+    }
+  }
+}
+export const startingArmiesFor1HexFlyingEngagedMap = (
+  withStealth: boolean
+): StartingArmies => {
+  if (withStealth) {
+    return {
+      '0': [zettianID],
+      '1': [testDummyStealthFlyerID],
+    }
+  } else {
+    return {
+      '0': [zettianID],
+      '1': [testDummyFlyerID],
     }
   }
 }

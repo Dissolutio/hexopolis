@@ -1,3 +1,4 @@
+import { keyBy } from 'lodash'
 import { selectValidTailHexes } from './selectors'
 import {
   ArmyCard,
@@ -76,41 +77,35 @@ export function transformDraftableCardToGameCard(
     }
   })
 }
-// TODO: UnitIDs : this needs to consistently start at 0, for tests
-let unitID = 0
+function makeUnitID(index: number, playerID: string) {
+  return `p${playerID}u${index}`
+}
 export function transformGameArmyCardsToGameUnits(
   armyCards: GameArmyCard[]
 ): GameUnits {
-  // id factory
-  function makeUnitID(playerID: string) {
-    return `p${playerID}u${unitID++}`
-  }
-  return armyCards.reduce((result, card) => {
-    // CARD => FIGURES (this is where commons and uncommons get crazy?)
-    const numFigures = card.figures * card.cardQuantity
-    const figuresArr = Array.apply({}, Array(numFigures))
-    // FIGURES => UNITS
-    const unitsFromCard = (figuresArr as GameUnit[]).reduce((unitsResult) => {
-      const unitID = makeUnitID(card.playerID)
-      const newGameUnit = {
-        unitID,
-        armyCardID: card.armyCardID,
-        playerID: card.playerID,
-        gameCardID: card.gameCardID,
-        wounds: 0,
-        movePoints: 0,
-        is2Hex: card.hexes === 2,
-      }
-      return {
-        ...unitsResult,
-        [unitID]: newGameUnit,
-      }
-    }, {})
-    return {
-      ...result,
-      ...unitsFromCard,
+  const preUnits = armyCards.reduce((result: any[], card) => {
+    const numberOfFiguresForThisCard = card.figures * card.cardQuantity
+    const preUnitsArr = Array.apply({}, Array(numberOfFiguresForThisCard)).map(
+      (f) => ({ ...card })
+    )
+    return [...result, ...preUnitsArr]
+  }, [])
+
+  const unitsArr = preUnits.map((preUnit, i, arr) => {
+    const unitID = makeUnitID(i, preUnit.playerID)
+    const newGameUnit = {
+      unitID,
+      armyCardID: preUnit.armyCardID,
+      playerID: preUnit.playerID,
+      gameCardID: preUnit.gameCardID,
+      wounds: 0,
+      movePoints: 0,
+      is2Hex: preUnit.hexes === 2,
     }
-  }, {})
+    return newGameUnit
+  })
+
+  return keyBy(unitsArr, 'unitID')
 }
 
 // WARNING: might be guilty of mutating state accidentally
@@ -150,7 +145,7 @@ export function transformBoardHexesWithPrePlacedUnits(
         )
         .map((h) => h.id)[0]
       // update boardHex
-      if (unit.is2Hex) {
+      if (is2Hex) {
         // update boardHex
         copy[validHex].occupyingUnitID = unit.unitID
         copy[validTail].occupyingUnitID = unit.unitID
@@ -159,11 +154,12 @@ export function transformBoardHexesWithPrePlacedUnits(
         copy[validHex].occupyingUnitID = unit.unitID
       }
     } catch (error) {
-      console.error(
-        '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
-        `🚔 The problem is likely the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
-        error
-      )
+      // TODO: TOO NOISY, REFACTOR
+      // console.error(
+      //   '🚀 ~ file: mapGen.ts ~ line 81 ~ gameUnitsArr.forEach ~ error',
+      //   `🚔 The problem is likely the map is too small for the function trying to place all the units for pre-placed units (dev option on map setup)`,
+      //   error
+      // )
     }
   })
   return copy

@@ -292,9 +292,9 @@ export function calcRopHexClassNames({
         classNames = classNames.concat(' maphex__move-disengage ')
       }
       // Paint hexes with units that have partially expended moves
-      if (isUnitMovePartiallyExpended) {
-        classNames = classNames.concat(' maphex__move-partially-moved-unit ')
-      }
+      // if (isUnitMovePartiallyExpended) {
+      //   classNames = classNames.concat(' maphex__move-partially-moved-unit ')
+      // }
       // Paint hexes with units that have totally expended moves
       if (isUnitMoveTotallyUsed) {
         classNames = classNames.concat(' maphex__move-totally-moved-unit ')

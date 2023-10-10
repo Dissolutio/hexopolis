@@ -12,13 +12,21 @@ import {
   makeMoveRangeTestMap,
   makeMoveRangeTest2HexWalkMap,
   makeMoveRangePassThruMap,
+  makeMoveRange1HexFlyingEngagedMap,
+  makeMoveRange2HexFlyingEngagedMap,
+  makeMoveRange1HexFlyMap,
+  makeMoveRange2HexFlyMap,
 } from './map-gen'
 import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
+  startingArmiesFor1HexFlyingEngagedMap,
+  startingArmiesFor2HexFlyingEngagedMap,
   startingArmiesForDefaultScenario,
   startingArmiesForForsakenWaters2Player,
   startingArmiesForGiantsTable2Player,
+  startingArmiesForMoveRange1HexFlyMap,
   startingArmiesForMoveRange1HexWalkMap,
+  startingArmiesForMoveRange2HexFlyMap,
   startingArmiesForMoveRange2HexWalkMap,
   startingArmiesForMoveRangePassThruMap,
   startingArmiesToGameCards,
@@ -91,6 +99,19 @@ const generatePlayerAndReadyAndOMStates = ({
         players: generateBlankPlayersStateForNumPlayers(numPlayers),
         ...someInitialGameState,
       }
+
+const gameCardsToPreplaceableUnits = (
+  cards: GameArmyCard[],
+  units: GameUnits
+) => {
+  return keyBy(
+    Object.values(units).filter((u) => {
+      const card = selectGameCardByID(cards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+}
 //!! TEST SCENARIO
 export const gameSetupInitialGameState = ({
   numPlayers,
@@ -117,6 +138,22 @@ export const gameSetupInitialGameState = ({
   if (scenarioName === scenarioNames.makeMoveRange1HexWalkScenario) {
     return makeMoveRange1HexWalkScenario(numPlayers, withPrePlacedUnits)
   }
+  if (scenarioName === scenarioNames.makeMoveRange1HexFlyEngagedScenario) {
+    const withStealth = false
+    return makeMoveRange1HexFlyEngagedScenario(
+      withStealth,
+      numPlayers,
+      withPrePlacedUnits
+    )
+  }
+  if (scenarioName === scenarioNames.makeMoveRange2HexFlyEngagedScenario) {
+    const withStealth = true
+    return makeMoveRange2HexFlyEngagedScenario(
+      withStealth,
+      numPlayers,
+      withPrePlacedUnits
+    )
+  }
   if (scenarioName === scenarioNames.makeMoveRange2HexWalkScenario) {
     return makeMoveRange2HexWalkScenario(numPlayers, withPrePlacedUnits)
   }
@@ -127,6 +164,22 @@ export const gameSetupInitialGameState = ({
       numPlayers,
       withPrePlacedUnits
     )
+  }
+  if (
+    scenarioName === scenarioNames.makeMoveRange1HexFlyEngagedStealthScenario
+  ) {
+    const withStealth = true
+    return makeMoveRange1HexFlyEngagedScenario(
+      withStealth,
+      numPlayers,
+      withPrePlacedUnits
+    )
+  }
+  if (scenarioName === scenarioNames.makeMoveRange1HexFlyScenario) {
+    return makeMoveRange1HexFlyScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.makeMoveRange2HexFlyScenario) {
+    return makeMoveRange2HexFlyScenario(numPlayers, withPrePlacedUnits)
   }
   if (isDemoGame) {
     return makeGiantsTable2PlayerScenario(numPlayers, withPrePlacedUnits)
@@ -310,6 +363,82 @@ export function makeMoveRange1HexWalkScenario(
     startZones: map.startZones,
   }
 }
+export function makeMoveRange1HexFlyScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForMoveRange1HexFlyMap
+      )
+    : []
+  // GameUnits
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = withPrePlacedUnits
+    ? gameCardsToPreplaceableUnits(armyCards, gameUnits)
+    : {}
+  // Map
+  const map = makeMoveRange1HexFlyMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForMoveRange1HexFlyMap,
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+export function makeMoveRange2HexFlyScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  // ArmyCards to GameArmyCards
+  // const armyCards: GameArmyCard[] = armyCardsToGameArmyCardsForTest(numPlayers)
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesForMoveRange2HexFlyMap
+      )
+    : []
+  // GameUnits
+  // const gameUnits: GameUnits = transformGameArmyCardsToGameUnits(armyCards)
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = withPrePlacedUnits
+    ? gameCardsToPreplaceableUnits(armyCards, gameUnits)
+    : {}
+  // Map
+  const map = makeMoveRange2HexFlyMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForMoveRange2HexFlyMap,
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
 export function makeMoveRangePassThruScenario(
   withGhostWalk: boolean,
   numPlayers: number,
@@ -353,18 +482,85 @@ export function makeMoveRangePassThruScenario(
     startZones: map.startZones,
   }
 }
-const gameCardsToPreplaceableUnits = (
-  cards: GameArmyCard[],
-  units: GameUnits
-) => {
-  return keyBy(
-    Object.values(units).filter((u) => {
-      const card = selectGameCardByID(cards, u.gameCardID)
+export function makeMoveRange1HexFlyEngagedScenario(
+  withStealth: boolean,
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesFor1HexFlyingEngagedMap(withStealth)
+      )
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
       return !selectIfGameArmyCardHasAbility('The Drop', card)
     }),
     'unitID'
   )
+  // Map
+  const map = makeMoveRange1HexFlyingEngagedMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesFor1HexFlyingEngagedMap(withStealth),
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
 }
+export function makeMoveRange2HexFlyEngagedScenario(
+  withStealth: boolean,
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(
+        numPlayers,
+        startingArmiesFor2HexFlyingEngagedMap(withStealth)
+      )
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const gameUnitsWithoutTheDrop = keyBy(
+    Object.values(gameUnits).filter((u) => {
+      const card = selectGameCardByID(armyCards, u.gameCardID)
+      return !selectIfGameArmyCardHasAbility('The Drop', card)
+    }),
+    'unitID'
+  )
+  // Map
+  const map = makeMoveRange2HexFlyingEngagedMap({
+    withPrePlacedUnits: Boolean(withPrePlacedUnits),
+    gameUnits: gameUnitsWithoutTheDrop,
+  })
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesFor2HexFlyingEngagedMap(withStealth),
+    }),
+    gameArmyCards: armyCards,
+    gameUnits,
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+
 export function makeMoveRange2HexWalkScenario(
   numPlayers: number,
   withPrePlacedUnits?: boolean

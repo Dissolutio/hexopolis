@@ -194,11 +194,11 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   }
 
   // partially moves units: stroke, stroke-opacity, stroke-width
-  .maphex__move-partially-moved-unit {
+  /* .maphex__move-partially-moved-unit {
     stroke: var(--caution-yellow);
     stroke-opacity: 0.3;
     stroke-width: 5;
-  }
+  } */
   // totally moves units: stroke, stroke-opacity, stroke-width
   .maphex__move-totally-moved-unit {
     stroke: var(--error-red);
