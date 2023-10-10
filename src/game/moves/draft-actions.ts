@@ -26,16 +26,22 @@ export const draftPrePlaceArmyCardAction: Move<GameState> = (
   )[0]
   newGameArmyCards.push(newCardsForPlayer)
   // give the player the units from the card
-  const addedUnits = transformGameArmyCardsToGameUnits([newCardsForPlayer])
+  const numUnitsPlayerAlreadyHas = Object.values(G.gameUnits).filter(
+    (u) => u.playerID === playerID
+  ).length
+  const addedUnits = transformGameArmyCardsToGameUnits(
+    [newCardsForPlayer],
+    numUnitsPlayerAlreadyHas
+  )
   const hasTheDrop = selectIfGameArmyCardHasAbility('The Drop', armyCard)
   // units with The Drop are not auto-placed on the board, the rest are
   if (!hasTheDrop) {
-    const newBoardHexes = transformBoardHexesWithPrePlacedUnits(
+    // G.boardHexes updated here: this fn mutates boardHexes
+    transformBoardHexesWithPrePlacedUnits(
       { ...G.boardHexes },
       { ...G.startZones },
       addedUnits
     )
-    G.boardHexes = newBoardHexes
   }
   // apply the card and units after units are placed
   G.cardsDraftedThisTurn.push(armyCard.armyCardID)
