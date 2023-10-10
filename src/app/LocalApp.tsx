@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet'
 import { Hexoscape } from 'game/game'
 import { Board } from 'hexopolis-ui/Board'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from './constants'
+import { StyledFullScreenWorld } from 'hexopolis-ui/world/World'
 
 const reduxDevTools =
   window &&
@@ -28,6 +29,7 @@ export const LocalApp = () => {
             </>
           }
         />
+        <Route path="/3d" element={<StyledFullScreenWorld />} />
         <Route path="/local2" element={<LocalDemoClients numPlayers={2} />} />
         <Route path="/local3" element={<LocalDemoClients numPlayers={3} />} />
         <Route path="/local4" element={<LocalDemoClients numPlayers={4} />} />
@@ -43,6 +45,11 @@ export const DemoLocalGameLinks = () => (
   // NOTE ^^ this bug may be caused by mapGen, which may have mutated some unforeseen shared state
   <>
     <ul>
+      <li>
+        <Link reloadDocument to="/3d">
+          3D-local-demo
+        </Link>
+      </li>
       <li>
         <Link reloadDocument to="/local2">
           2-Player Game
