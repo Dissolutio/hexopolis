@@ -3,15 +3,17 @@ import styled from 'styled-components'
 import { motion } from 'framer-motion'
 
 import {
+  Gi3DHammer,
   GiAutoRepair,
+  GiBookPile,
   GiCardPick,
   GiChatBubble,
   GiConsoleController,
 } from 'react-icons/gi'
 import { Controls } from './Controls'
 import { Chat } from './Chat'
-import { DevMapPanButtons } from './DevMapPanButtons'
 import { Armies } from './Armies'
+import { GameLog } from '../game-log/GameLog'
 
 type Tab = {
   title: string
@@ -33,6 +35,11 @@ const tabs: Tab[] = [
     title: 'Chat',
     icon: <GiChatBubble />,
     id: 'tab3',
+  },
+  {
+    title: 'Game Log',
+    icon: <GiBookPile />,
+    id: 'tab4',
   },
   // {
   //   title: 'Settings',
@@ -84,6 +91,17 @@ const tabTextVariant = {
   },
 }
 
+const ActiveTabView = ({ activeTabIndex }: { activeTabIndex: number }) => {
+  return (
+    <>
+      {activeTabIndex === 0 && <Controls />}
+      {activeTabIndex === 1 && <Armies />}
+      {activeTabIndex === 2 && <Chat />}
+      {activeTabIndex === 3 && <GameLog />}
+    </>
+  )
+}
+
 export const TabsComponent = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
@@ -112,10 +130,7 @@ export const TabsComponent = () => {
           </StyledMotionLi>
         ))}
       </StyledLinkList>
-      {activeTabIndex === 0 && <Controls />}
-      {activeTabIndex === 1 && <Armies />}
-      {activeTabIndex === 2 && <Chat />}
-      {activeTabIndex === 3 && <DevMapPanButtons />}
+      <ActiveTabView activeTabIndex={activeTabIndex} />
     </StyledTabsComponent>
   )
 }
