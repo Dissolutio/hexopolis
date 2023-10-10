@@ -11,6 +11,7 @@ import { Hexoscape } from 'game/game'
 import { isLocalApp, SERVER } from './constants'
 import { Board } from 'hexopolis-ui/Board'
 import { DemoLocalGameLinks, LocalApp, LocalDemoClients } from './LocalApp'
+import { StyledFullScreenWorld } from 'hexopolis-ui/world/World'
 
 const MultiplayerGameClient = Client({
   game: Hexoscape,
@@ -41,6 +42,7 @@ export const App = () => {
                   </>
                 }
               />
+              <Route path="/3d" element={<StyledFullScreenWorld />} />
               <Route
                 path="/play"
                 element={
