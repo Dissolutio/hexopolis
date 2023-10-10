@@ -1,7 +1,7 @@
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import { MAJOR_FALL_DAMAGE, MINOR_FALL_DAMAGE } from 'game/constants'
 import { moveRange1HexWalkTestHexIDs } from 'game/setup/moveRange1HexWalkMap'
-import { makeMoveRange1HexWalkScenario } from 'game/setup/setup'
+import { makeMoveRange1HexWalkScenario } from 'game/setup/scenarios'
 
 describe('MOVE RANGE TESTS: see if move range is working correctly on the moveRangeTest map', () => {
   const makeGameState = () => {

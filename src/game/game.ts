@@ -31,7 +31,8 @@ const isDevOverrideState =
   process.env.NODE_ENV === 'production'
     ? false
     : // toggle this one to test the game with pre-placed units
-      true
+      // true
+      false
 
 export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
@@ -332,10 +333,6 @@ export const Hexoscape: Game<GameState> = {
         })
         if (process.env.NODE_ENV === 'test') {
           // enable pre-determined initiative in tests
-          G.initiative = ['1', '0']
-        } else if (process.env.NODE_ENV === 'development') {
-          // G.initiative = initiativeRoll.initiative
-          // enable pre-determined initiative in dev
           G.initiative = ['1', '0']
         } else {
           G.initiative = initiativeRoll.initiative

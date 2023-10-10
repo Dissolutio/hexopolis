@@ -14,10 +14,10 @@ import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
 import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
 import { moveRangePassThruMap } from './moveRangePassThruMap'
-import { moveRange1HexFlyEngagedMap } from './moveRange1HexFlyingEngagedMap'
 import { moveRange1HexFlyMap } from './moveRange1HexFlyMap'
 import { moveRange2HexFlyEngagedMap } from './moveRange2HexFlyingEngagedMap'
 import { moveRange2HexFlyMap } from './moveRange2HexFlyMap'
+import { moveRange1HexFlyEngagedMap } from './moveRange1HexFlyingEngagedMap'
 
 function generateUID() {
   // I generate the UID from two parts here

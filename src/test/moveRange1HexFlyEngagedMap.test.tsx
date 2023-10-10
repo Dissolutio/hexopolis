@@ -1,6 +1,6 @@
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import { moveRange1HexFlyEngagedMapTestHexIDs } from 'game/setup/moveRange1HexFlyingEngagedMap'
-import { makeMoveRange1HexFlyEngagedScenario } from 'game/setup/setup'
+import { makeMoveRange1HexFlyEngagedScenario } from 'game/setup/scenarios'
 
 describe('1-hex flying unit without stealth, starting engaged to 2 enemies', () => {
   const makeGameState = () => {

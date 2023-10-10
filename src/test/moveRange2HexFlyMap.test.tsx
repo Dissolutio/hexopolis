@@ -1,6 +1,6 @@
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import { moveRange2HexFlyTestHexIDs } from 'game/setup/moveRange2HexFlyMap'
-import { makeMoveRange2HexFlyScenario } from 'game/setup/setup'
+import { makeMoveRange2HexFlyScenario } from 'game/setup/scenarios'
 
 describe('Move range, 2-hex fly: see if move range is working correctly on the moveRangeTest map', () => {
   const makeGameState = () => {
