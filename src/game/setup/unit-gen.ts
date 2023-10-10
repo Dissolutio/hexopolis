@@ -1,20 +1,20 @@
-import {
-  ArmyCard,
-  GameArmyCard,
-  ICoreHeroscapeCard,
-  OrderMarkers,
-  PlayerState,
-} from '../types'
+import { GameArmyCard, ICoreHeroscapeCard, StartingArmies } from '../types'
 import { MS1Cards } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
 
+const testDummyID = 'test001'
+const test2HexDummyID = 'test002'
+const testDummyGhostWalkID = 'test003'
+const testDummyFlyerID = 'test004'
+const testDummyStealthFlyerID = 'test005'
+const testDummy2HexFlyerID = 'test006'
+const testDummy2HexStealthFlyerID = 'test007'
 const marroID = 'hs1000'
 const deathwalker9000ID = 'hs1001'
 const izumiID = 'hs1002'
 const drake1ID = 'hs1003'
 const syvarrisID = 'hs1004'
-const testDummyID = 'test001'
 const kravMagaID = 'hs1005'
 const tarnID = 'hs1006'
 const carrID = 'hs1007'
@@ -28,34 +28,84 @@ const negoksaID = 'hs1014'
 export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
-export const startingArmies: { [playerID: string]: string[] } = {
-  '0': [
-    drake1ID,
-    marroID,
-    negoksaID,
-    // airbornID,
-    // thorgrimID,
-    // izumiID,
-    // deathwalker9000ID,
-    // mimringID,
-    // finnID,
-  ],
-  '1': [
-    // grimnakID,
-    // raelinOneID,
-    kravMagaID,
-    // tarnID,
-    syvarrisID,
-    // testDummyID,
-    // airbornID,
-    // zettianID,
-    // carrID,
-  ],
-  '2': [tarnID],
-  '3': [tarnID],
-  '4': [mimringID, tarnID],
-  '5': [mimringID, tarnID],
+export const startingArmiesForDefaultScenario: StartingArmies = {
+  '0': [finnID, grimnakID, raelinOneID, marroID],
+  '1': [tarnID, izumiID, syvarrisID, carrID],
+  '2': [marroID, negoksaID, thorgrimID, izumiID],
+  '3': [drake1ID, airbornID, raelinOneID],
+  '4': [zettianID, deathwalker9000ID, kravMagaID],
+  '5': [mimringID, tarnID, carrID],
 }
+export const startingArmiesForGiantsTable2Player: StartingArmies = {
+  '0': [drake1ID, thorgrimID, finnID, marroID, raelinOneID],
+  '1': [mimringID, kravMagaID, carrID, tarnID],
+}
+export const startingArmiesForForsakenWaters2Player: StartingArmies = {
+  '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
+  '1': [izumiID, syvarrisID, airbornID, carrID],
+}
+export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummyID],
+}
+export const startingArmiesForMoveRange1HexFlyMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummyFlyerID],
+}
+export const startingArmiesForMoveRange2HexFlyMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [testDummy2HexFlyerID],
+}
+export const startingArmiesFor2HexFlyingEngagedMap = (
+  withStealth: boolean
+): StartingArmies => {
+  if (withStealth) {
+    return {
+      '0': [zettianID],
+      '1': [testDummy2HexStealthFlyerID],
+    }
+  } else {
+    return {
+      '0': [zettianID],
+      '1': [testDummy2HexFlyerID],
+    }
+  }
+}
+export const startingArmiesForMoveRangePassThruMap = (
+  withGhostWalk: boolean
+): StartingArmies => {
+  if (withGhostWalk) {
+    return {
+      '0': [drake1ID],
+      '1': [testDummyGhostWalkID],
+    }
+  } else {
+    return {
+      '0': [drake1ID],
+      '1': [testDummyID],
+    }
+  }
+}
+export const startingArmiesFor1HexFlyingEngagedMap = (
+  withStealth: boolean
+): StartingArmies => {
+  if (withStealth) {
+    return {
+      '0': [zettianID],
+      '1': [testDummyStealthFlyerID],
+    }
+  } else {
+    return {
+      '0': [zettianID],
+      '1': [testDummyFlyerID],
+    }
+  }
+}
+export const startingArmiesForMoveRange2HexWalkMap: StartingArmies = {
+  '0': [drake1ID],
+  '1': [test2HexDummyID],
+}
+
 function hsCardsToArmyCards(
   params: Array<ICoreHeroscapeCard>,
   playerID: string
@@ -92,8 +142,10 @@ function hsCardsToArmyCards(
 }
 // in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
 const cardsUsed = [...MS1Cards, ...testCards]
-export function armyCardsToGameArmyCardsForTest(
-  numPlayers: number
+
+export function startingArmiesToGameCards(
+  numPlayers: number,
+  startingArmies: StartingArmies
 ): GameArmyCard[] {
   const theArmiesTurnedIntoGameArmyCards: {
     [pid: string]: GameArmyCard[]
@@ -101,6 +153,7 @@ export function armyCardsToGameArmyCardsForTest(
     (acc, [playerID, playerHSCardIDs]) => {
       // bail early for non-existent players
       if (parseInt(playerID) >= numPlayers) {
+        // i.e. if it's a 3-player game, then players 0,1, and 2 would be in the game
         return acc
       }
 

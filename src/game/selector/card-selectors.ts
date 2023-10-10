@@ -135,9 +135,7 @@ export function selectIfGameArmyCardHasDisengage(
   gameArmyCard?: GameArmyCard
 ): HasStealthReport {
   const hasGhostWalk = gameArmyCard
-    ? gameArmyCard.abilities.some(
-        (a) => a.name === 'Ghost Walk' || a.name === 'Phantom Walk'
-      )
+    ? gameArmyCard.abilities.some((a) => a.name === 'Phantom Walk')
     : false
   const hasDisengage = gameArmyCard
     ? gameArmyCard.abilities.some(

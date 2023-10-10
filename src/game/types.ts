@@ -230,7 +230,6 @@ export type GameUnit = {
   armyCardID: string
   wounds: number
   movePoints: number
-  moveRange: MoveRange
   is2Hex: boolean
 }
 
@@ -262,6 +261,8 @@ export type MoveRange = {
     isActionGlyph?: boolean
   }
 }
+
+export type StartingArmies = { [playerID: string]: string[] }
 
 export type DisengageAttempt = {
   unit: GameUnit

@@ -48,18 +48,6 @@ const blankOrderMarkers = ORDERS.reduce((prev, curr) => {
 export const MINOR_FALL_DAMAGE = 1
 export const MAJOR_FALL_DAMAGE = 3
 
-export function generateStateForNumPlayers(
-  numPlayers: number,
-  defaultValue: boolean
-): PlayerStateToggle {
-  let rdyState: { [key: string]: boolean } = {}
-  for (let index = 0; index < numPlayers; index++) {
-    rdyState[index] = defaultValue
-  }
-  const result = rdyState
-  return result
-}
-
 export function generateBlankOrderMarkersForNumPlayers(
   numPlayers: number
 ): OrderMarkers {

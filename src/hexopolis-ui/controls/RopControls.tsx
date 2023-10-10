@@ -227,6 +227,10 @@ const RopConfirmDisengageAttemptControls = () => {
         } units? (${unitsThatGetASwipe.map((u) => u.singleName).join(', ')})`}
         {fallDamage > 0 && ` and risk ${fallDamage} wounds from fall damage?`}
       </StyledControlsHeaderH2>
+      <StyledControlsP>
+        You will have {disengageAttempt.movePointsLeft} move points left
+        afterwards.
+      </StyledControlsP>
       <ConfirmOrResetButtons
         confirm={cancelDisengageAttempt}
         confirmText={`No, we will find another way...`}
@@ -257,6 +261,10 @@ const RopConfirmFallDamageControls = () => {
           fallDamage === 1 ? '' : 's'
         } from fall damage?`}
       </StyledControlsHeaderH2>
+      <StyledControlsP>
+        You will have {selectedUnitMoveRange[fallHexID].movePointsLeft} move
+        points left afterwards.
+      </StyledControlsP>
       <ConfirmOrResetButtons
         confirm={cancelFallDamageMove}
         confirmText={`No, we will find another way...`}

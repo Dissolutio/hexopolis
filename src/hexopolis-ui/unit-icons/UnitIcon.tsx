@@ -36,6 +36,15 @@ import {
   GiThornHelix,
   GiBoneKnife,
   GiAnubis,
+  GiGiant,
+  GiNinjaMask,
+  GiStoneStack,
+  GiSpiderEye,
+  GiSpoon,
+  GiWingCloak,
+  GiWifiRouter,
+  GiUfo,
+  GiGriffinSymbol,
 } from 'react-icons/gi'
 
 type Props = IconBaseProps & {
@@ -73,8 +82,19 @@ export const UnitIcon = ({
 
   switch (armyCardID) {
     case 'test001':
-      // marro warriors
       return <GiTargetDummy {...gameIconProps} />
+    case 'test002':
+      return <GiGiant {...gameIconProps} />
+    case 'test003':
+      return <GiSpoon {...gameIconProps} />
+    case 'test004':
+      return <GiWingCloak {...gameIconProps} />
+    case 'test005':
+      return <GiWifiRouter {...gameIconProps} />
+    case 'test006':
+      return <GiGriffinSymbol {...gameIconProps} />
+    case 'test007':
+      return <GiUfo {...gameIconProps} />
     case 'hs1000':
       // marro warriors
       return <GiDiabloSkull {...gameIconProps} />

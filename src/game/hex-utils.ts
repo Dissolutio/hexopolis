@@ -92,6 +92,8 @@ export const hexUtilsNeighborsWithDirections = (
   }
   return obj
 }
+// input cube coordinates that might be floats (from pixelToHex or pixel => cube), and get a hex/cube coord where q+r+s=0 guaranteed
+// see: https://www.redblobgames.com/grids/hexagons/#rounding
 export const hexUtilsRound = (hex: HexCoordinates): HexCoordinates => {
   let rq = Math.round(hex.q)
   let rr = Math.round(hex.r)
@@ -126,6 +128,7 @@ export const hexUtilsHexToPixel = (
 }
 
 /** Return the q,r,s coordinate of the hexagon given pixel point x and y.
+ * https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
  */
 export const hexUtilsPixelToHex = (
   point: { x: number; y: number },
@@ -136,9 +139,12 @@ export const hexUtilsPixelToHex = (
     x: (point.x - layout.origin.x) / layout.size.x,
     y: (point.y - layout.origin.y) / layout.size.y,
   }
+  // get floating point axial coordinates from x and y
   const q = M.b0 * pt.x + M.b1 * pt.y
   const r = M.b2 * pt.x + M.b3 * pt.y
+  // convert float point axial to float cube coordinates
   const hex = { q, r, s: -q - r }
+  // convert float cube coordinates to integer cube coordinates
   return hexUtilsRound(hex)
 }
 

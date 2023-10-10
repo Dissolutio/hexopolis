@@ -10,10 +10,10 @@ import {
   selectTailHexForUnit,
 } from '../selectors'
 import { GameState, PossibleExplosionAttack, StageQueueItem } from '../types'
-import { rollHeroscapeDice } from './attack-action'
 import { encodeGameLogMessage, gameLogTypes } from '../gamelog'
 import { getActivePlayersIdleStage, stageNames } from '../constants'
 import { killUnit_G } from './G-mutators'
+import { rollHeroscapeDice } from '../rollHeroscapeDice'
 
 export const rollForExplosionSpecialAttack: Move<GameState> = (
   { G, events, random },

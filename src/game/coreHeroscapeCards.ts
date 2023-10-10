@@ -239,16 +239,12 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
     setWave: 'Master Set: Rise of the Valkyrie',
     abilities: [
       {
-        name: 'Ghost Walk',
-        desc: 'Agent Carr can move through all figures.',
+        name: 'Phantom Walk',
+        desc: 'Agent Carr can move through all figures and is never attacked when leaving an engagement.',
       },
       {
         name: 'Sword of Reckoning',
         desc: "If Agent Carr is attacking an adjacent figure, add 4 dice to Agent Carr's attack.",
-      },
-      {
-        name: 'Disengage',
-        desc: 'Agent Carr is never attacked when leaving an engagement.',
       },
     ],
   },
@@ -3178,12 +3174,8 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         desc: 'If a Ninja of the Northern Wind is attacked with a normal attack and at least 1 skull is rolled, roll the 20-sided die to disappear. If you roll 1-11, roll defense dice normally. If you roll a 12 or higher, that Ninja of the Northern Wind takes no damage and instead may move up to 4 spaces. Ninjas of the Northern Wind can disappear only if they end their disappearing move not adjacent to any enemy figures.',
       },
       {
-        name: 'Ghost Walk',
-        desc: 'Ninjas of the Northern Wind can move through all figures.',
-      },
-      {
-        name: 'Disengage',
-        desc: 'Ninjas of the Northern Wind are never attacked when leaving an engagement.',
+        name: 'Phantom Walk',
+        desc: 'Ninjas of the Northern Wind can move through all figures and are never attacked when leaving an engagement.',
       },
     ],
   },

@@ -459,16 +459,18 @@ export function selectEngagementsForHex({
             ? gameUnits?.[h.occupyingUnitID]?.playerID === playerID
             : gameUnits?.[h.occupyingUnitID]?.playerID !== playerID) &&
           // filter for engaged units
-          selectAreTwoAdjacentUnitsEngaged({
-            aHeight: armyCardForUnitOnHex?.height ?? 0,
-            aAltitude: hex?.altitude ?? 0,
-            bHeight:
-              selectGameCardByID(
-                armyCards,
-                gameUnits[h.occupyingUnitID]?.gameCardID
-              )?.height ?? 0,
-            bAltitude: h?.altitude ?? 0,
-          })
+          Boolean(
+            selectAreTwoAdjacentUnitsEngaged({
+              aHeight: armyCardForUnitOnHex?.height ?? 0,
+              aAltitude: hex?.altitude ?? 0,
+              bHeight:
+                selectGameCardByID(
+                  armyCards,
+                  gameUnits[h.occupyingUnitID]?.gameCardID
+                )?.height ?? 0,
+              bAltitude: h?.altitude ?? 0,
+            })
+          )
       )
       .map((h) => h.occupyingUnitID)
   )
@@ -505,14 +507,14 @@ export function selectMoveDisengagedUnitIDs({
     },
   })
   const engagementsForCurrentHex = selectEngagementsForHex({
-    override: {
-      overrideUnitID: unit.unitID,
-      overrideTailHexID: startHexID,
-    },
     hexID: neighborHexID,
     boardHexes,
     gameUnits,
     armyCards,
+    override: {
+      overrideUnitID: unit.unitID,
+      overrideTailHexID: startHexID,
+    },
   })
   const defendersToDisengage = initialEngagements
     // flyers disengage everybody once they start flying, but walkers might stay engaged to some units

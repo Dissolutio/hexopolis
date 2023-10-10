@@ -9,9 +9,15 @@ import {
 import { giantsTable } from './giantsTable'
 import { forsakenWaters } from './forsakenWaters'
 import { devHexagon } from './devHexagon'
-import { moveRangeMap } from './moveRangeMap'
+import { moveRange1HexWalkMap } from './moveRange1HexWalkMap'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
+import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
+import { moveRangePassThruMap } from './moveRangePassThruMap'
+import { moveRange1HexFlyMap } from './moveRange1HexFlyMap'
+import { moveRange2HexFlyEngagedMap } from './moveRange2HexFlyingEngagedMap'
+import { moveRange2HexFlyMap } from './moveRange2HexFlyMap'
+import { moveRange1HexFlyEngagedMap } from './moveRange1HexFlyingEngagedMap'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -117,7 +123,7 @@ export function makeMoveRangeTestMap({
   withPrePlacedUnits: boolean
   gameUnits: GameUnits
 }): GameMap {
-  const boardHexes = moveRangeMap.boardHexes as unknown as BoardHexes
+  const boardHexes = moveRange1HexWalkMap.boardHexes as unknown as BoardHexes
   if (!boardHexes) {
     throw new Error('moveRangeMap.boardHexes is not defined')
   }
@@ -130,8 +136,161 @@ export function makeMoveRangeTestMap({
     )
   }
   return {
-    boardHexes: moveRangeMap.boardHexes,
-    hexMap: moveRangeMap.hexMap,
+    boardHexes: moveRange1HexWalkMap.boardHexes,
+    hexMap: moveRange1HexWalkMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRange1HexFlyMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRange1HexFlyMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangeMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRange1HexFlyMap.boardHexes,
+    hexMap: moveRange1HexFlyMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRange2HexFlyMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRange2HexFlyMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRange2HexFlyMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRange2HexFlyMap.boardHexes,
+    hexMap: moveRange2HexFlyMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRangePassThruMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes = moveRangePassThruMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangePassThruMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRangePassThruMap.boardHexes,
+    hexMap: moveRangePassThruMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRange1HexFlyingEngagedMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes =
+    moveRange1HexFlyEngagedMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRange1HexFlyEngagedMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRange1HexFlyEngagedMap.boardHexes,
+    hexMap: moveRange1HexFlyEngagedMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRange2HexFlyingEngagedMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes =
+    moveRange2HexFlyEngagedMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRange2HexFlyEngagedMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRange2HexFlyEngagedMap.boardHexes,
+    hexMap: moveRange2HexFlyEngagedMap.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeMoveRangeTest2HexWalkMap({
+  withPrePlacedUnits,
+  gameUnits,
+}: {
+  withPrePlacedUnits: boolean
+  gameUnits: GameUnits
+}): GameMap {
+  const boardHexes =
+    moveRangeTest2HexWalkMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('moveRangeTest2HexWalkMap.boardHexes is not defined')
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnits ?? {}
+    )
+  }
+  return {
+    boardHexes: moveRangeTest2HexWalkMap.boardHexes,
+    hexMap: moveRangeTest2HexWalkMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }

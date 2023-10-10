@@ -1,4 +1,4 @@
-export const moveRangeTestHexIDs = {
+export const moveRange1HexWalkTestHexIDs = {
   safeAdjacentSameLevel_id: '1,0,-1',
   engagedAdjacentSameLevel_id: '0,0,0',
   disengageOne_id: '-2,1,1',
@@ -10,62 +10,97 @@ export const moveRangeTestHexIDs = {
   beyondRevealedGlyph_id: '-1,3,-2',
 }
 
-export const moveRangeMap = {
+export const moveRange1HexWalkMap = {
   boardHexes: {
-    [moveRangeTestHexIDs.basicAdjacentFall_id]: {
+    '1,1,-2': {
+      q: 1,
+      r: 1,
+      s: -2,
+      id: '1,1,-2',
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: [''],
+    },
+    '0,1,-1': {
+      // player 2's test dummy start hex
+      q: 0,
+      r: 1,
+      s: -1,
+      id: '0,1,-1',
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: ['1'],
+    },
+    '0,-1,1': {
+      // player 1's enemy unit
+      q: 0,
+      r: -1,
+      s: 1,
+      id: '0,-1,1',
+      occupyingUnitID: '',
+      isUnitTail: false,
+      altitude: 5,
+      terrain: 'grass',
+      startzonePlayerIDs: ['0'],
+    },
+    [moveRange1HexWalkTestHexIDs.basicAdjacentFall_id]: {
       // adjacent fall, jumping into a hole
       q: -1,
       r: 1,
       s: 0,
-      id: moveRangeTestHexIDs.basicAdjacentFall_id,
+      id: moveRange1HexWalkTestHexIDs.basicAdjacentFall_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 1,
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
-    [moveRangeTestHexIDs.majorAdjacentFall_id]: {
+    [moveRange1HexWalkTestHexIDs.majorAdjacentFall_id]: {
       // adjacent fall, jumping into a hole
       q: -1,
       r: 2,
       s: -1,
-      id: moveRangeTestHexIDs.majorAdjacentFall_id,
+      id: moveRange1HexWalkTestHexIDs.majorAdjacentFall_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: -9,
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
-    [moveRangeTestHexIDs.cannotClimbOver_id]: {
+    [moveRange1HexWalkTestHexIDs.cannotClimbOver_id]: {
       // adjacent fall, jumping into a hole
       q: -2,
       r: 3,
       s: -1,
-      id: moveRangeTestHexIDs.cannotClimbOver_id,
+      id: moveRange1HexWalkTestHexIDs.cannotClimbOver_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
-    [moveRangeTestHexIDs.disengageOne_id]: {
+    [moveRange1HexWalkTestHexIDs.disengageOne_id]: {
       // the disengagement of bad-guy-1
       q: -2,
       r: 1,
       s: 1,
-      id: moveRangeTestHexIDs.disengageOne_id,
+      id: moveRange1HexWalkTestHexIDs.disengageOne_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
-    [moveRangeTestHexIDs.disengageOneAndFall_id]: {
+    [moveRange1HexWalkTestHexIDs.disengageOneAndFall_id]: {
       // the disengagement of bad-guy-1
       q: -2,
       r: 0,
       s: 2,
-      id: moveRangeTestHexIDs.disengageOneAndFall_id,
+      id: moveRange1HexWalkTestHexIDs.disengageOneAndFall_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 1,
@@ -95,38 +130,16 @@ export const moveRangeMap = {
       terrain: 'grass',
       startzonePlayerIDs: [''],
     },
-    '0,-1,1': {
-      q: 0,
-      r: -1,
-      s: 1,
-      id: '0,-1,1',
-      occupyingUnitID: '',
-      isUnitTail: false,
-      altitude: 5,
-      terrain: 'grass',
-      startzonePlayerIDs: ['0'],
-    },
-    [moveRangeTestHexIDs.engagedAdjacentSameLevel_id]: {
+    [moveRange1HexWalkTestHexIDs.engagedAdjacentSameLevel_id]: {
       q: 0,
       r: 0,
       s: 0,
-      id: moveRangeTestHexIDs.engagedAdjacentSameLevel_id,
+      id: moveRange1HexWalkTestHexIDs.engagedAdjacentSameLevel_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [],
-    },
-    '0,1,-1': {
-      q: 0,
-      r: 1,
-      s: -1,
-      id: '0,1,-1',
-      occupyingUnitID: '',
-      isUnitTail: false,
-      altitude: 5,
-      terrain: 'grass',
-      startzonePlayerIDs: ['1'],
     },
     // '1,-1,0': {
     //   q: 1,
@@ -139,33 +152,33 @@ export const moveRangeMap = {
     //   terrain: 'grass',
     //   startzonePlayerIDs: [],
     // },
-    [moveRangeTestHexIDs.safeAdjacentSameLevel_id]: {
+    [moveRange1HexWalkTestHexIDs.safeAdjacentSameLevel_id]: {
       q: 1,
       r: 0,
       s: -1,
-      id: moveRangeTestHexIDs.safeAdjacentSameLevel_id,
+      id: moveRange1HexWalkTestHexIDs.safeAdjacentSameLevel_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [],
     },
-    [moveRangeTestHexIDs.revealedGlyph_id]: {
+    [moveRange1HexWalkTestHexIDs.revealedGlyph_id]: {
       q: 0,
       r: 2,
       s: -2,
-      id: moveRangeTestHexIDs.revealedGlyph_id,
+      id: moveRange1HexWalkTestHexIDs.revealedGlyph_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,
       terrain: 'grass',
       startzonePlayerIDs: [],
     },
-    [moveRangeTestHexIDs.beyondRevealedGlyph_id]: {
+    [moveRange1HexWalkTestHexIDs.beyondRevealedGlyph_id]: {
       q: -1,
       r: 3,
       s: -2,
-      id: moveRangeTestHexIDs.beyondRevealedGlyph_id,
+      id: moveRange1HexWalkTestHexIDs.beyondRevealedGlyph_id,
       occupyingUnitID: '',
       isUnitTail: false,
       altitude: 5,

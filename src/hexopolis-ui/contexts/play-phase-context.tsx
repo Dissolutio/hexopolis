@@ -31,7 +31,7 @@ import {
   useBgioG,
   useBgioMoves,
 } from 'bgio-contexts'
-import { computeUnitMoveRange2 } from 'game/computeUnitMoveRange2'
+import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
 import {
   selectGameArmyCardAttacksAllowed,
   selectIfGameArmyCardHasAbility,
@@ -346,7 +346,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     if (isMovementStage) {
       if (selectedUnitID && selectedUnit) {
         setSelectedUnitMoveRange(() =>
-          computeUnitMoveRange2({
+          computeUnitMoveRange({
             unit: selectedUnit,
             isFlying,
             isGrappleGun,
