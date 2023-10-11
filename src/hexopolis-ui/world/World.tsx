@@ -6,6 +6,7 @@ import {
   Stage,
   Stars,
   Stats,
+  PerspectiveCamera,
 } from '@react-three/drei'
 
 import { HexMap3D } from './HexMap3D'
@@ -45,10 +46,10 @@ const World = () => {
         <HexMap3D />
         <SgtDrakeModel />
         <AgentCarrModel />
-        {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
+        <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} />
+        <OrbitControls />
       </Stage>
       {/* <Grid infiniteGrid /> */}
-      <OrbitControls />
     </Canvas>
   )
 }

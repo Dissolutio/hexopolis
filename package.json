@@ -15,6 +15,7 @@
     "boardgame.io": "^0.50.02",
     "esm": "^3.2.25",
     "framer-motion": "^7.6.18",
+    "framer-motion-3d": "^10.16.4",
     "install": "^0.13.0",
     "koa-static": "^5.0.0",
     "lodash": "^4.17.21",

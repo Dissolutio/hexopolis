@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import { motion } from 'framer-motion-3d'
+
 import { giantsTableBoardHexes } from './giantsTable'
 import { BoardHex, StringKeyedObj } from 'game/types'
 import { Edges } from '@react-three/drei'
@@ -37,21 +39,31 @@ export function HexMap3D() {
 const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
   const pixel = cubeToPixel(boardHex)
   const heightScale = boardHex.altitude === 0 ? 0.5 : boardHex.altitude // water, at 0 altitude, was rendering black darkness
+  const variants = {
+    initial: {
+      scale: [2, 1, 1],
+      transition: { duration: 3, repeat: Infinity },
+    },
+  }
   return (
-    <mesh
+    <motion.mesh
       key={boardHex.id}
       position={[pixel.x, boardHex.altitude / 4, pixel.y]}
       scale={[1, heightScale, 1]}
+      // scale={[-10, -10, -10]}
+      initial={true}
+      animate="initial"
+      variants={variants}
     >
       <cylinderGeometry args={[1, 1, 0.5, 6]} />
       <meshToonMaterial
         color={new THREE.Color(hexTerrainColor[boardHex.terrain])}
       />
-      <Edges
+      {/* <Edges
         scale={1.0}
         threshold={90} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
         color={new THREE.Color('black')}
-      />
-    </mesh>
+      /> */}
+    </motion.mesh>
   )
 }
