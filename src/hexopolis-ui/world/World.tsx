@@ -7,6 +7,7 @@ import {
   Stars,
   Billboard,
   Text,
+  Stats,
 } from '@react-three/drei'
 
 import { HexMap3D } from './HexMap3D'
@@ -42,11 +43,12 @@ const World = () => {
       />
       <ambientLight intensity={1} />
       <directionalLight position={[150, 150, 150]} intensity={1} />
+      <Stats />
       <Stage>
         <HexMap3D />
         <SgtDrakeModel />
         <AgentCarrModel />
-        {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
+        <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} />
       </Stage>
       {/* <Grid infiniteGrid /> */}
       <OrbitControls />
