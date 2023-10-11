@@ -25,11 +25,6 @@ const hexTerrainColor: StringKeyedObj = {
   sand: '#ab8e10',
 }
 export function HexMap3D() {
-  // https://threejs.org/docs/#api/en/objects/InstancedMesh
-  //   args:[geometry, material, count]
-  //     geometry - an instance of THREE.BufferGeometry
-  //     material - an instance of THREE.Material. Default is a new MeshBasicMaterial
-  //     count - the number of instances
   return (
     <>
       {boardHexesArray.map((bh) => {
@@ -53,9 +48,9 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
         color={new THREE.Color(hexTerrainColor[boardHex.terrain])}
       />
       <Edges
-        scale={1.01}
-        threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
-        color="white"
+        scale={1.0}
+        threshold={90} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+        color={new THREE.Color('black')}
       />
     </mesh>
   )

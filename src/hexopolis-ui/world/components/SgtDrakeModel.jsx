@@ -1,4 +1,4 @@
-import { Edges, Outlines, useGLTF } from '@react-three/drei'
+import { Outlines, useGLTF } from '@react-three/drei'
 import { cubeToPixel } from '../HexMap3D'
 
 const modelAltitudeAdjustment = {
@@ -9,7 +9,6 @@ export function SgtDrakeModel(props) {
   const hex = { q: 4, r: 9, s: -13, altitude: 4, id: '4,9,-13' }
   const pixel = cubeToPixel(hex)
   const { nodes, materials } = useGLTF('/sgt_drake_low_poly_colored.glb')
-  console.log('🚀 ~ file: SgtDrakeModel.jsx:12 ~ SgtDrakeModel ~ nodes:', nodes)
   return (
     <group {...props} dispose={null}>
       <group
