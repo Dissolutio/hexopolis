@@ -11,6 +11,7 @@ import {
 import { HexMap3D } from './HexMap3D'
 import { SgtDrakeModel } from './components/SgtDrakeModel'
 import { AgentCarrModel } from './components/AgentCarrModel'
+import { Deathwalker9000Model } from './components/Deathwalker9000Model'
 
 export const StyledFullScreenWorld = () => {
   return (
@@ -45,6 +46,8 @@ const World = () => {
         <HexMap3D />
         <SgtDrakeModel />
         <AgentCarrModel />
+        <Deathwalker9000Model />
+
         {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
       </Stage>
       {/* <Grid infiniteGrid /> */}
