@@ -18,7 +18,7 @@ export function SyvarrisModel() {
         hex.altitude / 4 + modelAltitudeAdjustment.syvarrisID,
         pixel.y,
       ]}
-      rotation={[0, Math.PI / 2, 0]}
+      rotation={[0, Math.PI, 0]}
     >
       <mesh
         castShadow
