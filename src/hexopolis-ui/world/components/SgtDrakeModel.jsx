@@ -4,7 +4,7 @@ import { cubeToPixel } from '../HexMap3D'
 const modelAltitudeAdjustment = {
   sgtDrakeRotvId: 1,
 }
-
+const initialAngleAdjustment = -(Math.PI * 3) / 6
 export function SgtDrakeModel(props) {
   const hex = { q: 4, r: 9, s: -13, altitude: 4, id: '4,9,-13' }
   const pixel = cubeToPixel(hex)
@@ -17,7 +17,7 @@ export function SgtDrakeModel(props) {
           hex.altitude / 4 + modelAltitudeAdjustment.sgtDrakeRotvId,
           pixel.y,
         ]}
-        rotation={[0, Math.PI, 0]}
+        rotation={[0, initialAngleAdjustment, 0]}
       >
         <mesh
           castShadow

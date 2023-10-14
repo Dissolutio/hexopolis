@@ -4,7 +4,7 @@ import { cubeToPixel } from '../HexMap3D'
 const modelAltitudeAdjustment = {
   agentCarrID: 1,
 }
-
+const initialAngleAdjustment = -(Math.PI * 7) / 6
 export function AgentCarrModel() {
   const hex = { q: 5, r: 9, s: -14, altitude: 4, id: '5,9,-14' }
   const pixel = cubeToPixel(hex)
@@ -16,7 +16,7 @@ export function AgentCarrModel() {
         hex.altitude / 4 + modelAltitudeAdjustment.agentCarrID,
         pixel.y,
       ]}
-      rotation={[0, Math.PI / 2, 0]}
+      rotation={[0, initialAngleAdjustment, 0]}
     >
       <mesh
         castShadow

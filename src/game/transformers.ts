@@ -105,6 +105,7 @@ export function transformGameArmyCardsToGameUnits(
       wounds: 0,
       movePoints: 0,
       is2Hex: preUnit.hexes === 2,
+      rotation: 0,
     }
     return newGameUnit
   })

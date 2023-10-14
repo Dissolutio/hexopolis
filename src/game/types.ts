@@ -231,6 +231,7 @@ export type GameUnit = {
   wounds: number
   movePoints: number
   is2Hex: boolean
+  rotation: number // 0-5
 }
 
 export type GameUnits = {

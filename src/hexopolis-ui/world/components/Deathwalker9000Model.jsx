@@ -4,7 +4,7 @@ import { cubeToPixel } from '../HexMap3D'
 const modelAltitudeAdjustment = {
   d9000Id: 1.95,
 }
-
+const initialAngleAdjustment = Math.PI
 export function Deathwalker9000Model(props) {
   const hex = { q: 6, r: 9, s: -15, altitude: 4, id: '6,9,-15' }
   const pixel = cubeToPixel(hex)
@@ -17,7 +17,7 @@ export function Deathwalker9000Model(props) {
           hex.altitude / 4 + modelAltitudeAdjustment.d9000Id,
           pixel.y,
         ]}
-        rotation={[0, Math.PI / 4, 0]}
+        rotation={[0, initialAngleAdjustment, 0]}
       >
         <mesh
           castShadow
