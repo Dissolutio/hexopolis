@@ -5,14 +5,14 @@ import {
   Text3D,
   Stage,
   Stars,
-  Billboard,
-  Text,
+  Stats,
 } from '@react-three/drei'
 
 import { HexMap3D } from './HexMap3D'
 import { SgtDrakeModel } from './components/SgtDrakeModel'
 import { AgentCarrModel } from './components/AgentCarrModel'
-import { Color } from 'three'
+import { Deathwalker9000Model } from './components/Deathwalker9000Model'
+import { SyvarrisModel } from './components/SyvarrisModel'
 
 export const StyledFullScreenWorld = () => {
   return (
@@ -42,10 +42,14 @@ const World = () => {
       />
       <ambientLight intensity={1} />
       <directionalLight position={[150, 150, 150]} intensity={1} />
+      <Stats />
       <Stage>
         <HexMap3D />
         <SgtDrakeModel />
         <AgentCarrModel />
+        <SyvarrisModel />
+        <Deathwalker9000Model />
+
         {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
       </Stage>
       {/* <Grid infiniteGrid /> */}
