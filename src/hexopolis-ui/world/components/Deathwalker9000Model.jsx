@@ -17,7 +17,7 @@ export function Deathwalker9000Model(props) {
           hex.altitude / 4 + modelAltitudeAdjustment.d9000Id,
           pixel.y,
         ]}
-        rotation={[0, Math.PI, 0]}
+        rotation={[0, Math.PI / 4, 0]}
       >
         <mesh
           castShadow
