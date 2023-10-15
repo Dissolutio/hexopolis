@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { cubeToPixel } from '../HexMap3D'
+import { cubeToPixel } from '../MapDisplay3D'
 
 const modelAltitudeAdjustment = {
   sgtDrakeRotvId: 1,

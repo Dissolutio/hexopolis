@@ -8,7 +8,7 @@ import {
   Stats,
 } from '@react-three/drei'
 
-import { HexMap3D } from './HexMap3D'
+import { HexMap3D } from './MapDisplay3D'
 import { SgtDrakeModel } from './components/SgtDrakeModel'
 import { AgentCarrModel } from './components/AgentCarrModel'
 import { Deathwalker9000Model } from './components/Deathwalker9000Model'
@@ -28,33 +28,41 @@ export const StyledFullScreenWorld = () => {
   )
 }
 
-const World = () => {
+export const World = () => {
   return (
-    <Canvas>
-      <Stars
-        radius={100}
-        depth={50}
-        count={5000}
-        factor={4}
-        saturation={0}
-        fade
-        speed={1}
-      />
-      <ambientLight intensity={1} />
-      <directionalLight position={[150, 150, 150]} intensity={1} />
-      <Stats />
-      <Stage>
-        <HexMap3D />
-        <SgtDrakeModel />
-        <AgentCarrModel />
-        <SyvarrisModel />
-        <Deathwalker9000Model />
+    <div
+      id="canvas-container"
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+    >
+      <Canvas>
+        <Stars
+          radius={100}
+          depth={50}
+          count={5000}
+          factor={4}
+          saturation={0}
+          fade
+          speed={1}
+        />
+        <ambientLight intensity={1} />
+        <directionalLight position={[150, 150, 150]} intensity={1} />
+        <Stats />
+        <Stage>
+          <HexMap3D />
+          <SgtDrakeModel />
+          <AgentCarrModel />
+          <SyvarrisModel />
+          <Deathwalker9000Model />
 
-        {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
-      </Stage>
-      {/* <Grid infiniteGrid /> */}
-      <OrbitControls />
-    </Canvas>
+          {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
+        </Stage>
+        {/* <Grid infiniteGrid /> */}
+        <OrbitControls />
+      </Canvas>
+    </div>
   )
 }
 

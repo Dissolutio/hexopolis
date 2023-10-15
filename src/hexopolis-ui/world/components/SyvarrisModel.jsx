@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { cubeToPixel } from '../HexMap3D'
+import { cubeToPixel } from '../MapDisplay3D'
 import { useState } from 'react'
 
 // depending on how the model was facing, and how high above the ground it was, in the editor it was made in (Blender)
