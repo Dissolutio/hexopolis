@@ -5,7 +5,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '9,0,-9',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '10,0,-10': {
     q: 10,
@@ -13,7 +13,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '10,0,-10',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '11,0,-11': {
     q: 11,
@@ -21,7 +21,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '11,0,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,0,-12': {
     q: 12,
@@ -29,7 +29,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '12,0,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,0,-13': {
     q: 13,
@@ -37,7 +37,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '13,0,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,0,-14': {
     q: 14,
@@ -45,7 +45,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '14,0,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,0,-15': {
     q: 15,
@@ -53,7 +53,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '15,0,-15',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '8,1,-9': {
     q: 8,
@@ -61,7 +61,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '8,1,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,1,-10': {
     q: 9,
@@ -69,7 +69,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '9,1,-10',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '10,1,-11': {
     q: 10,
@@ -77,7 +77,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '10,1,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,1,-12': {
     q: 11,
@@ -85,7 +85,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '11,1,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,1,-13': {
     q: 12,
@@ -93,7 +93,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '12,1,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,1,-14': {
     q: 13,
@@ -101,7 +101,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '13,1,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,1,-15': {
     q: 14,
@@ -109,7 +109,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '14,1,-15',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,1,-16': {
     q: 15,
@@ -117,7 +117,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '15,1,-16',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '16,1,-17': {
     q: 16,
@@ -125,7 +125,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '16,1,-17',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '7,2,-9': {
     q: 7,
@@ -133,7 +133,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '7,2,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '8,2,-10': {
     q: 8,
@@ -141,7 +141,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '8,2,-10',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '9,2,-11': {
     q: 9,
@@ -149,7 +149,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '9,2,-11',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '10,2,-12': {
     q: 10,
@@ -157,7 +157,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '10,2,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,2,-13': {
     q: 11,
@@ -165,7 +165,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '11,2,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,2,-14': {
     q: 12,
@@ -173,7 +173,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '12,2,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,2,-15': {
     q: 13,
@@ -181,7 +181,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '13,2,-15',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,2,-16': {
     q: 14,
@@ -189,7 +189,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '14,2,-16',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '15,2,-17': {
     q: 15,
@@ -197,7 +197,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '15,2,-17',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '16,2,-18': {
     q: 16,
@@ -205,7 +205,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '16,2,-18',
     terrain: 'rock',
-    altitude: 1,
+    altitude: 2,
   },
   '6,3,-9': {
     q: 6,
@@ -213,7 +213,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '6,3,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '7,3,-10': {
     q: 7,
@@ -221,7 +221,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '7,3,-10',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '8,3,-11': {
     q: 8,
@@ -229,7 +229,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '8,3,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,3,-12': {
     q: 9,
@@ -237,7 +237,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '9,3,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,3,-13': {
     q: 10,
@@ -245,7 +245,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '10,3,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,3,-14': {
     q: 11,
@@ -253,7 +253,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '11,3,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,3,-15': {
     q: 12,
@@ -261,7 +261,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '12,3,-15',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '13,3,-16': {
     q: 13,
@@ -269,7 +269,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '13,3,-16',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '14,3,-17': {
     q: 14,
@@ -277,7 +277,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '14,3,-17',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '15,3,-18': {
     q: 15,
@@ -285,7 +285,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '15,3,-18',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '16,3,-19': {
     q: 16,
@@ -293,7 +293,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '16,3,-19',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '0,4,-4': {
     q: 0,
@@ -301,7 +301,7 @@ export const giantsTableBoardHexes = {
     s: -4,
     id: '0,4,-4',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '1,4,-5': {
     q: 1,
@@ -309,7 +309,7 @@ export const giantsTableBoardHexes = {
     s: -5,
     id: '1,4,-5',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,4,-6': {
     q: 2,
@@ -317,7 +317,7 @@ export const giantsTableBoardHexes = {
     s: -6,
     id: '2,4,-6',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,4,-7': {
     q: 3,
@@ -325,7 +325,7 @@ export const giantsTableBoardHexes = {
     s: -7,
     id: '3,4,-7',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,4,-8': {
     q: 4,
@@ -333,7 +333,7 @@ export const giantsTableBoardHexes = {
     s: -8,
     id: '4,4,-8',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,4,-9': {
     q: 5,
@@ -341,7 +341,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '5,4,-9',
     terrain: 'grass',
-    altitude: 0,
+    altitude: 1,
   },
   '6,4,-10': {
     q: 6,
@@ -349,7 +349,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '6,4,-10',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '7,4,-11': {
     q: 7,
@@ -357,7 +357,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '7,4,-11',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '8,4,-12': {
     q: 8,
@@ -365,7 +365,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '8,4,-12',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '9,4,-13': {
     q: 9,
@@ -373,7 +373,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '9,4,-13',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '10,4,-14': {
     q: 10,
@@ -381,7 +381,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '10,4,-14',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '11,4,-15': {
     q: 11,
@@ -389,7 +389,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '11,4,-15',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '12,4,-16': {
     q: 12,
@@ -397,7 +397,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '12,4,-16',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '13,4,-17': {
     q: 13,
@@ -405,7 +405,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '13,4,-17',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '14,4,-18': {
     q: 14,
@@ -413,7 +413,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '14,4,-18',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '15,4,-19': {
     q: 15,
@@ -421,7 +421,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '15,4,-19',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '16,4,-20': {
     q: 16,
@@ -429,7 +429,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '16,4,-20',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '-2,5,-3': {
     q: -2,
@@ -438,7 +438,7 @@ export const giantsTableBoardHexes = {
     id: '-2,5,-3',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,5,-4': {
     q: -1,
@@ -447,7 +447,7 @@ export const giantsTableBoardHexes = {
     id: '-1,5,-4',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '0,5,-5': {
     q: 0,
@@ -455,7 +455,7 @@ export const giantsTableBoardHexes = {
     s: -5,
     id: '0,5,-5',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '1,5,-6': {
     q: 1,
@@ -463,7 +463,7 @@ export const giantsTableBoardHexes = {
     s: -6,
     id: '1,5,-6',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,5,-7': {
     q: 2,
@@ -471,7 +471,7 @@ export const giantsTableBoardHexes = {
     s: -7,
     id: '2,5,-7',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,5,-8': {
     q: 3,
@@ -479,7 +479,7 @@ export const giantsTableBoardHexes = {
     s: -8,
     id: '3,5,-8',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,5,-9': {
     q: 4,
@@ -487,7 +487,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '4,5,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,5,-10': {
     q: 5,
@@ -495,7 +495,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '5,5,-10',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '6,5,-11': {
     q: 6,
@@ -503,7 +503,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '6,5,-11',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '7,5,-12': {
     q: 7,
@@ -511,7 +511,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '7,5,-12',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '8,5,-13': {
     q: 8,
@@ -519,7 +519,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '8,5,-13',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '9,5,-14': {
     q: 9,
@@ -527,7 +527,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '9,5,-14',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '10,5,-15': {
     q: 10,
@@ -535,7 +535,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '10,5,-15',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '11,5,-16': {
     q: 11,
@@ -543,7 +543,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '11,5,-16',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '12,5,-17': {
     q: 12,
@@ -551,7 +551,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '12,5,-17',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '13,5,-18': {
     q: 13,
@@ -559,7 +559,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '13,5,-18',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '14,5,-19': {
     q: 14,
@@ -567,7 +567,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '14,5,-19',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '15,5,-20': {
     q: 15,
@@ -575,7 +575,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '15,5,-20',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '16,5,-21': {
     q: 16,
@@ -583,7 +583,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '16,5,-21',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '-3,6,-3': {
     q: -3,
@@ -592,7 +592,7 @@ export const giantsTableBoardHexes = {
     id: '-3,6,-3',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-2,6,-4': {
     q: -2,
@@ -601,7 +601,7 @@ export const giantsTableBoardHexes = {
     id: '-2,6,-4',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,6,-5': {
     q: -1,
@@ -610,7 +610,7 @@ export const giantsTableBoardHexes = {
     id: '-1,6,-5',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '0,6,-6': {
     q: 0,
@@ -618,7 +618,7 @@ export const giantsTableBoardHexes = {
     s: -6,
     id: '0,6,-6',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '1,6,-7': {
     q: 1,
@@ -626,7 +626,7 @@ export const giantsTableBoardHexes = {
     s: -7,
     id: '1,6,-7',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,6,-8': {
     q: 2,
@@ -634,7 +634,7 @@ export const giantsTableBoardHexes = {
     s: -8,
     id: '2,6,-8',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,6,-9': {
     q: 3,
@@ -642,7 +642,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '3,6,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,6,-10': {
     q: 4,
@@ -650,7 +650,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '4,6,-10',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,6,-11': {
     q: 5,
@@ -658,7 +658,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '5,6,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '6,6,-12': {
     q: 6,
@@ -666,7 +666,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '6,6,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '7,6,-13': {
     q: 7,
@@ -674,7 +674,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '7,6,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '8,6,-14': {
     q: 8,
@@ -682,7 +682,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '8,6,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,6,-15': {
     q: 9,
@@ -690,7 +690,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '9,6,-15',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,6,-16': {
     q: 10,
@@ -698,7 +698,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '10,6,-16',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,6,-17': {
     q: 11,
@@ -706,7 +706,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '11,6,-17',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,6,-18': {
     q: 12,
@@ -714,7 +714,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '12,6,-18',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,6,-19': {
     q: 13,
@@ -722,7 +722,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '13,6,-19',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,6,-20': {
     q: 14,
@@ -730,7 +730,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '14,6,-20',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '15,6,-21': {
     q: 15,
@@ -738,7 +738,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '15,6,-21',
     terrain: 'sand',
-    altitude: 1,
+    altitude: 2,
   },
   '-3,7,-4': {
     q: -3,
@@ -747,7 +747,7 @@ export const giantsTableBoardHexes = {
     id: '-3,7,-4',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-2,7,-5': {
     q: -2,
@@ -756,7 +756,7 @@ export const giantsTableBoardHexes = {
     id: '-2,7,-5',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,7,-6': {
     q: -1,
@@ -765,7 +765,7 @@ export const giantsTableBoardHexes = {
     id: '-1,7,-6',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '0,7,-7': {
     q: 0,
@@ -773,7 +773,7 @@ export const giantsTableBoardHexes = {
     s: -7,
     id: '0,7,-7',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '1,7,-8': {
     q: 1,
@@ -781,7 +781,7 @@ export const giantsTableBoardHexes = {
     s: -8,
     id: '1,7,-8',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,7,-9': {
     q: 2,
@@ -789,7 +789,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '2,7,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,7,-10': {
     q: 3,
@@ -797,7 +797,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '3,7,-10',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,7,-11': {
     q: 4,
@@ -805,7 +805,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '4,7,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,7,-12': {
     q: 5,
@@ -813,7 +813,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '5,7,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '6,7,-13': {
     q: 6,
@@ -821,7 +821,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '6,7,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '7,7,-14': {
     q: 7,
@@ -829,7 +829,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '7,7,-14',
     terrain: 'water',
-    altitude: 6,
+    altitude: 7,
   },
   '8,7,-15': {
     q: 8,
@@ -837,7 +837,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '8,7,-15',
     terrain: 'water',
-    altitude: 6,
+    altitude: 7,
   },
   '9,7,-16': {
     q: 9,
@@ -845,7 +845,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '9,7,-16',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,7,-17': {
     q: 10,
@@ -853,7 +853,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '10,7,-17',
     terrain: 'water',
-    altitude: 6,
+    altitude: 7,
   },
   '11,7,-18': {
     q: 11,
@@ -861,7 +861,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '11,7,-18',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '12,7,-19': {
     q: 12,
@@ -869,7 +869,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '12,7,-19',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,7,-20': {
     q: 13,
@@ -877,7 +877,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '13,7,-20',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,7,-21': {
     q: 14,
@@ -885,7 +885,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '14,7,-21',
     terrain: 'water',
-    altitude: 0,
+    altitude: 1,
   },
   '15,7,-22': {
     q: 15,
@@ -893,7 +893,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '15,7,-22',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '-4,8,-4': {
     q: -4,
@@ -902,7 +902,7 @@ export const giantsTableBoardHexes = {
     id: '-4,8,-4',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-3,8,-5': {
     q: -3,
@@ -911,7 +911,7 @@ export const giantsTableBoardHexes = {
     id: '-3,8,-5',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-2,8,-6': {
     q: -2,
@@ -920,7 +920,7 @@ export const giantsTableBoardHexes = {
     id: '-2,8,-6',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,8,-7': {
     q: -1,
@@ -929,7 +929,7 @@ export const giantsTableBoardHexes = {
     id: '-1,8,-7',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '0,8,-8': {
     q: 0,
@@ -938,7 +938,7 @@ export const giantsTableBoardHexes = {
     id: '0,8,-8',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '1,8,-9': {
     q: 1,
@@ -946,7 +946,7 @@ export const giantsTableBoardHexes = {
     s: -9,
     id: '1,8,-9',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,8,-10': {
     q: 2,
@@ -954,7 +954,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '2,8,-10',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,8,-11': {
     q: 3,
@@ -962,7 +962,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '3,8,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,8,-12': {
     q: 4,
@@ -970,7 +970,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '4,8,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,8,-13': {
     q: 5,
@@ -978,7 +978,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '5,8,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '6,8,-14': {
     q: 6,
@@ -986,7 +986,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '6,8,-14',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '7,8,-15': {
     q: 7,
@@ -994,7 +994,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '7,8,-15',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '8,8,-16': {
     q: 8,
@@ -1002,7 +1002,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '8,8,-16',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '9,8,-17': {
     q: 9,
@@ -1010,7 +1010,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '9,8,-17',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '10,8,-18': {
     q: 10,
@@ -1018,7 +1018,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '10,8,-18',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '11,8,-19': {
     q: 11,
@@ -1026,7 +1026,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '11,8,-19',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '12,8,-20': {
     q: 12,
@@ -1034,7 +1034,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '12,8,-20',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,8,-21': {
     q: 13,
@@ -1042,7 +1042,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '13,8,-21',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,8,-22': {
     q: 14,
@@ -1050,7 +1050,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '14,8,-22',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,8,-23': {
     q: 15,
@@ -1058,7 +1058,7 @@ export const giantsTableBoardHexes = {
     s: -23,
     id: '15,8,-23',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '-4,9,-5': {
     q: -4,
@@ -1067,7 +1067,7 @@ export const giantsTableBoardHexes = {
     id: '-4,9,-5',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-3,9,-6': {
     q: -3,
@@ -1076,7 +1076,7 @@ export const giantsTableBoardHexes = {
     id: '-3,9,-6',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-2,9,-7': {
     q: -2,
@@ -1085,7 +1085,7 @@ export const giantsTableBoardHexes = {
     id: '-2,9,-7',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,9,-8': {
     q: -1,
@@ -1094,7 +1094,7 @@ export const giantsTableBoardHexes = {
     id: '-1,9,-8',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '0,9,-9': {
     q: 0,
@@ -1103,7 +1103,7 @@ export const giantsTableBoardHexes = {
     id: '0,9,-9',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '1,9,-10': {
     q: 1,
@@ -1111,7 +1111,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '1,9,-10',
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '2,9,-11': {
     q: 2,
@@ -1119,7 +1119,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '2,9,-11',
     terrain: 'grass',
-    altitude: 2,
+    altitude: 3,
   },
   '3,9,-12': {
     q: 3,
@@ -1127,7 +1127,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '3,9,-12',
     terrain: 'grass',
-    altitude: 2,
+    altitude: 3,
   },
   '4,9,-13': {
     q: 4,
@@ -1135,7 +1135,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '4,9,-13',
     terrain: 'rock',
-    altitude: 4,
+    altitude: 5,
   },
   '5,9,-14': {
     q: 5,
@@ -1143,7 +1143,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '5,9,-14',
     terrain: 'rock',
-    altitude: 4,
+    altitude: 5,
   },
   '6,9,-15': {
     q: 6,
@@ -1151,7 +1151,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '6,9,-15',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '7,9,-16': {
     q: 7,
@@ -1159,7 +1159,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '7,9,-16',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '8,9,-17': {
     q: 8,
@@ -1167,7 +1167,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '8,9,-17',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,9,-18': {
     q: 9,
@@ -1175,7 +1175,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '9,9,-18',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '10,9,-19': {
     q: 10,
@@ -1183,7 +1183,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '10,9,-19',
     terrain: 'rock',
-    altitude: 6,
+    altitude: 7,
   },
   '11,9,-20': {
     q: 11,
@@ -1191,7 +1191,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '11,9,-20',
     terrain: 'rock',
-    altitude: 4,
+    altitude: 5,
   },
   '12,9,-21': {
     q: 12,
@@ -1199,7 +1199,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '12,9,-21',
     terrain: 'rock',
-    altitude: 4,
+    altitude: 5,
   },
   '13,9,-22': {
     q: 13,
@@ -1207,7 +1207,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '13,9,-22',
     terrain: 'grass',
-    altitude: 2,
+    altitude: 3,
   },
   '14,9,-23': {
     q: 14,
@@ -1215,7 +1215,7 @@ export const giantsTableBoardHexes = {
     s: -23,
     id: '14,9,-23',
     terrain: 'grass',
-    altitude: 2,
+    altitude: 3,
   },
   '15,9,-24': {
     q: 15,
@@ -1224,7 +1224,7 @@ export const giantsTableBoardHexes = {
     id: '15,9,-24',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '16,9,-25': {
     q: 16,
@@ -1233,7 +1233,7 @@ export const giantsTableBoardHexes = {
     id: '16,9,-25',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '17,9,-26': {
     q: 17,
@@ -1242,7 +1242,7 @@ export const giantsTableBoardHexes = {
     id: '17,9,-26',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '18,9,-27': {
     q: 18,
@@ -1251,7 +1251,7 @@ export const giantsTableBoardHexes = {
     id: '18,9,-27',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '19,9,-28': {
     q: 19,
@@ -1260,7 +1260,7 @@ export const giantsTableBoardHexes = {
     id: '19,9,-28',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '20,9,-29': {
     q: 20,
@@ -1269,7 +1269,7 @@ export const giantsTableBoardHexes = {
     id: '20,9,-29',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-5,10,-5': {
     q: -5,
@@ -1278,7 +1278,7 @@ export const giantsTableBoardHexes = {
     id: '-5,10,-5',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-4,10,-6': {
     q: -4,
@@ -1287,7 +1287,7 @@ export const giantsTableBoardHexes = {
     id: '-4,10,-6',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-3,10,-7': {
     q: -3,
@@ -1296,7 +1296,7 @@ export const giantsTableBoardHexes = {
     id: '-3,10,-7',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-2,10,-8': {
     q: -2,
@@ -1305,7 +1305,7 @@ export const giantsTableBoardHexes = {
     id: '-2,10,-8',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,10,-9': {
     q: -1,
@@ -1314,7 +1314,7 @@ export const giantsTableBoardHexes = {
     id: '-1,10,-9',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '0,10,-10': {
     q: 0,
@@ -1323,7 +1323,7 @@ export const giantsTableBoardHexes = {
     id: '0,10,-10',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '1,10,-11': {
     q: 1,
@@ -1331,7 +1331,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '1,10,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,10,-12': {
     q: 2,
@@ -1339,7 +1339,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '2,10,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,10,-13': {
     q: 3,
@@ -1347,7 +1347,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '3,10,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,10,-14': {
     q: 4,
@@ -1355,7 +1355,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '4,10,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,10,-15': {
     q: 5,
@@ -1363,7 +1363,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '5,10,-15',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '6,10,-16': {
     q: 6,
@@ -1371,7 +1371,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '6,10,-16',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '7,10,-17': {
     q: 7,
@@ -1379,7 +1379,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '7,10,-17',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '8,10,-18': {
     q: 8,
@@ -1387,7 +1387,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '8,10,-18',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,10,-19': {
     q: 9,
@@ -1395,7 +1395,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '9,10,-19',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,10,-20': {
     q: 10,
@@ -1403,7 +1403,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '10,10,-20',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,10,-21': {
     q: 11,
@@ -1411,7 +1411,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '11,10,-21',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,10,-22': {
     q: 12,
@@ -1419,7 +1419,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '12,10,-22',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,10,-23': {
     q: 13,
@@ -1427,7 +1427,7 @@ export const giantsTableBoardHexes = {
     s: -23,
     id: '13,10,-23',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,10,-24': {
     q: 14,
@@ -1435,7 +1435,7 @@ export const giantsTableBoardHexes = {
     s: -24,
     id: '14,10,-24',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,10,-25': {
     q: 15,
@@ -1444,7 +1444,7 @@ export const giantsTableBoardHexes = {
     id: '15,10,-25',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '16,10,-26': {
     q: 16,
@@ -1453,7 +1453,7 @@ export const giantsTableBoardHexes = {
     id: '16,10,-26',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '17,10,-27': {
     q: 17,
@@ -1462,7 +1462,7 @@ export const giantsTableBoardHexes = {
     id: '17,10,-27',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '18,10,-28': {
     q: 18,
@@ -1471,7 +1471,7 @@ export const giantsTableBoardHexes = {
     id: '18,10,-28',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '19,10,-29': {
     q: 19,
@@ -1480,7 +1480,7 @@ export const giantsTableBoardHexes = {
     id: '19,10,-29',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '-1,11,-10': {
     q: -1,
@@ -1488,7 +1488,7 @@ export const giantsTableBoardHexes = {
     s: -10,
     id: '-1,11,-10',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '0,11,-11': {
     q: 0,
@@ -1496,7 +1496,7 @@ export const giantsTableBoardHexes = {
     s: -11,
     id: '0,11,-11',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '1,11,-12': {
     q: 1,
@@ -1504,7 +1504,7 @@ export const giantsTableBoardHexes = {
     s: -12,
     id: '1,11,-12',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '2,11,-13': {
     q: 2,
@@ -1512,7 +1512,7 @@ export const giantsTableBoardHexes = {
     s: -13,
     id: '2,11,-13',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '3,11,-14': {
     q: 3,
@@ -1520,7 +1520,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '3,11,-14',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '4,11,-15': {
     q: 4,
@@ -1528,7 +1528,7 @@ export const giantsTableBoardHexes = {
     s: -15,
     id: '4,11,-15',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '5,11,-16': {
     q: 5,
@@ -1536,7 +1536,7 @@ export const giantsTableBoardHexes = {
     s: -16,
     id: '5,11,-16',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '6,11,-17': {
     q: 6,
@@ -1544,7 +1544,7 @@ export const giantsTableBoardHexes = {
     s: -17,
     id: '6,11,-17',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '7,11,-18': {
     q: 7,
@@ -1552,7 +1552,7 @@ export const giantsTableBoardHexes = {
     s: -18,
     id: '7,11,-18',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '8,11,-19': {
     q: 8,
@@ -1560,7 +1560,7 @@ export const giantsTableBoardHexes = {
     s: -19,
     id: '8,11,-19',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,11,-20': {
     q: 9,
@@ -1568,7 +1568,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '9,11,-20',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,11,-21': {
     q: 10,
@@ -1576,7 +1576,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '10,11,-21',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,11,-22': {
     q: 11,
@@ -1584,7 +1584,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '11,11,-22',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,11,-23': {
     q: 12,
@@ -1592,7 +1592,7 @@ export const giantsTableBoardHexes = {
     s: -23,
     id: '12,11,-23',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,11,-24': {
     q: 13,
@@ -1600,7 +1600,7 @@ export const giantsTableBoardHexes = {
     s: -24,
     id: '13,11,-24',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,11,-25': {
     q: 14,
@@ -1608,7 +1608,7 @@ export const giantsTableBoardHexes = {
     s: -25,
     id: '14,11,-25',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,11,-26': {
     q: 15,
@@ -1617,7 +1617,7 @@ export const giantsTableBoardHexes = {
     id: '15,11,-26',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '16,11,-27': {
     q: 16,
@@ -1626,7 +1626,7 @@ export const giantsTableBoardHexes = {
     id: '16,11,-27',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '17,11,-28': {
     q: 17,
@@ -1635,7 +1635,7 @@ export const giantsTableBoardHexes = {
     id: '17,11,-28',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '18,11,-29': {
     q: 18,
@@ -1644,7 +1644,7 @@ export const giantsTableBoardHexes = {
     id: '18,11,-29',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '19,11,-30': {
     q: 19,
@@ -1653,7 +1653,7 @@ export const giantsTableBoardHexes = {
     id: '19,11,-30',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '8,12,-20': {
     q: 8,
@@ -1661,7 +1661,7 @@ export const giantsTableBoardHexes = {
     s: -20,
     id: '8,12,-20',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,12,-21': {
     q: 9,
@@ -1669,7 +1669,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '9,12,-21',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,12,-22': {
     q: 10,
@@ -1677,7 +1677,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '10,12,-22',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,12,-23': {
     q: 11,
@@ -1685,7 +1685,7 @@ export const giantsTableBoardHexes = {
     s: -23,
     id: '11,12,-23',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,12,-24': {
     q: 12,
@@ -1693,7 +1693,7 @@ export const giantsTableBoardHexes = {
     s: -24,
     id: '12,12,-24',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,12,-25': {
     q: 13,
@@ -1701,7 +1701,7 @@ export const giantsTableBoardHexes = {
     s: -25,
     id: '13,12,-25',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,12,-26': {
     q: 14,
@@ -1709,7 +1709,7 @@ export const giantsTableBoardHexes = {
     s: -26,
     id: '14,12,-26',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,12,-27': {
     q: 15,
@@ -1717,7 +1717,7 @@ export const giantsTableBoardHexes = {
     s: -27,
     id: '15,12,-27',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '16,12,-28': {
     q: 16,
@@ -1726,7 +1726,7 @@ export const giantsTableBoardHexes = {
     id: '16,12,-28',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '17,12,-29': {
     q: 17,
@@ -1735,7 +1735,7 @@ export const giantsTableBoardHexes = {
     id: '17,12,-29',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '18,12,-30': {
     q: 18,
@@ -1744,7 +1744,7 @@ export const giantsTableBoardHexes = {
     id: '18,12,-30',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '8,13,-21': {
     q: 8,
@@ -1752,7 +1752,7 @@ export const giantsTableBoardHexes = {
     s: -21,
     id: '8,13,-21',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '9,13,-22': {
     q: 9,
@@ -1760,7 +1760,7 @@ export const giantsTableBoardHexes = {
     s: -22,
     id: '9,13,-22',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '10,13,-23': {
     q: 10,
@@ -1768,7 +1768,7 @@ export const giantsTableBoardHexes = {
     s: -23,
     id: '10,13,-23',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '11,13,-24': {
     q: 11,
@@ -1776,7 +1776,7 @@ export const giantsTableBoardHexes = {
     s: -24,
     id: '11,13,-24',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '12,13,-25': {
     q: 12,
@@ -1784,7 +1784,7 @@ export const giantsTableBoardHexes = {
     s: -25,
     id: '12,13,-25',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '13,13,-26': {
     q: 13,
@@ -1792,7 +1792,7 @@ export const giantsTableBoardHexes = {
     s: -26,
     id: '13,13,-26',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '14,13,-27': {
     q: 14,
@@ -1800,7 +1800,7 @@ export const giantsTableBoardHexes = {
     s: -27,
     id: '14,13,-27',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '15,13,-28': {
     q: 15,
@@ -1808,7 +1808,7 @@ export const giantsTableBoardHexes = {
     s: -28,
     id: '15,13,-28',
     terrain: 'grass',
-    altitude: 1,
+    altitude: 2,
   },
   '16,13,-29': {
     q: 16,
@@ -1817,7 +1817,7 @@ export const giantsTableBoardHexes = {
     id: '16,13,-29',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '17,13,-30': {
     q: 17,
@@ -1826,7 +1826,7 @@ export const giantsTableBoardHexes = {
     id: '17,13,-30',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '18,13,-31': {
     q: 18,
@@ -1835,7 +1835,7 @@ export const giantsTableBoardHexes = {
     id: '18,13,-31',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '16,14,-30': {
     q: 16,
@@ -1844,7 +1844,7 @@ export const giantsTableBoardHexes = {
     id: '16,14,-30',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
   '17,14,-31': {
     q: 17,
@@ -1853,6 +1853,6 @@ export const giantsTableBoardHexes = {
     id: '17,14,-31',
 
     terrain: 'rock',
-    altitude: 2,
+    altitude: 3,
   },
 }

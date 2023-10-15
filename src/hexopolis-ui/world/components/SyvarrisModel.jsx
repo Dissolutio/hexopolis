@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 // depending on how the model was facing, and how high above the ground it was, in the editor it was made in (Blender)
 const modelAltitudeAdjustment = {
-  syvarrisID: 2,
+  syvarrisID: 2.5,
 }
 const initialAngleAdjustment = -(Math.PI * 2) / 3
 

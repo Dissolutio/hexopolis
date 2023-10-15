@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import { cubeToPixel } from '../MapDisplay3D'
 
 const modelAltitudeAdjustment = {
-  agentCarrID: 1,
+  agentCarrID: 1.5,
 }
 const initialAngleAdjustment = -(Math.PI * 7) / 6
 export function AgentCarrModel() {

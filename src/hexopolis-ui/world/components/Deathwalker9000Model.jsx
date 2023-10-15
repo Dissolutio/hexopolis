@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import { cubeToPixel } from '../MapDisplay3D'
 
 const modelAltitudeAdjustment = {
-  d9000Id: 1.95,
+  d9000Id: 2.45,
 }
 const initialAngleAdjustment = Math.PI
 export function Deathwalker9000Model(props) {

@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import { cubeToPixel } from '../MapDisplay3D'
 
 const modelAltitudeAdjustment = {
-  sgtDrakeRotvId: 1,
+  sgtDrakeRotvId: 1.5,
 }
 const initialAngleAdjustment = -(Math.PI * 3) / 6
 export function SgtDrakeModel(props) {

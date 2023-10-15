@@ -8,7 +8,7 @@ import {
   Stats,
 } from '@react-three/drei'
 
-import { HexMap3D } from './MapDisplay3D'
+import { MapDisplay3D } from './MapDisplay3D'
 import { SgtDrakeModel } from './components/SgtDrakeModel'
 import { AgentCarrModel } from './components/AgentCarrModel'
 import { Deathwalker9000Model } from './components/Deathwalker9000Model'
@@ -51,7 +51,7 @@ export const World = () => {
         <directionalLight position={[150, 150, 150]} intensity={1} />
         <Stats />
         <Stage>
-          <HexMap3D />
+          <MapDisplay3D />
           <SgtDrakeModel />
           <AgentCarrModel />
           <SyvarrisModel />

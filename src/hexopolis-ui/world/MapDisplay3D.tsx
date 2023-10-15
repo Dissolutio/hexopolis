@@ -37,7 +37,7 @@ const hexTerrainColor: StringKeyedObj = {
   rock: '#475776',
   sand: '#ab8e10',
 }
-export function HexMap3D() {
+export function MapDisplay3D() {
   return (
     <>
       {boardHexesArray.map((bh) => {
@@ -48,34 +48,16 @@ export function HexMap3D() {
 }
 
 const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
-  const genPointsForHeightRing = (height: number) => {
-    return [
-      new Vector3(1, 0, 0),
-      new Vector3(0.5, Math.sqrt(3) / 2, 0),
-      new Vector3(-0.5, Math.sqrt(3) / 2, 0),
-      new Vector3(-1, 0, 0),
-      new Vector3(-0.5, -Math.sqrt(3) / 2, 0),
-      new Vector3(0.5, -Math.sqrt(3) / 2, 0),
-      new Vector3(1, 0, 0),
-    ]
-  }
-  const points = [
-    new Vector3(1, 0, 0),
-    new Vector3(0.5, Math.sqrt(3) / 2, 0),
-    new Vector3(-0.5, Math.sqrt(3) / 2, 0),
-    new Vector3(-1, 0, 0),
-    new Vector3(-0.5, -Math.sqrt(3) / 2, 0),
-    new Vector3(0.5, -Math.sqrt(3) / 2, 0),
-    new Vector3(1, 0, 0),
-  ]
-  const lineGeometry = new BufferGeometry().setFromPoints(points)
   const pixel = cubeToPixel(boardHex)
-  const heightScale = boardHex.altitude === 0 ? 1 : boardHex.altitude // water, at 0 altitude, was rendering black darkness
-  const heightRingsForThisHex = [lineGeometry]
-  // fluid tiles will be a little thinner
-  const hexTileHeight = boardHex.terrain === 'water' ? 0.25 : 0.5
-  // also, because fluid tiles technically county as the height BELOW them, they are boosted up to render their bottom on the ground of their level
-  const hexYAdjust = boardHex.terrain === 'water' ? -0.125 : 0
+  const oneLevel = 0.5
+  const halfLevel = 0.25
+  const quarterLevel = 0.125
+  const heightRingsForThisHex = [boardHex.altitude]
+  // TODO: fluid tiles at higher altitudes need scale-help
+  const heightScale = boardHex.altitude
+  // water & fluid tiles will be a little thinner
+  const hexTileHeight = boardHex.terrain === 'water' ? halfLevel : oneLevel
+  const hexYAdjust = boardHex.terrain === 'water' ? quarterLevel : 0
   return (
     <group
       position={[
@@ -85,19 +67,9 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
         pixel.y,
       ]}
     >
-      {heightRingsForThisHex.map((hexLineGeometry) => (
-        <line_
-          geometry={hexLineGeometry}
-          rotation={[Math.PI / 2, 0, Math.PI / 6]}
-        >
-          <lineBasicMaterial
-            attach="material"
-            color={'white'}
-            linewidth={1}
-            linecap={'round'}
-            linejoin={'round'}
-          />
-        </line_>
+      {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
+      {heightRingsForThisHex.map(() => (
+        <HeightRing height={boardHex.altitude} />
       ))}
 
       <mesh key={boardHex.id} scale={[1, heightScale, 1]}>
@@ -107,5 +79,32 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
         />
       </mesh>
     </group>
+  )
+}
+
+const genPointsForHeightRing = (height: number) => {
+  return [
+    new Vector3(1, 0, 0),
+    new Vector3(0.5, Math.sqrt(3) / 2, 0),
+    new Vector3(-0.5, Math.sqrt(3) / 2, 0),
+    new Vector3(-1, 0, 0),
+    new Vector3(-0.5, -Math.sqrt(3) / 2, 0),
+    new Vector3(0.5, -Math.sqrt(3) / 2, 0),
+    new Vector3(1, 0, 0),
+  ]
+}
+const HeightRing = ({ height }: { height: number }) => {
+  const points = genPointsForHeightRing(height)
+  const lineGeometry = new BufferGeometry().setFromPoints(points)
+  return (
+    <line_ geometry={lineGeometry} rotation={[Math.PI / 2, 0, Math.PI / 6]}>
+      <lineBasicMaterial
+        attach="material"
+        color={'white'}
+        linewidth={1}
+        linecap={'round'}
+        linejoin={'round'}
+      />
+    </line_>
   )
 }
