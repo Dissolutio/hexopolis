@@ -139,6 +139,7 @@ export type BoardHex = HexCoordinates & {
   altitude: number
   startzonePlayerIDs: string[]
   terrain: string
+  subTerrain?: string // this is the same as terrain for solid terrain (grass, rock, sand) but separate for fluid terrains (water, lava, shadow)
 }
 export type BoardHexes = {
   [key: string]: BoardHex
