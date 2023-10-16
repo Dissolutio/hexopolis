@@ -132,3 +132,37 @@ export function generateReadyStateForNumPlayers(
   const result = rdyState
   return result
 }
+
+export function isFluidTerrainHex(terrain: string) {
+  if (
+    terrain === 'water' ||
+    terrain === 'lava' ||
+    terrain === 'swampWater' ||
+    terrain === 'ice' ||
+    terrain === 'shadow'
+  ) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export function getDefaultSubTerrainForTerrain(terrain: string) {
+  if (terrain === 'lava') {
+    return 'lavaField'
+  }
+  if (terrain === 'water') {
+    return 'rock'
+  }
+  if (terrain === 'swampWater') {
+    return 'swamp'
+  }
+  if (terrain === 'ice') {
+    return 'snow'
+  }
+  if (terrain === 'shadow') {
+    return 'dungeon'
+  } else {
+    return 'rock'
+  }
+}
