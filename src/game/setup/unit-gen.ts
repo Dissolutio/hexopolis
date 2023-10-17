@@ -41,8 +41,19 @@ export const startingArmiesForGiantsTable2Player: StartingArmies = {
   '1': [mimringID, kravMagaID, carrID, tarnID],
 }
 export const startingArmiesForForsakenWaters2Player: StartingArmies = {
-  '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
-  '1': [izumiID, syvarrisID, airbornID, carrID],
+  // original starting armies (prod) below:
+  // '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
+  // '1': [izumiID, syvarrisID, airbornID, carrID],
+
+  // for devving 3d below:
+  '0': [
+    deathwalker9000ID,
+    // drake1ID,
+  ],
+  '1': [
+    syvarrisID,
+    //  carrID,
+  ],
 }
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],

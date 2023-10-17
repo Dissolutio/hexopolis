@@ -1,20 +1,21 @@
 import { useGLTF } from '@react-three/drei'
 import { cubeToPixel } from 'game/hex-utils'
+import { BoardHex } from 'game/types'
 
 const modelAltitudeAdjustment = {
   d9000Id: 2.45,
 }
 const initialAngleAdjustment = Math.PI
-export function Deathwalker9000Model(props) {
-  const hex = { q: 6, r: 9, s: -15, altitude: 4, id: '6,9,-15' }
-  const pixel = cubeToPixel(hex)
-  const { nodes, materials } = useGLTF('/d9000_low_poly_colored.glb')
+
+export function Deathwalker9000Model({ boardHex }: { boardHex: BoardHex }) {
+  const pixel = cubeToPixel(boardHex)
+  const { nodes, materials } = useGLTF('/d9000_low_poly_colored.glb') as any
   return (
-    <group {...props} dispose={null}>
+    <group dispose={null}>
       <group
         position={[
           pixel.x,
-          hex.altitude / 4 + modelAltitudeAdjustment.d9000Id,
+          boardHex.altitude / 4 + modelAltitudeAdjustment.d9000Id,
           pixel.y,
         ]}
         rotation={[0, initialAngleAdjustment, 0]}

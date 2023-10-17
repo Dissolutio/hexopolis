@@ -1,23 +1,18 @@
 import { useGLTF } from '@react-three/drei'
 import { cubeToPixel } from 'game/hex-utils'
+import { BoardHex } from 'game/types'
 import { useState } from 'react'
 
 // depending on how the model was facing, and how high above the ground it was, in the editor it was made in (Blender), it may require adjusting
 const initialAngleAdjustment = -(Math.PI * 2) / 3
-
-export function SyvarrisModel() {
+export function SyvarrisModel({ boardHex }: { boardHex: BoardHex }) {
   const rotation = 0
   const totalRotation = initialAngleAdjustment + rotation * (Math.PI / 3)
-  // const hex = { q: 7, r: 9, s: -16, altitude: 7, id: '7,9,-16' }
-  // const hex = { q: 6, r: 4, s: -10, altitude: 1, id: '6,4,-10' }
-  // const hex = { q: 5, r: 4, s: -9, altitude: 1, id: '5,4,-9' }
-  const hex = { q: 7, r: 7, s: -14, altitude: 5, id: '7,7,-14' }
-  const pixel = cubeToPixel(hex)
-  const { nodes, materials } = useGLTF('/syvarris_low_poly.glb')
-  const [active, setActive] = useState(false)
+  const pixel = cubeToPixel(boardHex)
+  const { nodes, materials } = useGLTF('/syvarris_low_poly.glb') as any
   return (
     <group
-      position={[pixel.x, hex.altitude / 2, pixel.y]}
+      position={[pixel.x, boardHex.altitude / 2, pixel.y]}
       rotation={[0, totalRotation, 0]}
     >
       <mesh
