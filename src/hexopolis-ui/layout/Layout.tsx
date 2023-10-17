@@ -40,8 +40,8 @@ const LayoutTop = styled.div`
 const LayoutMiddle = styled.div`
   width: 100%;
   height: 60vh;
-  position: relative;
-  overflow: auto;
+  /* position: relative; */
+  /* overflow: auto; */
 `
 const LayoutBottom = styled.div`
   display: flex;
@@ -52,4 +52,5 @@ const LayoutBottom = styled.div`
   margin: 0;
   box-sizing: border-box;
   background: var(--black);
+  overflow: auto;
 `
