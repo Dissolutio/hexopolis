@@ -5,9 +5,6 @@ import styled from 'styled-components'
 import { LayoutContainer } from './LayoutContainerBrokenLint'
 import { ModalDisplay } from './ModalDisplay'
 
-// This component is where a player's theme is set to their player color
-// ? perhaps this could be move into theme.js, but the playerID will still be dynamic....
-
 export const Layout = ({
   children,
   mapWrapperRef,
@@ -39,7 +36,7 @@ const LayoutTop = styled.div`
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  height: 60vh;
+  height: var(--middle-size);
   /* position: relative; */
   /* overflow: auto; */
 `
@@ -47,10 +44,10 @@ const LayoutBottom = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  min-height: calc(100vh - 60vh - var(--navbar-height));
+  height: calc(100vh - var(--middle-size) - var(--navbar-height));
   padding: 4px 16px;
   margin: 0;
   box-sizing: border-box;
   background: var(--black);
-  overflow: auto;
+  overflow: scroll;
 `
