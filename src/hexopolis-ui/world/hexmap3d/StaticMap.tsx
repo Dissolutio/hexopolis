@@ -10,9 +10,7 @@ export function StaticMap({ boardHexes }: { boardHexes?: BoardHexes }) {
     <>
       {hexArray.map((bh) => {
         return (
-          <>
-            <MapHex3D boardHex={bh as BoardHex} />
-          </>
+          <MapHex3D key={`${bh.id}${bh.altitude}`} boardHex={bh as BoardHex} />
         )
       })}
     </>

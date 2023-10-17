@@ -1,5 +1,5 @@
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
-import { moveRangePassThruTestHexIDs } from 'game/setup/moveRangePassThruMap'
+import { moveRangePassThruTestHexIDs } from 'game/setup/maps/moveRangePassThruMap'
 import { makeMoveRangePassThruScenario } from 'game/setup/scenarios'
 
 describe('phantom walking unit should be able to move thru an enemy unit', () => {

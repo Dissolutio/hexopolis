@@ -1,5 +1,5 @@
 import { computeUnitMoveRange } from 'game/computeUnitMoveRange'
-import { moveRange1HexFlyTestHexIDs } from 'game/setup/moveRange1HexFlyMap'
+import { moveRange1HexFlyTestHexIDs } from 'game/setup/maps/moveRange1HexFlyMap'
 import { makeMoveRange1HexFlyScenario } from 'game/setup/scenarios'
 
 describe('Move range, 1-hex fly: see if move range is working correctly on the moveRangeTest map', () => {
