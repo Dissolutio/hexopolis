@@ -14,7 +14,6 @@ import { SgtDrakeModel } from './components/SgtDrakeModel'
 import { AgentCarrModel } from './components/AgentCarrModel'
 import { Deathwalker9000Model } from './components/Deathwalker9000Model'
 import { SyvarrisModel } from './components/SyvarrisModel'
-import { StaticMap } from './hexmap3d/StaticMap'
 
 export const World = () => {
   return (
@@ -109,50 +108,5 @@ const Text3DExample = () => {
         maxPolarAngle={Math.PI / 2}
       />
     </>
-  )
-}
-
-export const StyledFullScreenWorld = () => {
-  return (
-    <div
-      // id="canvas-container"
-      style={{
-        width: '100vw',
-        height: '100vh',
-      }}
-    >
-      <div
-        id="canvas-container"
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        <Canvas>
-          <Stars
-            radius={100}
-            depth={50}
-            count={5000}
-            factor={4}
-            saturation={0}
-            fade
-            speed={1}
-          />
-          <ambientLight intensity={1} />
-          <directionalLight position={[150, 150, 150]} intensity={1} />
-          <Stats />
-          <Stage>
-            {/* <MapDisplay3D /> */}
-            <StaticMap />
-            <SgtDrakeModel />
-            {/* <AgentCarrModel />
-          <SyvarrisModel />
-          <Deathwalker9000Model /> */}
-          </Stage>
-          {/* <Grid infiniteGrid /> */}
-          <OrbitControls />
-        </Canvas>
-      </div>
-    </div>
   )
 }

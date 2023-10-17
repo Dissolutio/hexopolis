@@ -11,7 +11,7 @@ import { Hexoscape } from 'game/game'
 import { isLocalApp, SERVER } from './constants'
 import { Board } from 'hexopolis-ui/Board'
 import { DemoLocalGameLinks, LocalApp, LocalDemoClients } from './LocalApp'
-import { StyledFullScreenWorld } from 'hexopolis-ui/world/World'
+import { StyledFullScreenWorld } from 'hexopolis-ui/world/hexmap3d/StaticMap'
 
 const MultiplayerGameClient = Client({
   game: Hexoscape,
