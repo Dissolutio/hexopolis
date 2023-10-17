@@ -6,6 +6,7 @@ import { SyvarrisModel } from '../components/SyvarrisModel'
 import { SgtDrakeModel } from '../components/SgtDrakeModel'
 import { AgentCarrModel } from '../components/AgentCarrModel'
 import { ThreeEvent } from '@react-three/fiber'
+import { cubeToPixel } from 'game/hex-utils'
 
 type Props = {
   boardHex: BoardHex
@@ -22,30 +23,44 @@ export const GameUnit3D = ({
   if (!armyCardID) {
     return null
   }
+  const pixel = cubeToPixel(boardHex)
 
   switch (armyCardID) {
     case 'hs1001':
       // deathwalker 9000
       return (
         <group
-          onClick={(e) => {
-            if (onClick) {
-              onClick(e, boardHex)
-            }
-          }}
+          position={[pixel.x, boardHex.altitude / 2, pixel.y]}
+          // onClick={(e) => {
+          //   if (onClick) {
+          //     onClick(e, boardHex)
+          //   }
+          // }}
         >
           <Deathwalker9000Model boardHex={boardHex} />
         </group>
       )
     case 'hs1004':
       // syvarris
-      return <SyvarrisModel boardHex={boardHex} />
+      return (
+        <group position={[pixel.x, boardHex.altitude / 2, pixel.y]}>
+          <SyvarrisModel boardHex={boardHex} />
+        </group>
+      )
     case 'hs1003':
       // sgt drake
-      return <SgtDrakeModel boardHex={boardHex} />
+      return (
+        <group position={[pixel.x, boardHex.altitude / 2, pixel.y]}>
+          <SgtDrakeModel boardHex={boardHex} />
+        </group>
+      )
     case 'hs1007':
       // agent carr
-      return <AgentCarrModel boardHex={boardHex} />
+      return (
+        <group position={[pixel.x, boardHex.altitude / 2, pixel.y]}>
+          <AgentCarrModel boardHex={boardHex} />
+        </group>
+      )
 
     // case 'test001':
     //   return <GiTargetDummy {...gameIconProps} />

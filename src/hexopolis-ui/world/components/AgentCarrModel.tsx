@@ -1,22 +1,13 @@
 import { useGLTF } from '@react-three/drei'
-import { cubeToPixel } from 'game/hex-utils'
 import { BoardHex } from 'game/types'
 
-// const modelAltitudeAdjustment = {
-//   agentCarrID: 1.5,
-// }
 const initialAngleAdjustment = -(Math.PI * 7) / 6
 export function AgentCarrModel({ boardHex }: { boardHex: BoardHex }) {
-  // const boardHex = { q: 5, r: 9, s: -14, altitude: 4, id: '5,9,-14' }
-  const pixel = cubeToPixel(boardHex)
   const { nodes, materials } = useGLTF(
     '/agent_carr_low_poly_colored.glb'
   ) as any
   return (
-    <group
-      position={[pixel.x, boardHex.altitude / 2, pixel.y]}
-      rotation={[0, initialAngleAdjustment, 0]}
-    >
+    <group rotation={[0, initialAngleAdjustment, 0]}>
       <mesh
         castShadow
         receiveShadow

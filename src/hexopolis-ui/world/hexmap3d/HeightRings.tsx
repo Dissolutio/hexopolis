@@ -76,16 +76,28 @@ const HeightRing = ({
 }) => {
   const points = genPointsForHeightRing(height)
   const lineGeometry = new BufferGeometry().setFromPoints(points)
+  const isNotModified =
+    !isHighlighted &&
+    !isInSafeMoveRange &&
+    !isInEngageMoveRange &&
+    !isInDisengageMoveRange
   const getColor = () => {
+    // color the top ring a grayish-white to highlight them, color the interior height rings the terrain color
     if (height === top) {
       if (isHighlighted) {
         return 'white'
       }
       if (isInSafeMoveRange) {
         return new Color('#bad954')
+      }
+      if (isInEngageMoveRange) {
+        return new Color('#e09628')
+      }
+      if (isInDisengageMoveRange) {
+        return new Color('#e25328')
       } else {
         // top rings, if not modified, are gray to highlight the edge between hexes
-        return 'black'
+        return new Color('gray')
       }
     } else return new Color(hexTerrainColor[terrain])
   }
@@ -95,13 +107,11 @@ const HeightRing = ({
       position={position}
       rotation={[0, Math.PI / 6, 0]}
     >
-      <lineDashedMaterial
+      <lineBasicMaterial
         attach="material"
-        // color the top ring a grayish-white to highlight them, color the interior height rings the terrain color
+        transparent
+        opacity={top === height && isNotModified ? 0.1 : 1.0}
         color={getColor()}
-        // scale={1}
-        dashSize={0.02}
-        gapSize={0.02}
         linewidth={1}
         linecap={'round'}
         linejoin={'round'}
