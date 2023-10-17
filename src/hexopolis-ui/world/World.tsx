@@ -6,6 +6,7 @@ import {
   Stage,
   Stars,
   Stats,
+  PerspectiveCamera,
 } from '@react-three/drei'
 
 import { MapDisplay3D } from './hexmap3d/MapDisplay3D'
@@ -34,10 +35,11 @@ export const World = () => {
           fade
           speed={1}
         />
-        <ambientLight intensity={1} />
-        <directionalLight position={[150, 150, 150]} intensity={1} />
+        {/* <ambientLight intensity={1} /> */}
+        {/* <directionalLight position={[150, 150, 150]} intensity={1} /> */}
         <Stats />
-        <Stage>
+        <Stage adjustCamera={false} intensity={5}>
+          <axesHelper scale={[10, 30, 30]} />
           <MapDisplay3D />
           <SgtDrakeModel />
           {/* <AgentCarrModel />
@@ -45,7 +47,10 @@ export const World = () => {
           <Deathwalker9000Model /> */}
         </Stage>
         {/* <Grid infiniteGrid /> */}
-        <OrbitControls />
+        <PerspectiveCamera makeDefault position={[0, 30, 50]} fov={30} />
+        <OrbitControls
+        //  onChange?: (e?: OrbitControlsChangeEvent) => void; // use this to save camera position!
+        />
       </Canvas>
     </div>
   )
