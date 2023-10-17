@@ -52,8 +52,8 @@ export const World = () => {
         <Stats />
         <Stage>
           <MapDisplay3D />
-          {/* <SgtDrakeModel />
-          <AgentCarrModel />
+          <SgtDrakeModel />
+          {/* <AgentCarrModel />
           <SyvarrisModel />
           <Deathwalker9000Model /> */}
         </Stage>
