@@ -9,7 +9,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,0,-1': {
       q: 1,
@@ -20,7 +20,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '2,0,-2': {
       q: 2,
@@ -31,7 +31,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '3,0,-3': {
       q: 3,
@@ -42,7 +42,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '4,0,-4': {
       q: 4,
@@ -53,7 +53,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '5,0,-5': {
       q: 5,
@@ -64,7 +64,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '6,0,-6': {
       q: 6,
@@ -75,7 +75,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '7,0,-7': {
       q: 7,
@@ -86,7 +86,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '8,0,-8': {
       q: 8,
@@ -97,7 +97,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '9,0,-9': {
       q: 9,
@@ -108,7 +108,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '10,0,-10': {
       q: 10,
@@ -119,7 +119,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '11,0,-11': {
       q: 11,
@@ -130,7 +130,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '12,0,-12': {
       q: 12,
@@ -141,7 +141,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '13,0,-13': {
       q: 13,
@@ -152,7 +152,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '14,0,-14': {
       q: 14,
@@ -163,7 +163,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '15,0,-15': {
       q: 15,
@@ -174,7 +174,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '16,0,-16': {
       q: 16,
@@ -185,7 +185,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '17,0,-17': {
       q: 17,
@@ -196,7 +196,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '18,0,-18': {
       q: 18,
@@ -207,7 +207,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '19,0,-19': {
       q: 19,
@@ -218,7 +218,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '20,0,-20': {
       q: 20,
@@ -229,7 +229,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,1,-1': {
       q: 0,
@@ -240,7 +240,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,1,-2': {
       q: 1,
@@ -251,7 +251,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '2,1,-3': {
       q: 2,
@@ -262,7 +262,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '3,1,-4': {
       q: 3,
@@ -273,7 +273,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '4,1,-5': {
       q: 4,
@@ -284,7 +284,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '5,1,-6': {
       q: 5,
@@ -295,7 +295,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 0,
+      altitude: 1,
     },
     '6,1,-7': {
       q: 6,
@@ -306,7 +306,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '7,1,-8': {
       q: 7,
@@ -317,7 +317,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '8,1,-9': {
       q: 8,
@@ -328,7 +328,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '9,1,-10': {
       q: 9,
@@ -339,7 +339,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '10,1,-11': {
       q: 10,
@@ -350,7 +350,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '11,1,-12': {
       q: 11,
@@ -361,7 +361,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '12,1,-13': {
       q: 12,
@@ -372,7 +372,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '13,1,-14': {
       q: 13,
@@ -383,7 +383,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '14,1,-15': {
       q: 14,
@@ -394,7 +394,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '15,1,-16': {
       q: 15,
@@ -405,7 +405,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '16,1,-17': {
       q: 16,
@@ -416,7 +416,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '17,1,-18': {
       q: 17,
@@ -427,7 +427,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '18,1,-19': {
       q: 18,
@@ -438,7 +438,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '19,1,-20': {
       q: 19,
@@ -449,7 +449,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '20,1,-21': {
       q: 20,
@@ -460,7 +460,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,2,-1': {
       q: -1,
@@ -471,7 +471,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,2,-2': {
       q: 0,
@@ -482,7 +482,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,2,-3': {
       q: 1,
@@ -493,7 +493,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '2,2,-4': {
       q: 2,
@@ -504,7 +504,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '3,2,-5': {
       q: 3,
@@ -515,7 +515,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '4,2,-6': {
       q: 4,
@@ -526,7 +526,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '5,2,-7': {
       q: 5,
@@ -537,7 +537,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '6,2,-8': {
       q: 6,
@@ -548,7 +548,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '7,2,-9': {
       q: 7,
@@ -559,7 +559,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '8,2,-10': {
       q: 8,
@@ -570,7 +570,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '9,2,-11': {
       q: 9,
@@ -581,7 +581,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,2,-12': {
       q: 10,
@@ -592,7 +592,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,2,-13': {
       q: 11,
@@ -603,7 +603,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '12,2,-14': {
       q: 12,
@@ -614,7 +614,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 2,
+      altitude: 3,
     },
     '13,2,-15': {
       q: 13,
@@ -625,7 +625,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '14,2,-16': {
       q: 14,
@@ -636,7 +636,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '15,2,-17': {
       q: 15,
@@ -647,7 +647,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '16,2,-18': {
       q: 16,
@@ -658,7 +658,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '17,2,-19': {
       q: 17,
@@ -669,7 +669,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '18,2,-20': {
       q: 18,
@@ -680,7 +680,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '19,2,-21': {
       q: 19,
@@ -691,7 +691,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,3,-2': {
       q: -1,
@@ -702,7 +702,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,3,-3': {
       q: 0,
@@ -713,7 +713,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,3,-4': {
       q: 1,
@@ -724,7 +724,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '2,3,-5': {
       q: 2,
@@ -735,7 +735,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '3,3,-6': {
       q: 3,
@@ -746,7 +746,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '4,3,-7': {
       q: 4,
@@ -757,7 +757,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '5,3,-8': {
       q: 5,
@@ -768,7 +768,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '6,3,-9': {
       q: 6,
@@ -779,7 +779,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '7,3,-10': {
       q: 7,
@@ -790,7 +790,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '8,3,-11': {
       q: 8,
@@ -801,7 +801,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 7,
+      altitude: 8,
     },
     '9,3,-12': {
       q: 9,
@@ -812,7 +812,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 6,
+      altitude: 7,
     },
     '10,3,-13': {
       q: 10,
@@ -823,7 +823,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,3,-14': {
       q: 11,
@@ -834,7 +834,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '12,3,-15': {
       q: 12,
@@ -845,7 +845,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '13,3,-16': {
       q: 13,
@@ -856,7 +856,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '14,3,-17': {
       q: 14,
@@ -867,7 +867,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '15,3,-18': {
       q: 15,
@@ -878,7 +878,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '16,3,-19': {
       q: 16,
@@ -889,7 +889,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '17,3,-20': {
       q: 17,
@@ -900,7 +900,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '18,3,-21': {
       q: 18,
@@ -911,7 +911,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '19,3,-22': {
       q: 19,
@@ -922,7 +922,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,4,-2': {
       q: -2,
@@ -933,7 +933,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,4,-3': {
       q: -1,
@@ -944,7 +944,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,4,-4': {
       q: 0,
@@ -955,7 +955,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '1,4,-5': {
       q: 1,
@@ -966,7 +966,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '2,4,-6': {
       q: 2,
@@ -977,7 +977,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '3,4,-7': {
       q: 3,
@@ -988,7 +988,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '4,4,-8': {
       q: 4,
@@ -999,7 +999,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '5,4,-9': {
       q: 5,
@@ -1010,7 +1010,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '6,4,-10': {
       q: 6,
@@ -1021,7 +1021,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '7,4,-11': {
       q: 7,
@@ -1032,7 +1032,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 3,
+      altitude: 4,
     },
     '8,4,-12': {
       q: 8,
@@ -1043,7 +1043,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 6,
+      altitude: 7,
     },
     '9,4,-13': {
       q: 9,
@@ -1054,7 +1054,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 3,
+      altitude: 4,
     },
     '10,4,-14': {
       q: 10,
@@ -1065,7 +1065,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,4,-15': {
       q: 11,
@@ -1076,7 +1076,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,4,-16': {
       q: 12,
@@ -1087,7 +1087,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '13,4,-17': {
       q: 13,
@@ -1098,7 +1098,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '14,4,-18': {
       q: 14,
@@ -1109,7 +1109,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '15,4,-19': {
       q: 15,
@@ -1120,7 +1120,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '16,4,-20': {
       q: 16,
@@ -1131,7 +1131,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '17,4,-21': {
       q: 17,
@@ -1142,7 +1142,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '18,4,-22': {
       q: 18,
@@ -1153,7 +1153,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,5,-3': {
       q: -2,
@@ -1164,7 +1164,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,5,-4': {
       q: -1,
@@ -1175,7 +1175,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '0,5,-5': {
       q: 0,
@@ -1186,7 +1186,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '1,5,-6': {
       q: 1,
@@ -1197,7 +1197,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '2,5,-7': {
       q: 2,
@@ -1208,7 +1208,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,5,-8': {
       q: 3,
@@ -1219,7 +1219,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '4,5,-9': {
       q: 4,
@@ -1230,7 +1230,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '5,5,-10': {
       q: 5,
@@ -1241,7 +1241,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,5,-11': {
       q: 6,
@@ -1252,7 +1252,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '7,5,-12': {
       q: 7,
@@ -1263,7 +1263,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 3,
+      altitude: 4,
     },
     '8,5,-13': {
       q: 8,
@@ -1274,7 +1274,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 3,
+      altitude: 4,
     },
     '9,5,-14': {
       q: 9,
@@ -1285,7 +1285,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,5,-15': {
       q: 10,
@@ -1296,7 +1296,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,5,-16': {
       q: 11,
@@ -1307,7 +1307,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,5,-17': {
       q: 12,
@@ -1318,7 +1318,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '13,5,-18': {
       q: 13,
@@ -1329,7 +1329,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '14,5,-19': {
       q: 14,
@@ -1340,7 +1340,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '15,5,-20': {
       q: 15,
@@ -1351,7 +1351,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '16,5,-21': {
       q: 16,
@@ -1362,7 +1362,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '17,5,-22': {
       q: 17,
@@ -1373,7 +1373,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'rock',
-      altitude: 1,
+      altitude: 2,
     },
     '18,5,-23': {
       q: 18,
@@ -1384,7 +1384,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-3,6,-3': {
       q: -3,
@@ -1395,7 +1395,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,6,-4': {
       q: -2,
@@ -1406,7 +1406,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,6,-5': {
       q: -1,
@@ -1417,7 +1417,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,6,-6': {
       q: 0,
@@ -1428,7 +1428,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,6,-7': {
       q: 1,
@@ -1439,7 +1439,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,6,-8': {
       q: 2,
@@ -1450,7 +1450,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,6,-9': {
       q: 3,
@@ -1461,7 +1461,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '4,6,-10': {
       q: 4,
@@ -1472,7 +1472,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '5,6,-11': {
       q: 5,
@@ -1483,7 +1483,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,6,-12': {
       q: 6,
@@ -1494,7 +1494,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '7,6,-13': {
       q: 7,
@@ -1505,7 +1505,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '8,6,-14': {
       q: 8,
@@ -1516,7 +1516,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '9,6,-15': {
       q: 9,
@@ -1527,7 +1527,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '10,6,-16': {
       q: 10,
@@ -1538,7 +1538,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '11,6,-17': {
       q: 11,
@@ -1549,7 +1549,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,6,-18': {
       q: 12,
@@ -1560,7 +1560,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,6,-19': {
       q: 13,
@@ -1571,7 +1571,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '14,6,-20': {
       q: 14,
@@ -1582,7 +1582,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '15,6,-21': {
       q: 15,
@@ -1593,7 +1593,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '16,6,-22': {
       q: 16,
@@ -1604,7 +1604,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '17,6,-23': {
       q: 17,
@@ -1615,7 +1615,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-3,7,-4': {
       q: -3,
@@ -1626,7 +1626,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,7,-5': {
       q: -2,
@@ -1637,7 +1637,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,7,-6': {
       q: -1,
@@ -1648,7 +1648,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,7,-7': {
       q: 0,
@@ -1659,7 +1659,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,7,-8': {
       q: 1,
@@ -1670,7 +1670,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,7,-9': {
       q: 2,
@@ -1681,7 +1681,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,7,-10': {
       q: 3,
@@ -1692,7 +1692,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '4,7,-11': {
       q: 4,
@@ -1703,7 +1703,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '5,7,-12': {
       q: 5,
@@ -1714,7 +1714,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,7,-13': {
       q: 6,
@@ -1725,7 +1725,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '7,7,-14': {
       q: 7,
@@ -1736,7 +1736,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 4,
+      altitude: 5,
     },
     '8,7,-15': {
       q: 8,
@@ -1747,7 +1747,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 4,
+      altitude: 5,
     },
     '9,7,-16': {
       q: 9,
@@ -1758,7 +1758,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '10,7,-17': {
       q: 10,
@@ -1769,7 +1769,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '11,7,-18': {
       q: 11,
@@ -1780,7 +1780,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,7,-19': {
       q: 12,
@@ -1791,7 +1791,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,7,-20': {
       q: 13,
@@ -1802,7 +1802,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '14,7,-21': {
       q: 14,
@@ -1813,7 +1813,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '15,7,-22': {
       q: 15,
@@ -1824,7 +1824,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '16,7,-23': {
       q: 16,
@@ -1835,7 +1835,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '17,7,-24': {
       q: 17,
@@ -1846,7 +1846,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,8,-4': {
       q: -4,
@@ -1857,7 +1857,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-3,8,-5': {
       q: -3,
@@ -1868,7 +1868,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,8,-6': {
       q: -2,
@@ -1879,7 +1879,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,8,-7': {
       q: -1,
@@ -1890,7 +1890,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,8,-8': {
       q: 0,
@@ -1901,7 +1901,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,8,-9': {
       q: 1,
@@ -1912,7 +1912,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,8,-10': {
       q: 2,
@@ -1923,7 +1923,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,8,-11': {
       q: 3,
@@ -1934,7 +1934,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '4,8,-12': {
       q: 4,
@@ -1945,7 +1945,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '5,8,-13': {
       q: 5,
@@ -1956,7 +1956,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '6,8,-14': {
       q: 6,
@@ -1967,7 +1967,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 4,
+      altitude: 5,
     },
     '7,8,-15': {
       q: 7,
@@ -1978,7 +1978,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 5,
+      altitude: 6,
     },
     '8,8,-16': {
       q: 8,
@@ -1989,7 +1989,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 4,
+      altitude: 5,
     },
     '9,8,-17': {
       q: 9,
@@ -2000,7 +2000,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '10,8,-18': {
       q: 10,
@@ -2011,7 +2011,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '11,8,-19': {
       q: 11,
@@ -2022,7 +2022,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,8,-20': {
       q: 12,
@@ -2033,7 +2033,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,8,-21': {
       q: 13,
@@ -2044,7 +2044,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '14,8,-22': {
       q: 14,
@@ -2055,7 +2055,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '15,8,-23': {
       q: 15,
@@ -2066,7 +2066,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '16,8,-24': {
       q: 16,
@@ -2077,7 +2077,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,9,-5': {
       q: -4,
@@ -2088,7 +2088,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-3,9,-6': {
       q: -3,
@@ -2099,7 +2099,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,9,-7': {
       q: -2,
@@ -2110,7 +2110,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,9,-8': {
       q: -1,
@@ -2121,7 +2121,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,9,-9': {
       q: 0,
@@ -2132,7 +2132,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,9,-10': {
       q: 1,
@@ -2143,7 +2143,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,9,-11': {
       q: 2,
@@ -2154,7 +2154,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '3,9,-12': {
       q: 3,
@@ -2165,7 +2165,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 2,
+      altitude: 3,
     },
     '4,9,-13': {
       q: 4,
@@ -2176,7 +2176,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '5,9,-14': {
       q: 5,
@@ -2187,7 +2187,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '6,9,-15': {
       q: 6,
@@ -2198,7 +2198,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 6,
+      altitude: 7,
     },
     '7,9,-16': {
       q: 7,
@@ -2209,7 +2209,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 5,
+      altitude: 6,
     },
     '8,9,-17': {
       q: 8,
@@ -2220,7 +2220,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '9,9,-18': {
       q: 9,
@@ -2231,7 +2231,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '10,9,-19': {
       q: 10,
@@ -2242,7 +2242,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,9,-20': {
       q: 11,
@@ -2253,7 +2253,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,9,-21': {
       q: 12,
@@ -2264,7 +2264,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,9,-22': {
       q: 13,
@@ -2275,7 +2275,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '14,9,-23': {
       q: 14,
@@ -2286,7 +2286,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '15,9,-24': {
       q: 15,
@@ -2297,7 +2297,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '16,9,-25': {
       q: 16,
@@ -2308,7 +2308,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,10,-5': {
       q: -5,
@@ -2319,7 +2319,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,10,-6': {
       q: -4,
@@ -2330,7 +2330,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-3,10,-7': {
       q: -3,
@@ -2341,7 +2341,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,10,-8': {
       q: -2,
@@ -2352,7 +2352,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,10,-9': {
       q: -1,
@@ -2363,7 +2363,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,10,-10': {
       q: 0,
@@ -2374,7 +2374,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,10,-11': {
       q: 1,
@@ -2385,7 +2385,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 2,
+      altitude: 3,
     },
     '2,10,-12': {
       q: 2,
@@ -2396,7 +2396,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '3,10,-13': {
       q: 3,
@@ -2407,7 +2407,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 2,
+      altitude: 3,
     },
     '4,10,-14': {
       q: 4,
@@ -2418,7 +2418,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '5,10,-15': {
       q: 5,
@@ -2429,7 +2429,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '6,10,-16': {
       q: 6,
@@ -2440,7 +2440,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'rock',
-      altitude: 2,
+      altitude: 3,
     },
     '7,10,-17': {
       q: 7,
@@ -2451,7 +2451,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '8,10,-18': {
       q: 8,
@@ -2462,7 +2462,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '9,10,-19': {
       q: 9,
@@ -2473,7 +2473,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,10,-20': {
       q: 10,
@@ -2484,7 +2484,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,10,-21': {
       q: 11,
@@ -2495,7 +2495,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,10,-22': {
       q: 12,
@@ -2506,7 +2506,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,10,-23': {
       q: 13,
@@ -2517,7 +2517,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '14,10,-24': {
       q: 14,
@@ -2528,7 +2528,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '15,10,-25': {
       q: 15,
@@ -2539,7 +2539,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,11,-6': {
       q: -5,
@@ -2550,7 +2550,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,11,-7': {
       q: -4,
@@ -2561,7 +2561,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-3,11,-8': {
       q: -3,
@@ -2572,7 +2572,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,11,-9': {
       q: -2,
@@ -2583,7 +2583,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,11,-10': {
       q: -1,
@@ -2594,7 +2594,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,11,-11': {
       q: 0,
@@ -2605,7 +2605,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,11,-12': {
       q: 1,
@@ -2616,7 +2616,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '2,11,-13': {
       q: 2,
@@ -2627,7 +2627,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '3,11,-14': {
       q: 3,
@@ -2638,7 +2638,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '4,11,-15': {
       q: 4,
@@ -2649,7 +2649,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '5,11,-16': {
       q: 5,
@@ -2660,7 +2660,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,11,-17': {
       q: 6,
@@ -2671,7 +2671,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '7,11,-18': {
       q: 7,
@@ -2682,7 +2682,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '8,11,-19': {
       q: 8,
@@ -2693,7 +2693,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '9,11,-20': {
       q: 9,
@@ -2704,7 +2704,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,11,-21': {
       q: 10,
@@ -2715,7 +2715,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,11,-22': {
       q: 11,
@@ -2726,7 +2726,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,11,-23': {
       q: 12,
@@ -2737,7 +2737,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,11,-24': {
       q: 13,
@@ -2748,7 +2748,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '14,11,-25': {
       q: 14,
@@ -2759,7 +2759,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '15,11,-26': {
       q: 15,
@@ -2770,7 +2770,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-6,12,-6': {
       q: -6,
@@ -2781,7 +2781,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,12,-7': {
       q: -5,
@@ -2792,7 +2792,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-4,12,-8': {
       q: -4,
@@ -2803,7 +2803,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-3,12,-9': {
       q: -3,
@@ -2814,7 +2814,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,12,-10': {
       q: -2,
@@ -2825,7 +2825,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,12,-11': {
       q: -1,
@@ -2836,7 +2836,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '0,12,-12': {
       q: 0,
@@ -2847,7 +2847,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'sand',
-      altitude: 1,
+      altitude: 2,
     },
     '1,12,-13': {
       q: 1,
@@ -2858,7 +2858,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,12,-14': {
       q: 2,
@@ -2869,7 +2869,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,12,-15': {
       q: 3,
@@ -2880,7 +2880,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '4,12,-16': {
       q: 4,
@@ -2891,7 +2891,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '5,12,-17': {
       q: 5,
@@ -2902,7 +2902,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,12,-18': {
       q: 6,
@@ -2913,7 +2913,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '7,12,-19': {
       q: 7,
@@ -2924,7 +2924,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'water',
-      altitude: 0,
+      altitude: 1,
     },
     '8,12,-20': {
       q: 8,
@@ -2935,7 +2935,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '9,12,-21': {
       q: 9,
@@ -2946,7 +2946,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,12,-22': {
       q: 10,
@@ -2957,7 +2957,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,12,-23': {
       q: 11,
@@ -2968,7 +2968,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,12,-24': {
       q: 12,
@@ -2979,7 +2979,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['1'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '13,12,-25': {
       q: 13,
@@ -2990,7 +2990,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '14,12,-26': {
       q: 14,
@@ -3001,7 +3001,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-6,13,-7': {
       q: -6,
@@ -3012,7 +3012,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,13,-8': {
       q: -5,
@@ -3023,7 +3023,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-4,13,-9': {
       q: -4,
@@ -3034,7 +3034,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-3,13,-10': {
       q: -3,
@@ -3045,7 +3045,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,13,-11': {
       q: -2,
@@ -3056,7 +3056,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '-1,13,-12': {
       q: -1,
@@ -3067,7 +3067,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '0,13,-13': {
       q: 0,
@@ -3078,7 +3078,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,13,-14': {
       q: 1,
@@ -3089,7 +3089,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,13,-15': {
       q: 2,
@@ -3100,7 +3100,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,13,-16': {
       q: 3,
@@ -3111,7 +3111,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 4,
+      altitude: 5,
     },
     '4,13,-17': {
       q: 4,
@@ -3122,7 +3122,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 4,
+      altitude: 5,
     },
     '5,13,-18': {
       q: 5,
@@ -3133,7 +3133,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '6,13,-19': {
       q: 6,
@@ -3144,7 +3144,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '7,13,-20': {
       q: 7,
@@ -3155,7 +3155,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '8,13,-21': {
       q: 8,
@@ -3166,7 +3166,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '9,13,-22': {
       q: 9,
@@ -3177,7 +3177,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,13,-23': {
       q: 10,
@@ -3188,7 +3188,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,13,-24': {
       q: 11,
@@ -3199,7 +3199,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '12,13,-25': {
       q: 12,
@@ -3210,7 +3210,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '13,13,-26': {
       q: 13,
@@ -3221,7 +3221,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '14,13,-27': {
       q: 14,
@@ -3232,7 +3232,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-7,14,-7': {
       q: -7,
@@ -3243,7 +3243,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-6,14,-8': {
       q: -6,
@@ -3254,7 +3254,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-5,14,-9': {
       q: -5,
@@ -3265,7 +3265,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: ['0'],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-4,14,-10': {
       q: -4,
@@ -3276,7 +3276,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-3,14,-11': {
       q: -3,
@@ -3287,7 +3287,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-2,14,-12': {
       q: -2,
@@ -3298,7 +3298,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '-1,14,-13': {
       q: -1,
@@ -3309,7 +3309,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '0,14,-14': {
       q: 0,
@@ -3320,7 +3320,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '1,14,-15': {
       q: 1,
@@ -3331,7 +3331,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,14,-16': {
       q: 2,
@@ -3342,7 +3342,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 5,
+      altitude: 6,
     },
     '3,14,-17': {
       q: 3,
@@ -3353,7 +3353,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 7,
+      altitude: 8,
     },
     '4,14,-18': {
       q: 4,
@@ -3364,7 +3364,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 4,
+      altitude: 5,
     },
     '5,14,-19': {
       q: 5,
@@ -3375,7 +3375,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,14,-20': {
       q: 6,
@@ -3386,7 +3386,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '7,14,-21': {
       q: 7,
@@ -3397,7 +3397,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '8,14,-22': {
       q: 8,
@@ -3408,7 +3408,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '9,14,-23': {
       q: 9,
@@ -3419,7 +3419,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '10,14,-24': {
       q: 10,
@@ -3430,7 +3430,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '11,14,-25': {
       q: 11,
@@ -3441,7 +3441,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '12,14,-26': {
       q: 12,
@@ -3452,7 +3452,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 2,
+      altitude: 3,
     },
     '13,14,-27': {
       q: 13,
@@ -3463,7 +3463,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-7,15,-8': {
       q: -7,
@@ -3474,7 +3474,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-6,15,-9': {
       q: -6,
@@ -3485,7 +3485,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,15,-10': {
       q: -5,
@@ -3496,7 +3496,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,15,-11': {
       q: -4,
@@ -3507,7 +3507,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-3,15,-12': {
       q: -3,
@@ -3518,7 +3518,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,15,-13': {
       q: -2,
@@ -3529,7 +3529,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,15,-14': {
       q: -1,
@@ -3540,7 +3540,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,15,-15': {
       q: 0,
@@ -3551,7 +3551,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,15,-16': {
       q: 1,
@@ -3562,7 +3562,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,15,-17': {
       q: 2,
@@ -3573,7 +3573,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 8,
+      altitude: 9,
     },
     '3,15,-18': {
       q: 3,
@@ -3584,7 +3584,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 7,
+      altitude: 8,
     },
     '4,15,-19': {
       q: 4,
@@ -3595,7 +3595,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '5,15,-20': {
       q: 5,
@@ -3606,7 +3606,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '6,15,-21': {
       q: 6,
@@ -3617,7 +3617,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '7,15,-22': {
       q: 7,
@@ -3628,7 +3628,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '8,15,-23': {
       q: 8,
@@ -3639,7 +3639,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '9,15,-24': {
       q: 9,
@@ -3650,7 +3650,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '10,15,-25': {
       q: 10,
@@ -3661,7 +3661,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '11,15,-26': {
       q: 11,
@@ -3672,7 +3672,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '12,15,-27': {
       q: 12,
@@ -3683,7 +3683,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '13,15,-28': {
       q: 13,
@@ -3694,7 +3694,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-8,16,-8': {
       q: -8,
@@ -3705,7 +3705,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-7,16,-9': {
       q: -7,
@@ -3716,7 +3716,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-6,16,-10': {
       q: -6,
@@ -3727,7 +3727,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,16,-11': {
       q: -5,
@@ -3738,7 +3738,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,16,-12': {
       q: -4,
@@ -3749,7 +3749,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-3,16,-13': {
       q: -3,
@@ -3760,7 +3760,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,16,-14': {
       q: -2,
@@ -3771,7 +3771,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,16,-15': {
       q: -1,
@@ -3782,7 +3782,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,16,-16': {
       q: 0,
@@ -3793,7 +3793,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,16,-17': {
       q: 1,
@@ -3804,7 +3804,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '2,16,-18': {
       q: 2,
@@ -3815,7 +3815,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,16,-19': {
       q: 3,
@@ -3826,7 +3826,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '4,16,-20': {
       q: 4,
@@ -3837,7 +3837,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '5,16,-21': {
       q: 5,
@@ -3848,7 +3848,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '6,16,-22': {
       q: 6,
@@ -3859,7 +3859,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '7,16,-23': {
       q: 7,
@@ -3870,7 +3870,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '8,16,-24': {
       q: 8,
@@ -3881,7 +3881,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '9,16,-25': {
       q: 9,
@@ -3892,7 +3892,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '10,16,-26': {
       q: 10,
@@ -3903,7 +3903,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '11,16,-27': {
       q: 11,
@@ -3914,7 +3914,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '12,16,-28': {
       q: 12,
@@ -3925,7 +3925,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-8,17,-9': {
       q: -8,
@@ -3936,7 +3936,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-7,17,-10': {
       q: -7,
@@ -3947,7 +3947,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-6,17,-11': {
       q: -6,
@@ -3958,7 +3958,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-5,17,-12': {
       q: -5,
@@ -3969,7 +3969,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-4,17,-13': {
       q: -4,
@@ -3980,7 +3980,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-3,17,-14': {
       q: -3,
@@ -3991,7 +3991,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-2,17,-15': {
       q: -2,
@@ -4002,7 +4002,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '-1,17,-16': {
       q: -1,
@@ -4013,7 +4013,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '0,17,-17': {
       q: 0,
@@ -4024,7 +4024,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '1,17,-18': {
       q: 1,
@@ -4035,7 +4035,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '2,17,-19': {
       q: 2,
@@ -4046,7 +4046,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '3,17,-20': {
       q: 3,
@@ -4057,7 +4057,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'grass',
-      altitude: 1,
+      altitude: 2,
     },
     '4,17,-21': {
       q: 4,
@@ -4068,7 +4068,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '5,17,-22': {
       q: 5,
@@ -4079,7 +4079,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '6,17,-23': {
       q: 6,
@@ -4090,7 +4090,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '7,17,-24': {
       q: 7,
@@ -4101,7 +4101,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '8,17,-25': {
       q: 8,
@@ -4112,7 +4112,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '9,17,-26': {
       q: 9,
@@ -4123,7 +4123,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '10,17,-27': {
       q: 10,
@@ -4134,7 +4134,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '11,17,-28': {
       q: 11,
@@ -4145,7 +4145,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
     '12,17,-29': {
       q: 12,
@@ -4156,7 +4156,7 @@ export const forsakenWaters = {
       isUnitTail: false,
       startzonePlayerIDs: [],
       terrain: 'void',
-      altitude: 0,
+      altitude: 1,
     },
   },
   hexMap: {
