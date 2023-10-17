@@ -55,30 +55,44 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
   const oneLevel = 0.5
   const halfLevel = 0.25
   const quarterLevel = 0.125
-  const heightScale = boardHex.altitude
-
-  const meshYPosition = boardHex.altitude / 4
-  const topHeightRing = meshYPosition - boardHex.altitude / 2
-  const bottomHeightRing = meshYPosition
+  const altitude = boardHex.altitude
+  const heightScaleSubTerrain = altitude - halfLevel
+  const heightScaleFluid = halfLevel
+  const solidTerrainYPosition = altitude / 4
+  const topHeightRing = solidTerrainYPosition - altitude / 2
+  const bottomHeightRing = solidTerrainYPosition
 
   /* If a terrain is a fluid type, then we make it as a small fluid-terrain cylinder on top of a sub-terrain cylinder which is scaled up to be most of the hex */
   const isFluidHex = isFluidTerrainHex(boardHex.terrain)
   const solidHexGeometry = new CylinderGeometry(1, 1, oneLevel, 6)
   const hexPosition = new Vector3(
     pixel.x,
-    boardHex.altitude / 4,
+    solidTerrainYPosition,
     // 0,
     pixel.y
   )
   const fluidTerrainGeometry = isFluidHex
     ? new CylinderGeometry(1, 1, halfLevel, 6)
     : undefined
+  const fluidTerrainYAdjust = altitude / 2
+  const fluidTerrainPosition = new Vector3(
+    pixel.x,
+    fluidTerrainYAdjust,
+    // 0,
+    pixel.y
+  )
   const subTerrain =
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
   const subTerrainGeometry = isFluidHex
     ? new CylinderGeometry(1, 1, oneLevel, 6)
     : undefined
-
+  const subTerrainYAdjust = (altitude - quarterLevel) / 4
+  const subTerrainPosition = new Vector3(
+    pixel.x,
+    subTerrainYAdjust,
+    // 0,
+    pixel.y
+  )
   const heightRingsForThisHex = [] // no need to show bottom rings
   for (
     let index = bottomHeightRing - 0.5;
@@ -93,28 +107,39 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
       {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
       {heightRingsForThisHex.map((height) => (
         <HeightRing
+          key={boardHex.id}
           position={hexPosition}
           height={height}
-          terrain={boardHex.terrain}
+          terrain={subTerrain} // the height rings would be showing on the subterrain of fluids anyway, and solids have same ter/subterr
         />
       ))}
       {isFluidHex ? (
-        <mesh
-          key={boardHex.id}
-          geometry={solidHexGeometry}
-          position={hexPosition}
-          scale={[1, heightScale, 1]}
-          material={
-            new MeshLambertMaterial({
-              color: new Color(hexTerrainColor[boardHex.terrain]),
-              transparent: true,
-              opacity: 0.9,
-            })
-          }
-        />
+        <>
+          <mesh
+            geometry={subTerrainGeometry}
+            position={subTerrainPosition}
+            scale={[1, heightScaleSubTerrain, 1]}
+            material={
+              new MeshToonMaterial({
+                color: new Color(hexTerrainColor[subTerrain]),
+              })
+            }
+          />
+          <mesh
+            geometry={fluidTerrainGeometry}
+            position={fluidTerrainPosition}
+            scale={[1, heightScaleFluid, 1]}
+            material={
+              new MeshLambertMaterial({
+                color: new Color(hexTerrainColor[boardHex.terrain]),
+                transparent: true,
+                opacity: 0.9,
+              })
+            }
+          />
+        </>
       ) : (
         <mesh
-          key={boardHex.id}
           geometry={solidHexGeometry}
           material={
             new MeshToonMaterial({
@@ -122,7 +147,7 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
             })
           }
           position={hexPosition}
-          scale={[1, heightScale, 1]}
+          scale={[1, altitude, 1]}
         />
       )}
     </group>
