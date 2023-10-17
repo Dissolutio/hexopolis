@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { cubeToPixel } from '../MapDisplay3D'
+import { cubeToPixel } from '../hexmap3d/MapDisplay3D'
 
 const modelAltitudeAdjustment = {
   d9000Id: 2.45,

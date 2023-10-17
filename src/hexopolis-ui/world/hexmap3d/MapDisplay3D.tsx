@@ -1,33 +1,17 @@
 import {
   Vector3,
-  BufferGeometry,
   Color,
-  Line,
   CylinderGeometry,
-  MeshStandardMaterial,
   MeshLambertMaterial,
-  MeshBasicMaterial,
   MeshToonMaterial,
 } from 'three'
 import { giantsTableBoardHexes } from './giantsTable'
 import { BoardHex, StringKeyedObj } from 'game/types'
-import { ReactThreeFiber, extend } from '@react-three/fiber'
 import {
   getDefaultSubTerrainForTerrain,
   isFluidTerrainHex,
 } from 'game/constants'
-
-// this extension for line_ is because, if we just use <line></line> then we get an error:
-// Property 'geometry' does not exist on type 'SVGProps<SVGLineElement>'
-// So, following advice found in issue: https://github.com/pmndrs/react-three-fiber/discussions/1387
-extend({ Line_: Line })
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      line_: ReactThreeFiber.Object3DNode<Line, typeof Line>
-    }
-  }
-}
+import { HeightRing } from './HeightRing'
 
 const HEX_RADIUS = 1
 const HEX_SPACING = 1.03
@@ -45,6 +29,12 @@ export const cubeToPixel = (hex: HexCoordinates) => {
 }
 const boardHexesArray = Object.values(giantsTableBoardHexes)
 export const hexTerrainColor: StringKeyedObj = {
+  grass: '#60840d',
+  water: '#3794fd',
+  rock: '#475776',
+  sand: '#ab8e10',
+}
+export const hexHeightRingColor: StringKeyedObj = {
   grass: '#60840d',
   water: '#3794fd',
   rock: '#475776',
@@ -102,7 +92,11 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
     <group>
       {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
       {heightRingsForThisHex.map((height) => (
-        <HeightRing position={hexPosition} height={height} />
+        <HeightRing
+          position={hexPosition}
+          height={height}
+          terrain={boardHex.terrain}
+        />
       ))}
       {isFluidHex ? (
         <mesh
@@ -132,42 +126,5 @@ const MapHex3D = ({ boardHex }: { boardHex: BoardHex }) => {
         />
       )}
     </group>
-  )
-}
-
-const genPointsForHeightRing = (height: number) => {
-  return [
-    new Vector3(1, 0, height),
-    new Vector3(0.5, Math.sqrt(3) / 2, height),
-    new Vector3(-0.5, Math.sqrt(3) / 2, height),
-    new Vector3(-1, 0, height),
-    new Vector3(-0.5, -Math.sqrt(3) / 2, height),
-    new Vector3(0.5, -Math.sqrt(3) / 2, height),
-    new Vector3(1, 0, height),
-  ]
-}
-const HeightRing = ({
-  height,
-  position,
-}: {
-  height: number
-  position: Vector3
-}) => {
-  const points = genPointsForHeightRing(height)
-  const lineGeometry = new BufferGeometry().setFromPoints(points)
-  return (
-    <line_
-      geometry={lineGeometry}
-      position={position}
-      rotation={[Math.PI / 2, 0, Math.PI / 6]}
-    >
-      <lineBasicMaterial
-        attach="material"
-        color={'black'}
-        linewidth={1}
-        linecap={'round'}
-        linejoin={'round'}
-      />
-    </line_>
   )
 }

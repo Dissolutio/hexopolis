@@ -8,7 +8,7 @@ import {
   Stats,
 } from '@react-three/drei'
 
-import { MapDisplay3D } from './MapDisplay3D'
+import { MapDisplay3D } from './hexmap3d/MapDisplay3D'
 import { SgtDrakeModel } from './components/SgtDrakeModel'
 import { AgentCarrModel } from './components/AgentCarrModel'
 import { Deathwalker9000Model } from './components/Deathwalker9000Model'
@@ -56,8 +56,7 @@ export const World = () => {
           <AgentCarrModel />
           <SyvarrisModel />
           <Deathwalker9000Model />
-
-          {/* <axesHelper position={[0, 1, 0]} scale={[50, 10, 30]} /> */}
+          <axesHelper position={[0, 0, 0]} scale={[50, 10, 30]} />
         </Stage>
         {/* <Grid infiniteGrid /> */}
         <OrbitControls />

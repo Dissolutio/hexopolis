@@ -829,7 +829,7 @@ export const giantsTableBoardHexes = {
     s: -14,
     id: '7,7,-14',
     terrain: 'water',
-    altitude: 7,
+    altitude: 5,
   },
   '8,7,-15': {
     q: 8,
