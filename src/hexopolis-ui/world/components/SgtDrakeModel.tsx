@@ -1,22 +1,18 @@
 import { useGLTF } from '@react-three/drei'
 import { cubeToPixel } from 'game/hex-utils'
+import { BoardHex } from 'game/types'
 
-const modelAltitudeAdjustment = {
-  sgtDrakeRotvId: 1.5,
-}
+// const modelAltitudeAdjustment = {
+//   sgtDrakeRotvId: 1.5,
+// }
 const initialAngleAdjustment = -(Math.PI * 3) / 6
-export function SgtDrakeModel(props) {
-  const hex = { q: 4, r: 9, s: -13, altitude: 4, id: '4,9,-13' }
-  const pixel = cubeToPixel(hex)
-  const { nodes, materials } = useGLTF('/sgt_drake_low_poly_colored.glb')
+export function SgtDrakeModel({ boardHex }: { boardHex: BoardHex }) {
+  const pixel = cubeToPixel(boardHex)
+  const { nodes, materials } = useGLTF('/sgt_drake_low_poly_colored.glb') as any
   return (
-    <group {...props} dispose={null}>
+    <group dispose={null}>
       <group
-        position={[
-          pixel.x,
-          hex.altitude / 4 + modelAltitudeAdjustment.sgtDrakeRotvId,
-          pixel.y,
-        ]}
+        position={[pixel.x, boardHex.altitude / 2, pixel.y]}
         rotation={[0, initialAngleAdjustment, 0]}
       >
         <mesh

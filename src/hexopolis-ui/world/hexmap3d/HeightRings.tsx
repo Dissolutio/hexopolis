@@ -8,12 +8,20 @@ export const HeightRings = ({
   position,
   terrain,
   boardHexID,
+  isHighlighted,
+  isInSafeMoveRange,
+  isInEngageMoveRange,
+  isInDisengageMoveRange,
 }: {
   bottomRingYPos: number
   topRingYPos: number
   position: Vector3
   terrain: string
   boardHexID: string
+  isHighlighted: boolean
+  isInSafeMoveRange: boolean
+  isInEngageMoveRange: boolean
+  isInDisengageMoveRange: boolean
 }) => {
   const heightRingsForThisHex = genHeightRings(topRingYPos, bottomRingYPos)
   return (
@@ -25,6 +33,10 @@ export const HeightRings = ({
           height={height}
           top={topRingYPos}
           terrain={terrain}
+          isHighlighted={isHighlighted}
+          isInSafeMoveRange={isInSafeMoveRange}
+          isInEngageMoveRange={isInEngageMoveRange}
+          isInDisengageMoveRange={isInDisengageMoveRange}
         />
       ))}
     </>
@@ -48,24 +60,48 @@ const HeightRing = ({
   top,
   position,
   terrain,
+  isHighlighted,
+  isInSafeMoveRange,
+  isInEngageMoveRange,
+  isInDisengageMoveRange,
 }: {
   height: number
   top: number
   position: Vector3
   terrain: string
+  isHighlighted: boolean
+  isInSafeMoveRange: boolean
+  isInEngageMoveRange: boolean
+  isInDisengageMoveRange: boolean
 }) => {
   const points = genPointsForHeightRing(height)
   const lineGeometry = new BufferGeometry().setFromPoints(points)
+  const getColor = () => {
+    if (height === top) {
+      if (isHighlighted) {
+        return 'white'
+      }
+      if (isInSafeMoveRange) {
+        return new Color('#bad954')
+      } else {
+        // top rings, if not modified, are gray to highlight the edge between hexes
+        return 'black'
+      }
+    } else return new Color(hexTerrainColor[terrain])
+  }
   return (
     <line_
       geometry={lineGeometry}
       position={position}
       rotation={[0, Math.PI / 6, 0]}
     >
-      <lineBasicMaterial
+      <lineDashedMaterial
         attach="material"
         // color the top ring a grayish-white to highlight them, color the interior height rings the terrain color
-        color={height === top ? 'gray' : new Color(hexTerrainColor[terrain])}
+        color={getColor()}
+        // scale={1}
+        dashSize={0.02}
+        gapSize={0.02}
         linewidth={1}
         linecap={'round'}
         linejoin={'round'}

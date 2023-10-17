@@ -3,13 +3,22 @@ import React from 'react'
 import { Deathwalker9000Model } from '../components/Deathwalker9000Model'
 import { BoardHex } from 'game/types'
 import { SyvarrisModel } from '../components/SyvarrisModel'
+import { SgtDrakeModel } from '../components/SgtDrakeModel'
+import { AgentCarrModel } from '../components/AgentCarrModel'
+import { ThreeEvent } from '@react-three/fiber'
 
 type Props = {
   boardHex: BoardHex
   armyCardID: string
   playerID: String
+  onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }
-export const UnitIcon = ({ armyCardID, playerID, boardHex }: Props) => {
+export const GameUnit3D = ({
+  armyCardID,
+  playerID,
+  boardHex,
+  onClick,
+}: Props) => {
   if (!armyCardID) {
     return null
   }
@@ -17,10 +26,27 @@ export const UnitIcon = ({ armyCardID, playerID, boardHex }: Props) => {
   switch (armyCardID) {
     case 'hs1001':
       // deathwalker 9000
-      return <Deathwalker9000Model boardHex={boardHex} />
+      return (
+        <group
+          onClick={(e) => {
+            if (onClick) {
+              onClick(e, boardHex)
+            }
+          }}
+        >
+          <Deathwalker9000Model boardHex={boardHex} />
+        </group>
+      )
     case 'hs1004':
       // syvarris
       return <SyvarrisModel boardHex={boardHex} />
+    case 'hs1003':
+      // sgt drake
+      return <SgtDrakeModel boardHex={boardHex} />
+    case 'hs1007':
+      // agent carr
+      return <AgentCarrModel boardHex={boardHex} />
+
     // case 'test001':
     //   return <GiTargetDummy {...gameIconProps} />
     // case 'test002':
@@ -41,18 +67,12 @@ export const UnitIcon = ({ armyCardID, playerID, boardHex }: Props) => {
     // case 'hs1002':
     //   // izumi samurai
     //   return <GiNinjaArmor {...gameIconProps} />
-    // case 'hs1003':
-    //   // sgt drake
-    //   return <GiAlliedStar {...gameIconProps} />
     // case 'hs1005':
     //   // krav maga agents
     //   return <GiPistolGun {...gameIconProps} />
     // case 'hs1006':
     //   // tarn viking warriors
     //   return <GiVikingHelmet {...gameIconProps} />
-    // case 'hs1007':
-    //   // agent carr
-    //   return <GiNinjaHeroicStance {...gameIconProps} />
     // case 'hs1008':
     //   // zettian guard
     //   return <GiWalkingTurret {...gameIconProps} />

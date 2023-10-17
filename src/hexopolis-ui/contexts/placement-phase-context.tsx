@@ -17,6 +17,7 @@ import {
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { selectValidTailHexes } from 'game/selectors'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { ThreeEvent } from '@react-three/fiber'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -29,7 +30,7 @@ type PlacementContextValue = {
   inflatedPlacementUnits: PlacementUnit[]
   onClickPlacementUnit: (unitID: string) => void
   onClickPlacementHex: (
-    event: React.SyntheticEvent,
+    event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
     sourceHex: BoardHex
   ) => void
   editingBoardHexes: BoardHexesUnitDeployment
@@ -230,7 +231,10 @@ const PlacementContextProvider = ({
       selectMapHex('')
     }
   }
-  function onClickPlacementHex(event: SyntheticEvent, sourceHex: BoardHex) {
+  function onClickPlacementHex(
+    event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
+    sourceHex: BoardHex
+  ) {
     // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
     const clickedHexId = sourceHex.id

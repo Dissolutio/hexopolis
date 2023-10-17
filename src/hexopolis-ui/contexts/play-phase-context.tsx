@@ -37,6 +37,7 @@ import {
   selectIfGameArmyCardHasAbility,
   selectIfGameArmyCardHasFlying,
 } from 'game/selector/card-selectors'
+import { ThreeEvent } from '@react-three/fiber'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -80,7 +81,10 @@ type PlayContextValue = {
   toBeDroppedUnitIDs: string[]
   theDropPlaceableHexIDs: string[]
   // handlers
-  onClickTurnHex: (event: React.SyntheticEvent, sourceHex: BoardHex) => void
+  onClickTurnHex: (
+    event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
+    sourceHex: BoardHex
+  ) => void
   toggleIsWalkingFlyer: () => void
   toggleIsGrappleGun: () => void
 }
@@ -495,7 +499,10 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       isAccept: false,
     })
   }
-  function onClickTurnHex(event: SyntheticEvent, sourceHex: BoardHex) {
+  function onClickTurnHex(
+    event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
+    sourceHex: BoardHex
+  ) {
     // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
     const sourceHexID = sourceHex.id
