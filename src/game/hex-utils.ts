@@ -126,7 +126,14 @@ export const hexUtilsHexToPixel = (
   y = y * s
   return { x: x + layout.origin.x, y: y + layout.origin.y }
 }
-
+// a simplified version of above
+const HEX_RADIUS = 1
+const HEX_SPACING = 1.03
+export const cubeToPixel = (hex: HexCoordinates) => {
+  const x = HEX_RADIUS * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r)
+  const y = HEX_RADIUS * ((3 / 2) * hex.r)
+  return { x: x * HEX_SPACING, y: y * HEX_SPACING }
+}
 /** Return the q,r,s coordinate of the hexagon given pixel point x and y.
  * https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
  */

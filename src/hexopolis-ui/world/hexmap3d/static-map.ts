@@ -1,4 +1,4 @@
-export const giantsTableBoardHexes = {
+export const staticMap = {
   '9,0,-9': {
     q: 9,
     r: 0,

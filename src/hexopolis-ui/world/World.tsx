@@ -52,11 +52,10 @@ export const World = () => {
         <Stats />
         <Stage>
           <MapDisplay3D />
-          <SgtDrakeModel />
+          {/* <SgtDrakeModel />
           <AgentCarrModel />
           <SyvarrisModel />
-          <Deathwalker9000Model />
-          <axesHelper position={[0, 0, 0]} scale={[50, 10, 30]} />
+          <Deathwalker9000Model /> */}
         </Stage>
         {/* <Grid infiniteGrid /> */}
         <OrbitControls />
