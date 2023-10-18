@@ -53,7 +53,7 @@ const generatePlayerAndReadyAndOMStates = ({
     ? {
         // Use the state below to start a game in the play-phase already
         draftReady: generateReadyStateForNumPlayers(numPlayers, true),
-        placementReady: generateReadyStateForNumPlayers(numPlayers, true),
+        placementReady: generateReadyStateForNumPlayers(numPlayers, false),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers, startingArmies),
         players: playersStateWithPrePlacedOMs(numPlayers, startingArmies),
