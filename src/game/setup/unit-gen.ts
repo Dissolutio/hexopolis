@@ -1,5 +1,5 @@
 import { GameArmyCard, ICoreHeroscapeCard, StartingArmies } from '../types'
-import { MS1Cards } from '../coreHeroscapeCards'
+import { MS1Cards, only3dGuysWeGot } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
 
@@ -146,7 +146,8 @@ function hsCardsToArmyCards(
   })
 }
 // in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
-const cardsUsed = [...MS1Cards, ...testCards]
+// const cardsUsed = [...MS1Cards, ...testCards]
+const cardsUsed = [...only3dGuysWeGot]
 
 export function startingArmiesToGameCards(
   numPlayers: number,

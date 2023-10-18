@@ -6940,6 +6940,7 @@ export const marroWarriors = MS1Cards.find(
 )
 export const mimring = MS1Cards.find((unit) => unit.name === 'Mimring')
 export const syvarris = MS1Cards.find((unit) => unit.name === 'Syvarris')
+export const sgtDrake = MS1Cards.find((unit) => unit.armyCardID === 'hs1003')
 export const deathwalker9000 = MS1Cards.find(
   (unit) => unit.name === 'Deathwalker 9000'
 )
@@ -6947,6 +6948,13 @@ export const deathwalker9000 = MS1Cards.find(
 export const agentCarr = MS1Cards.find((unit) => unit.name === 'Agent Carr')
 export const kravMagaAgents = MS1Cards.find(
   (unit) => unit.name === 'Krav Maga Agents'
+)
+export const only3dGuysWeGot = MS1Cards.filter(
+  (card) =>
+    card.armyCardID === 'hs1001' ||
+    card.armyCardID === 'hs1003' ||
+    card.armyCardID === 'hs1004' ||
+    card.armyCardID === 'hs1007'
 )
 
 function filterMasterSetROTV(card: ICoreHeroscapeCard) {
