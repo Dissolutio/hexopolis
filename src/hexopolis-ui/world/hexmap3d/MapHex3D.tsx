@@ -52,9 +52,6 @@ export const MapHex3D = ({
   )
   const heightScaleSubTerrain = altitude - halfLevel
   const heightScaleFluid = 1
-  const fluidTerrainGeometry = isFluidHex
-    ? new CylinderGeometry(1, 1, halfLevel, 6)
-    : undefined
   const fluidTerrainYAdjust = altitude / 2
   const fluidTerrainPosition = new Vector3(
     pixel.x,
@@ -64,9 +61,6 @@ export const MapHex3D = ({
   )
   const subTerrain =
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
-  const subTerrainGeometry = isFluidHex
-    ? new CylinderGeometry(1, 1, ONE_HEIGHT_LEVEL, 6)
-    : undefined
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
   const subTerrainPosition = new Vector3(
     pixel.x,
@@ -105,15 +99,12 @@ export const MapHex3D = ({
       {isFluidHex ? (
         <>
           <mesh
-            geometry={subTerrainGeometry}
             position={subTerrainPosition}
             scale={[1, heightScaleSubTerrain, 1]}
-            material={
-              new MeshToonMaterial({
-                color: new Color(hexTerrainColor[subTerrain]),
-              })
-            }
-          />
+          >
+            <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
+            <meshToonMaterial color={new Color(hexTerrainColor[subTerrain])} />
+          </mesh>
           <group
             onClick={(e) => {
               if (onClick) {
@@ -124,17 +115,16 @@ export const MapHex3D = ({
             onPointerLeave={() => setIsHighlighted(false)}
           >
             <mesh
-              geometry={fluidTerrainGeometry}
               position={fluidTerrainPosition}
               scale={[1, heightScaleFluid, 1]}
-              material={
-                new MeshLambertMaterial({
-                  color: new Color(hexTerrainColor[boardHex.terrain]),
-                  transparent: true,
-                  opacity: 0.9,
-                })
-              }
-            />
+            >
+              <meshLambertMaterial
+                color={new Color(hexTerrainColor[boardHex.terrain])}
+                transparent
+                opacity={0.9}
+              />
+              <cylinderGeometry args={[1, 1, halfLevel, 6]} />
+            </mesh>
           </group>
         </>
       ) : (
@@ -142,22 +132,17 @@ export const MapHex3D = ({
           onClick={(e) => {
             if (onClick) {
               onClick(e, boardHex)
-              // console.log('🚀 ~ file: MapHex3D.tsx:80 ~ boardHex:', boardHex)
             }
           }}
           onPointerEnter={() => setIsHighlighted(true)}
           onPointerLeave={() => setIsHighlighted(false)}
         >
-          <mesh
-            geometry={solidHexGeometry}
-            material={
-              new MeshToonMaterial({
-                color: new Color(hexTerrainColor[boardHex.terrain]),
-              })
-            }
-            position={hexPosition}
-            scale={[1, altitude, 1]}
-          />
+          <mesh position={hexPosition} scale={[1, altitude, 1]}>
+            <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
+            <meshToonMaterial
+              color={new Color(hexTerrainColor[boardHex.terrain])}
+            />
+          </mesh>
         </group>
       )}
     </group>
