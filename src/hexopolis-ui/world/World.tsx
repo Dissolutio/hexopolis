@@ -48,7 +48,9 @@ export const World = () => {
         {/* <Grid infiniteGrid /> */}
         <PerspectiveCamera makeDefault position={[0, 30, 50]} fov={30} />
         <OrbitControls
-        //  onChange?: (e?: OrbitControlsChangeEvent) => void; // use this to save camera position!
+          enableDamping
+          dampingFactor={0.1}
+          //  onChange?: (e?: OrbitControlsChangeEvent) => void; // use this to save camera position!
         />
       </Canvas>
       <Notifications />
