@@ -7,7 +7,7 @@ import { DraftCounter } from './DraftCounter'
 import { HexgridLayout } from './HexgridLayout'
 import { MapHex } from './MapHex'
 import { MapHexStyles } from './MapHexStyles'
-import { TurnCounter } from './TurnCounter'
+import { RoundCounter } from './RoundCounter'
 import { ZoomControls } from './ZoomControls'
 
 type Props = {
@@ -79,7 +79,7 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
         handleClickZoomOut={handleClickZoomOut}
       />
       <Notifications />
-      <TurnCounter />
+      <RoundCounter />
       {isDraftPhase && <DraftCounter />}
       <HexgridLayout
         size={{ x: hexSize, y: hexSize }}

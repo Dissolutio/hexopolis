@@ -9,7 +9,7 @@ import {
 
 import { MapDisplay3D } from './hexmap3d/MapDisplay3D'
 import { Notifications } from 'hexopolis-ui/notifications/Notifications'
-import { TurnCounter } from 'hexopolis-ui/hexmap/TurnCounter'
+import { RoundCounter } from 'hexopolis-ui/hexmap/RoundCounter'
 import { DraftCounter } from 'hexopolis-ui/hexmap/DraftCounter'
 import { useBgioCtx } from 'bgio-contexts'
 
@@ -52,7 +52,7 @@ export const World = () => {
         />
       </Canvas>
       <Notifications />
-      <TurnCounter />
+      <RoundCounter />
       {isDraftPhase && <DraftCounter />}
     </div>
   )
