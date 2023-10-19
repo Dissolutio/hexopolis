@@ -1,74 +1,92 @@
 import { useGLTF } from '@react-three/drei'
-import { BoardHex } from 'game/types'
+import React from 'react'
+import { OutlineHighlight } from './models/OutlineHighlight'
 
-const initialAngleAdjustment = -(Math.PI * 3) / 6
-export function SgtDrakeModel({ boardHex }: { boardHex: BoardHex }) {
+export function SgtDrakeModel({ highlightColor }: { highlightColor: string }) {
   const { nodes, materials } = useGLTF('/sgt_drake_low_poly_colored.glb') as any
   return (
-    <group dispose={null}>
-      <group rotation={[0, initialAngleAdjustment, 0]}>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_1.geometry}
-          material={materials.SandyWhiteSkin}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_2.geometry}
-          material={materials.ArmyDkGreen}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_3.geometry}
-          material={materials.ArmyLtGreen}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_4.geometry}
-          material={materials.ArmyLtBrown}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_5.geometry}
-          material={materials.BrightRed}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_6.geometry}
-          material={materials.Black}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_7.geometry}
-          material={materials.Gold}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_8.geometry}
-          material={materials.WoodBrown}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_9.geometry}
-          material={materials.Gunmetal}
-        ></mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Sgt_Drake_Alexander_Scanned_10.geometry}
-          material={materials.Blade}
-        ></mesh>
-      </group>
-    </group>
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_1.geometry}
+        material={materials.SandyWhiteSkin}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_2.geometry}
+        material={materials.ArmyDkGreen}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_3.geometry}
+        material={materials.ArmyLtGreen}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_4.geometry}
+        material={materials.ArmyLtBrown}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_5.geometry}
+        material={materials.BrightRed}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_6.geometry}
+        material={materials.Black}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_7.geometry}
+        material={materials.Gold}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_8.geometry}
+        material={materials.WoodBrown}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_9.geometry}
+        material={materials.Gunmetal}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Sgt_Drake_Alexander_Scanned_10.geometry}
+        material={materials.Blade}
+      >
+        <OutlineHighlight highlightColor={highlightColor} />
+      </mesh>
+    </>
   )
 }
 

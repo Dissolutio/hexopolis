@@ -355,6 +355,9 @@ export type RangeScan = {
 export type StringKeyedObj = {
   [key: string]: string
 }
+export type StringKeyedNums = {
+  [key: string]: number
+}
 export type LayoutDimension = {
   size: Point
   orientation: Orientation

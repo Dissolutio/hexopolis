@@ -174,10 +174,9 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
       <MapHex3D boardHex={boardHex} onClick={onClick} />
       {gameUnit && isShowableUnit ? (
         <GameUnit3D
-          onClick={onClick}
+          // onClick={onClick}
+          gameUnit={gameUnit}
           boardHex={boardHex}
-          armyCardID={gameUnitCard?.armyCardID ?? ''}
-          playerID={playerID}
         />
       ) : (
         <></>
