@@ -97,6 +97,9 @@ const HeightRing = ({
         return new Color('#e25328')
       } else {
         // top rings, if not modified, are gray to highlight the edge between hexes
+        if (terrain === 'sand' || terrain === 'grass') {
+          return new Color('lightGray')
+        }
         return new Color('gray')
       }
     } else return new Color(hexTerrainColor[terrain])
