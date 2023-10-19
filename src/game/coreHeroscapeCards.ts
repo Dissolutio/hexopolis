@@ -6951,6 +6951,7 @@ export const kravMagaAgents = MS1Cards.find(
 )
 export const only3dGuysWeGot = MS1Cards.filter(
   (card) =>
+    card.armyCardID === 'hs1000' ||
     card.armyCardID === 'hs1001' ||
     card.armyCardID === 'hs1003' ||
     card.armyCardID === 'hs1004' ||

@@ -9,8 +9,13 @@ import { useUIContext } from 'hexopolis-ui/contexts'
 import { Float } from '@react-three/drei'
 import { useBgioCtx } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
+import { MarroWarrior1 } from '../components/models/MarroWarrior1'
+import { MarroWarrior2 } from '../components/models/MarroWarrior2'
+import { MarroWarrior3 } from '../components/models/MarroWarrior3'
+import { MarroWarrior4 } from '../components/models/MarroWarrior4'
 
 const initialRotations: StringKeyedNums = {
+  hs1000: Math.PI, // marro warriors
   hs1001: Math.PI, // dw9000
   hs1003: -Math.PI / 2, // sgt drake1
   hs1004: -(Math.PI * 2) / 3, // syvarris
@@ -51,6 +56,17 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
     return null
   }
   switch (gameUnit.armyCardID) {
+    case 'hs1000':
+      // marro warriors
+      if (gameUnit.modelIndex === 0)
+        return <MarroWarrior1 highlightColor={highlightColor()} />
+      if (gameUnit.modelIndex === 1)
+        return <MarroWarrior2 highlightColor={highlightColor()} />
+      if (gameUnit.modelIndex === 2)
+        return <MarroWarrior3 highlightColor={highlightColor()} />
+      if (gameUnit.modelIndex === 3)
+        return <MarroWarrior4 highlightColor={highlightColor()} />
+      return <MarroWarrior1 highlightColor={highlightColor()} />
     case 'hs1001':
       // deathwalker 9000
       return <Deathwalker9000Model highlightColor={highlightColor()} />
