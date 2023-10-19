@@ -2,10 +2,10 @@ import { Move } from 'boardgame.io'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import {
   transformDraftableCardToGameCard,
-  transformGameArmyCardsToGameUnits,
   transformBoardHexesWithPrePlacedUnits,
 } from '../transformers'
 import { ArmyCard, GameState } from '../types'
+import { transformGameArmyCardsToGameUnits } from '../setup/unit-gen'
 
 export const draftPrePlaceArmyCardAction: Move<GameState> = (
   { G, ctx },

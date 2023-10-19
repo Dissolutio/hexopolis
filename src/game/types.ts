@@ -233,6 +233,7 @@ export type GameUnit = {
   movePoints: number
   is2Hex: boolean
   rotation: number // 0-5
+  modelIndex: number
 }
 
 export type GameUnits = {

@@ -12,7 +12,6 @@ import {
   makeMoveRange1HexFlyMap,
   makeMoveRange2HexFlyMap,
 } from './map-gen'
-import { transformGameArmyCardsToGameUnits } from '../transformers'
 import {
   startingArmiesFor1HexFlyingEngagedMap,
   startingArmiesFor2HexFlyingEngagedMap,
@@ -25,6 +24,7 @@ import {
   startingArmiesForMoveRange2HexWalkMap,
   startingArmiesForMoveRangePassThruMap,
   startingArmiesToGameCards,
+  transformGameArmyCardsToGameUnits,
 } from './unit-gen'
 import { selectIfGameArmyCardHasAbility } from '../selector/card-selectors'
 import { keyBy } from 'lodash'

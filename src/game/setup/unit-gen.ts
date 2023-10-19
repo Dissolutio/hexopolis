@@ -1,7 +1,13 @@
-import { GameArmyCard, ICoreHeroscapeCard, StartingArmies } from '../types'
+import {
+  GameArmyCard,
+  GameUnits,
+  ICoreHeroscapeCard,
+  StartingArmies,
+} from '../types'
 import { MS1Cards, only3dGuysWeGot } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
+import { keyBy } from 'lodash'
 
 const testDummyID = 'test001'
 const test2HexDummyID = 'test002'
@@ -183,4 +189,41 @@ export function startingArmiesToGameCards(
     {}
   )
   return Object.values(theArmiesTurnedIntoGameArmyCards).flat()
+}
+// makeUnitID has hardcoded usage in tests, so refactoring will break tests
+function makeUnitID(index: number, playerID: string) {
+  return `p${playerID}u${index}`
+}
+export function transformGameArmyCardsToGameUnits(
+  armyCards: GameArmyCard[],
+  numberOfUnitsPlayerAlreadyHas?: number
+): GameUnits {
+  const preUnits = armyCards.reduce((result: any[], card) => {
+    const numberOfFiguresForThisCard = card.figures * card.cardQuantity
+    const preUnitsArr = Array.apply({}, Array(numberOfFiguresForThisCard)).map(
+      (f, index) => ({ ...card, modelIndex: index })
+    )
+    return [...result, ...preUnitsArr]
+  }, [])
+
+  const unitsArr = preUnits.map((preUnit, i, arr) => {
+    const unitID = makeUnitID(
+      i + (numberOfUnitsPlayerAlreadyHas ?? 0),
+      preUnit.playerID
+    )
+    const newGameUnit = {
+      unitID,
+      armyCardID: preUnit.armyCardID,
+      playerID: preUnit.playerID,
+      gameCardID: preUnit.gameCardID,
+      wounds: 0,
+      movePoints: 0,
+      is2Hex: preUnit.hexes === 2,
+      rotation: 0,
+      modelIndex: preUnit.modelIndex,
+    }
+    return newGameUnit
+  })
+
+  return keyBy(unitsArr, 'unitID')
 }
