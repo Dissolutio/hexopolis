@@ -148,6 +148,7 @@ export function isFluidTerrainHex(terrain: string) {
 }
 
 export function getDefaultSubTerrainForTerrain(terrain: string) {
+  // for fluid types, this returns some type of sub terrain, but for solid types, it just returns terrain
   if (terrain === 'lava') {
     return 'lavaField'
   }
@@ -163,6 +164,6 @@ export function getDefaultSubTerrainForTerrain(terrain: string) {
   if (terrain === 'shadow') {
     return 'dungeon'
   } else {
-    return 'rock'
+    return terrain
   }
 }

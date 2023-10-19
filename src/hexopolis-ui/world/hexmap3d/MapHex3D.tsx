@@ -36,38 +36,36 @@ export const MapHex3D = ({
 }) => {
   const pixel = cubeToPixel(boardHex)
   const altitude = boardHex.altitude
-  const solidTerrainYPosition = altitude / 4
-  const solidHexGeometry = new CylinderGeometry(1, 1, ONE_HEIGHT_LEVEL, 6)
+  const hexYPosition = altitude / 4
   const isFluidHex = isFluidTerrainHex(boardHex.terrain)
-  const bottomRingYPosition = solidTerrainYPosition - altitude / 2
-  /* If a terrain is a fluid type, then we make it as a small fluid-terrain cylinder on top of a sub-terrain cylinder which is scaled up to be most of the hex */
+  const bottomRingYPosition = hexYPosition - altitude / 2
+  /* Hexes have a thin cap on top, this is the clickable and hoverable bit */
   const topRingYPosition = isFluidHex
-    ? solidTerrainYPosition + quarterLevel
-    : solidTerrainYPosition
-  const hexPosition = new Vector3(
-    pixel.x,
-    solidTerrainYPosition,
-    // 0,
-    pixel.y
-  )
-  const heightScaleSubTerrain = altitude - halfLevel
+    ? hexYPosition + quarterLevel
+    : hexYPosition
+
+  const hexPosition = new Vector3(pixel.x, hexYPosition, pixel.y)
+  const heightScaleSubTerrain = isFluidHex
+    ? altitude - halfLevel
+    : altitude - quarterLevel
   const heightScaleFluid = 1
-  const fluidTerrainYAdjust = altitude / 2
-  const fluidTerrainPosition = new Vector3(
+  const heightScaleSolidCap = halfLevel
+  const scaleToUseForCap = isFluidHex ? heightScaleFluid : heightScaleSolidCap
+  // const hexCapYAdjust = isFluidHex ? altitude / 2 : altitude / 4
+  const hexCapYAdjust = isFluidHex
+    ? altitude / 2
+    : altitude / 2 - quarterLevel / 4
+  const capPosition = new Vector3(
     pixel.x,
-    fluidTerrainYAdjust,
+    hexCapYAdjust,
     // 0,
     pixel.y
   )
   const subTerrain =
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
-  const subTerrainPosition = new Vector3(
-    pixel.x,
-    subTerrainYAdjust,
-    // 0,
-    pixel.y
-  )
+  const subTerrainPosition = new Vector3(pixel.x, subTerrainYAdjust, pixel.y)
+  // styling of top ring is dependent on states below:
   const [isHighlighted, setIsHighlighted] = useState(false)
   const { selectedUnitMoveRange } = usePlayContext()
   const {
@@ -78,10 +76,6 @@ export const MapHex3D = ({
   const isInSafeMoveRange = safeMoves?.includes(boardHex.id)
   const isInEngageMoveRange = engageMoves?.includes(boardHex.id)
   const isInDisengageMoveRange = disengageMoves?.includes(boardHex.id)
-  // const hasUnitOnHexMoved = unitsMoved?.includes(boardHex.occupyingUnitID)
-  // const isUnitMovePartiallyExpended =
-  //   hasUnitOnHexMoved && hexUnit.movePoints > 0
-  // const isUnitMoveTotallyUsed = hasUnitOnHexMoved && hexUnit.movePoints <= 0
   return (
     <group>
       {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
@@ -96,55 +90,37 @@ export const MapHex3D = ({
         isInEngageMoveRange={isInEngageMoveRange}
         isInDisengageMoveRange={isInDisengageMoveRange}
       />
-      {isFluidHex ? (
-        <>
-          <mesh
-            position={subTerrainPosition}
-            scale={[1, heightScaleSubTerrain, 1]}
-          >
-            <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
-            <meshToonMaterial color={new Color(hexTerrainColor[subTerrain])} />
+      <mesh position={subTerrainPosition} scale={[1, heightScaleSubTerrain, 1]}>
+        <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
+        <meshToonMaterial color={new Color(hexTerrainColor[subTerrain])} />
+      </mesh>
+      <group
+        onClick={(e) => {
+          if (onClick) {
+            onClick(e, boardHex)
+          }
+        }}
+        onPointerEnter={() => setIsHighlighted(true)}
+        onPointerLeave={() => setIsHighlighted(false)}
+      >
+        {isFluidHex ? (
+          <mesh position={capPosition} scale={[1, scaleToUseForCap, 1]}>
+            <meshLambertMaterial
+              color={new Color(hexTerrainColor[boardHex.terrain])}
+              transparent={isFluidHex}
+              opacity={isFluidHex ? 0.9 : 1}
+            />
+            <cylinderGeometry args={[1, 1, halfLevel, 6]} />
           </mesh>
-          <group
-            onClick={(e) => {
-              if (onClick) {
-                onClick(e, boardHex)
-              }
-            }}
-            onPointerEnter={() => setIsHighlighted(true)}
-            onPointerLeave={() => setIsHighlighted(false)}
-          >
-            <mesh
-              position={fluidTerrainPosition}
-              scale={[1, heightScaleFluid, 1]}
-            >
-              <meshLambertMaterial
-                color={new Color(hexTerrainColor[boardHex.terrain])}
-                transparent
-                opacity={0.9}
-              />
-              <cylinderGeometry args={[1, 1, halfLevel, 6]} />
-            </mesh>
-          </group>
-        </>
-      ) : (
-        <group
-          onClick={(e) => {
-            if (onClick) {
-              onClick(e, boardHex)
-            }
-          }}
-          onPointerEnter={() => setIsHighlighted(true)}
-          onPointerLeave={() => setIsHighlighted(false)}
-        >
-          <mesh position={hexPosition} scale={[1, altitude, 1]}>
-            <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
+        ) : (
+          <mesh position={capPosition} scale={[1, scaleToUseForCap, 1]}>
             <meshToonMaterial
               color={new Color(hexTerrainColor[boardHex.terrain])}
             />
+            <cylinderGeometry args={[1, 1, halfLevel, 6]} />
           </mesh>
-        </group>
-      )}
+        )}
+      </group>
     </group>
   )
 }
