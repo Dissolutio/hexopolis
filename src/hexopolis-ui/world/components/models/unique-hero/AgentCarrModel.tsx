@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { OutlineHighlight } from './models/OutlineHighlight'
+import { OutlineHighlight } from '../OutlineHighlight'
 
 export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
   const { nodes, materials } = useGLTF(

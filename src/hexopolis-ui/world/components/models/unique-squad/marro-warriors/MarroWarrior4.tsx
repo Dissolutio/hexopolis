@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { OutlineHighlight } from './OutlineHighlight'
+import { OutlineHighlight } from '../../OutlineHighlight'
 
 export function MarroWarrior4({ highlightColor }: { highlightColor: string }) {
   const { nodes, materials } = useGLTF(

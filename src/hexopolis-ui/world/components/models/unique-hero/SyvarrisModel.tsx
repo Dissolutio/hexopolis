@@ -1,5 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import { OutlineHighlight } from './models/OutlineHighlight'
+import { OutlineHighlight } from '../OutlineHighlight'
 
 export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
   // const totalRotation = initialAngleAdjustment + (rotation[1-6]) * (Math.PI / 3)

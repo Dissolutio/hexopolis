@@ -1,18 +1,21 @@
 import React from 'react'
-import { Deathwalker9000Model } from '../components/Deathwalker9000Model'
+import { Float } from '@react-three/drei'
+
 import { BoardHex, GameUnit, StringKeyedNums } from 'game/types'
-import { SyvarrisModel } from '../components/SyvarrisModel'
-import { SgtDrakeModel } from '../components/SgtDrakeModel'
-import { AgentCarrModel } from '../components/AgentCarrModel'
 import { cubeToPixel } from 'game/hex-utils'
 import { useUIContext } from 'hexopolis-ui/contexts'
-import { Float } from '@react-three/drei'
 import { useBgioCtx } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
-import { MarroWarrior1 } from '../components/models/MarroWarrior1'
-import { MarroWarrior2 } from '../components/models/MarroWarrior2'
-import { MarroWarrior3 } from '../components/models/MarroWarrior3'
-import { MarroWarrior4 } from '../components/models/MarroWarrior4'
+
+import { SyvarrisModel } from '../components/models/unique-hero/SyvarrisModel'
+import { SgtDrakeModel } from '../components/models/unique-hero/SgtDrakeModel'
+import { AgentCarrModel } from '../components/models/unique-hero/AgentCarrModel'
+import { Deathwalker9000Model } from '../components/models/unique-hero/Deathwalker9000Model'
+import { MarroWarrior1 } from '../components/models/unique-squad/marro-warriors/MarroWarrior1'
+import { MarroWarrior2 } from '../components/models/unique-squad/marro-warriors/MarroWarrior2'
+import { MarroWarrior3 } from '../components/models/unique-squad/marro-warriors/MarroWarrior3'
+import { MarroWarrior4 } from '../components/models/unique-squad/marro-warriors/MarroWarrior4'
+import { MimringModel } from '../components/models/unique-hero/Mimring'
 
 const initialRotations: StringKeyedNums = {
   hs1000: Math.PI, // marro warriors
@@ -20,6 +23,10 @@ const initialRotations: StringKeyedNums = {
   hs1003: -Math.PI / 2, // sgt drake1
   hs1004: -(Math.PI * 2) / 3, // syvarris
   hs1007: -(Math.PI * 7) / 6, // carr
+  hs1013: Math.PI,
+}
+const getInitialRotationByID = (id: string) => {
+  return initialRotations?.[id] ?? Math.PI
 }
 export const GameUnit3D = ({
   gameUnit,
@@ -33,7 +40,7 @@ export const GameUnit3D = ({
   return (
     <group
       position={[pixel.x, boardHex.altitude / 2, pixel.y]}
-      rotation={[0, initialRotations[gameUnit.armyCardID], 0]}
+      rotation={[0, getInitialRotationByID(gameUnit.armyCardID), 0]}
     >
       <FloatSelectedWrapper unitID={gameUnit.unitID}>
         <UnitModelByID gameUnit={gameUnit} />
@@ -79,6 +86,9 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
     case 'hs1007':
       // agent carr
       return <AgentCarrModel highlightColor={highlightColor()} />
+    case 'hs1013':
+      // agent carr
+      return <MimringModel highlightColor={highlightColor()} />
     default:
       return null
   }

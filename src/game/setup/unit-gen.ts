@@ -52,7 +52,7 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
   // '1': [izumiID, syvarrisID, airbornID, carrID],
 
   // for devving 3d below:
-  '0': [deathwalker9000ID, drake1ID],
+  '0': [mimringID, deathwalker9000ID, drake1ID],
   '1': [carrID, syvarrisID, marroID],
 }
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {

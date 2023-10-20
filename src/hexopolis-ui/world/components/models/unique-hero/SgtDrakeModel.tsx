@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import React from 'react'
-import { OutlineHighlight } from './models/OutlineHighlight'
+import { OutlineHighlight } from '../OutlineHighlight'
 
 export function SgtDrakeModel({ highlightColor }: { highlightColor: string }) {
   const { nodes, materials } = useGLTF('/sgt_drake_low_poly_colored.glb') as any
