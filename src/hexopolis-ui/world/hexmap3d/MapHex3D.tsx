@@ -28,13 +28,16 @@ export const hexTerrainColor: StringKeyedObj = {
   sand: '#ab8e10',
 }
 export const MapHex3D = ({
+  x,
+  z,
   boardHex,
   onClick,
 }: {
+  x: number
+  z: number
   boardHex: BoardHex
   onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }) => {
-  const pixel = cubeToPixel(boardHex)
   const altitude = boardHex.altitude
   const hexYPosition = altitude / 4
   const isFluidHex = isFluidTerrainHex(boardHex.terrain)
@@ -44,7 +47,7 @@ export const MapHex3D = ({
     ? hexYPosition + quarterLevel
     : hexYPosition
 
-  const hexPosition = new Vector3(pixel.x, hexYPosition, pixel.y)
+  const hexPosition = new Vector3(x, hexYPosition, z)
   const heightScaleSubTerrain = isFluidHex
     ? altitude - halfLevel
     : altitude - quarterLevel
@@ -56,15 +59,15 @@ export const MapHex3D = ({
     ? altitude / 2
     : altitude / 2 - quarterLevel / 4
   const capPosition = new Vector3(
-    pixel.x,
+    x,
     hexCapYAdjust,
     // 0,
-    pixel.y
+    z
   )
   const subTerrain =
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
-  const subTerrainPosition = new Vector3(pixel.x, subTerrainYAdjust, pixel.y)
+  const subTerrainPosition = new Vector3(x, subTerrainYAdjust, z)
   // styling of top ring is dependent on states below:
   const [isHighlighted, setIsHighlighted] = useState(false)
   const { selectedUnitMoveRange } = usePlayContext()

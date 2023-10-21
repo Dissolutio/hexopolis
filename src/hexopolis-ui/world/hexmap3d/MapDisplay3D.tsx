@@ -9,15 +9,13 @@ import {
   useUIContext,
 } from 'hexopolis-ui/contexts'
 import { selectGameCardByID } from 'game/selectors'
-import { SyntheticEvent } from 'react'
 import { ThreeEvent } from '@react-three/fiber'
 import { GameUnit3D } from './GameUnit3D'
+import { Billboard, Text } from '@react-three/drei'
+import { cubeToPixel } from 'game/hex-utils'
 
 export function MapDisplay3D() {
-  const {
-    boardHexes,
-    hexMap: { mapId },
-  } = useBgioG()
+  const { boardHexes } = useBgioG()
   const hexArray = Object.values(boardHexes)
   return (
     <>
@@ -144,39 +142,63 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
   }
 
   // computed
-  const editingBoardHexUnitID =
-    editingBoardHexes?.[boardHex.id]?.occupyingUnitID ?? ''
-  const unitIdToShowOnHex =
-    // order matters here
-    isTheDropStage
-      ? boardHex.occupyingUnitID || editingBoardHexUnitID
-      : isPlacementPhase
-      ? editingBoardHexUnitID
-      : boardHex.occupyingUnitID
-  const gameUnit = gameUnits?.[unitIdToShowOnHex]
-  // we only show players their own units during placement phase
-  const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
-  const unitName = gameUnitCard?.name ?? ''
-  // const isGlyph = !!glyphs[hex.id]?.glyphID
-  // computed
-  // we only show players their own units during placement phase
-  const isShowableUnit = !isPlacementPhase || gameUnit?.playerID === playerID
   const isUnitTail = isPlacementPhase
     ? editingBoardHexes?.[boardHex.id]?.isUnitTail
     : boardHex.isUnitTail
+  const editingBoardHexUnitID = isUnitTail
+    ? ''
+    : editingBoardHexes?.[boardHex.id]?.occupyingUnitID ?? ''
+  const unitIdToShowOnHex =
+    // order matters here
+    isTheDropStage
+      ? //The Drop: uses the same editing state as placement phase, and player needs to see their Dropped units
+        boardHex.occupyingUnitID || editingBoardHexUnitID
+      : isPlacementPhase
+      ? // in placement phase, we only show each player their editing state
+        editingBoardHexUnitID
+      : isUnitTail
+      ? ''
+      : boardHex.occupyingUnitID
+  const gameUnit = gameUnits?.[unitIdToShowOnHex]
+  const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
+  const unitName = gameUnitCard?.name ?? ''
+
+  // we only show players their own units during placement phase
+  const isShowableUnit = !isPlacementPhase || gameUnit?.playerID === playerID
+
+  // const isGlyph = !!glyphs[hex.id]?.glyphID
+  // computed
+  // we only show players their own units during placement phase
 
   // const isUnitAHeroOrMultiLife =
   //   gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
   // const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
 
+  const pixel = cubeToPixel(boardHex)
+  // world is flat on X-Z, and Y is altitude
+  const positionX = pixel.x
+  const positionZ = pixel.y
+  // const positionY = boardHex.altitude / 2
+  // const positionYHexText = positionY + 0.2
   return (
     <>
-      <MapHex3D boardHex={boardHex} onClick={onClick} />
-      {gameUnit && isShowableUnit ? (
+      <MapHex3D
+        x={positionX}
+        z={positionZ}
+        boardHex={boardHex}
+        onClick={onClick}
+      />
+
+      {/* <Billboard position={[positionX, positionYHexText, positionZ]}>
+        <Text fontSize={0.1}>{boardHex.id}</Text>
+      </Billboard> */}
+
+      {gameUnit && isShowableUnit && !isUnitTail ? (
         <GameUnit3D
-          // onClick={onClick}
           gameUnit={gameUnit}
           boardHex={boardHex}
+          x={positionX}
+          z={positionZ}
         />
       ) : (
         <></>
