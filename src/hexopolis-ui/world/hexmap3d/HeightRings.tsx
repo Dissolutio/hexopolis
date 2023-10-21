@@ -115,10 +115,12 @@ const HeightRing = ({
   const getLineStyle = () => {
     // The top ring receives all kinds of highlighting throughout the game, and a different color than the other rings
     if (height === top) {
+      // hovered (not really used yet)
       if (isHighlighted) {
         return { color: 'white', opacity: 1, lineWidth: 2 }
       }
-      if (isPlacementPhase) {
+      // start zones
+      if (isPlacementPhase || isDraftPhase) {
         if ((startZones?.['0'] ?? []).includes(boardHexID)) {
           return {
             color: new Color(playerColors['0']),
@@ -162,6 +164,7 @@ const HeightRing = ({
           }
         }
       }
+      // move range
       if (isRoundOfPlayPhase) {
         if (isInSafeMoveRange) {
           return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
