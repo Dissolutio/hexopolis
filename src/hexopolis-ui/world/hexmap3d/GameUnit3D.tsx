@@ -2,9 +2,9 @@ import React from 'react'
 import { Float } from '@react-three/drei'
 
 import { BoardHex, GameUnit, StringKeyedNums } from 'game/types'
-import { cubeToPixel } from 'game/hex-utils'
+import { getDirectionOfNeighbor } from 'game/hex-utils'
 import { useUIContext } from 'hexopolis-ui/contexts'
-import { useBgioCtx } from 'bgio-contexts'
+import { useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
 
 import { SyvarrisModel } from '../components/models/unique-hero/SyvarrisModel'
@@ -16,14 +16,13 @@ import { MarroWarrior2 } from '../components/models/unique-squad/marro-warriors/
 import { MarroWarrior3 } from '../components/models/unique-squad/marro-warriors/MarroWarrior3'
 import { MarroWarrior4 } from '../components/models/unique-squad/marro-warriors/MarroWarrior4'
 import { MimringModel } from '../components/models/unique-hero/Mimring'
+import { selectTailHexForUnit } from 'game/selectors'
 
 const initialRotations: StringKeyedNums = {
-  hs1000: Math.PI, // marro warriors
-  hs1001: Math.PI, // dw9000
+  // everyone else defaults to Math.PI so far
   hs1003: -Math.PI / 2, // sgt drake1
   hs1004: -(Math.PI * 2) / 3, // syvarris
   hs1007: -(Math.PI * 7) / 6, // carr
-  hs1013: Math.PI,
 }
 const getInitialRotationByID = (id: string) => {
   return initialRotations?.[id] ?? Math.PI
@@ -31,16 +30,34 @@ const getInitialRotationByID = (id: string) => {
 export const GameUnit3D = ({
   gameUnit,
   boardHex,
+  x,
+  z,
 }: {
   gameUnit: GameUnit
   boardHex: BoardHex
+  x: number
+  z: number
   // onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }) => {
-  const pixel = cubeToPixel(boardHex)
+  const { boardHexes } = useBgioG()
+  const positionX = x
+  const positionZ = z
+  const positionY = boardHex.altitude / 2
+  const tailHex = selectTailHexForUnit(gameUnit.unitID, boardHexes)
+  const directionToTail = tailHex
+    ? getDirectionOfNeighbor(boardHex, tailHex)
+    : undefined
+  const rotationToTail = ((directionToTail ?? 0) * Math.PI) / 3
+  const playerAdjustedRotationForSingleHexFigures =
+    (gameUnit.rotation * Math.PI) / 3
+  const rotationY =
+    getInitialRotationByID(gameUnit.armyCardID) +
+    playerAdjustedRotationForSingleHexFigures +
+    rotationToTail
   return (
     <group
-      position={[pixel.x, boardHex.altitude / 2, pixel.y]}
-      rotation={[0, getInitialRotationByID(gameUnit.armyCardID), 0]}
+      position={[positionX, positionY, positionZ]}
+      rotation={[0, rotationY, 0]}
     >
       <FloatSelectedWrapper unitID={gameUnit.unitID}>
         <UnitModelByID gameUnit={gameUnit} />
