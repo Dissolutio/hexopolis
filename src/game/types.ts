@@ -232,7 +232,7 @@ export type GameUnit = {
   wounds: number
   movePoints: number
   is2Hex: boolean
-  rotation: number // 0-5
+  rotation: number // 0-5 for the 6 directions. 1-hex figures can be rotated, 2-hex figures can be flipped during the movement stage
   modelIndex: number
 }
 
