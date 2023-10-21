@@ -12,7 +12,6 @@ import {
   transformMoveRangeToArraysOfIds,
 } from 'game/constants'
 import { HeightRings } from './HeightRings'
-import { cubeToPixel } from 'game/hex-utils'
 import { ThreeEvent } from '@react-three/fiber'
 import { useState } from 'react'
 import { usePlayContext } from 'hexopolis-ui/contexts'
@@ -68,7 +67,6 @@ export const MapHex3D = ({
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
   const subTerrainPosition = new Vector3(x, subTerrainYAdjust, z)
-  // styling of top ring is dependent on states below:
   const [isHighlighted, setIsHighlighted] = useState(false)
   const { selectedUnitMoveRange } = usePlayContext()
   const {
@@ -82,6 +80,7 @@ export const MapHex3D = ({
   return (
     <group>
       {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
+      {/* The top ring will be highlighted when we hover the cap-terrain mesh, and also for all sorts of game reasons */}
       <HeightRings
         bottomRingYPos={bottomRingYPosition}
         topRingYPos={topRingYPosition}
@@ -93,10 +92,12 @@ export const MapHex3D = ({
         isInEngageMoveRange={isInEngageMoveRange}
         isInDisengageMoveRange={isInDisengageMoveRange}
       />
+      {/* This is the big sub-terrain mesh from the floor to the cap mesh */}
       <mesh position={subTerrainPosition} scale={[1, heightScaleSubTerrain, 1]}>
         <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
         <meshToonMaterial color={new Color(hexTerrainColor[subTerrain])} />
       </mesh>
+      {/* This group wraps the cap-terrain, and triggers the hover for this hex's top height ring */}
       <group
         onClick={(e) => {
           if (onClick) {

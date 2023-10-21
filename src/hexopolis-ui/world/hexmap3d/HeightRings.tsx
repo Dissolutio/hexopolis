@@ -82,7 +82,7 @@ const HeightRing = ({
     !isInEngageMoveRange &&
     !isInDisengageMoveRange
   const getColor = () => {
-    // color the top ring a grayish-white to highlight them, color the interior height rings the terrain color
+    // The top ring receives all kinds of highlighting throughout the game
     if (height === top) {
       if (isHighlighted) {
         return 'white'
@@ -97,12 +97,15 @@ const HeightRing = ({
         return new Color('#e25328')
       } else {
         // top rings, if not modified, are gray to highlight the edge between hexes
+        // or white, for light-colored terrain
         if (terrain === 'sand' || terrain === 'grass') {
           return new Color('lightGray')
         }
         return new Color('gray')
       }
-    } else return new Color(hexTerrainColor[terrain])
+    }
+    // all non-top rings are as below:
+    else return new Color(hexTerrainColor[terrain])
   }
   return (
     <line_
@@ -113,7 +116,7 @@ const HeightRing = ({
       <lineBasicMaterial
         attach="material"
         transparent
-        opacity={top === height && isNotModified ? 0.1 : 1.0}
+        opacity={top === height && isNotModified ? 0.2 : 1.0}
         color={getColor()}
         linewidth={1}
         linecap={'round'}
