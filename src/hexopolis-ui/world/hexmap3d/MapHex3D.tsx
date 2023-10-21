@@ -41,7 +41,6 @@ export const MapHex3D = ({
   const hexYPosition = altitude / 4
   const isFluidHex = isFluidTerrainHex(boardHex.terrain)
   const bottomRingYPosition = hexYPosition - altitude / 2
-  /* Hexes have a thin cap on top, this is the clickable and hoverable bit */
   const topRingYPosition = isFluidHex
     ? hexYPosition + quarterLevel
     : hexYPosition
@@ -53,16 +52,10 @@ export const MapHex3D = ({
   const heightScaleFluid = 1
   const heightScaleSolidCap = halfLevel
   const scaleToUseForCap = isFluidHex ? heightScaleFluid : heightScaleSolidCap
-  // const hexCapYAdjust = isFluidHex ? altitude / 2 : altitude / 4
   const hexCapYAdjust = isFluidHex
     ? altitude / 2
     : altitude / 2 - quarterLevel / 4
-  const capPosition = new Vector3(
-    x,
-    hexCapYAdjust,
-    // 0,
-    z
-  )
+  const capPosition = new Vector3(x, hexCapYAdjust, z)
   const subTerrain =
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
@@ -77,6 +70,10 @@ export const MapHex3D = ({
   const isInSafeMoveRange = safeMoves?.includes(boardHex.id)
   const isInEngageMoveRange = engageMoves?.includes(boardHex.id)
   const isInDisengageMoveRange = disengageMoves?.includes(boardHex.id)
+  const whiteColor = new Color('white')
+  const terrainColor = new Color(hexTerrainColor[boardHex.terrain])
+  const capEmissiveColor = isHighlighted ? whiteColor : terrainColor
+  const subTerrainColor = new Color(hexTerrainColor[subTerrain])
   return (
     <group>
       {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
@@ -95,7 +92,7 @@ export const MapHex3D = ({
       {/* This is the big sub-terrain mesh from the floor to the cap mesh */}
       <mesh position={subTerrainPosition} scale={[1, heightScaleSubTerrain, 1]}>
         <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
-        <meshToonMaterial color={new Color(hexTerrainColor[subTerrain])} />
+        <meshToonMaterial color={subTerrainColor} />
       </mesh>
       {/* This group wraps the cap-terrain, and triggers the hover for this hex's top height ring */}
       <group
@@ -104,22 +101,30 @@ export const MapHex3D = ({
             onClick(e, boardHex)
           }
         }}
-        onPointerEnter={() => setIsHighlighted(true)}
+        onPointerEnter={(e) => {
+          // this keeps the hover from penetrating to hoverable-hexes behind this one
+          e.stopPropagation()
+          setIsHighlighted(true)
+        }}
         onPointerLeave={() => setIsHighlighted(false)}
       >
         {isFluidHex ? (
           <mesh position={capPosition} scale={[1, scaleToUseForCap, 1]}>
             <meshLambertMaterial
-              color={new Color(hexTerrainColor[boardHex.terrain])}
-              transparent={isFluidHex}
-              opacity={isFluidHex ? 0.9 : 1}
+              color={terrainColor}
+              transparent
+              opacity={0.85}
+              emissive={terrainColor}
+              emissiveIntensity={isHighlighted ? 2 : 1}
             />
             <cylinderGeometry args={[1, 1, halfLevel, 6]} />
           </mesh>
         ) : (
           <mesh position={capPosition} scale={[1, scaleToUseForCap, 1]}>
             <meshToonMaterial
-              color={new Color(hexTerrainColor[boardHex.terrain])}
+              color={terrainColor}
+              emissive={capEmissiveColor}
+              emissiveIntensity={isHighlighted ? 1 : 0.5}
             />
             <cylinderGeometry args={[1, 1, halfLevel, 6]} />
           </mesh>
