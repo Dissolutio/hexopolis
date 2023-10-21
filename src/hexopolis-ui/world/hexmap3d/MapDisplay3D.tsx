@@ -96,9 +96,14 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
   } = useSpecialAttackContext()
 
   const onClick = (event: ThreeEvent<MouseEvent>, sourceHex: BoardHex) => {
+    // if (isDraftPhase) {
+    // TODO: Select Units: should be able to click around units on map as ppl draft them
+    // onClickPlacementHex?.(event, sourceHex)
+    // }
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
     }
+    // ROP
     if (isTheDropStage) {
       onClickTurnHex?.(event, sourceHex)
     }
