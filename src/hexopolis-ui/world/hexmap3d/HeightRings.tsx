@@ -1,28 +1,39 @@
 import { Vector3, BufferGeometry, Line, Color } from 'three'
 import { ReactThreeFiber, extend } from '@react-three/fiber'
 import { ONE_HEIGHT_LEVEL, hexTerrainColor } from './MapHex3D'
+import { usePlayContext } from 'hexopolis-ui/contexts'
+import { transformMoveRangeToArraysOfIds } from 'game/constants'
 
 export const HeightRings = ({
   bottomRingYPos,
   topRingYPos,
   position,
-  terrain,
+  terrainForColor,
   boardHexID,
   isHighlighted,
-  isInSafeMoveRange,
-  isInEngageMoveRange,
-  isInDisengageMoveRange,
-}: {
+}: // isInSafeMoveRange,
+// isInEngageMoveRange,
+// isInDisengageMoveRange,
+{
   bottomRingYPos: number
   topRingYPos: number
   position: Vector3
-  terrain: string
+  terrainForColor: string
   boardHexID: string
   isHighlighted: boolean
-  isInSafeMoveRange: boolean
-  isInEngageMoveRange: boolean
-  isInDisengageMoveRange: boolean
+  // isInSafeMoveRange: boolean
+  // isInEngageMoveRange: boolean
+  // isInDisengageMoveRange: boolean
 }) => {
+  const { selectedUnitMoveRange } = usePlayContext()
+  const {
+    safeMoves,
+    engageMoves,
+    dangerousMoves: disengageMoves,
+  } = transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
+  const isInSafeMoveRange = safeMoves?.includes(boardHexID)
+  const isInEngageMoveRange = engageMoves?.includes(boardHexID)
+  const isInDisengageMoveRange = disengageMoves?.includes(boardHexID)
   const heightRingsForThisHex = genHeightRings(topRingYPos, bottomRingYPos)
   return (
     <>
@@ -32,7 +43,7 @@ export const HeightRings = ({
           position={position}
           height={height}
           top={topRingYPos}
-          terrain={terrain}
+          terrainForColor={terrainForColor}
           isHighlighted={isHighlighted}
           isInSafeMoveRange={isInSafeMoveRange}
           isInEngageMoveRange={isInEngageMoveRange}
@@ -59,7 +70,7 @@ const HeightRing = ({
   height,
   top,
   position,
-  terrain,
+  terrainForColor,
   isHighlighted,
   isInSafeMoveRange,
   isInEngageMoveRange,
@@ -68,7 +79,7 @@ const HeightRing = ({
   height: number
   top: number
   position: Vector3
-  terrain: string
+  terrainForColor: string
   isHighlighted: boolean
   isInSafeMoveRange: boolean
   isInEngageMoveRange: boolean
@@ -98,14 +109,14 @@ const HeightRing = ({
       } else {
         // top rings, if not modified, are gray to highlight the edge between hexes
         // or white, for light-colored terrain
-        if (terrain === 'sand' || terrain === 'grass') {
+        if (terrainForColor === 'sand' || terrainForColor === 'grass') {
           return new Color('lightGray')
         }
         return new Color('gray')
       }
     }
     // all non-top rings are as below:
-    else return new Color(hexTerrainColor[terrain])
+    else return new Color(hexTerrainColor[terrainForColor])
   }
   return (
     <line_

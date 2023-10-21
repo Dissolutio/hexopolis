@@ -1,20 +1,12 @@
-import {
-  Vector3,
-  Color,
-  CylinderGeometry,
-  MeshLambertMaterial,
-  MeshToonMaterial,
-} from 'three'
+import { Vector3, Color } from 'three'
 import { BoardHex, StringKeyedObj } from 'game/types'
 import {
   getDefaultSubTerrainForTerrain,
   isFluidTerrainHex,
-  transformMoveRangeToArraysOfIds,
 } from 'game/constants'
 import { HeightRings } from './HeightRings'
 import { ThreeEvent } from '@react-three/fiber'
 import { useState } from 'react'
-import { usePlayContext } from 'hexopolis-ui/contexts'
 
 export const ONE_HEIGHT_LEVEL = 0.5
 const halfLevel = 0.25
@@ -61,15 +53,6 @@ export const MapHex3D = ({
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
   const subTerrainPosition = new Vector3(x, subTerrainYAdjust, z)
   const [isHighlighted, setIsHighlighted] = useState(false)
-  const { selectedUnitMoveRange } = usePlayContext()
-  const {
-    safeMoves,
-    engageMoves,
-    dangerousMoves: disengageMoves,
-  } = transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
-  const isInSafeMoveRange = safeMoves?.includes(boardHex.id)
-  const isInEngageMoveRange = engageMoves?.includes(boardHex.id)
-  const isInDisengageMoveRange = disengageMoves?.includes(boardHex.id)
   const whiteColor = new Color('white')
   const terrainColor = new Color(hexTerrainColor[boardHex.terrain])
   const capEmissiveColor = isHighlighted ? whiteColor : terrainColor
@@ -82,12 +65,9 @@ export const MapHex3D = ({
         bottomRingYPos={bottomRingYPosition}
         topRingYPos={topRingYPosition}
         position={hexPosition}
-        terrain={subTerrain} // the height rings would be showing on the subterrain of fluids anyway, and solids have same ter/subterr
+        terrainForColor={subTerrain} // the subterrain is the color for the interior rings (they'll fall in the subterrain mesh area)
         boardHexID={boardHex.id}
         isHighlighted={isHighlighted}
-        isInSafeMoveRange={isInSafeMoveRange}
-        isInEngageMoveRange={isInEngageMoveRange}
-        isInDisengageMoveRange={isInDisengageMoveRange}
       />
       {/* This is the big sub-terrain mesh from the floor to the cap mesh */}
       <mesh position={subTerrainPosition} scale={[1, heightScaleSubTerrain, 1]}>
