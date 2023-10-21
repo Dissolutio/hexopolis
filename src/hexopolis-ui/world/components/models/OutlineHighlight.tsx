@@ -9,12 +9,12 @@ export const OutlineHighlight = ({
 }) => {
   return highlightColor ? (
     <Outlines
-      thickness={0.05}
+      thickness={0.1}
       color={new Color(highlightColor)}
       screenspace={false}
-      opacity={0}
+      opacity={1}
       transparent={false}
-      angle={0}
+      angle={15}
     />
   ) : (
     <></>
