@@ -35,12 +35,18 @@ export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 export const startingArmiesForDefaultScenario: StartingArmies = {
-  '0': [finnID, grimnakID, raelinOneID, marroID],
-  '1': [tarnID, izumiID, syvarrisID, carrID],
-  '2': [marroID, negoksaID, thorgrimID, izumiID],
-  '3': [drake1ID, airbornID, raelinOneID],
-  '4': [zettianID, deathwalker9000ID, kravMagaID],
-  '5': [mimringID, tarnID, carrID],
+  // '0': [finnID, grimnakID, raelinOneID, marroID],
+  // '1': [tarnID, izumiID, syvarrisID, carrID],
+  // '2': [marroID, negoksaID, thorgrimID, izumiID],
+  // '3': [drake1ID, airbornID, raelinOneID],
+  // '4': [zettianID, deathwalker9000ID, kravMagaID],
+  // '5': [mimringID, tarnID, carrID],
+  '0': [marroID, mimringID],
+  '1': [syvarrisID, carrID, drake1ID],
+  '2': [marroID],
+  '3': [drake1ID],
+  '4': [drake1ID, deathwalker9000ID],
+  '5': [mimringID, carrID],
 }
 export const startingArmiesForGiantsTable2Player: StartingArmies = {
   '0': [drake1ID, thorgrimID, finnID, marroID, raelinOneID],
