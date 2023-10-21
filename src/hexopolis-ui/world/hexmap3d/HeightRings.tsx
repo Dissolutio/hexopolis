@@ -3,6 +3,8 @@ import { ReactThreeFiber, extend } from '@react-three/fiber'
 import { ONE_HEIGHT_LEVEL, hexTerrainColor } from './MapHex3D'
 import { usePlayContext } from 'hexopolis-ui/contexts'
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
+import { useBgioCtx, useBgioG } from 'bgio-contexts'
+import { playerColors } from 'hexopolis-ui/theme'
 
 export const HeightRings = ({
   bottomRingYPos,
@@ -44,6 +46,7 @@ export const HeightRings = ({
           height={height}
           top={topRingYPos}
           terrainForColor={terrainForColor}
+          boardHexID={boardHexID}
           isHighlighted={isHighlighted}
           isInSafeMoveRange={isInSafeMoveRange}
           isInEngageMoveRange={isInEngageMoveRange}
@@ -70,6 +73,7 @@ const HeightRing = ({
   height,
   top,
   position,
+  boardHexID,
   terrainForColor,
   isHighlighted,
   isInSafeMoveRange,
@@ -79,45 +83,113 @@ const HeightRing = ({
   height: number
   top: number
   position: Vector3
+  boardHexID: string
   terrainForColor: string
   isHighlighted: boolean
   isInSafeMoveRange: boolean
   isInEngageMoveRange: boolean
   isInDisengageMoveRange: boolean
 }) => {
+  const {
+    boardHexes,
+    hexMap: { hexSize, glyphs },
+    gameArmyCards,
+    startZones,
+    gameUnits,
+    unitsMoved,
+  } = useBgioG()
+  const {
+    gameover,
+    isWaitingForPlayersToJoin,
+    isMyTurn,
+    isDraftPhase,
+    isOrderMarkerPhase,
+    isPlacementPhase,
+    isTheDropStage,
+    isIdleTheDropStage,
+    isRoundOfPlayPhase,
+    isGameover,
+  } = useBgioCtx()
   const points = genPointsForHeightRing(height)
   const lineGeometry = new BufferGeometry().setFromPoints(points)
-  const isNotModified =
-    !isHighlighted &&
-    !isInSafeMoveRange &&
-    !isInEngageMoveRange &&
-    !isInDisengageMoveRange
-  const getColor = () => {
-    // The top ring receives all kinds of highlighting throughout the game
+  const getLineStyle = () => {
+    // The top ring receives all kinds of highlighting throughout the game, and a different color than the other rings
     if (height === top) {
       if (isHighlighted) {
-        return 'white'
+        return { color: 'white', opacity: 1, lineWidth: 2 }
       }
-      if (isInSafeMoveRange) {
-        return new Color('#bad954')
-      }
-      if (isInEngageMoveRange) {
-        return new Color('#e09628')
-      }
-      if (isInDisengageMoveRange) {
-        return new Color('#e25328')
-      } else {
-        // top rings, if not modified, are gray to highlight the edge between hexes
-        // or white, for light-colored terrain
-        if (terrainForColor === 'sand' || terrainForColor === 'grass') {
-          return new Color('lightGray')
+      if (isPlacementPhase) {
+        if ((startZones?.['0'] ?? []).includes(boardHexID)) {
+          return {
+            color: new Color(playerColors['0']),
+            opacity: 1,
+            lineWidth: 5,
+          }
         }
-        return new Color('gray')
+        if ((startZones?.['1'] ?? []).includes(boardHexID)) {
+          return {
+            color: new Color(playerColors['1']),
+            opacity: 1,
+            lineWidth: 5,
+          }
+        }
+        if ((startZones?.['2'] ?? []).includes(boardHexID)) {
+          return {
+            color: new Color(playerColors['2']),
+            opacity: 1,
+            lineWidth: 5,
+          }
+        }
+        if ((startZones?.['3'] ?? []).includes(boardHexID)) {
+          return {
+            color: new Color(playerColors['3']),
+            opacity: 1,
+            lineWidth: 5,
+          }
+        }
+        if ((startZones?.['4'] ?? []).includes(boardHexID)) {
+          return {
+            color: new Color(playerColors['4']),
+            opacity: 1,
+            lineWidth: 5,
+          }
+        }
+        if ((startZones?.['5'] ?? []).includes(boardHexID)) {
+          return {
+            color: new Color(playerColors['5']),
+            opacity: 1,
+            lineWidth: 5,
+          }
+        }
       }
+      if (isRoundOfPlayPhase) {
+        if (isInSafeMoveRange) {
+          return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+        }
+        if (isInEngageMoveRange) {
+          return { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
+        }
+        if (isInDisengageMoveRange) {
+          return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
+        }
+      }
+      // NONE OF ABOVE, THEN:
+      // top rings, if not modified, are gray to highlight the edge between hexes
+      // or white, for light-colored terrain
+      if (terrainForColor === 'sand' || terrainForColor === 'grass') {
+        return { color: new Color('lightGray'), opacity: 0.2, lineWidth: 1 }
+      }
+      return { color: new Color('gray'), opacity: 0.2, lineWidth: 1 }
     }
     // all non-top rings are as below:
-    else return new Color(hexTerrainColor[terrainForColor])
+    else
+      return {
+        color: new Color(hexTerrainColor[terrainForColor]),
+        opacity: 1,
+        lineWidth: 1,
+      }
   }
+  const { color, opacity, lineWidth } = getLineStyle()
   return (
     <line_
       geometry={lineGeometry}
@@ -127,9 +199,9 @@ const HeightRing = ({
       <lineBasicMaterial
         attach="material"
         transparent
-        opacity={top === height && isNotModified ? 0.2 : 1.0}
-        color={getColor()}
-        linewidth={1}
+        opacity={opacity}
+        color={color}
+        linewidth={lineWidth}
         linecap={'round'}
         linejoin={'round'}
       />
