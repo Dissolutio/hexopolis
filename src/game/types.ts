@@ -145,7 +145,7 @@ export type BoardHexes = {
   [key: string]: BoardHex
 }
 export type BoardHexesUnitDeployment = {
-  [boardHexId: string]: {
+  [boardHexId: string]: HexCoordinates & {
     occupyingUnitID: string
     isUnitTail: boolean
   }

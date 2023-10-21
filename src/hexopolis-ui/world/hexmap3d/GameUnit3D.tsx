@@ -3,7 +3,7 @@ import { Float } from '@react-three/drei'
 
 import { BoardHex, GameUnit, StringKeyedNums } from 'game/types'
 import { getDirectionOfNeighbor } from 'game/hex-utils'
-import { useUIContext } from 'hexopolis-ui/contexts'
+import { usePlacementContext, useUIContext } from 'hexopolis-ui/contexts'
 import { useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
 
@@ -40,10 +40,15 @@ export const GameUnit3D = ({
   // onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }) => {
   const { boardHexes } = useBgioG()
+  const { isPlacementPhase } = useBgioCtx()
+  const { editingBoardHexes } = usePlacementContext()
   const positionX = x
   const positionZ = z
   const positionY = boardHex.altitude / 2
-  const tailHex = selectTailHexForUnit(gameUnit.unitID, boardHexes)
+  const tailHex = selectTailHexForUnit(
+    gameUnit.unitID,
+    isPlacementPhase ? editingBoardHexes : boardHexes
+  )
   const directionToTail = tailHex
     ? getDirectionOfNeighbor(boardHex, tailHex)
     : undefined

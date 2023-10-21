@@ -64,6 +64,9 @@ const initialEditingBoardHexes = (
         [bh.id]: {
           occupyingUnitID: bh.occupyingUnitID,
           isUnitTail: bh.isUnitTail,
+          q: bh.q,
+          r: bh.r,
+          s: bh.s,
         },
       }
     }, {})
@@ -155,6 +158,9 @@ const PlacementContextProvider = ({
         [clickedHexId]: {
           occupyingUnitID: selectedUnitID,
           isUnitTail: false,
+          q: boardHexes[clickedHexId].q,
+          r: boardHexes[clickedHexId].r,
+          s: boardHexes[clickedHexId].s,
         },
       }
       // remove unit from old hex, head and tail
@@ -309,6 +315,9 @@ const PlacementContextProvider = ({
                 [clickedHexId]: {
                   occupyingUnitID: selectedUnitID,
                   isUnitTail: false,
+                  q: boardHexes[clickedHexId].q,
+                  r: boardHexes[clickedHexId].r,
+                  s: boardHexes[clickedHexId].s,
                 },
               }
               // remove unit from old hex, head and tail
@@ -344,6 +353,9 @@ const PlacementContextProvider = ({
               [clickedHexId]: {
                 occupyingUnitID: selectedUnitID,
                 isUnitTail: false,
+                q: boardHexes[clickedHexId].q,
+                r: boardHexes[clickedHexId].r,
+                s: boardHexes[clickedHexId].s,
               },
             }
             // remove unit from old hex, head and tail
@@ -367,6 +379,9 @@ const PlacementContextProvider = ({
         [clickedHexId]: {
           occupyingUnitID: activeTailPlacementUnitID,
           isUnitTail: true,
+          q: boardHexes[clickedHexId].q,
+          r: boardHexes[clickedHexId].r,
+          s: boardHexes[clickedHexId].s,
         },
       }))
       updatePlacementUnits(displacedUnitID, activeTailPlacementUnitID)
