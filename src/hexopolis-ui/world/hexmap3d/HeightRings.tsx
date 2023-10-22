@@ -9,6 +9,7 @@ import {
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
+import { BoardHex } from 'game/types'
 
 export const HeightRings = ({
   bottomRingYPos,
@@ -106,6 +107,7 @@ const HeightRing = ({
     isTheDropStage,
     isIdleTheDropStage,
     isRoundOfPlayPhase,
+    isMovementStage,
     isGameover,
   } = useBgioCtx()
   const points = genPointsForHeightRing(height)
@@ -113,6 +115,7 @@ const HeightRing = ({
 
   const { selectedUnitID } = useUIContext()
   const { playerID } = useBgioClientInfo()
+  const { theDropPlaceableHexIDs, revealedGameCardUnits } = usePlayContext()
   const {
     editingBoardHexes,
     startZoneForMy2HexUnits,
@@ -122,11 +125,23 @@ const HeightRing = ({
   const selectedUnit = gameUnits[selectedUnitID]
 
   const isMyStartZoneHex = Boolean(startZones?.[playerID]?.includes(boardHexID))
-  const unitId = boardHexes?.[boardHexID]?.occupyingUnitID ?? ''
+  const unitID = boardHexes?.[boardHexID]?.occupyingUnitID ?? ''
   const occupyingPlacementUnitId =
     editingBoardHexes?.[boardHexID]?.occupyingUnitID ?? ''
   const isTailPlaceable = tailPlaceables?.includes(boardHexID)
+  const activeEnemyUnitIDs = (revealedGameCardUnits ?? []).map((u) => {
+    return u.unitID
+  })
+  const isOpponentsActiveUnitHex = () => {
+    return activeEnemyUnitIDs?.includes(unitID)
+  }
 
+  const successGreenColor = new Color('#bad954')
+  const selectableGreenStyle = {
+    color: successGreenColor,
+    opacity: 1,
+    lineWidth: 5,
+  }
   const getLineStyle = () => {
     // all non-top rings are as below:
     if (height !== top) {
@@ -140,13 +155,18 @@ const HeightRing = ({
     if (isHighlighted) {
       return { color: 'white', opacity: 1, lineWidth: 2 }
     }
+    if (isTheDropStage || isIdleTheDropStage) {
+      if (theDropPlaceableHexIDs.includes(boardHexID)) {
+        return selectableGreenStyle
+      }
+    }
     // if we've placed a 2-hex unit and now need to place its tail
     if (isPlacementPhase && activeTailPlacementUnitID) {
       // highlight head hex of currently placing tail
       // if (occupyingPlacementUnitId === activeTailPlacementUnitID) {}
       // highlight empty, placeable hexes
       if (isMyStartZoneHex && !occupyingPlacementUnitId && isTailPlaceable) {
-        return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+        return selectableGreenStyle
       }
     }
     // start zones all thru the draft phase
@@ -201,12 +221,12 @@ const HeightRing = ({
     // placement + unit selected: show valid drops
     if (isPlacementPhase && selectedUnitID && !activeTailPlacementUnitID) {
       if (!(selectedUnitID === occupyingPlacementUnitId) && isMyStartZoneHex)
-        return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+        return selectableGreenStyle
     }
     // move range
-    if (isRoundOfPlayPhase) {
+    if (isRoundOfPlayPhase && isMovementStage && isMyTurn) {
       if (isInSafeMoveRange) {
-        return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+        return selectableGreenStyle
       }
       if (isInEngageMoveRange) {
         return { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
@@ -215,6 +235,10 @@ const HeightRing = ({
         return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
       }
     }
+    if (isRoundOfPlayPhase && !isMyTurn && isOpponentsActiveUnitHex()) {
+      return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
+    }
+
     // NONE OF ABOVE, THEN:
     // top rings, if not modified, are gray to highlight the edge between hexes
     // or white, for light-colored terrain
