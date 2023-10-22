@@ -13,19 +13,13 @@ export const HeightRings = ({
   terrainForColor,
   boardHexID,
   isHighlighted,
-}: // isInSafeMoveRange,
-// isInEngageMoveRange,
-// isInDisengageMoveRange,
-{
+}: {
   bottomRingYPos: number
   topRingYPos: number
   position: Vector3
   terrainForColor: string
   boardHexID: string
   isHighlighted: boolean
-  // isInSafeMoveRange: boolean
-  // isInEngageMoveRange: boolean
-  // isInDisengageMoveRange: boolean
 }) => {
   const { selectedUnitMoveRange } = usePlayContext()
   const {
@@ -113,84 +107,83 @@ const HeightRing = ({
   const points = genPointsForHeightRing(height)
   const lineGeometry = new BufferGeometry().setFromPoints(points)
   const getLineStyle = () => {
-    // The top ring receives all kinds of highlighting throughout the game, and a different color than the other rings
-    if (height === top) {
-      // hovered (not really used yet)
-      if (isHighlighted) {
-        return { color: 'white', opacity: 1, lineWidth: 2 }
-      }
-      // start zones
-      if (isPlacementPhase || isDraftPhase) {
-        if ((startZones?.['0'] ?? []).includes(boardHexID)) {
-          return {
-            color: new Color(playerColors['0']),
-            opacity: 1,
-            lineWidth: 5,
-          }
-        }
-        if ((startZones?.['1'] ?? []).includes(boardHexID)) {
-          return {
-            color: new Color(playerColors['1']),
-            opacity: 1,
-            lineWidth: 5,
-          }
-        }
-        if ((startZones?.['2'] ?? []).includes(boardHexID)) {
-          return {
-            color: new Color(playerColors['2']),
-            opacity: 1,
-            lineWidth: 5,
-          }
-        }
-        if ((startZones?.['3'] ?? []).includes(boardHexID)) {
-          return {
-            color: new Color(playerColors['3']),
-            opacity: 1,
-            lineWidth: 5,
-          }
-        }
-        if ((startZones?.['4'] ?? []).includes(boardHexID)) {
-          return {
-            color: new Color(playerColors['4']),
-            opacity: 1,
-            lineWidth: 5,
-          }
-        }
-        if ((startZones?.['5'] ?? []).includes(boardHexID)) {
-          return {
-            color: new Color(playerColors['5']),
-            opacity: 1,
-            lineWidth: 5,
-          }
-        }
-      }
-      // move range
-      if (isRoundOfPlayPhase) {
-        if (isInSafeMoveRange) {
-          return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
-        }
-        if (isInEngageMoveRange) {
-          return { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
-        }
-        if (isInDisengageMoveRange) {
-          return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
-        }
-      }
-      // NONE OF ABOVE, THEN:
-      // top rings, if not modified, are gray to highlight the edge between hexes
-      // or white, for light-colored terrain
-      if (terrainForColor === 'sand' || terrainForColor === 'grass') {
-        return { color: new Color('lightGray'), opacity: 0.2, lineWidth: 1 }
-      }
-      return { color: new Color('gray'), opacity: 0.2, lineWidth: 1 }
-    }
     // all non-top rings are as below:
-    else
+    if (height !== top) {
       return {
         color: new Color(hexTerrainColor[terrainForColor]),
         opacity: 1,
         lineWidth: 1,
       }
+    }
+    // BEGIN: top ring style
+    // hovered (not really used yet)
+    if (isHighlighted) {
+      return { color: 'white', opacity: 1, lineWidth: 2 }
+    }
+    // start zones
+    if (isPlacementPhase || isDraftPhase) {
+      if ((startZones?.['0'] ?? []).includes(boardHexID)) {
+        return {
+          color: new Color(playerColors['0']),
+          opacity: 1,
+          lineWidth: 5,
+        }
+      }
+      if ((startZones?.['1'] ?? []).includes(boardHexID)) {
+        return {
+          color: new Color(playerColors['1']),
+          opacity: 1,
+          lineWidth: 5,
+        }
+      }
+      if ((startZones?.['2'] ?? []).includes(boardHexID)) {
+        return {
+          color: new Color(playerColors['2']),
+          opacity: 1,
+          lineWidth: 5,
+        }
+      }
+      if ((startZones?.['3'] ?? []).includes(boardHexID)) {
+        return {
+          color: new Color(playerColors['3']),
+          opacity: 1,
+          lineWidth: 5,
+        }
+      }
+      if ((startZones?.['4'] ?? []).includes(boardHexID)) {
+        return {
+          color: new Color(playerColors['4']),
+          opacity: 1,
+          lineWidth: 5,
+        }
+      }
+      if ((startZones?.['5'] ?? []).includes(boardHexID)) {
+        return {
+          color: new Color(playerColors['5']),
+          opacity: 1,
+          lineWidth: 5,
+        }
+      }
+    }
+    // move range
+    if (isRoundOfPlayPhase) {
+      if (isInSafeMoveRange) {
+        return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+      }
+      if (isInEngageMoveRange) {
+        return { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
+      }
+      if (isInDisengageMoveRange) {
+        return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
+      }
+    }
+    // NONE OF ABOVE, THEN:
+    // top rings, if not modified, are gray to highlight the edge between hexes
+    // or white, for light-colored terrain
+    if (terrainForColor === 'sand' || terrainForColor === 'grass') {
+      return { color: new Color('lightGray'), opacity: 0.2, lineWidth: 1 }
+    }
+    return { color: new Color('gray'), opacity: 0.2, lineWidth: 1 }
   }
   const { color, opacity, lineWidth } = getLineStyle()
   return (
