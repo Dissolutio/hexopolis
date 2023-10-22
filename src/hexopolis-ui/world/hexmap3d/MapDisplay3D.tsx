@@ -183,8 +183,8 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
   // world is flat on X-Z, and Y is altitude
   const positionX = pixel.x
   const positionZ = pixel.y
-  // const positionY = boardHex.altitude / 2
-  // const positionYHexText = positionY + 0.2
+  const positionY = boardHex.altitude / 2
+  const positionYHexText = positionY + 0.2
   return (
     <>
       <MapHex3D
@@ -194,9 +194,9 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
         onClick={onClick}
       />
 
-      {/* <Billboard position={[positionX, positionYHexText, positionZ]}>
+      <Billboard position={[positionX, positionYHexText, positionZ]}>
         <Text fontSize={0.1}>{boardHex.id}</Text>
-      </Billboard> */}
+      </Billboard>
 
       {gameUnit && isShowableUnit && !isUnitTail ? (
         <GameUnit3D

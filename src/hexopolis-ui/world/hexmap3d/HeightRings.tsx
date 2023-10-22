@@ -10,6 +10,7 @@ import { transformMoveRangeToArraysOfIds } from 'game/constants'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
 import { BoardHex } from 'game/types'
+import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 
 export const HeightRings = ({
   bottomRingYPos,
@@ -108,6 +109,11 @@ const HeightRing = ({
     isIdleTheDropStage,
     isRoundOfPlayPhase,
     isMovementStage,
+    isWaterCloneStage,
+    isAttackingStage,
+    isFireLineSAStage,
+    isGrenadeSAStage,
+    isExplosionSAStage,
     isGameover,
   } = useBgioCtx()
   const points = genPointsForHeightRing(height)
@@ -115,13 +121,33 @@ const HeightRing = ({
 
   const { selectedUnitID } = useUIContext()
   const { playerID } = useBgioClientInfo()
-  const { theDropPlaceableHexIDs, revealedGameCardUnits } = usePlayContext()
+  const {
+    theDropPlaceableHexIDs,
+    revealedGameCardUnits,
+    selectedUnitAttackRange,
+    clonerHexIDs,
+    clonePlaceableHexIDs,
+  } = usePlayContext()
   const {
     editingBoardHexes,
     startZoneForMy2HexUnits,
     activeTailPlacementUnitID,
     tailPlaceables,
   } = usePlacementContext()
+  const {
+    selectSpecialAttack,
+    fireLineTargetableHexIDs,
+    fireLineAffectedHexIDs,
+    fireLineSelectedHexIDs,
+    explosionTargetableHexIDs,
+    explosionAffectedHexIDs,
+    explosionAffectedUnitIDs,
+    explosionSelectedUnitIDs,
+    chompableHexIDs,
+    chompSelectedHexIDs,
+    mindShackleTargetableHexIDs,
+    mindShackleSelectedHexIDs,
+  } = useSpecialAttackContext()
   const selectedUnit = gameUnits[selectedUnitID]
 
   const isMyStartZoneHex = Boolean(startZones?.[playerID]?.includes(boardHexID))
@@ -135,13 +161,18 @@ const HeightRing = ({
   const isOpponentsActiveUnitHex = () => {
     return activeEnemyUnitIDs?.includes(unitID)
   }
+  const isSelectedUnitHex = () => {
+    return selectedUnitID && unitID && unitID === selectedUnitID
+  }
 
-  const successGreenColor = new Color('#bad954')
-  const selectableGreenStyle = {
-    color: successGreenColor,
+  const playerColorStyle = {
+    color: new Color(playerColors[playerID]),
     opacity: 1,
     lineWidth: 5,
   }
+  const greenStyle = { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+  const orangeStyle = { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
+  const redStyle = { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
   const getLineStyle = () => {
     // all non-top rings are as below:
     if (height !== top) {
@@ -155,18 +186,13 @@ const HeightRing = ({
     if (isHighlighted) {
       return { color: 'white', opacity: 1, lineWidth: 2 }
     }
-    if (isTheDropStage || isIdleTheDropStage) {
-      if (theDropPlaceableHexIDs.includes(boardHexID)) {
-        return selectableGreenStyle
-      }
-    }
     // if we've placed a 2-hex unit and now need to place its tail
     if (isPlacementPhase && activeTailPlacementUnitID) {
       // highlight head hex of currently placing tail
       // if (occupyingPlacementUnitId === activeTailPlacementUnitID) {}
       // highlight empty, placeable hexes
       if (isMyStartZoneHex && !occupyingPlacementUnitId && isTailPlaceable) {
-        return selectableGreenStyle
+        return greenStyle
       }
     }
     // start zones all thru the draft phase
@@ -221,24 +247,72 @@ const HeightRing = ({
     // placement + unit selected: show valid drops
     if (isPlacementPhase && selectedUnitID && !activeTailPlacementUnitID) {
       if (!(selectedUnitID === occupyingPlacementUnitId) && isMyStartZoneHex)
-        return selectableGreenStyle
+        return greenStyle
     }
-    // move range
+    // pre-order-marker-phase: the drop:
+    if (isTheDropStage || isIdleTheDropStage) {
+      if (theDropPlaceableHexIDs.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
+    // round of play: move range
     if (isRoundOfPlayPhase && isMovementStage && isMyTurn) {
       if (isInSafeMoveRange) {
-        return selectableGreenStyle
+        return greenStyle
       }
       if (isInEngageMoveRange) {
-        return { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
+        return orangeStyle
       }
       if (isInDisengageMoveRange) {
-        return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
+        return redStyle
       }
     }
+    // round of play: not my move
     if (isRoundOfPlayPhase && !isMyTurn && isOpponentsActiveUnitHex()) {
-      return { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
+      return redStyle
     }
-
+    //  phase: ROP-water-clone
+    if (isWaterCloneStage) {
+      if (clonerHexIDs?.includes(boardHexID)) {
+        return playerColorStyle
+      }
+      if (clonePlaceableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
+    // round of play: attack, highlight targetable enemy units
+    if (
+      isRoundOfPlayPhase &&
+      isMyTurn &&
+      isAttackingStage &&
+      selectedUnitAttackRange?.includes(boardHexID)
+    ) {
+      return redStyle
+    }
+    //  phase: ROP-fire-line Special Attack
+    if (isFireLineSAStage) {
+      // order matters here, check fireLineSelectedHexIDs first, else the below will early return
+      if (fireLineSelectedHexIDs?.includes(boardHexID)) {
+        return redStyle
+      }
+      if (fireLineTargetableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+      if (fireLineAffectedHexIDs?.includes(boardHexID)) {
+        return orangeStyle
+      }
+    }
+    if (isGrenadeSAStage || isExplosionSAStage) {
+      if (explosionSelectedUnitIDs?.includes(unitID)) {
+        return redStyle
+      }
+      if (explosionAffectedUnitIDs?.includes(unitID)) {
+        return orangeStyle
+      }
+      if (explosionTargetableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
     // NONE OF ABOVE, THEN:
     // top rings, if not modified, are gray to highlight the edge between hexes
     // or white, for light-colored terrain
@@ -247,6 +321,7 @@ const HeightRing = ({
     }
     return { color: new Color('gray'), opacity: 0.2, lineWidth: 1 }
   }
+
   const { color, opacity, lineWidth } = getLineStyle()
   return (
     <line_

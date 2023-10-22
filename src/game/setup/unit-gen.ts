@@ -41,8 +41,8 @@ export const startingArmiesForDefaultScenario: StartingArmies = {
   // '3': [drake1ID, airbornID, raelinOneID],
   // '4': [zettianID, deathwalker9000ID, kravMagaID],
   // '5': [mimringID, tarnID, carrID],
-  '0': [marroID, mimringID],
-  '1': [syvarrisID, carrID, drake1ID, airbornID],
+  '0': [deathwalker9000ID],
+  '1': [marroID],
   '2': [marroID],
   '3': [drake1ID],
   '4': [drake1ID, deathwalker9000ID],
@@ -58,8 +58,8 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
   // '1': [izumiID, syvarrisID, airbornID, carrID],
 
   // for devving 3d below:
-  '0': [mimringID, deathwalker9000ID, drake1ID, airbornID],
-  '1': [carrID, syvarrisID, marroID],
+  '0': [deathwalker9000ID, drake1ID, airbornID, mimringID],
+  '1': [marroID, carrID, syvarrisID],
 }
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],

@@ -415,17 +415,22 @@ export function SpecialAttackContextProvider({
       gameUnits,
       armyCards: gameArmyCards,
     })
-    const hexIDsInRange: [string, string][] = Object.values(boardHexes)
-      .filter((hex) => {
+    const getHexIDsInRange = (): [string, string][] => {
+      const filteredBoardHexes = Object.values(boardHexes).filter((hex) => {
         // if hex is not occupied by enemy unit, return false
+        const isNotOccupied = !hex.occupyingUnitID
+        const isNoSuchUnit = !gameUnits[hex.occupyingUnitID]
+        const isAttackingUnitEngaged = engagedEnemyUnitIDs.length > 0
+        const isHexUnitEngagedToAttackingUnit = engagedEnemyUnitIDs.some(
+          (id) => id === hex.occupyingUnitID
+        )
         if (
           // not occupied
-          !hex.occupyingUnitID ||
+          isNotOccupied ||
           // no unit for id on hex (shouldn't happen))
-          !gameUnits[hex.occupyingUnitID] ||
+          isNoSuchUnit ||
           // attacking unit is engaged and not by this unit, must attacked engaged units
-          (engagedEnemyUnitIDs.length > 0 &&
-            !engagedEnemyUnitIDs.some((id) => id === hex.occupyingUnitID)) ||
+          (isAttackingUnitEngaged && !isHexUnitEngagedToAttackingUnit) ||
           // unit is a friendly unit (TODO: It's technically legal to attack your own figures)
           gameUnits[hex.occupyingUnitID].playerID === playerID
         ) {
@@ -445,9 +450,23 @@ export function SpecialAttackContextProvider({
             : undefined,
           isSpecialAttack: true,
         })
+        if (hex.occupyingUnitID) {
+          console.log(
+            '🚀 ~ file: special-attack-context.tsx:449 ~ filteredBoardHexes ~ isExplosionSAStage:',
+            isExplosionSAStage
+          )
+          console.log(
+            '🚀 ~ file: special-attack-context.tsx:425 ~ filteredBoardHexes ~ isHexUnitEngagedToAttackingUnit / isInRange:',
+            isHexUnitEngagedToAttackingUnit,
+            isInRange,
+            hex
+          )
+        }
         return isInRange
       })
-      .map((hex) => [hex.id, hex.occupyingUnitID])
+      return filteredBoardHexes.map((hex) => [hex.id, hex.occupyingUnitID])
+    }
+    const hexIDsInRange = getHexIDsInRange()
 
     const result: PossibleExplosionAttack[] = hexIDsInRange.reduce(
       (acc: PossibleExplosionAttack[], [hexID, hexUnitID]) => {
@@ -492,8 +511,13 @@ export function SpecialAttackContextProvider({
     gameUnits,
     gameArmyCards,
     playerID,
+    glyphs,
     isExplosionSAStage,
   ])
+  console.log(
+    '🚀 ~ file: special-attack-context.tsx:502 ~ possibleExplosionAttacks:',
+    possibleExplosionAttacks
+  )
   const explosionTargetableHexIDs =
     possibleExplosionAttacks?.map?.((pa) => pa.clickableHexID) ?? []
   const chosenExplosionAttack = possibleExplosionAttacks?.find?.((pa) => {
