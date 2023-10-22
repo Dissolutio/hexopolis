@@ -1,11 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 import { OutlineHighlight } from '../OutlineHighlight'
+import { GameUnit } from 'game/types'
 
-export function Deathwalker9000Model({
-  highlightColor,
-}: {
-  highlightColor: string
-}) {
+export function Deathwalker9000Model({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes, materials } = useGLTF('/d9000_low_poly_colored.glb') as any
   return (
     <>
@@ -15,7 +12,7 @@ export function Deathwalker9000Model({
         geometry={nodes.Deathwalker_9000_Scanned_1.geometry}
         material={materials.Black}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -23,7 +20,7 @@ export function Deathwalker9000Model({
         geometry={nodes.Deathwalker_9000_Scanned_2.geometry}
         material={materials.Silver}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -31,7 +28,7 @@ export function Deathwalker9000Model({
         geometry={nodes.Deathwalker_9000_Scanned_3.geometry}
         material={materials.BrightRed}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -39,7 +36,7 @@ export function Deathwalker9000Model({
         geometry={nodes.Deathwalker_9000_Scanned_4.geometry}
         material={materials.Silver}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -47,7 +44,7 @@ export function Deathwalker9000Model({
         geometry={nodes.Deathwalker_9000_Scanned_5.geometry}
         material={materials.BrightRed}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
   )

@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 import { OutlineHighlight } from '../../OutlineHighlight'
+import { GameUnit } from 'game/types'
 
-export function MarroWarrior3({ highlightColor }: { highlightColor: string }) {
+export function MarroWarrior3({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes, materials } = useGLTF(
     '/marro_warrior_3_low_poly_colored.glb'
   ) as any
@@ -13,7 +14,7 @@ export function MarroWarrior3({ highlightColor }: { highlightColor: string }) {
         geometry={nodes['Marro_Warriors_-_3001_1'].geometry}
         material={materials.MarroSkinYellow}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -21,7 +22,7 @@ export function MarroWarrior3({ highlightColor }: { highlightColor: string }) {
         geometry={nodes['Marro_Warriors_-_3001_2'].geometry}
         material={materials.MarroLtGreen}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -29,7 +30,7 @@ export function MarroWarrior3({ highlightColor }: { highlightColor: string }) {
         geometry={nodes['Marro_Warriors_-_3001_3'].geometry}
         material={materials.MarroOrange}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -37,7 +38,7 @@ export function MarroWarrior3({ highlightColor }: { highlightColor: string }) {
         geometry={nodes['Marro_Warriors_-_3001_4'].geometry}
         material={materials.MarroLicorice}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -45,7 +46,7 @@ export function MarroWarrior3({ highlightColor }: { highlightColor: string }) {
         geometry={nodes['Marro_Warriors_-_3001_5'].geometry}
         material={materials.MarroSageGreen}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
   )

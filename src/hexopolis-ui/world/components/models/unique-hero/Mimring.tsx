@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 import { OutlineHighlight } from '../OutlineHighlight'
+import { GameUnit } from 'game/types'
 
-export function MimringModel({ highlightColor }: { highlightColor: string }) {
+export function MimringModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes, materials } = useGLTF('/mimring_low_poly_colored.glb') as any
   return (
     <>
@@ -11,7 +12,7 @@ export function MimringModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mimring_Scanned.geometry}
         material={materials.CopperBrown}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -19,7 +20,7 @@ export function MimringModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mimring_Scanned_1.geometry}
         material={materials.DragonTongueRed}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -27,7 +28,7 @@ export function MimringModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mimring_Scanned_2.geometry}
         material={materials.DragonBone}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -35,7 +36,7 @@ export function MimringModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mimring_Scanned_3.geometry}
         material={materials.DragonGold}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
   )

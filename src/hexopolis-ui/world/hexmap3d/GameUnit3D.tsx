@@ -78,7 +78,7 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
 
   const isSelectedUnitHex =
     selectedUnitID && unitID && selectedUnitID === unitID
-  const highlightColor = () => {
+  const getHighlightColor = () => {
     if (isPlacementPhase && isSelectedUnitHex) {
       return 'white'
     }
@@ -88,29 +88,29 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
     case 'hs1000':
       // marro warriors
       if (gameUnit.modelIndex === 0)
-        return <MarroWarrior1 highlightColor={highlightColor()} />
+        return <MarroWarrior1 gameUnit={gameUnit} />
       if (gameUnit.modelIndex === 1)
-        return <MarroWarrior2 highlightColor={highlightColor()} />
+        return <MarroWarrior2 gameUnit={gameUnit} />
       if (gameUnit.modelIndex === 2)
-        return <MarroWarrior3 highlightColor={highlightColor()} />
+        return <MarroWarrior3 gameUnit={gameUnit} />
       if (gameUnit.modelIndex === 3)
-        return <MarroWarrior4 highlightColor={highlightColor()} />
-      return <MarroWarrior1 highlightColor={highlightColor()} />
+        return <MarroWarrior4 gameUnit={gameUnit} />
+      return <MarroWarrior1 gameUnit={gameUnit} />
     case 'hs1001':
       // deathwalker 9000
-      return <Deathwalker9000Model highlightColor={highlightColor()} />
+      return <Deathwalker9000Model gameUnit={gameUnit} />
     case 'hs1003':
       // sgt drake
-      return <SgtDrakeModel highlightColor={highlightColor()} />
+      return <SgtDrakeModel gameUnit={gameUnit} />
     case 'hs1004':
       // syvarris
-      return <SyvarrisModel highlightColor={highlightColor()} />
+      return <SyvarrisModel gameUnit={gameUnit} />
     case 'hs1007':
       // agent carr
-      return <AgentCarrModel highlightColor={highlightColor()} />
+      return <AgentCarrModel gameUnit={gameUnit} />
     case 'hs1013':
       // agent carr
-      return <MimringModel highlightColor={highlightColor()} />
+      return <MimringModel gameUnit={gameUnit} />
     default:
       return null
   }

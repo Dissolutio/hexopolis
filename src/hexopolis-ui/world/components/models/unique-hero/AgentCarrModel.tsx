@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 import { OutlineHighlight } from '../OutlineHighlight'
+import { GameUnit } from 'game/types'
 
-export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
+export function AgentCarrModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes, materials } = useGLTF(
     '/agent_carr_low_poly_colored.glb'
   ) as any
@@ -13,7 +14,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001.geometry}
         material={materials.Gunmetal}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -21,7 +22,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_1.geometry}
         material={nodes.Mesh_0001_1.material}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -29,7 +30,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_2.geometry}
         material={materials.DarkBlueCoat}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -37,7 +38,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_3.geometry}
         material={materials.BlackSkin}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -45,7 +46,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_4.geometry}
         material={materials.DarkGray}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -53,7 +54,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_5.geometry}
         material={materials.LightBlue}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -61,7 +62,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_6.geometry}
         material={materials.Silver}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -69,7 +70,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_7.geometry}
         material={materials.BlackHair}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -77,7 +78,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_8.geometry}
         material={materials.Black}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -85,7 +86,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_9.geometry}
         material={materials.Blade}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -93,7 +94,7 @@ export function AgentCarrModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Mesh_0001_10.geometry}
         material={materials.BlueGray}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
   )

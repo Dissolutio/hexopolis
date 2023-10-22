@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 import { OutlineHighlight } from '../OutlineHighlight'
+import { GameUnit } from 'game/types'
 
-export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
+export function SyvarrisModel({ gameUnit }: { gameUnit: GameUnit }) {
   // const totalRotation = initialAngleAdjustment + (rotation[1-6]) * (Math.PI / 3)
   const { nodes, materials } = useGLTF('/syvarris_low_poly.glb') as any
   return (
@@ -12,7 +13,7 @@ export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Syvarris_Scanned.geometry}
         material={materials.SandyWhiteSkin}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -20,7 +21,7 @@ export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Syvarris_Scanned_1.geometry}
         material={materials.Chainmail}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -28,7 +29,7 @@ export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Syvarris_Scanned_2.geometry}
         material={materials.ElfGreen}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -36,7 +37,7 @@ export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Syvarris_Scanned_3.geometry}
         material={materials.ElfBrown}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -44,7 +45,7 @@ export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Syvarris_Scanned_4.geometry}
         material={materials.ElfTan}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
       <mesh
         castShadow
@@ -52,7 +53,7 @@ export function SyvarrisModel({ highlightColor }: { highlightColor: string }) {
         geometry={nodes.Syvarris_Scanned_5.geometry}
         material={materials.ElfLtGreen}
       >
-        <OutlineHighlight highlightColor={highlightColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
   )
