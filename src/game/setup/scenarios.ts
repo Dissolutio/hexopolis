@@ -52,7 +52,7 @@ const generatePlayerAndReadyAndOMStates = ({
   isDevOverrideState
     ? {
         // Ready states can be edited to change what phase the game starts in (there's some state change too, like starting armies, unit placement, order markers)
-        draftReady: generateReadyStateForNumPlayers(numPlayers, false),
+        draftReady: generateReadyStateForNumPlayers(numPlayers, true),
         placementReady: generateReadyStateForNumPlayers(numPlayers, false),
         orderMarkersReady: generateReadyStateForNumPlayers(numPlayers, true),
         orderMarkers: generatePreplacedOrderMarkers(numPlayers, startingArmies),

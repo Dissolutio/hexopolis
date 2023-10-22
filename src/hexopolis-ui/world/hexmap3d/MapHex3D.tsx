@@ -7,6 +7,9 @@ import {
 import { HeightRings } from './HeightRings'
 import { ThreeEvent } from '@react-three/fiber'
 import { useState } from 'react'
+import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
+import { usePlacementContext, useUIContext } from 'hexopolis-ui/contexts'
+import { playerColors } from 'hexopolis-ui/theme'
 
 export const ONE_HEIGHT_LEVEL = 0.5
 const halfLevel = 0.25
@@ -29,6 +32,13 @@ export const MapHex3D = ({
   boardHex: BoardHex
   onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }) => {
+  const { startZones } = useBgioG()
+  const unitID = boardHex?.occupyingUnitID ?? ''
+  const { playerID } = useBgioClientInfo()
+  const { editingBoardHexes } = usePlacementContext()
+  const { selectedUnitID } = useUIContext()
+  const occupyingPlacementUnitId =
+    editingBoardHexes?.[boardHex.id]?.occupyingUnitID ?? ''
   const altitude = boardHex.altitude
   const hexYPosition = altitude / 4
   const isFluidHex = isFluidTerrainHex(boardHex.terrain)
@@ -52,10 +62,29 @@ export const MapHex3D = ({
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
   const subTerrainYAdjust = (altitude - quarterLevel) / 4
   const subTerrainPosition = new Vector3(x, subTerrainYAdjust, z)
-  const [isHighlighted, setIsHighlighted] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+
   const whiteColor = new Color('white')
   const terrainColor = new Color(hexTerrainColor[boardHex.terrain])
-  const capEmissiveColor = isHighlighted ? whiteColor : terrainColor
+  const playerColor = new Color(playerColors[playerID])
+
+  const isMyStartZoneHex = Boolean(
+    startZones?.[playerID]?.includes(boardHex.id)
+  )
+  const isSelectedUnitHex = selectedUnitID === unitID
+  // const isPlaceableOccupiedPlacementHex =
+  //   isMyStartZoneHex &&
+  //   occupyingPlacementUnitId &&
+  //   occupyingPlacementUnitId !== selectedUnitID
+
+  const capEmissiveColor = isHovered
+    ? whiteColor
+    : isSelectedUnitHex
+    ? playerColor
+    : terrainColor
+  const capEmissiveIntensity = isHovered ? 1 : 0.5
+  const capFluidEmissiveIntensity = isHovered ? 2 : 1
+  const capFluidOpacity = 0.85
   const subTerrainColor = new Color(hexTerrainColor[subTerrain])
   return (
     <group>
@@ -67,7 +96,7 @@ export const MapHex3D = ({
         position={hexPosition}
         terrainForColor={subTerrain} // the subterrain is the color for the interior rings (they'll fall in the subterrain mesh area)
         boardHexID={boardHex.id}
-        isHighlighted={isHighlighted}
+        isHighlighted={isHovered}
       />
       {/* This is the big sub-terrain mesh from the floor to the cap mesh */}
       <mesh position={subTerrainPosition} scale={[1, heightScaleSubTerrain, 1]}>
@@ -84,18 +113,19 @@ export const MapHex3D = ({
         onPointerEnter={(e) => {
           // this keeps the hover from penetrating to hoverable-hexes behind this one
           e.stopPropagation()
-          setIsHighlighted(true)
+          setIsHovered(true)
         }}
-        onPointerLeave={() => setIsHighlighted(false)}
+        onPointerLeave={() => setIsHovered(false)}
       >
+        {/* The cap hex is either fluid-terrain or solid-terrain */}
         {isFluidHex ? (
           <mesh position={capPosition} scale={[1, scaleToUseForCap, 1]}>
             <meshLambertMaterial
               color={terrainColor}
               transparent
-              opacity={0.85}
+              opacity={capFluidOpacity}
               emissive={terrainColor}
-              emissiveIntensity={isHighlighted ? 2 : 1}
+              emissiveIntensity={capFluidEmissiveIntensity}
             />
             <cylinderGeometry args={[1, 1, halfLevel, 6]} />
           </mesh>
@@ -104,7 +134,7 @@ export const MapHex3D = ({
             <meshToonMaterial
               color={terrainColor}
               emissive={capEmissiveColor}
-              emissiveIntensity={isHighlighted ? 1 : 0.5}
+              emissiveIntensity={capEmissiveIntensity}
             />
             <cylinderGeometry args={[1, 1, halfLevel, 6]} />
           </mesh>
