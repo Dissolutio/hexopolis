@@ -6956,6 +6956,7 @@ export const only3dGuysWeGot = MS1Cards.filter(
     card.armyCardID === 'hs1001' ||
     card.armyCardID === 'hs1003' ||
     card.armyCardID === 'hs1004' ||
+    card.armyCardID === 'hs1009' ||
     card.armyCardID === 'hs1007'
 )
 

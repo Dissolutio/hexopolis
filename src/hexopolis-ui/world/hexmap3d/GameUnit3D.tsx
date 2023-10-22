@@ -16,6 +16,10 @@ import { MarroWarrior3 } from '../components/models/unique-squad/marro-warriors/
 import { MarroWarrior4 } from '../components/models/unique-squad/marro-warriors/MarroWarrior4'
 import { MimringModel } from '../components/models/unique-hero/Mimring'
 import { selectTailHexForUnit } from 'game/selectors'
+import { AirbornElite1 } from '../components/models/unique-squad/airborn-elite/AirbornElite1'
+import { AirbornElite2 } from '../components/models/unique-squad/airborn-elite/AirbornElite2'
+import { AirbornElite3 } from '../components/models/unique-squad/airborn-elite/AirbornElite3'
+import { AirbornElite4 } from '../components/models/unique-squad/airborn-elite/AirbornElite4'
 
 const initialRotations: StringKeyedNums = {
   // everyone else defaults to Math.PI so far
@@ -96,6 +100,17 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
       if (gameUnit.modelIndex === 3)
         return <MarroWarrior4 gameUnit={gameUnit} />
       return <MarroWarrior1 gameUnit={gameUnit} />
+    case 'hs1009':
+      // airborn elite
+      if (gameUnit.modelIndex === 0)
+        return <AirbornElite1 gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 1)
+        return <AirbornElite2 gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 2)
+        return <AirbornElite3 gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 3)
+        return <AirbornElite4 gameUnit={gameUnit} />
+      return <AirbornElite1 gameUnit={gameUnit} />
     case 'hs1001':
       // deathwalker 9000
       return <Deathwalker9000Model gameUnit={gameUnit} />
