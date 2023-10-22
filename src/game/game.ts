@@ -48,8 +48,8 @@ export const Hexoscape: Game<GameState> = {
           if (process.env.NODE_ENV === 'development') {
             // DEV: change this to change 2 player local game
             // return scenarioNames.clashingFrontsAtTableOfTheGiants2
-            // return scenarioNames.forsakenWaters2
-            return scenarioNames.theBigHexagon2
+            return scenarioNames.forsakenWaters2
+            // return scenarioNames.theBigHexagon2
             // return scenarioNames.makeMoveRange1HexWalkScenario
             // return scenarioNames.makeMoveRange2HexWalkScenario
             // return scenarioNames.makeMoveRangePassThruScenario
