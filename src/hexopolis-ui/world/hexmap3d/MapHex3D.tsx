@@ -7,7 +7,7 @@ import {
 import { HeightRings } from './HeightRings'
 import { ThreeEvent } from '@react-three/fiber'
 import { useState } from 'react'
-import { useBgioClientInfo, useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { usePlacementContext, useUIContext } from 'hexopolis-ui/contexts'
 import { playerColors } from 'hexopolis-ui/theme'
 
@@ -33,9 +33,11 @@ export const MapHex3D = ({
   onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }) => {
   const { startZones } = useBgioG()
-  const unitID = boardHex?.occupyingUnitID ?? ''
+  const { isPlacementPhase } = useBgioCtx()
   const { playerID } = useBgioClientInfo()
   const { editingBoardHexes } = usePlacementContext()
+  const unitID = boardHex?.occupyingUnitID ?? ''
+  const editingHexUnitID = editingBoardHexes[boardHex.id]?.occupyingUnitID ?? ''
   const { selectedUnitID } = useUIContext()
   const occupyingPlacementUnitId =
     editingBoardHexes?.[boardHex.id]?.occupyingUnitID ?? ''
@@ -71,17 +73,17 @@ export const MapHex3D = ({
   const isMyStartZoneHex = Boolean(
     startZones?.[playerID]?.includes(boardHex.id)
   )
-  const isSelectedUnitHex = selectedUnitID === unitID
+  const isSelectedUnitHex =
+    selectedUnitID &&
+    (isPlacementPhase ? editingHexUnitID : unitID) &&
+    selectedUnitID === (isPlacementPhase ? editingHexUnitID : unitID)
   // const isPlaceableOccupiedPlacementHex =
   //   isMyStartZoneHex &&
   //   occupyingPlacementUnitId &&
   //   occupyingPlacementUnitId !== selectedUnitID
 
-  const capEmissiveColor = isHovered
-    ? whiteColor
-    : isSelectedUnitHex
-    ? playerColor
-    : terrainColor
+  const capEmissiveColor =
+    isHovered || isSelectedUnitHex ? whiteColor : terrainColor
   const capEmissiveIntensity = isHovered ? 1 : 0.5
   const capFluidEmissiveIntensity = isHovered ? 2 : 1
   const capFluidOpacity = 0.85

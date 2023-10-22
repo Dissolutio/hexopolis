@@ -5,7 +5,6 @@ import { BoardHex, GameUnit, StringKeyedNums } from 'game/types'
 import { getDirectionOfNeighbor } from 'game/hex-utils'
 import { usePlacementContext, useUIContext } from 'hexopolis-ui/contexts'
 import { useBgioCtx, useBgioG } from 'bgio-contexts'
-import { playerColors } from 'hexopolis-ui/theme'
 
 import { SyvarrisModel } from '../components/models/unique-hero/SyvarrisModel'
 import { SgtDrakeModel } from '../components/models/unique-hero/SgtDrakeModel'
@@ -42,6 +41,7 @@ export const GameUnit3D = ({
   const { boardHexes } = useBgioG()
   const { isPlacementPhase } = useBgioCtx()
   const { editingBoardHexes } = usePlacementContext()
+
   const positionX = x
   const positionZ = z
   const positionY = boardHex.altitude / 2
@@ -59,6 +59,7 @@ export const GameUnit3D = ({
     getInitialRotationByID(gameUnit.armyCardID) +
     playerAdjustedRotationForSingleHexFigures +
     rotationToTail
+
   return (
     <group
       position={[positionX, positionY, positionZ]}
@@ -75,14 +76,13 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
   const { isPlacementPhase } = useBgioCtx()
   const { selectedUnitID } = useUIContext()
 
+  const isSelectedUnitHex =
+    selectedUnitID && unitID && selectedUnitID === unitID
   const highlightColor = () => {
-    if (isPlacementPhase && unitID === selectedUnitID) {
-      return playerColors[gameUnit.playerID]
+    if (isPlacementPhase && isSelectedUnitHex) {
+      return 'white'
     }
     return ''
-  }
-  if (!gameUnit) {
-    return null
   }
   switch (gameUnit.armyCardID) {
     case 'hs1000':

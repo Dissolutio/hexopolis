@@ -1,9 +1,13 @@
 import { Vector3, BufferGeometry, Line, Color } from 'three'
 import { ReactThreeFiber, extend } from '@react-three/fiber'
 import { ONE_HEIGHT_LEVEL, hexTerrainColor } from './MapHex3D'
-import { usePlayContext } from 'hexopolis-ui/contexts'
+import {
+  usePlacementContext,
+  usePlayContext,
+  useUIContext,
+} from 'hexopolis-ui/contexts'
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
-import { useBgioCtx, useBgioG } from 'bgio-contexts'
+import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
 
 export const HeightRings = ({
@@ -106,6 +110,23 @@ const HeightRing = ({
   } = useBgioCtx()
   const points = genPointsForHeightRing(height)
   const lineGeometry = new BufferGeometry().setFromPoints(points)
+
+  const { selectedUnitID } = useUIContext()
+  const { playerID } = useBgioClientInfo()
+  const {
+    editingBoardHexes,
+    startZoneForMy2HexUnits,
+    activeTailPlacementUnitID,
+    tailPlaceables,
+  } = usePlacementContext()
+  const selectedUnit = gameUnits[selectedUnitID]
+
+  const isMyStartZoneHex = Boolean(startZones?.[playerID]?.includes(boardHexID))
+  const unitId = boardHexes?.[boardHexID]?.occupyingUnitID ?? ''
+  const occupyingPlacementUnitId =
+    editingBoardHexes?.[boardHexID]?.occupyingUnitID ?? ''
+  const isTailPlaceable = tailPlaceables?.includes(boardHexID)
+
   const getLineStyle = () => {
     // all non-top rings are as below:
     if (height !== top) {
@@ -115,13 +136,25 @@ const HeightRing = ({
         lineWidth: 1,
       }
     }
-    // BEGIN: top ring style
-    // hovered (not really used yet)
+    // top ring styles below:
     if (isHighlighted) {
       return { color: 'white', opacity: 1, lineWidth: 2 }
     }
-    // start zones
-    if (isPlacementPhase || isDraftPhase) {
+    // if we've placed a 2-hex unit and now need to place its tail
+    if (isPlacementPhase && activeTailPlacementUnitID) {
+      // highlight head hex of currently placing tail
+      // if (occupyingPlacementUnitId === activeTailPlacementUnitID) {}
+      // highlight empty, placeable hexes
+      if (isMyStartZoneHex && !occupyingPlacementUnitId && isTailPlaceable) {
+        return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+      }
+    }
+    // start zones all thru the draft phase
+    // placement only when unit not selected
+    if (
+      (isPlacementPhase && !selectedUnitID && !activeTailPlacementUnitID) ||
+      isDraftPhase
+    ) {
       if ((startZones?.['0'] ?? []).includes(boardHexID)) {
         return {
           color: new Color(playerColors['0']),
@@ -164,6 +197,11 @@ const HeightRing = ({
           lineWidth: 5,
         }
       }
+    }
+    // placement + unit selected: show valid drops
+    if (isPlacementPhase && selectedUnitID && !activeTailPlacementUnitID) {
+      if (!(selectedUnitID === occupyingPlacementUnitId) && isMyStartZoneHex)
+        return { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
     }
     // move range
     if (isRoundOfPlayPhase) {
