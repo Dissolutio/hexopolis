@@ -128,7 +128,7 @@ export const hexUtilsHexToPixel = (
 }
 // a simplified version of above
 const HEX_RADIUS = 1
-const HEX_SPACING = 1.02
+const HEX_SPACING = 1.05
 export const cubeToPixel = (hex: HexCoordinates) => {
   const x = HEX_RADIUS * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r)
   const y = HEX_RADIUS * ((3 / 2) * hex.r)
