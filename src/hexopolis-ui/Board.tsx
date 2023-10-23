@@ -8,7 +8,6 @@ import {
   PlayContextProvider,
 } from './contexts'
 import { Layout, HeaderNav } from './layout'
-import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from './theme'
 import {
   BgioClientInfoProvider,
@@ -23,6 +22,7 @@ import { GameState } from 'game/types'
 import { TabsComponent } from './controls/TabsComponent'
 import { SpecialAttackContextProvider } from './contexts/special-attack-context'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from 'app/constants'
+import { World } from './world/World'
 
 interface MyGameProps extends BoardProps<GameState> {
   chatMessages: ChatMessage[]
@@ -94,7 +94,7 @@ export const Board = ({
                                     localOrDemoGameNumPlayers
                                   }
                                 />
-                                <MapDisplay mapWrapperRef={mapWrapperRef} />
+                                <World />
                                 <TabsComponent />
                               </Layout>
                             </SpecialAttackContextProvider>

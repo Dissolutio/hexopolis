@@ -6,18 +6,18 @@ import {
   MapOptions,
   StartZones,
 } from '../types'
-import { giantsTable } from './giantsTable'
-import { forsakenWaters } from './forsakenWaters'
-import { devHexagon } from './devHexagon'
-import { moveRange1HexWalkMap } from './moveRange1HexWalkMap'
+import { giantsTable } from './maps/giantsTable'
+import { forsakenWaters } from './maps/forsakenWaters'
+import { devHexagon } from './maps/devHexagon'
+import { moveRange1HexWalkMap } from './maps/moveRange1HexWalkMap'
 import { selectHexNeighbors } from '../selectors'
 import { transformBoardHexesWithPrePlacedUnits } from '../transformers'
-import { moveRangeTest2HexWalkMap } from './moveRange2HexWalkMap'
-import { moveRangePassThruMap } from './moveRangePassThruMap'
-import { moveRange1HexFlyMap } from './moveRange1HexFlyMap'
-import { moveRange2HexFlyEngagedMap } from './moveRange2HexFlyingEngagedMap'
-import { moveRange2HexFlyMap } from './moveRange2HexFlyMap'
-import { moveRange1HexFlyEngagedMap } from './moveRange1HexFlyingEngagedMap'
+import { moveRangeTest2HexWalkMap } from './maps/moveRange2HexWalkMap'
+import { moveRangePassThruMap } from './maps/moveRangePassThruMap'
+import { moveRange1HexFlyMap } from './maps/moveRange1HexFlyMap'
+import { moveRange2HexFlyEngagedMap } from './maps/moveRange2HexFlyingEngagedMap'
+import { moveRange2HexFlyMap } from './maps/moveRange2HexFlyMap'
+import { moveRange1HexFlyEngagedMap } from './maps/moveRange1HexFlyingEngagedMap'
 
 function generateUID() {
   // I generate the UID from two parts here

@@ -1,62 +1,61 @@
 import { useGLTF } from '@react-three/drei'
-import { cubeToPixel } from '../HexMap3D'
-import { useState } from 'react'
+import { OutlineHighlight } from '../OutlineHighlight'
+import { GameUnit } from 'game/types'
 
-const modelAltitudeAdjustment = {
-  syvarrisID: 2,
-}
-
-export function SyvarrisModel() {
-  const hex = { q: 7, r: 9, s: -16, altitude: 4, id: '7,9,-16' }
-  const pixel = cubeToPixel(hex)
-  const { nodes, materials } = useGLTF('/syvarris_low_poly.glb')
-  const [active, setActive] = useState(false)
+export function SyvarrisModel({ gameUnit }: { gameUnit: GameUnit }) {
+  // const totalRotation = initialAngleAdjustment + (rotation[1-6]) * (Math.PI / 3)
+  const { nodes, materials } = useGLTF('/syvarris_low_poly.glb') as any
   return (
-    <group
-      position={[
-        pixel.x,
-        hex.altitude / 4 + modelAltitudeAdjustment.syvarrisID,
-        pixel.y,
-      ]}
-      rotation={[0, Math.PI, 0]}
-    >
+    <>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Syvarris_Scanned.geometry}
         material={materials.SandyWhiteSkin}
-      />
+      >
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Syvarris_Scanned_1.geometry}
         material={materials.Chainmail}
-      />
+      >
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Syvarris_Scanned_2.geometry}
         material={materials.ElfGreen}
-      />
+      >
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Syvarris_Scanned_3.geometry}
         material={materials.ElfBrown}
-      />
+      >
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Syvarris_Scanned_4.geometry}
         material={materials.ElfTan}
-      />
+      >
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Syvarris_Scanned_5.geometry}
         material={materials.ElfLtGreen}
-      />
-    </group>
+      >
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
   )
 }
 

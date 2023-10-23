@@ -126,7 +126,30 @@ export const hexUtilsHexToPixel = (
   y = y * s
   return { x: x + layout.origin.x, y: y + layout.origin.y }
 }
-
+// a simplified version of above
+const HEX_RADIUS = 1
+const HEX_SPACING = 1.05
+export const cubeToPixel = (hex: HexCoordinates) => {
+  const x = HEX_RADIUS * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r)
+  const y = HEX_RADIUS * ((3 / 2) * hex.r)
+  return { x: x * HEX_SPACING, y: y * HEX_SPACING }
+}
+export const getDirectionOfNeighbor = (
+  hexStart: HexCoordinates,
+  neighbor: HexCoordinates
+) => {
+  const diff = hexUtilsSubtract(hexStart, neighbor)
+  const matchedDir = DIRECTIONS.findIndex(
+    (d) => d.q === diff.q && d.r === diff.r && d.s === diff.s
+  )
+  if (matchedDir === -1) return undefined
+  if (matchedDir === 1) return 0 // east, E, the base facing of 3d models
+  if (matchedDir === 0) return 1 // NE
+  if (matchedDir === 5) return 2 // NW
+  if (matchedDir === 4) return 3 // W
+  if (matchedDir === 3) return 4 // SW
+  if (matchedDir === 2) return 5 // SE
+}
 /** Return the q,r,s coordinate of the hexagon given pixel point x and y.
  * https://www.redblobgames.com/grids/hexagons/#pixel-to-hex
  */

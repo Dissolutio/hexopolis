@@ -139,12 +139,13 @@ export type BoardHex = HexCoordinates & {
   altitude: number
   startzonePlayerIDs: string[]
   terrain: string
+  subTerrain?: string // this is the same as terrain for solid terrain (grass, rock, sand) but separate for fluid terrains (water, lava, shadow)
 }
 export type BoardHexes = {
   [key: string]: BoardHex
 }
 export type BoardHexesUnitDeployment = {
-  [boardHexId: string]: {
+  [boardHexId: string]: HexCoordinates & {
     occupyingUnitID: string
     isUnitTail: boolean
   }
@@ -231,6 +232,8 @@ export type GameUnit = {
   wounds: number
   movePoints: number
   is2Hex: boolean
+  rotation: number // 0-5 for the 6 directions. 1-hex figures can be rotated, 2-hex figures can be flipped during the movement stage
+  modelIndex: number
 }
 
 export type GameUnits = {
@@ -352,6 +355,9 @@ export type RangeScan = {
 }
 export type StringKeyedObj = {
   [key: string]: string
+}
+export type StringKeyedNums = {
+  [key: string]: number
 }
 export type LayoutDimension = {
   size: Point

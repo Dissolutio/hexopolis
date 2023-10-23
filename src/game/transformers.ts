@@ -77,41 +77,6 @@ export function transformDraftableCardToGameCard(
     }
   })
 }
-function makeUnitID(index: number, playerID: string) {
-  return `p${playerID}u${index}`
-}
-export function transformGameArmyCardsToGameUnits(
-  armyCards: GameArmyCard[],
-  numberOfUnitsPlayerAlreadyHas?: number
-): GameUnits {
-  const preUnits = armyCards.reduce((result: any[], card) => {
-    const numberOfFiguresForThisCard = card.figures * card.cardQuantity
-    const preUnitsArr = Array.apply({}, Array(numberOfFiguresForThisCard)).map(
-      (f) => ({ ...card })
-    )
-    return [...result, ...preUnitsArr]
-  }, [])
-
-  const unitsArr = preUnits.map((preUnit, i, arr) => {
-    const unitID = makeUnitID(
-      i + (numberOfUnitsPlayerAlreadyHas ?? 0),
-      preUnit.playerID
-    )
-    const newGameUnit = {
-      unitID,
-      armyCardID: preUnit.armyCardID,
-      playerID: preUnit.playerID,
-      gameCardID: preUnit.gameCardID,
-      wounds: 0,
-      movePoints: 0,
-      is2Hex: preUnit.hexes === 2,
-    }
-    return newGameUnit
-  })
-
-  return keyBy(unitsArr, 'unitID')
-}
-
 // WARNING: might be guilty of mutating state accidentally
 // Is definitely breaking the game in draft phase usage
 export function transformBoardHexesWithPrePlacedUnits(

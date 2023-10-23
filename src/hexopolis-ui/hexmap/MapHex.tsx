@@ -90,9 +90,6 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     if (isPlacementPhase) {
       onClickPlacementHex?.(event, sourceHex)
     }
-    if (isPlacementPhase) {
-      onClickPlacementHex?.(event, sourceHex)
-    }
     if (isTheDropStage) {
       onClickTurnHex?.(event, sourceHex)
     }

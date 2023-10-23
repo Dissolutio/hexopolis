@@ -17,6 +17,7 @@ import {
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { selectValidTailHexes } from 'game/selectors'
 import { selectIfGameArmyCardHasAbility } from 'game/selector/card-selectors'
+import { ThreeEvent } from '@react-three/fiber'
 
 const PlacementContext = createContext<PlacementContextValue | undefined>(
   undefined
@@ -29,7 +30,7 @@ type PlacementContextValue = {
   inflatedPlacementUnits: PlacementUnit[]
   onClickPlacementUnit: (unitID: string) => void
   onClickPlacementHex: (
-    event: React.SyntheticEvent,
+    event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
     sourceHex: BoardHex
   ) => void
   editingBoardHexes: BoardHexesUnitDeployment
@@ -63,6 +64,9 @@ const initialEditingBoardHexes = (
         [bh.id]: {
           occupyingUnitID: bh.occupyingUnitID,
           isUnitTail: bh.isUnitTail,
+          q: bh.q,
+          r: bh.r,
+          s: bh.s,
         },
       }
     }, {})
@@ -154,6 +158,9 @@ const PlacementContextProvider = ({
         [clickedHexId]: {
           occupyingUnitID: selectedUnitID,
           isUnitTail: false,
+          q: boardHexes[clickedHexId].q,
+          r: boardHexes[clickedHexId].r,
+          s: boardHexes[clickedHexId].s,
         },
       }
       // remove unit from old hex, head and tail
@@ -230,7 +237,10 @@ const PlacementContextProvider = ({
       selectMapHex('')
     }
   }
-  function onClickPlacementHex(event: SyntheticEvent, sourceHex: BoardHex) {
+  function onClickPlacementHex(
+    event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
+    sourceHex: BoardHex
+  ) {
     // Do not propagate to map-background onClick (if ever one is added)
     event.stopPropagation()
     const clickedHexId = sourceHex.id
@@ -305,6 +315,9 @@ const PlacementContextProvider = ({
                 [clickedHexId]: {
                   occupyingUnitID: selectedUnitID,
                   isUnitTail: false,
+                  q: boardHexes[clickedHexId].q,
+                  r: boardHexes[clickedHexId].r,
+                  s: boardHexes[clickedHexId].s,
                 },
               }
               // remove unit from old hex, head and tail
@@ -340,6 +353,9 @@ const PlacementContextProvider = ({
               [clickedHexId]: {
                 occupyingUnitID: selectedUnitID,
                 isUnitTail: false,
+                q: boardHexes[clickedHexId].q,
+                r: boardHexes[clickedHexId].r,
+                s: boardHexes[clickedHexId].s,
               },
             }
             // remove unit from old hex, head and tail
@@ -363,6 +379,9 @@ const PlacementContextProvider = ({
         [clickedHexId]: {
           occupyingUnitID: activeTailPlacementUnitID,
           isUnitTail: true,
+          q: boardHexes[clickedHexId].q,
+          r: boardHexes[clickedHexId].r,
+          s: boardHexes[clickedHexId].s,
         },
       }))
       updatePlacementUnits(displacedUnitID, activeTailPlacementUnitID)

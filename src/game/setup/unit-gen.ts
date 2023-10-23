@@ -1,7 +1,13 @@
-import { GameArmyCard, ICoreHeroscapeCard, StartingArmies } from '../types'
-import { MS1Cards } from '../coreHeroscapeCards'
+import {
+  GameArmyCard,
+  GameUnits,
+  ICoreHeroscapeCard,
+  StartingArmies,
+} from '../types'
+import { MS1Cards, only3dGuysWeGot } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
+import { keyBy } from 'lodash'
 
 const testDummyID = 'test001'
 const test2HexDummyID = 'test002'
@@ -29,20 +35,31 @@ export const grimnakID = 'hs1015'
 
 // TEST SCENARIO ARMYCARDS
 export const startingArmiesForDefaultScenario: StartingArmies = {
-  '0': [finnID, grimnakID, raelinOneID, marroID],
-  '1': [tarnID, izumiID, syvarrisID, carrID],
-  '2': [marroID, negoksaID, thorgrimID, izumiID],
-  '3': [drake1ID, airbornID, raelinOneID],
-  '4': [zettianID, deathwalker9000ID, kravMagaID],
-  '5': [mimringID, tarnID, carrID],
+  // '0': [finnID, grimnakID, raelinOneID, marroID],
+  // '1': [tarnID, izumiID, syvarrisID, carrID],
+  // '2': [marroID, negoksaID, thorgrimID, izumiID],
+  // '3': [drake1ID, airbornID, raelinOneID],
+  // '4': [zettianID, deathwalker9000ID, kravMagaID],
+  // '5': [mimringID, tarnID, carrID],
+  '0': [deathwalker9000ID],
+  '1': [marroID],
+  '2': [marroID],
+  '3': [drake1ID],
+  '4': [drake1ID, deathwalker9000ID],
+  '5': [mimringID, carrID],
 }
 export const startingArmiesForGiantsTable2Player: StartingArmies = {
   '0': [drake1ID, thorgrimID, finnID, marroID, raelinOneID],
   '1': [mimringID, kravMagaID, carrID, tarnID],
 }
 export const startingArmiesForForsakenWaters2Player: StartingArmies = {
-  '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
-  '1': [izumiID, syvarrisID, airbornID, carrID],
+  // original starting armies (prod) below:
+  // '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
+  // '1': [izumiID, syvarrisID, airbornID, carrID],
+
+  // for devving 3d below:
+  '0': [deathwalker9000ID, drake1ID, airbornID, mimringID],
+  '1': [marroID, carrID, syvarrisID],
 }
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
@@ -141,7 +158,8 @@ function hsCardsToArmyCards(
   })
 }
 // in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
-const cardsUsed = [...MS1Cards, ...testCards]
+// const cardsUsed = [...MS1Cards, ...testCards]
+const cardsUsed = [...only3dGuysWeGot]
 
 export function startingArmiesToGameCards(
   numPlayers: number,
@@ -177,4 +195,41 @@ export function startingArmiesToGameCards(
     {}
   )
   return Object.values(theArmiesTurnedIntoGameArmyCards).flat()
+}
+// makeUnitID has hardcoded usage in tests, so refactoring will break tests
+function makeUnitID(index: number, playerID: string) {
+  return `p${playerID}u${index}`
+}
+export function transformGameArmyCardsToGameUnits(
+  armyCards: GameArmyCard[],
+  numberOfUnitsPlayerAlreadyHas?: number
+): GameUnits {
+  const preUnits = armyCards.reduce((result: any[], card) => {
+    const numberOfFiguresForThisCard = card.figures * card.cardQuantity
+    const preUnitsArr = Array.apply({}, Array(numberOfFiguresForThisCard)).map(
+      (f, index) => ({ ...card, modelIndex: index })
+    )
+    return [...result, ...preUnitsArr]
+  }, [])
+
+  const unitsArr = preUnits.map((preUnit, i, arr) => {
+    const unitID = makeUnitID(
+      i + (numberOfUnitsPlayerAlreadyHas ?? 0),
+      preUnit.playerID
+    )
+    const newGameUnit = {
+      unitID,
+      armyCardID: preUnit.armyCardID,
+      playerID: preUnit.playerID,
+      gameCardID: preUnit.gameCardID,
+      wounds: 0,
+      movePoints: 0,
+      is2Hex: preUnit.hexes === 2,
+      rotation: 0,
+      modelIndex: preUnit.modelIndex,
+    }
+    return newGameUnit
+  })
+
+  return keyBy(unitsArr, 'unitID')
 }

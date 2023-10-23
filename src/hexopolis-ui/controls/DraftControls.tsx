@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components'
 import { StyledControlsHeaderH2 } from 'hexopolis-ui/layout/Typography'
 import React from 'react'
-import { MS1Cards } from 'game/coreHeroscapeCards'
+import { MS1Cards, only3dGuysWeGot } from 'game/coreHeroscapeCards'
 import {
   playerIDDisplay,
   transformHSCardsToDraftableCards,
@@ -29,7 +29,10 @@ export const DraftControls = () => {
     moves: { confirmDraftReady, draftPrePlaceArmyCardAction },
   } = useBgioMoves()
   const myCardsIDs = myCards.map((c) => c.armyCardID)
-  const draftableCards = transformHSCardsToDraftableCards(MS1Cards).filter(
+  // const draftableCards = transformHSCardsToDraftableCards(MS1Cards).filter(
+  const draftableCards = transformHSCardsToDraftableCards(
+    only3dGuysWeGot
+  ).filter(
     // TODO: Common cards, searching of cards, etc
     (c) => !myCardsIDs.includes(c.armyCardID) && c.points <= myDraftPointsLeft
   )
@@ -118,7 +121,9 @@ const DraftCardGallery = ({
 }) => {
   const { myCards, myDraftPointsLeft } = useBgioG()
   const myCardsIDs = myCards.map((c) => c.armyCardID)
-  const draftableCards = transformHSCardsToDraftableCards(MS1Cards).filter(
+  const draftableCards = transformHSCardsToDraftableCards(
+    only3dGuysWeGot
+  ).filter(
     // TODO: Common cards, searching of cards, etc
     (c) => !myCardsIDs.includes(c.armyCardID) && c.points <= myDraftPointsLeft
   )

@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import { Hexoscape } from 'game/game'
 import { Board } from 'hexopolis-ui/Board'
 import { specialMatchIdToTellHeaderNavThisMatchIsLocal } from './constants'
-import { StyledFullScreenWorld } from 'hexopolis-ui/world/World'
+import { StyledFullScreenWorld } from 'hexopolis-ui/world/hexmap3d/StaticMap'
 
 const reduxDevTools =
   window &&

@@ -1,24 +1,12 @@
 import * as THREE from 'three'
 import { useRef, useLayoutEffect } from 'react'
-import { giantsTableBoardHexes } from './giantsTable'
+import { staticMap } from './static-map'
 import { StringKeyedObj } from 'game/types'
+import { cubeToPixel } from 'game/hex-utils'
 
 const threeHex = new THREE.Object3D()
-const HEX_RADIUS = 1
-const HEX_SPACING = 1.01
 
-export type HexCoordinates = {
-  q: number
-  r: number
-  s: number
-  id: string
-}
-export const cubeToPixel = (hex: HexCoordinates) => {
-  const x = HEX_RADIUS * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r)
-  const y = HEX_RADIUS * ((3 / 2) * hex.r)
-  return { x: x * HEX_SPACING, y: y * HEX_SPACING }
-}
-const boardHexesArray = Object.values(giantsTableBoardHexes)
+const boardHexesArray = Object.values(staticMap)
 const hexTerrainColor: StringKeyedObj = {
   grass: '#60840d',
   water: '#3794fd',
