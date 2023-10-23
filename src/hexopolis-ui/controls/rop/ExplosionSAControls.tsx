@@ -86,7 +86,7 @@ export const ExplosionSAControls = () => {
         </GreenButton>
         <RedButton
           onClick={confirmChosenAttack}
-          //   disabled={!chosenExplosionAttack}
+          disabled={!chosenExplosionAttack}
         >
           Launch payload! (confirm selected target)
         </RedButton>

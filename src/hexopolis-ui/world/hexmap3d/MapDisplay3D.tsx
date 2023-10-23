@@ -189,9 +189,9 @@ const Hex3D = ({ boardHexID }: { boardHexID: string }) => {
         onClick={onClick}
       />
 
-      <Billboard position={[positionX, positionYHexText, positionZ]}>
+      {/* <Billboard position={[positionX, positionYHexText, positionZ]}>
         <Text fontSize={0.1}>{boardHex.id}</Text>
-      </Billboard>
+      </Billboard> */}
 
       {gameUnit && isShowableUnit && !isUnitTail ? (
         <GameUnit3D
