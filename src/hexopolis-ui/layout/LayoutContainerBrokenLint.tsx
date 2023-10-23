@@ -7,7 +7,10 @@ export const LayoutContainer = styled.div<LayoutContainerProps>`
   // SET CSS VARS
   --player-color: ${(props) => props.theme.playerColor};
   --navbar-height: 30px;
-  --middle-size: 80vh;
+  --middle-size: 70vh;
+  @media screen and (max-width: 1100px) {
+    --middle-size: 60vh;
+  }
   --muted-text: ${(props) => props.theme.colors.gray};
   /* position: relative; */
   display: flex;
