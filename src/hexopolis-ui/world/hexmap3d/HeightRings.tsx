@@ -124,6 +124,7 @@ const HeightRing = ({
   const {
     theDropPlaceableHexIDs,
     revealedGameCardUnits,
+    revealedGameCardUnitIDs,
     selectedUnitAttackRange,
     clonerHexIDs,
     clonePlaceableHexIDs,
@@ -170,6 +171,7 @@ const HeightRing = ({
     opacity: 1,
     lineWidth: 5,
   }
+  const whiteStyle = { color: new Color('white'), opacity: 1, lineWidth: 5 }
   const greenStyle = { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
   const orangeStyle = { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
   const redStyle = { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
@@ -255,8 +257,18 @@ const HeightRing = ({
         return greenStyle
       }
     }
+    // round of play: highlight my units that are going, if none are selected
+    if (
+      isRoundOfPlayPhase &&
+      isMovementStage &&
+      isMyTurn &&
+      !revealedGameCardUnitIDs.includes(selectedUnitID) &&
+      revealedGameCardUnitIDs.includes(unitID)
+    ) {
+      return whiteStyle
+    }
     // round of play: move range
-    if (isRoundOfPlayPhase && isMovementStage && isMyTurn) {
+    if (isRoundOfPlayPhase && isMovementStage && isMyTurn && selectedUnitID) {
       if (isInSafeMoveRange) {
         return greenStyle
       }
@@ -267,20 +279,11 @@ const HeightRing = ({
         return redStyle
       }
     }
-    // round of play: not my move
+    // round of play: not my move, highlight enemy units that are going
     if (isRoundOfPlayPhase && !isMyTurn && isOpponentsActiveUnitHex()) {
       return redStyle
     }
-    //  phase: ROP-water-clone
-    if (isWaterCloneStage) {
-      if (clonerHexIDs?.includes(boardHexID)) {
-        return playerColorStyle
-      }
-      if (clonePlaceableHexIDs?.includes(boardHexID)) {
-        return greenStyle
-      }
-    }
-    // round of play: attack, highlight targetable enemy units
+    // round of play: my attack, highlight targetable enemy units
     if (
       isRoundOfPlayPhase &&
       isMyTurn &&
@@ -289,7 +292,16 @@ const HeightRing = ({
     ) {
       return redStyle
     }
-    //  phase: ROP-fire-line Special Attack
+    //  water-clone
+    if (isWaterCloneStage) {
+      if (clonerHexIDs?.includes(boardHexID)) {
+        return playerColorStyle
+      }
+      if (clonePlaceableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
+    //  ROP: Fire-Line Special Attack
     if (isFireLineSAStage) {
       // order matters here, check fireLineSelectedHexIDs first, else the below will early return
       if (fireLineSelectedHexIDs?.includes(boardHexID)) {
@@ -302,6 +314,7 @@ const HeightRing = ({
         return orangeStyle
       }
     }
+    //  ROP: Explosion/Grenade Special Attack
     if (isGrenadeSAStage || isExplosionSAStage) {
       if (explosionSelectedUnitIDs?.includes(unitID)) {
         return redStyle
