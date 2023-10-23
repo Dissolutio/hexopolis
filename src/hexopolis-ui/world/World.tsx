@@ -12,9 +12,11 @@ import { Notifications } from 'hexopolis-ui/notifications/Notifications'
 import { RoundCounter } from 'hexopolis-ui/hexmap/RoundCounter'
 import { DraftCounter } from 'hexopolis-ui/hexmap/DraftCounter'
 import { useBgioCtx } from 'bgio-contexts'
+import { useUIContext } from 'hexopolis-ui/contexts'
 
 export const World = () => {
   const { isDraftPhase } = useBgioCtx()
+  const { setSelectedUnitID } = useUIContext()
   return (
     <div
       id="canvas-container"
@@ -24,7 +26,7 @@ export const World = () => {
         position: 'relative',
       }}
     >
-      <Canvas>
+      <Canvas onPointerMissed={() => setSelectedUnitID('')}>
         <Stars
           radius={100}
           depth={50}

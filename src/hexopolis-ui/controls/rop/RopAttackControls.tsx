@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { usePlayContext } from '../../contexts'
+import { usePlayContext, useUIContext } from '../../contexts'
 import { useBgioEvents, useBgioG } from 'bgio-contexts'
 import { StyledControlsP } from 'hexopolis-ui/layout/Typography'
 import {
@@ -19,6 +19,7 @@ import {
 export const RopAttackControls = () => {
   const { uniqUnitsMoved, unitsAttacked, currentOrderMarker } = useBgioG()
   const { events } = useBgioEvents()
+  const { setSelectedUnitID } = useUIContext()
   const {
     revealedGameCard,
     unitsWithTargets,
@@ -51,6 +52,8 @@ export const RopAttackControls = () => {
   }
   const isNoTargetsAtAll = unitsWithTargets === 0
   const handleEndTurnButtonClick = () => {
+    // clear selected unit on end turn
+    setSelectedUnitID('')
     events?.endTurn?.()
   }
   const onClickUseWaterClone = () => {

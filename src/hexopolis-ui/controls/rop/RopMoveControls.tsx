@@ -1,4 +1,4 @@
-import { usePlayContext } from '../../contexts'
+import { usePlayContext, useUIContext } from '../../contexts'
 import { useBgioEvents, useBgioG } from 'bgio-contexts'
 import { UndoRedoButtons } from './UndoRedoButtons'
 import {
@@ -37,6 +37,7 @@ export const RopAttackMoveHeader = ({
 export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = useBgioG()
   const { events } = useBgioEvents()
+  const { setSelectedUnitID } = useUIContext()
   const {
     selectedUnit,
     revealedGameCard,
@@ -121,7 +122,13 @@ export const RopMoveControls = () => {
       )}
       {unitsAliveCount === 0 ? (
         <StyledButtonWrapper>
-          <GreenButton onClick={() => events?.endTurn?.()}>
+          <GreenButton
+            onClick={() => {
+              // clear selected unit on end turn
+              setSelectedUnitID('')
+              events?.endTurn?.()
+            }}
+          >
             End Turn
           </GreenButton>
         </StyledButtonWrapper>
