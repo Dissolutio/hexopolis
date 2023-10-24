@@ -144,7 +144,7 @@ export type BoardHex = HexCoordinates & {
 export type BoardHexes = {
   [key: string]: BoardHex
 }
-export type BoardHexesUnitDeployment = {
+export type EditingBoardHexes = {
   [boardHexId: string]: HexCoordinates & {
     occupyingUnitID: string
     isUnitTail: boolean
@@ -220,7 +220,7 @@ export type GameArmyCard = ArmyCard & {
   playerID: string
   gameCardID: string
   cardQuantity: number
-  // this is for the airborn elite ability, which is a one time use explosion-special-attack
+  // this is for the airborn elite ability, which is a one time use
   hasThrownGrenade?: boolean
 }
 

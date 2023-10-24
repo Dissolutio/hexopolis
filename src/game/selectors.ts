@@ -2,7 +2,7 @@ import { uniq } from 'lodash'
 import {
   BoardHexes,
   BoardHex,
-  BoardHexesUnitDeployment,
+  EditingBoardHexes,
   GameArmyCard,
   GameUnits,
   GameUnit,
@@ -40,7 +40,7 @@ export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
 }
 export function selectTailHexForUnit(
   unitID: string,
-  boardHexes: BoardHexes | BoardHexesUnitDeployment
+  boardHexes: BoardHexes | EditingBoardHexes
 ) {
   return Object.values(boardHexes).find(
     (hex) => hex.occupyingUnitID === unitID && Boolean(hex.isUnitTail) === true

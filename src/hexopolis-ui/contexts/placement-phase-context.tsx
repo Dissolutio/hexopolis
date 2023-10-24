@@ -11,7 +11,7 @@ import {
   ArmyCard,
   GameUnit,
   PlacementUnit,
-  BoardHexesUnitDeployment,
+  EditingBoardHexes,
   BoardHexes,
 } from 'game/types'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
@@ -33,7 +33,7 @@ type PlacementContextValue = {
     event: ThreeEvent<MouseEvent> | React.SyntheticEvent,
     sourceHex: BoardHex
   ) => void
-  editingBoardHexes: BoardHexesUnitDeployment
+  editingBoardHexes: EditingBoardHexes
   onPlaceUnitUpdateEditingBoardHexes: ({
     clickedHexId,
     selectedUnitID,
@@ -134,10 +134,9 @@ const PlacementContextProvider = ({
         return unit.unitID
       })
   // the editing board hexes is a local set of board hexes (like where you are placing your units), it is edited during Placement Phase, The Drop
-  const [editingBoardHexes, setEditingBoardHexes] =
-    useState<BoardHexesUnitDeployment>(
-      initialEditingBoardHexes(boardHexes, myUnitIds)
-    )
+  const [editingBoardHexes, setEditingBoardHexes] = useState<EditingBoardHexes>(
+    initialEditingBoardHexes(boardHexes, myUnitIds)
+  )
   const onPlaceUnitUpdateEditingBoardHexes = ({
     clickedHexId,
     selectedUnitID,
