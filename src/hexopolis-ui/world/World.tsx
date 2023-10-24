@@ -54,8 +54,8 @@ export const World = () => {
         <OrbitControls
           enableDamping
           dampingFactor={0.1}
-          rotateSpeed={0.5}
-          zoomSpeed={0.2}
+          rotateSpeed={0.7}
+          zoomSpeed={0.5}
           //  onChange?: (e?: OrbitControlsChangeEvent) => void; // use this to save camera position!
         />
       </Canvas>
