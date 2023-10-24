@@ -1,5 +1,5 @@
 import { usePlayContext, useUIContext } from '../../contexts'
-import { useBgioEvents, useBgioG } from 'bgio-contexts'
+import { useBgioEvents, useBgioG, useBgioMoves } from 'bgio-contexts'
 import { UndoRedoButtons } from './UndoRedoButtons'
 import {
   StyledControlsHeaderH2,
@@ -20,6 +20,7 @@ import { selectIfGameArmyCardHasFlying } from 'game/selector/card-selectors'
 import { AbilityReadout } from './FireLineSAControls'
 import { AnimatePresence, motion } from 'framer-motion'
 import { omToString } from 'game/transformers'
+import { selectHexForUnit, selectTailHexForUnit } from 'game/selectors'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -35,16 +36,21 @@ export const RopAttackMoveHeader = ({
 }
 
 export const RopMoveControls = () => {
-  const { unitsMoved, currentOrderMarker } = useBgioG()
-  const { events } = useBgioEvents()
-  const { setSelectedUnitID } = useUIContext()
+  const { unitsMoved, currentOrderMarker, boardHexes, gameUnits } = useBgioG()
   const {
-    selectedUnit,
+    moves: { rotateUnitAction },
+  } = useBgioMoves()
+  const { events } = useBgioEvents()
+  const { selectedUnitID, setSelectedUnitID } = useUIContext()
+  const {
     revealedGameCard,
     revealedGameCardUnitIDs,
     isGrappleGun,
     hasChompAvailable,
   } = usePlayContext()
+  const selectedUnit = gameUnits?.[selectedUnitID]
+  const selectedUnitHex = selectHexForUnit(selectedUnitID, boardHexes)
+  const selectedUnitTailHex = selectTailHexForUnit(selectedUnitID, boardHexes)
   const movedUnitsCount = uniq(unitsMoved).length
   const allowedMoveCount = revealedGameCard?.figures ?? 0
   const unitsAliveCount = revealedGameCardUnitIDs.length
@@ -107,6 +113,39 @@ export const RopMoveControls = () => {
           </StyledControlsP>
 
           <UndoRedoButtons />
+          <StyledButtonWrapper>
+            {/* This assumes only a unit that can move (and rotate) would be the selected unit */}
+            {selectedUnit?.is2Hex ? (
+              <button
+                onClick={() => {
+                  rotateUnitAction({
+                    unitID: selectedUnitID,
+                    headHexID: selectedUnitHex?.id,
+                    tailHexID: selectedUnitTailHex?.id,
+                  })
+                }}
+              >
+                Flip unit head/tail
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    rotateUnitAction({ unitID: selectedUnitID, turns: 1 })
+                  }}
+                >
+                  Rotate Unit Left
+                </button>
+                <button
+                  onClick={() => {
+                    rotateUnitAction({ unitID: selectedUnitID, turns: -1 })
+                  }}
+                >
+                  Rotate Unit Right
+                </button>
+              </>
+            )}
+          </StyledButtonWrapper>
           {hasChompAvailable && (
             <StyledButtonWrapper>
               <GreenButton
