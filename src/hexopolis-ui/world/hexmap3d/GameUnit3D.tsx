@@ -20,6 +20,7 @@ import { AirbornElite1 } from '../components/models/unique-squad/airborn-elite/A
 import { AirbornElite2 } from '../components/models/unique-squad/airborn-elite/AirbornElite2'
 import { AirbornElite3 } from '../components/models/unique-squad/airborn-elite/AirbornElite3'
 import { AirbornElite4 } from '../components/models/unique-squad/airborn-elite/AirbornElite4'
+import { RaelinRotvModel } from '../components/models/unique-hero/RaelinRotvModel'
 
 const initialRotations: StringKeyedNums = {
   // everyone else defaults to Math.PI so far
@@ -114,6 +115,9 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
     case 'hs1001':
       // deathwalker 9000
       return <Deathwalker9000Model gameUnit={gameUnit} />
+    case 'hs1012':
+      // raelin ROTV
+      return <RaelinRotvModel gameUnit={gameUnit} />
     case 'hs1003':
       // sgt drake
       return <SgtDrakeModel gameUnit={gameUnit} />
