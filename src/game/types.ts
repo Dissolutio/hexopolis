@@ -144,8 +144,13 @@ export type BoardHex = HexCoordinates & {
 export type BoardHexes = {
   [key: string]: BoardHex
 }
+export type EditingBoardHex = HexCoordinates & {
+  occupyingUnitID: string
+  isUnitTail: boolean
+}
 export type EditingBoardHexes = {
   [boardHexId: string]: HexCoordinates & {
+    id: string
     occupyingUnitID: string
     isUnitTail: boolean
   }
