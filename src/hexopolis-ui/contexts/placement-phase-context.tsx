@@ -154,7 +154,7 @@ const PlacementContextProvider = ({
     setEditingBoardHexes((oldState) => {
       const newState = {
         ...oldState,
-        // place selected unit('s head) on clicked hex, this will remove the displaced unit (but not their other hex if they have one)
+        // place selected unit's head on clicked hex, this will remove the displaced unit (but not their other hex if they have one)
         [clickedHexId]: {
           occupyingUnitID: selectedUnitID,
           isUnitTail: false,
