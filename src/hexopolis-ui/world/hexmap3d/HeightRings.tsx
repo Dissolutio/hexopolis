@@ -116,6 +116,7 @@ const HeightRing = ({
     isRoundOfPlayPhase,
     isMovementStage,
     isWaterCloneStage,
+    isMindShackleStage,
     isAttackingStage,
     isFireLineSAStage,
     isGrenadeSAStage,
@@ -364,12 +365,21 @@ const HeightRing = ({
     ) {
       return grayStyle
     }
-    //  water-clone
+    //  ROP: water-clone
     if (isWaterCloneStage) {
       if (clonerHexIDs?.includes(boardHexID)) {
         return playerColorStyle
       }
       if (clonePlaceableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
+    //  ROP: mind-shackle
+    if (isMindShackleStage) {
+      if (mindShackleSelectedHexIDs?.includes(boardHexID)) {
+        return redStyle
+      }
+      if (mindShackleTargetableHexIDs?.includes(boardHexID)) {
         return greenStyle
       }
     }
