@@ -451,6 +451,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const myCardWithTheDrop = myCards.filter((c) =>
     selectIfGameArmyCardHasAbility('The Drop', c)
   )[0]
+  // TODO: If we want multiple cards to possibly have the drop, or reinforcements etc., we will want to track game card ID in state, maybe the stage queue
   const getDroppingUnits = () => {
     return myUnits.filter((u) => u.gameCardID === myCardWithTheDrop?.gameCardID)
   }
