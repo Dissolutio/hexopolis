@@ -21,6 +21,7 @@ import { AbilityReadout } from './FireLineSAControls'
 import { AnimatePresence, motion } from 'framer-motion'
 import { omToString } from 'game/transformers'
 import { selectHexForUnit, selectTailHexForUnit } from 'game/selectors'
+import { useEffect } from 'react'
 
 export const RopAttackMoveHeader = ({
   currentOrderMarker,
@@ -48,6 +49,13 @@ export const RopMoveControls = () => {
     isGrappleGun,
     hasChompAvailable,
   } = usePlayContext()
+  // on mount, set selected unit id
+  useEffect(() => {
+    if (Boolean(revealedGameCardUnitIDs?.[0])) {
+      setSelectedUnitID(revealedGameCardUnitIDs?.[0])
+    }
+  }, [])
+
   const selectedUnit = gameUnits?.[selectedUnitID]
   const selectedUnitHex = selectHexForUnit(selectedUnitID, boardHexes)
   const selectedUnitTailHex = selectTailHexForUnit(selectedUnitID, boardHexes)
