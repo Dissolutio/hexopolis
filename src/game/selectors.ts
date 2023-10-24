@@ -38,6 +38,14 @@ export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
     (hex) => hex.occupyingUnitID === unitID && Boolean(hex.isUnitTail) === false
   )
 }
+export function selectEditingHexForUnit(
+  unitID: string,
+  boardHexes: EditingBoardHexes
+) {
+  return Object.values(boardHexes).find(
+    (hex) => hex.occupyingUnitID === unitID && Boolean(hex.isUnitTail) === false
+  )
+}
 export function selectTailHexForUnit(
   unitID: string,
   boardHexes: BoardHexes | EditingBoardHexes

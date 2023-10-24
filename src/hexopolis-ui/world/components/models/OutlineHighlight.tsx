@@ -13,10 +13,7 @@ export const OutlineHighlight = ({ gameUnit }: { gameUnit: GameUnit }) => {
   const isSelectedUnitHex =
     selectedUnitID && unitID && selectedUnitID === unitID
   const getHighlightColor = () => {
-    if (isPlacementPhase && isSelectedUnitHex) {
-      return 'white'
-    }
-    if (isRoundOfPlayPhase && isSelectedUnitHex) {
+    if (isSelectedUnitHex) {
       return 'white'
     }
     return ''

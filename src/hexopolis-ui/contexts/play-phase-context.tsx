@@ -12,6 +12,7 @@ import {
   DisengageAttempt,
   GameArmyCard,
   GameUnit,
+  HexCoordinates,
   MoveRange,
 } from 'game/types'
 import {
@@ -19,6 +20,9 @@ import {
   selectIsInRangeOfAttack,
   selectHexNeighbors,
   selectGlyphForHex,
+  selectHexForUnit,
+  selectTailHexForUnit,
+  selectEditingHexForUnit,
 } from '../../game/selectors'
 import {
   generateBlankMoveRange,
@@ -38,6 +42,7 @@ import {
   selectIfGameArmyCardHasFlying,
 } from 'game/selector/card-selectors'
 import { ThreeEvent } from '@react-three/fiber'
+import { generateHexID } from 'game/constants'
 
 export type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
@@ -465,9 +470,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             editingBoardHexes[h.id]?.occupyingUnitID === u
         )
     )
-  // default empty if player is idling, or placed all units
+  // default empty if player is idling, or placed all units and no unit selected
   const theDropPlaceableHexIDs: string[] =
-    !(toBeDroppedUnitIDs.length > 0) || !isTheDropStage
+    (toBeDroppedUnitIDs.length <= 0 && !selectedUnitID) || !isTheDropStage
       ? []
       : Object.values(boardHexes)
           .filter((hex) => {
@@ -510,23 +515,54 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     const occupyingUnitID = sourceHex.occupyingUnitID
     const isEndHexOccupied = Boolean(occupyingUnitID)
     const unitOnHex: GameUnit = { ...gameUnits[occupyingUnitID] }
+    const unitOnHexID = unitOnHex?.unitID ?? ''
+    const unitIDOnEditingHex =
+      gameUnits?.[editingBoardHexes[sourceHexID]?.occupyingUnitID]?.unitID
     const endHexUnitPlayerID = unitOnHex.playerID
     const isUnitOnHexReadyToSelect =
       unitOnHex?.gameCardID === currentTurnGameCardID
-    const isUnitOnHexSelected = unitOnHex?.unitID === selectedUnitID
+    const isUnitOnHexSelected = Boolean(
+      unitOnHexID && unitOnHexID === selectedUnitID
+    )
     const isEndHexEnemyOccupied =
       isEndHexOccupied && endHexUnitPlayerID !== playerID
+
     // THE DROP STAGE
     if (isTheDropStage) {
       // we clicked a drop-able hex, and we have a unitID to drop
-      const unitIDToDrop = toBeDroppedUnitIDs[0]
+      const unitIDToDrop = selectedUnitID || toBeDroppedUnitIDs[0]
+      const selectedUnitEditingHex = selectEditingHexForUnit(
+        selectedUnitID,
+        editingBoardHexes
+      )
+      const unitOnHexTailHex = selectTailHexForUnit(occupyingUnitID, boardHexes)
       if (theDropPlaceableHexIDs.includes(sourceHexID) && unitIDToDrop) {
         onPlaceUnitUpdateEditingBoardHexes({
           clickedHexId: sourceHexID,
           selectedUnitID: unitIDToDrop,
+          selectedUnitOldHex: selectedUnitEditingHex
+            ? generateHexID(selectedUnitEditingHex as HexCoordinates)
+            : '',
+          // selectedUnitOldTail: , // currently, no 2-hex units have The Drop
+          displacedUnitsOtherHex: unitOnHexTailHex?.id,
         })
+        // after dropping unit, deselect
+        if (selectedUnitID) {
+          setSelectedUnitID('')
+        }
+      }
+      // OR, we clicked a TheDrop unit, select/deselect it
+      const isDropUnit = getDroppingUnits()
+        .map((u) => u.unitID)
+        .includes(unitIDOnEditingHex)
+      if (isDropUnit) {
+        if (isUnitOnHexSelected) {
+          setSelectedUnitID('')
+        }
+        setSelectedUnitID(unitIDOnEditingHex)
       }
     }
+
     // MOVE STAGE
     if (isMovementStage) {
       const isInSafeMoveRangeOfSelectedUnit = safeMoves.includes(sourceHex.id)
