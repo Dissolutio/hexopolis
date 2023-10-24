@@ -244,7 +244,13 @@ const HeightRing = ({
     }
     // placement + unit selected: show valid drops
     if (isPlacementPhase && selectedUnitID && !activeTailPlacementUnitID) {
-      if (!(selectedUnitID === occupyingPlacementUnitId) && isMyStartZoneHex)
+      if (
+        !(selectedUnitID === occupyingPlacementUnitId) &&
+        isMyStartZoneHex &&
+        (selectedUnit.is2Hex
+          ? startZoneForMy2HexUnits.includes(boardHexID)
+          : true)
+      )
         return greenStyle
     }
     // pre-order-marker-phase: the drop:
