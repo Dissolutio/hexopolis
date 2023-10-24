@@ -20,19 +20,13 @@ export function MapDisplay3D() {
   return (
     <>
       {hexArray.map((bh) => {
-        return (
-          <Hex3D
-            // TODO: multi-level hexes
-            key={`${bh.id}-${bh.altitude}`}
-            boardHex={bh as BoardHex}
-          />
-        )
+        return <Hex3D key={`${bh.id}-${bh.altitude}`} boardHexID={bh.id} />
       })}
     </>
   )
 }
 
-const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
+const Hex3D = ({ boardHexID }: { boardHexID: string }) => {
   const { playerID } = useBgioClientInfo()
   const {
     boardHexes,
@@ -42,6 +36,7 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
     gameUnits,
     unitsMoved,
   } = useBgioG()
+  const boardHex = boardHexes[boardHexID]
   const { selectedUnitID } = useUIContext()
   const selectedUnitIs2Hex = gameUnits[selectedUnitID]?.is2Hex
   const { selectedMapHex } = useMapContext()
@@ -194,9 +189,9 @@ const Hex3D = ({ boardHex }: { boardHex: BoardHex }) => {
         onClick={onClick}
       />
 
-      <Billboard position={[positionX, positionYHexText, positionZ]}>
+      {/* <Billboard position={[positionX, positionYHexText, positionZ]}>
         <Text fontSize={0.1}>{boardHex.id}</Text>
-      </Billboard>
+      </Billboard> */}
 
       {gameUnit && isShowableUnit && !isUnitTail ? (
         <GameUnit3D

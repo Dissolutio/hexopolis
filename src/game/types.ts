@@ -220,7 +220,7 @@ export type GameArmyCard = ArmyCard & {
   playerID: string
   gameCardID: string
   cardQuantity: number
-  // this is for the airborn elite ability, which is a one time use
+  // this is for the airborn elite ability, which is a one time use explosion-special-attack
   hasThrownGrenade?: boolean
 }
 

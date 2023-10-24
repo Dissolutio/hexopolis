@@ -67,10 +67,6 @@ export const OrderMarkerArmyCard = ({
   }
   return (
     <StyledOrderMarkerArmyCardsLi onClick={handleClickCard}>
-      <PlaceOrderMarkersArmyCardUnitIcon
-        armyCardID={card.armyCardID}
-        playerID={card.playerID}
-      />
       <span>{card.name}</span>
       <OMButtonList
         activeMarker={activeMarker}

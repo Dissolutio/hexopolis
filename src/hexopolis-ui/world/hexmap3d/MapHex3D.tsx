@@ -84,9 +84,12 @@ export const MapHex3D = ({
 
   const capEmissiveColor =
     isHovered || isSelectedUnitHex ? whiteColor : terrainColor
-  const capEmissiveIntensity = isHovered ? 1 : 0.5
-  const capFluidEmissiveIntensity = isHovered ? 2 : 1
+  // there was a time when the base emissivity was non-zero, but fps improved with removing <Stage>, and <Stage> is where it looked good
+  const baseEmissivity = 0
   const capFluidOpacity = 0.85
+  const fluidEmissivity = 2 * baseEmissivity
+  const capEmissiveIntensity = isHovered ? 1 : baseEmissivity
+  const capFluidEmissiveIntensity = isHovered ? 2 : fluidEmissivity
   const subTerrainColor = new Color(hexTerrainColor[subTerrain])
   return (
     <group>
@@ -103,7 +106,7 @@ export const MapHex3D = ({
       {/* This is the big sub-terrain mesh from the floor to the cap mesh */}
       <mesh position={subTerrainPosition} scale={[1, heightScaleSubTerrain, 1]}>
         <cylinderGeometry args={[1, 1, ONE_HEIGHT_LEVEL, 6]} />
-        <meshToonMaterial color={subTerrainColor} />
+        <meshBasicMaterial color={subTerrainColor} />
       </mesh>
       {/* This group wraps the cap-terrain, and triggers the hover for this hex's top height ring */}
       <group

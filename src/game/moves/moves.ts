@@ -181,6 +181,27 @@ const deconfirmOrderMarkersReady: Move<GameState> = (
 ) => {
   G.orderMarkersReady[playerID] = false
 }
+// phase: move
+const rotateUnitAction: Move<GameState> = (
+  { G },
+  {
+    unitID,
+    headHexID,
+    tailHexID,
+    turns = 0,
+  }: { unitID: string; headHexID: string; tailHexID?: string; turns?: number }
+) => {
+  const is2Hex = G.gameUnits[unitID].is2Hex
+  const currentRotation = G.gameUnits[unitID]?.rotation
+  if (is2Hex && tailHexID) {
+    // flip head and tail of 2-hex figure
+    G.boardHexes[headHexID].isUnitTail = true
+    G.boardHexes[tailHexID].isUnitTail = false
+  } else {
+    // apply rotation to 1-hex figure
+    G.gameUnits[unitID].rotation = (currentRotation + turns) % 6
+  }
+}
 
 export const moves: MoveMap<GameState> = {
   draftPrePlaceArmyCardAction,
@@ -193,6 +214,7 @@ export const moves: MoveMap<GameState> = {
   confirmOrderMarkersReady,
   deconfirmOrderMarkersReady,
   moveAction,
+  rotateUnitAction,
   noUndoMoveAction,
   attemptDisengage,
   takeDisengagementSwipe,
