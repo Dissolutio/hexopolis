@@ -11,6 +11,11 @@ import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
 import { BoardHex } from 'game/types'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
+import {
+  selectGameArmyCardAttacksAllowed,
+  selectIfGameArmyCardHasAbility,
+} from 'game/selector/card-selectors'
+import { selectAttackerHasAttacksAllowed } from 'game/selectors'
 
 export const HeightRings = ({
   bottomRingYPos,
@@ -97,6 +102,7 @@ const HeightRing = ({
     startZones,
     gameUnits,
     unitsMoved,
+    unitsAttacked,
   } = useBgioG()
   const {
     gameover,
@@ -125,9 +131,11 @@ const HeightRing = ({
     theDropPlaceableHexIDs,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
+    revealedGameCard,
     selectedUnitAttackRange,
     clonerHexIDs,
     clonePlaceableHexIDs,
+    attacksLeft,
   } = usePlayContext()
   const {
     editingBoardHexes,
@@ -153,6 +161,7 @@ const HeightRing = ({
 
   const isMyStartZoneHex = Boolean(startZones?.[playerID]?.includes(boardHexID))
   const unitID = boardHexes?.[boardHexID]?.occupyingUnitID ?? ''
+  const unitOnHex = gameUnits[unitID]
   const occupyingPlacementUnitId =
     editingBoardHexes?.[boardHexID]?.occupyingUnitID ?? ''
   const isTailPlaceable = tailPlaceables?.includes(boardHexID)
@@ -172,7 +181,9 @@ const HeightRing = ({
     lineWidth: 5,
   }
   const whiteStyle = { color: new Color('white'), opacity: 1, lineWidth: 5 }
+  const grayStyle = { color: new Color('gray'), opacity: 1, lineWidth: 5 }
   const greenStyle = { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
+  const yellowStyle = { color: new Color('#eac334'), opacity: 1, lineWidth: 5 }
   const orangeStyle = { color: new Color('#e09628'), opacity: 1, lineWidth: 5 }
   const redStyle = { color: new Color('#e25328'), opacity: 1, lineWidth: 5 }
   const getLineStyle = () => {
@@ -257,15 +268,29 @@ const HeightRing = ({
         return greenStyle
       }
     }
-    // round of play: highlight my units that are going, if none are selected
+    // round of play: highlight my units that have full move points
+    const isNoActiveUnitSelected =
+      !revealedGameCardUnitIDs.includes(selectedUnitID)
+    const isActiveUnitHex = revealedGameCardUnitIDs.includes(unitID)
     if (
       isRoundOfPlayPhase &&
       isMovementStage &&
-      isMyTurn &&
-      !revealedGameCardUnitIDs.includes(selectedUnitID) &&
-      revealedGameCardUnitIDs.includes(unitID)
+      // isNoActiveUnitSelected &&
+      isActiveUnitHex &&
+      !unitsMoved.includes(unitID)
     ) {
       return whiteStyle
+    }
+
+    // round of play: highlight my units that exhausted/used their move points
+    if (
+      isRoundOfPlayPhase &&
+      isMovementStage &&
+      // isNoActiveUnitSelected &&
+      isActiveUnitHex &&
+      unitsMoved.includes(unitID)
+    ) {
+      return unitOnHex.movePoints === 0 ? redStyle : orangeStyle
     }
     // round of play: move range
     if (isRoundOfPlayPhase && isMovementStage && isMyTurn && selectedUnitID) {
@@ -292,6 +317,53 @@ const HeightRing = ({
     ) {
       return redStyle
     }
+
+    // round of play: my attack, my units that have attacks and moved
+    const { isUnitHasNoAttacksLeft, attacksUsedByThisFigure } =
+      unitOnHex?.unitID
+        ? selectAttackerHasAttacksAllowed({
+            attackingUnit: unitOnHex,
+            gameArmyCards,
+            unitsAttacked,
+            unitsMoved,
+          })
+        : { isUnitHasNoAttacksLeft: true, attacksUsedByThisFigure: 0 }
+    const unitHasAttacksAndMoved =
+      !isUnitHasNoAttacksLeft && unitsMoved.includes(unitID)
+    if (
+      isRoundOfPlayPhase &&
+      isAttackingStage &&
+      // isNoActiveUnitSelected &&
+      isActiveUnitHex &&
+      unitHasAttacksAndMoved
+    ) {
+      return orangeStyle
+    }
+
+    // round of play: my attack, my units that have attacks and did NOT move (AKA, these are "free" attacks to be used by any unmoved squadie)
+    const unitHasAttacksAndDidNotMove =
+      !isUnitHasNoAttacksLeft && !unitsMoved.includes(unitID)
+    if (
+      isRoundOfPlayPhase &&
+      isAttackingStage &&
+      // isNoActiveUnitSelected &&
+      isActiveUnitHex &&
+      unitHasAttacksAndDidNotMove
+    ) {
+      return whiteStyle
+    }
+    // round of play: my attack, my units that have used all their attacks
+    const unitHasUsedAllAttacks =
+      isUnitHasNoAttacksLeft && attacksUsedByThisFigure > 0
+    if (
+      isRoundOfPlayPhase &&
+      isAttackingStage &&
+      // isNoActiveUnitSelected &&
+      isActiveUnitHex &&
+      unitHasUsedAllAttacks
+    ) {
+      return grayStyle
+    }
     //  water-clone
     if (isWaterCloneStage) {
       if (clonerHexIDs?.includes(boardHexID)) {
@@ -316,6 +388,16 @@ const HeightRing = ({
     }
     //  ROP: Explosion/Grenade Special Attack
     if (isGrenadeSAStage || isExplosionSAStage) {
+      const isAGrenadingUnitHex = revealedGameCardUnitIDs.includes(unitID)
+      const hasUnitAttacked = Object.keys(unitsAttacked).includes(unitID)
+      // highlight units that still need to throw a grenade
+      if (!selectedUnit && isAGrenadingUnitHex && !hasUnitAttacked) {
+        return whiteStyle
+      }
+      // highlight units that already threw a grenade
+      if (!selectedUnit && isAGrenadingUnitHex && hasUnitAttacked) {
+        return redStyle
+      }
       if (explosionSelectedUnitIDs?.includes(unitID)) {
         return redStyle
       }
