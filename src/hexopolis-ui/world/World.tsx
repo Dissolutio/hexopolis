@@ -36,22 +36,26 @@ export const World = () => {
           fade
           speed={1}
         />
-        {/* <ambientLight intensity={1} /> */}
-        {/* <directionalLight position={[150, 150, 150]} intensity={1} /> */}
+        <ambientLight intensity={1} />
+        {/* 4 in rectangle over top, shop-light style */}
+        <directionalLight position={[50, 50, 50]} intensity={0.65} />
+        <directionalLight position={[50, 50, -50]} intensity={0.65} />
+        <directionalLight position={[-50, 50, 50]} intensity={0.65} />
+        <directionalLight position={[-50, 50, -50]} intensity={0.65} />
+        {/* 4 on sides, picture-day style */}
+        <directionalLight position={[-50, 0, 0]} intensity={0.65} />
+        <directionalLight position={[-50, 0, -50]} intensity={0.65} />
+        <directionalLight position={[0, 0, 0]} intensity={0.65} />
+        <directionalLight position={[0, 0, -50]} intensity={0.65} />
         <Stats />
-        <Stage adjustCamera={false} intensity={5}>
-          {/* <axesHelper scale={[10, 30, 30]} /> */}
-          <MapDisplay3D />
-          {/* <SgtDrakeModel /> */}
-          {/* <AgentCarrModel />
-          <SyvarrisModel />
-          <Deathwalker9000Model /> */}
-        </Stage>
+        <MapDisplay3D />
         {/* <Grid infiniteGrid /> */}
-        <PerspectiveCamera makeDefault position={[0, 30, 50]} fov={30} />
+        <PerspectiveCamera makeDefault position={[30, 30, 50]} fov={30} />
         <OrbitControls
           enableDamping
           dampingFactor={0.1}
+          rotateSpeed={0.5}
+          zoomSpeed={0.2}
           //  onChange?: (e?: OrbitControlsChangeEvent) => void; // use this to save camera position!
         />
       </Canvas>
