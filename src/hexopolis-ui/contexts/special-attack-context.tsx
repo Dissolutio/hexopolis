@@ -450,18 +450,6 @@ export function SpecialAttackContextProvider({
             : undefined,
           isSpecialAttack: true,
         })
-        if (hex.occupyingUnitID) {
-          console.log(
-            '🚀 ~ file: special-attack-context.tsx:449 ~ filteredBoardHexes ~ isExplosionSAStage:',
-            isExplosionSAStage
-          )
-          console.log(
-            '🚀 ~ file: special-attack-context.tsx:425 ~ filteredBoardHexes ~ isHexUnitEngagedToAttackingUnit / isInRange:',
-            isHexUnitEngagedToAttackingUnit,
-            isInRange,
-            hex
-          )
-        }
         return isInRange
       })
       return filteredBoardHexes.map((hex) => [hex.id, hex.occupyingUnitID])
@@ -514,10 +502,6 @@ export function SpecialAttackContextProvider({
     glyphs,
     isExplosionSAStage,
   ])
-  console.log(
-    '🚀 ~ file: special-attack-context.tsx:502 ~ possibleExplosionAttacks:',
-    possibleExplosionAttacks
-  )
   const explosionTargetableHexIDs =
     possibleExplosionAttacks?.map?.((pa) => pa.clickableHexID) ?? []
   const chosenExplosionAttack = possibleExplosionAttacks?.find?.((pa) => {

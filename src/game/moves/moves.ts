@@ -1,6 +1,6 @@
 import type { Move, MoveMap } from 'boardgame.io'
 import {
-  BoardHexesUnitDeployment,
+  EditingBoardHexes,
   GameState,
   PlayerOrderMarkers,
   StageQueueItem,
@@ -40,7 +40,7 @@ const confirmDraftReady: Move<GameState> = (
 //phase:___Placement
 const deployUnits: Move<GameState> = (
   { G },
-  deploymentProposition: BoardHexesUnitDeployment,
+  deploymentProposition: EditingBoardHexes,
   playerID: string
 ) => {
   const myStartZone = G.startZones?.[playerID]
@@ -75,7 +75,7 @@ const dropInUnits: Move<GameState> = (
     toBeDroppedUnitIDs,
   }: {
     isAccepting: boolean
-    deploymentProposition?: BoardHexesUnitDeployment
+    deploymentProposition?: EditingBoardHexes
     gameCardID?: string
     toBeDroppedUnitIDs?: string[]
   }

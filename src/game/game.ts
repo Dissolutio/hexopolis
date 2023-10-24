@@ -216,6 +216,7 @@ export const Hexoscape: Game<GameState> = {
             (playerID) => ({
               stage: stageNames.theDrop,
               playerID,
+              // TODO: track the game card id that is Dropping, in case multiple cards with The Drop
             })
           )
           let newStageQueue: StageQueueItem[] = [...playerDropStagesForQueue]

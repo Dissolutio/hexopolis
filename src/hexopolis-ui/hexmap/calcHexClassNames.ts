@@ -3,7 +3,7 @@ import { selectHexForUnit } from 'game/selectors'
 import {
   BoardHex,
   BoardHexes,
-  BoardHexesUnitDeployment,
+  EditingBoardHexes,
   GameUnit,
   GameUnits,
   MoveRange,
@@ -29,7 +29,7 @@ export function calcDraftAndPlacementHexClassNames({
   startZones: StartZones
   startZoneForMy2HexUnits: string[]
   playerID: string
-  editingBoardHexes: BoardHexesUnitDeployment
+  editingBoardHexes: EditingBoardHexes
   activeTailPlacementUnitID: string
   tailPlaceables: string[]
 }) {
