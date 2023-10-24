@@ -10,6 +10,9 @@ import { useState } from 'react'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { usePlacementContext, useUIContext } from 'hexopolis-ui/contexts'
 import { playerColors } from 'hexopolis-ui/theme'
+import { selectGlyphForHex } from 'game/selectors'
+import { powerGlyphs } from 'game/glyphs'
+import { Billboard, Text } from '@react-three/drei'
 
 export const ONE_HEIGHT_LEVEL = 0.5
 const halfLevel = 0.25
@@ -32,7 +35,10 @@ export const MapHex3D = ({
   boardHex: BoardHex
   onClick?: (e: ThreeEvent<MouseEvent>, hex: BoardHex) => void
 }) => {
-  const { startZones } = useBgioG()
+  const {
+    startZones,
+    hexMap: { glyphs },
+  } = useBgioG()
   const { isPlacementPhase } = useBgioCtx()
   const { playerID } = useBgioClientInfo()
   const { editingBoardHexes } = usePlacementContext()
@@ -53,12 +59,16 @@ export const MapHex3D = ({
   const heightScaleSubTerrain = isFluidHex
     ? altitude - halfLevel
     : altitude - quarterLevel
-  const heightScaleFluid = 1
+  const heightScaleFluidCap = 1
   const heightScaleSolidCap = halfLevel
-  const scaleToUseForCap = isFluidHex ? heightScaleFluid : heightScaleSolidCap
-  const hexCapYAdjust = isFluidHex
-    ? altitude / 2
-    : altitude / 2 - quarterLevel / 4
+  const scaleToUseForCap = isFluidHex
+    ? heightScaleFluidCap
+    : heightScaleSolidCap
+  // as of yet, this just looks right, it's not mathematically sound
+  const mysteryMathValueThatSeemsToWorkWell = quarterLevel / 4
+  const yAdjustFluidCap = altitude / 2
+  const yAdjustSolidCap = yAdjustFluidCap - mysteryMathValueThatSeemsToWorkWell
+  const hexCapYAdjust = isFluidHex ? yAdjustFluidCap : yAdjustSolidCap
   const capPosition = new Vector3(x, hexCapYAdjust, z)
   const subTerrain =
     boardHex?.subTerrain ?? getDefaultSubTerrainForTerrain(boardHex.terrain)
@@ -91,8 +101,46 @@ export const MapHex3D = ({
   const capEmissiveIntensity = isHovered ? 1 : baseEmissivity
   const capFluidEmissiveIntensity = isHovered ? 2 : fluidEmissivity
   const subTerrainColor = new Color(hexTerrainColor[subTerrain])
+
+  /* 
+    GLYPHS
+     */
+  const glyphOnHex = selectGlyphForHex({ hexID: boardHex.id, glyphs })
+  const isGlyphRevealed = glyphOnHex?.isRevealed
+  const canonicalGlyph = powerGlyphs[glyphOnHex?.glyphID ?? '']
+  const glyphShortName = canonicalGlyph?.shortName || ''
+  const glyphText = isGlyphRevealed ? glyphShortName : '?'
+  const layerBetweenHexCapAndUnitFeet = 0.01
+  const glyphYAdjust = isFluidHex
+    ? yAdjustFluidCap + layerBetweenHexCapAndUnitFeet
+    : yAdjustSolidCap + layerBetweenHexCapAndUnitFeet
+  const sleightOffsetFromCenterOfHex = 0.2
+  const glyphPosition = new Vector3(
+    x,
+    glyphYAdjust,
+    z - sleightOffsetFromCenterOfHex
+  )
+
   return (
     <group>
+      {glyphOnHex ? (
+        <group position={glyphPosition}>
+          <Billboard position={[isGlyphRevealed ? -1 : -0.5, 0.4, 0]}>
+            <Text
+              fontSize={isGlyphRevealed ? 0.3 : 0.6}
+              color={new Color('black')}
+            >
+              {glyphText}
+            </Text>
+          </Billboard>
+          <mesh>
+            <cylinderGeometry args={[0.5, 0.5, 0.1, 6]} />
+            <meshBasicMaterial color={new Color('maroon')} />
+          </mesh>
+        </group>
+      ) : (
+        <></>
+      )}
       {/* These rings around the hex cylinder convey height levels to the user, so they can visually see how many levels of height between 2 adjacent hexes */}
       {/* The top ring will be highlighted when we hover the cap-terrain mesh, and also for all sorts of game reasons */}
       <HeightRings
