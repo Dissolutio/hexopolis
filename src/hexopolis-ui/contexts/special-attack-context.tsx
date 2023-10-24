@@ -181,7 +181,8 @@ export function SpecialAttackContextProvider({
         !revealedGameCard ||
         !firstUnitOfRevealedGameCard ||
         !headHex ||
-        !tailHex
+        (gameUnits[firstUnitOfRevealedGameCard?.unitID ?? ''].is2Hex &&
+          !tailHex)
       ) {
         return {}
       }

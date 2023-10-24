@@ -383,6 +383,15 @@ const HeightRing = ({
         return greenStyle
       }
     }
+    //  ROP: chomp
+    if (isChompStage) {
+      if (chompSelectedHexIDs?.includes(boardHexID)) {
+        return redStyle
+      }
+      if (chompableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
     //  ROP: Fire-Line Special Attack
     if (isFireLineSAStage) {
       // order matters here, check fireLineSelectedHexIDs first, else the below will early return
