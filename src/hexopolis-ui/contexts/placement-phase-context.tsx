@@ -62,6 +62,7 @@ const initialEditingBoardHexes = (
       return {
         ...result,
         [bh.id]: {
+          id: bh.id,
           occupyingUnitID: bh.occupyingUnitID,
           isUnitTail: bh.isUnitTail,
           q: bh.q,
@@ -155,6 +156,7 @@ const PlacementContextProvider = ({
         ...oldState,
         // place selected unit's head on clicked hex, this will remove the displaced unit (but not their other hex if they have one)
         [clickedHexId]: {
+          id: clickedHexId,
           occupyingUnitID: selectedUnitID,
           isUnitTail: false,
           q: boardHexes[clickedHexId].q,
@@ -312,6 +314,7 @@ const PlacementContextProvider = ({
                 ...oldState,
                 // place selected unit('s head) on clicked hex
                 [clickedHexId]: {
+                  id: clickedHexId,
                   occupyingUnitID: selectedUnitID,
                   isUnitTail: false,
                   q: boardHexes[clickedHexId].q,
@@ -350,6 +353,7 @@ const PlacementContextProvider = ({
               ...oldState,
               // place selected unit('s head) on clicked hex
               [clickedHexId]: {
+                id: clickedHexId,
                 occupyingUnitID: selectedUnitID,
                 isUnitTail: false,
                 q: boardHexes[clickedHexId].q,
@@ -376,6 +380,7 @@ const PlacementContextProvider = ({
       setEditingBoardHexes((s) => ({
         ...s,
         [clickedHexId]: {
+          id: clickedHexId,
           occupyingUnitID: activeTailPlacementUnitID,
           isUnitTail: true,
           q: boardHexes[clickedHexId].q,

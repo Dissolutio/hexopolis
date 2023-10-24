@@ -138,6 +138,11 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   const { onPlaceUnitUpdateEditingBoardHexes, editingBoardHexes } =
     usePlacementContext()
   const selectedUnit = gameUnits?.[selectedUnitID]
+  const selectedUnitEditingHex = selectEditingHexForUnit(
+    selectedUnitID,
+    editingBoardHexes
+  )
+  const selectedUnitEditingHexID = selectedUnitEditingHex?.id ?? ''
   const selectedUnitGameCard = gameArmyCards.find(
     (card) => card.gameCardID === selectedUnit?.gameCardID
   )
@@ -476,14 +481,21 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       ? []
       : Object.values(boardHexes)
           .filter((hex) => {
+            const editingHexesToUse = selectedUnitID
+              ? {
+                  ...editingBoardHexes,
+                  // overwrite the selected unit (which is a The-Drop-unit), as if our selected unit is not there, so we can Drop it 1 hex over if we want
+                  [selectedUnitEditingHexID]: undefined,
+                }
+              : editingBoardHexes
             const isHexUnoccupied =
-              !hex.occupyingUnitID && !editingBoardHexes[hex.id]
+              !hex.occupyingUnitID && !editingHexesToUse[hex.id]
             const isAllHexNeighborsUnoccupied = !selectHexNeighbors(
               hex.id,
               boardHexes
             ).some(
               (h) =>
-                h.occupyingUnitID || editingBoardHexes[h.id]?.occupyingUnitID
+                h.occupyingUnitID || editingHexesToUse[h.id]?.occupyingUnitID
             )
             const glyphOnHex = selectGlyphForHex({
               hexID: hex.id,

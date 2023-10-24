@@ -1,6 +1,6 @@
 import { Vector3, BufferGeometry, Line, Color } from 'three'
 import { ReactThreeFiber, extend } from '@react-three/fiber'
-import { ONE_HEIGHT_LEVEL, hexTerrainColor } from './MapHex3D'
+import { ONE_HEIGHT_LEVEL } from './MapHex3D'
 import {
   usePlacementContext,
   usePlayContext,
@@ -9,12 +9,7 @@ import {
 import { transformMoveRangeToArraysOfIds } from 'game/constants'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { playerColors } from 'hexopolis-ui/theme'
-import { BoardHex } from 'game/types'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
-import {
-  selectGameArmyCardAttacksAllowed,
-  selectIfGameArmyCardHasAbility,
-} from 'game/selector/card-selectors'
 import { selectAttackerHasAttacksAllowed } from 'game/selectors'
 
 export const HeightRings = ({
@@ -97,7 +92,6 @@ const HeightRing = ({
 }) => {
   const {
     boardHexes,
-    hexMap: { hexSize, glyphs },
     gameArmyCards,
     startZones,
     gameUnits,
@@ -105,22 +99,20 @@ const HeightRing = ({
     unitsAttacked,
   } = useBgioG()
   const {
-    gameover,
-    isWaitingForPlayersToJoin,
     isMyTurn,
     isDraftPhase,
-    isOrderMarkerPhase,
     isPlacementPhase,
     isTheDropStage,
     isIdleTheDropStage,
     isRoundOfPlayPhase,
     isMovementStage,
     isWaterCloneStage,
+    isMindShackleStage,
+    isChompStage,
     isAttackingStage,
     isFireLineSAStage,
     isGrenadeSAStage,
     isExplosionSAStage,
-    isGameover,
   } = useBgioCtx()
   const points = genPointsForHeightRing(height)
   const lineGeometry = new BufferGeometry().setFromPoints(points)
@@ -131,11 +123,9 @@ const HeightRing = ({
     theDropPlaceableHexIDs,
     revealedGameCardUnits,
     revealedGameCardUnitIDs,
-    revealedGameCard,
     selectedUnitAttackRange,
     clonerHexIDs,
     clonePlaceableHexIDs,
-    attacksLeft,
   } = usePlayContext()
   const {
     editingBoardHexes,
@@ -144,12 +134,10 @@ const HeightRing = ({
     tailPlaceables,
   } = usePlacementContext()
   const {
-    selectSpecialAttack,
     fireLineTargetableHexIDs,
     fireLineAffectedHexIDs,
     fireLineSelectedHexIDs,
     explosionTargetableHexIDs,
-    explosionAffectedHexIDs,
     explosionAffectedUnitIDs,
     explosionSelectedUnitIDs,
     chompableHexIDs,
@@ -170,9 +158,6 @@ const HeightRing = ({
   })
   const isOpponentsActiveUnitHex = () => {
     return activeEnemyUnitIDs?.includes(unitID)
-  }
-  const isSelectedUnitHex = () => {
-    return selectedUnitID && unitID && unitID === selectedUnitID
   }
 
   const playerColorStyle = {
@@ -259,7 +244,13 @@ const HeightRing = ({
     }
     // placement + unit selected: show valid drops
     if (isPlacementPhase && selectedUnitID && !activeTailPlacementUnitID) {
-      if (!(selectedUnitID === occupyingPlacementUnitId) && isMyStartZoneHex)
+      if (
+        !(selectedUnitID === occupyingPlacementUnitId) &&
+        isMyStartZoneHex &&
+        (selectedUnit.is2Hex
+          ? startZoneForMy2HexUnits.includes(boardHexID)
+          : true)
+      )
         return greenStyle
     }
     // pre-order-marker-phase: the drop:
@@ -364,12 +355,30 @@ const HeightRing = ({
     ) {
       return grayStyle
     }
-    //  water-clone
+    //  ROP: water-clone
     if (isWaterCloneStage) {
       if (clonerHexIDs?.includes(boardHexID)) {
         return playerColorStyle
       }
       if (clonePlaceableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
+    //  ROP: mind-shackle
+    if (isMindShackleStage) {
+      if (mindShackleSelectedHexIDs?.includes(boardHexID)) {
+        return redStyle
+      }
+      if (mindShackleTargetableHexIDs?.includes(boardHexID)) {
+        return greenStyle
+      }
+    }
+    //  ROP: chomp
+    if (isChompStage) {
+      if (chompSelectedHexIDs?.includes(boardHexID)) {
+        return redStyle
+      }
+      if (chompableHexIDs?.includes(boardHexID)) {
         return greenStyle
       }
     }
