@@ -4,7 +4,7 @@ import {
   ICoreHeroscapeCard,
   StartingArmies,
 } from '../types'
-import { MS1Cards, only3dGuysWeGot } from '../coreHeroscapeCards'
+import { MS1Cards } from '../coreHeroscapeCards'
 import { testCards } from '../testHeroscapeCards'
 import { makeGameCardID } from '../transformers'
 import { keyBy } from 'lodash'
@@ -58,8 +58,28 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
   // '1': [izumiID, syvarrisID, airbornID, carrID],
 
   // for devving 3d below:
-  '0': [mimringID, deathwalker9000ID, drake1ID, airbornID],
-  '1': [raelinOneID, marroID, carrID, syvarrisID],
+  '0': [
+    finnID,
+    grimnakID,
+    izumiID,
+    kravMagaID,
+    // old brlow
+    mimringID,
+    deathwalker9000ID,
+    drake1ID,
+    airbornID,
+  ],
+  '1': [
+    negoksaID,
+    thorgrimID,
+    zettianID,
+    tarnID,
+    // old brlow
+    raelinOneID,
+    marroID,
+    carrID,
+    syvarrisID,
+  ],
 }
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
@@ -159,7 +179,7 @@ function hsCardsToArmyCards(
 }
 // in order for the TestDummy cards to be accessible to the game, we need to add them to the army cards
 // const cardsUsed = [...MS1Cards, ...testCards]
-const cardsUsed = [...only3dGuysWeGot]
+const cardsUsed = [...MS1Cards]
 
 export function startingArmiesToGameCards(
   numPlayers: number,
