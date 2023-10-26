@@ -6949,17 +6949,6 @@ export const agentCarr = MS1Cards.find((unit) => unit.name === 'Agent Carr')
 export const kravMagaAgents = MS1Cards.find(
   (unit) => unit.name === 'Krav Maga Agents'
 )
-export const only3dGuysWeGot = MS1Cards.filter(
-  (card) =>
-    card.armyCardID === 'hs1013' ||
-    card.armyCardID === 'hs1000' ||
-    card.armyCardID === 'hs1001' ||
-    card.armyCardID === 'hs1003' ||
-    card.armyCardID === 'hs1004' ||
-    card.armyCardID === 'hs1009' ||
-    card.armyCardID === 'hs1012' ||
-    card.armyCardID === 'hs1007'
-)
 
 function filterMasterSetROTV(card: ICoreHeroscapeCard) {
   return card.setWave === 'Master Set: Rise of the Valkyrie'

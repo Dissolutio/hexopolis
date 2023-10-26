@@ -21,6 +21,24 @@ import { AirbornElite2 } from '../components/models/unique-squad/airborn-elite/A
 import { AirbornElite3 } from '../components/models/unique-squad/airborn-elite/AirbornElite3'
 import { AirbornElite4 } from '../components/models/unique-squad/airborn-elite/AirbornElite4'
 import { RaelinRotvModel } from '../components/models/unique-hero/RaelinRotvModel'
+import {
+  Tarn1PlainModel,
+  Tarn2PlainModel,
+  Tarn3PlainModel,
+  Tarn4PlainModel,
+  Izumi1PlainModel,
+  Izumi2PlainModel,
+  Izumi3PlainModel,
+  FinnPlainModel,
+  GrimnakPlainModel,
+  Krav1PlainModel,
+  Krav2PlainModel,
+  Krav3PlainModel,
+  NeGokSaPlainModel,
+  ThorgrimPlainModel,
+  Zettian1PlainModel,
+  Zettian2PlainModel,
+} from '../components/models/PlainModels'
 
 const initialRotations: StringKeyedNums = {
   // everyone else defaults to Math.PI so far
@@ -101,8 +119,53 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
       if (gameUnit.modelIndex === 3)
         return <MarroWarrior4 gameUnit={gameUnit} />
       return <MarroWarrior1 gameUnit={gameUnit} />
+    case 'hs1001':
+      // deathwalker 9000
+      return <Deathwalker9000Model gameUnit={gameUnit} />
+    case 'hs1002':
+      // izumi
+      if (gameUnit.modelIndex === 0)
+        return <Izumi1PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 1)
+        return <Izumi2PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 2)
+        return <Izumi3PlainModel gameUnit={gameUnit} />
+      return <Izumi1PlainModel gameUnit={gameUnit} />
+    case 'hs1003':
+      // sgt drake
+      return <SgtDrakeModel gameUnit={gameUnit} />
+    case 'hs1004':
+      // syvarris
+      return <SyvarrisModel gameUnit={gameUnit} />
+    case 'hs1005':
+      if (gameUnit.modelIndex === 0)
+        return <Krav1PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 1)
+        return <Krav2PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 2)
+        return <Krav3PlainModel gameUnit={gameUnit} />
+      return <Krav1PlainModel gameUnit={gameUnit} />
+    case 'hs1006':
+      if (gameUnit.modelIndex === 0)
+        return <Tarn1PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 1)
+        return <Tarn2PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 2)
+        return <Tarn3PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 3)
+        return <Tarn4PlainModel gameUnit={gameUnit} />
+      return <Tarn1PlainModel gameUnit={gameUnit} />
+    case 'hs1007':
+      // agent carr
+      return <AgentCarrModel gameUnit={gameUnit} />
+    case 'hs1008':
+      // zettian guards
+      if (gameUnit.modelIndex === 0)
+        return <Zettian1PlainModel gameUnit={gameUnit} />
+      if (gameUnit.modelIndex === 1)
+        return <Zettian2PlainModel gameUnit={gameUnit} />
+      return <Zettian1PlainModel gameUnit={gameUnit} />
     case 'hs1009':
-      // airborn elite
       if (gameUnit.modelIndex === 0)
         return <AirbornElite1 gameUnit={gameUnit} />
       if (gameUnit.modelIndex === 1)
@@ -112,24 +175,20 @@ export const UnitModelByID = ({ gameUnit }: { gameUnit: GameUnit }) => {
       if (gameUnit.modelIndex === 3)
         return <AirbornElite4 gameUnit={gameUnit} />
       return <AirbornElite1 gameUnit={gameUnit} />
-    case 'hs1001':
-      // deathwalker 9000
-      return <Deathwalker9000Model gameUnit={gameUnit} />
+    case 'hs1010':
+      return <FinnPlainModel gameUnit={gameUnit} />
+    case 'hs1011':
+      return <ThorgrimPlainModel gameUnit={gameUnit} />
     case 'hs1012':
-      // raelin ROTV
       return <RaelinRotvModel gameUnit={gameUnit} />
-    case 'hs1003':
-      // sgt drake
-      return <SgtDrakeModel gameUnit={gameUnit} />
-    case 'hs1004':
-      // syvarris
-      return <SyvarrisModel gameUnit={gameUnit} />
-    case 'hs1007':
-      // agent carr
-      return <AgentCarrModel gameUnit={gameUnit} />
     case 'hs1013':
-      // agent carr
       return <MimringModel gameUnit={gameUnit} />
+    case 'hs1014':
+      // ne gok sa
+      return <NeGokSaPlainModel gameUnit={gameUnit} />
+    case 'hs1015':
+      // grimnak
+      return <GrimnakPlainModel gameUnit={gameUnit} />
     default:
       return null
   }
