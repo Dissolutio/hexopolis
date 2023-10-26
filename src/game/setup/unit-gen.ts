@@ -63,7 +63,6 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
     grimnakID,
     izumiID,
     kravMagaID,
-    // old brlow
     mimringID,
     deathwalker9000ID,
     drake1ID,
@@ -74,7 +73,6 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
     thorgrimID,
     zettianID,
     tarnID,
-    // old brlow
     raelinOneID,
     marroID,
     carrID,
