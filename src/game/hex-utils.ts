@@ -134,6 +134,11 @@ export const cubeToPixel = (hex: HexCoordinates) => {
   const y = HEX_RADIUS * ((3 / 2) * hex.r)
   return { x: x * HEX_SPACING, y: y * HEX_SPACING }
 }
+export const getBoardHex3DCoords = (hex: BoardHex) => {
+  const { x, y } = cubeToPixel(hex)
+  return { x, y, z: hex.altitude / 2 }
+}
+
 export const getDirectionOfNeighbor = (
   hexStart: HexCoordinates,
   neighbor: HexCoordinates

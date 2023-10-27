@@ -11,10 +11,14 @@ import {
 import { selectGameCardByID } from 'game/selectors'
 import { ThreeEvent } from '@react-three/fiber'
 import { GameUnit3D } from './GameUnit3D'
-import { Billboard, Text } from '@react-three/drei'
-import { cubeToPixel } from 'game/hex-utils'
+import { Billboard, CameraControls, Text } from '@react-three/drei'
+import { cubeToPixel, getBoardHex3DCoords } from 'game/hex-utils'
 
-export function MapDisplay3D() {
+export function MapDisplay3D({
+  cameraControlsRef,
+}: {
+  cameraControlsRef: React.MutableRefObject<CameraControls>
+}) {
   const { boardHexes } = useBgioG()
   const hexArray = Object.values(boardHexes)
   return (
@@ -174,11 +178,11 @@ const Hex3D = ({ boardHexID }: { boardHexID: string }) => {
   //   gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
   // const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
 
-  const pixel = cubeToPixel(boardHex)
-  // world is flat on X-Z, and Y is altitude
-  const positionX = pixel.x
-  const positionZ = pixel.y
-  const positionY = boardHex.altitude / 2
+  const {
+    x: positionX,
+    y: positionZ,
+    z: positionY,
+  } = getBoardHex3DCoords(boardHex)
   const positionYHexText = positionY + 0.2
   return (
     <>

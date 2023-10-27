@@ -21,12 +21,22 @@ type GLTFResult = GLTF & {
     Izumi_Samurai_1?: THREE.Mesh
     Izumi_Samurai_2?: THREE.Mesh
     Izumi_Samurai_3?: THREE.Mesh
+    Airborn_Elite_1?: THREE.Mesh
+    Airborn_Elite_2?: THREE.Mesh
+    Airborn_Elite_3?: THREE.Mesh
+    Airborn_Elite_4?: THREE.Mesh
     Tarn_Viking_Warriors_1?: THREE.Mesh
     Tarn_Viking_Warriors_2?: THREE.Mesh
     Tarn_Viking_Warriors_3?: THREE.Mesh
     Tarn_Viking_Warriors_4?: THREE.Mesh
+    Marro_Warriors_1?: THREE.Mesh
+    Marro_Warriors_2?: THREE.Mesh
+    Marro_Warriors_3?: THREE.Mesh
+    Marro_Warriors_4?: THREE.Mesh
     Negoksa?: THREE.Mesh
+    D9000?: THREE.Mesh
     Grimnak?: THREE.Mesh
+    Raelin1?: THREE.Mesh
     Zettian_Guards_2?: THREE.Mesh
     Zettian_Guards_1?: THREE.Mesh
     Krav_Maga_Agent_1?: THREE.Mesh
@@ -34,9 +44,145 @@ type GLTFResult = GLTF & {
     Krav_Maga_3?: THREE.Mesh
     Finn_the_Viking_Champion_Scanned?: THREE.Mesh
     Thorgrim_the_Viking_Champion_Scanned?: THREE.Mesh
+    AgentCarr?: THREE.Mesh
+    Syvarris?: THREE.Mesh
+    Mimring?: THREE.Mesh
+    Sgt_Drake_1?: THREE.Mesh
   }
 }
 
+export function Airborn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/airborn_1_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Airborn_Elite_1?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+
+export function Airborn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/airborn_2_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Airborn_Elite_2?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function Airborn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/airborn_3_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Airborn_Elite_3?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function Airborn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/airborn_4_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Airborn_Elite_4?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+
+export function MarroWarriors1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/marro_warriors_1_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Marro_Warriors_1?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function MarroWarriors2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/marro_warriors_2_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Marro_Warriors_2?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function MarroWarriors3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/marro_warriors_3_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Marro_Warriors_3?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function MarroWarriors4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/marro_warriors_4_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes?.Marro_Warriors_4?.geometry}
+      >
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
 export function Tarn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes } = useGLTF('/tarn_1_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
@@ -54,7 +200,6 @@ export function Tarn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     </>
   )
 }
-
 export function Tarn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes } = useGLTF('/tarn_2_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
@@ -103,6 +248,7 @@ export function Tarn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     </>
   )
 }
+
 export function Izumi1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes } = useGLTF('/izumi_1_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
@@ -120,7 +266,6 @@ export function Izumi1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     </>
   )
 }
-
 export function Izumi2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes } = useGLTF('/izumi_2_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
@@ -166,6 +311,19 @@ export function GrimnakPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     </>
   )
 }
+export function Raelin1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/raelin1_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+
+  return (
+    <>
+      <mesh castShadow receiveShadow geometry={nodes?.Raelin1?.geometry}>
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
 export function NeGokSaPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   const { nodes } = useGLTF('/negoksa_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
@@ -173,6 +331,19 @@ export function NeGokSaPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Negoksa?.geometry}>
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function D9000PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/d9000_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+
+  return (
+    <>
+      <mesh castShadow receiveShadow geometry={nodes?.D9000?.geometry}>
         <meshPhongMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
@@ -288,3 +459,56 @@ export function ThorgrimPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     </>
   )
 }
+export function AgentCarrPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/agent_carr_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh castShadow receiveShadow geometry={nodes?.AgentCarr?.geometry}>
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function SyvarrisPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/syvarris_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh castShadow receiveShadow geometry={nodes?.Syvarris?.geometry}>
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function MimringPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/mimring_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh castShadow receiveShadow geometry={nodes?.Mimring?.geometry}>
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+export function SgtDrakePlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+  const { nodes } = useGLTF('/sgt_drake_plain.glb') as GLTFResult
+  const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
+  return (
+    <>
+      <mesh castShadow receiveShadow geometry={nodes?.Sgt_Drake_1?.geometry}>
+        <meshPhongMaterial color={playerColor} />
+        <OutlineHighlight gameUnit={gameUnit} />
+      </mesh>
+    </>
+  )
+}
+// if you don't preload them, the map will flicker when you use The Drop and add these models (all the rest load at game start)
+useGLTF.preload('/airborn_1_plain.glb')
+useGLTF.preload('/airborn_2_plain.glb')
+useGLTF.preload('/airborn_3_plain.glb')
+useGLTF.preload('/airborn_4_plain.glb')
