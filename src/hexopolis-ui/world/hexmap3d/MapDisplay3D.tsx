@@ -11,7 +11,7 @@ import {
 import { selectGameCardByID } from 'game/selectors'
 import { ThreeEvent } from '@react-three/fiber'
 import { GameUnit3D } from './GameUnit3D'
-import { Billboard, Text } from '@react-three/drei'
+import { Billboard, Box, CameraControls, Text } from '@react-three/drei'
 import { cubeToPixel } from 'game/hex-utils'
 
 export function MapDisplay3D({
@@ -21,8 +21,37 @@ export function MapDisplay3D({
 }) {
   const { boardHexes } = useBgioG()
   const hexArray = Object.values(boardHexes)
+
+  const argsForSetLookAt: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    boolean
+  ] = [
+    // https://github.com/yomotsu/camera-controls#setlookat-positionx-positiony-positionz-targetx-targety-targetz-enabletransition-
+    // END CAM POS
+    0,
+    12,
+    0,
+    // END LOOK AT
+    -1,
+    0,
+    0,
+    // enableTransition
+    true,
+  ]
   return (
     <>
+      <Box
+        onClick={() => {
+          // cameraControlsRef
+          // cameraControlsRef?.current?.lerpLookAt(...argsForLerpLookAt)
+          cameraControlsRef?.current?.setLookAt(...argsForSetLookAt)
+        }}
+      />
       {hexArray.map((bh) => {
         return <Hex3D key={`${bh.id}-${bh.altitude}`} boardHexID={bh.id} />
       })}
