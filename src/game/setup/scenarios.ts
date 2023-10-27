@@ -137,7 +137,7 @@ export function makeGiantsTable2PlayerScenario(
       isDevOverrideState: withPrePlacedUnits,
       startingArmies: startingArmiesForGiantsTable2Player,
     }),
-    maxArmyValue: 400,
+    maxArmyValue: 300,
     maxRounds: 12,
     gameArmyCards: armyCards,
     gameUnits: gameUnits,
