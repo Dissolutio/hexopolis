@@ -284,7 +284,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // FALL DAMAGE ATTEMPT
   const [fallHexID, setFallHexID] = useState<string>('')
   const confirmFallDamageMove = () => {
-    noUndoMoveAction(selectedUnit, boardHexes[fallHexID], selectedUnitMoveRange)
+    noUndoMoveAction(selectedUnit, boardHexes[fallHexID], moveRangeState)
     setFallHexID('')
   }
   const cancelFallDamageMove = () => {
@@ -293,11 +293,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   // MOVE-ONTO-GLYPH ATTEMPT
   const [glyphMoveHexID, setGlyphMoveHexID] = useState<string>('')
   const confirmGlyphMove = () => {
-    noUndoMoveAction(
-      selectedUnit,
-      boardHexes[glyphMoveHexID],
-      selectedUnitMoveRange
-    )
+    noUndoMoveAction(selectedUnit, boardHexes[glyphMoveHexID], moveRangeState)
     setGlyphMoveHexID('')
   }
   const cancelGlyphMove = () => {
@@ -317,7 +313,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   }
   const onClickDangerousHex = (endHexID: string) => {
     // this is either a disengage and/or a falling damage hex and/or a hex with an action-glyph
-    const moveRangeSelection = selectedUnitMoveRange[endHexID]
+    const moveRangeSelection = moveRangeState.moveRange[endHexID]
     if (!moveRangeSelection) {
       return
     }
@@ -325,9 +321,9 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
     // ORDER MATTERS HERE: we check for disengage first, then glyph, then fall damage
     if (moveRangeSelection.isDisengage) {
       const disengagementUnitIDs =
-        selectedUnitMoveRange[endHexID]?.disengagedUnitIDs
-      const endFromHexID = selectedUnitMoveRange[endHexID]?.fromHexID
-      const movePointsLeft = selectedUnitMoveRange[endHexID]?.movePointsLeft
+        moveRangeState.moveRange[endHexID]?.disengagedUnitIDs
+      const endFromHexID = moveRangeState.moveRange[endHexID]?.fromHexID
+      const movePointsLeft = moveRangeState.moveRange[endHexID]?.movePointsLeft
       const defendersToDisengage = disengagementUnitIDs.map(
         (id) => gameUnits[id]
       )
@@ -347,20 +343,29 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       setFallHexID(endHexID)
     }
   }
-
+  type MoveRangeState = {
+    unitID: string
+    moveRange: MoveRange
+  }
   // MOVE RANGE
-  const [selectedUnitMoveRange, setSelectedUnitMoveRange] = useState<MoveRange>(
-    generateBlankMoveRange()
-  )
+  const [moveRangeState, setMoveRangeState] = useState<MoveRangeState>({
+    unitID: '',
+    moveRange: generateBlankMoveRange(),
+  })
 
   const { safeMoves, engageMoves, dangerousMoves } =
-    transformMoveRangeToArraysOfIds(selectedUnitMoveRange)
+    transformMoveRangeToArraysOfIds(moveRangeState.moveRange)
   // effect: update moverange when selected unit changes (only necessary in movement stage)
   useEffect(() => {
     if (isMovementStage) {
-      if (selectedUnitID && selectedUnit) {
-        setSelectedUnitMoveRange(() =>
-          computeUnitMoveRange({
+      if (
+        selectedUnitID &&
+        selectedUnit &&
+        selectedUnitID !== moveRangeState.unitID
+      ) {
+        setMoveRangeState(() => ({
+          unitID: selectedUnitID,
+          moveRange: computeUnitMoveRange({
             unit: selectedUnit,
             isFlying,
             isGrappleGun,
@@ -369,11 +374,12 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
             gameUnits,
             armyCards: gameArmyCards,
             glyphs,
-          })
-        )
-      } else {
-        setSelectedUnitMoveRange(generateBlankMoveRange())
+          }),
+        }))
       }
+      // else {
+      //   setSelectedUnitMoveRange(generateBlankMoveRange())
+      // }
     }
   }, [
     isMovementStage,
@@ -586,11 +592,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
       const isInDangerousRange = dangerousMoves.includes(sourceHex.id)
       // move selected unit if possible...
       if (selectedUnitID && isAbleToMakeMove) {
-        moveAction(
-          selectedUnit,
-          boardHexes[sourceHex.id],
-          selectedUnitMoveRange
-        )
+        moveAction(selectedUnit, boardHexes[sourceHex.id], moveRangeState)
       } else if (selectedUnitID && isInDangerousRange) {
         // if clicked in disengage hex, then make them confirm...
         onClickDangerousHex(sourceHexID)
@@ -653,7 +655,7 @@ export const PlayContextProvider = ({ children }: PropsWithChildren) => {
   return (
     <PlayContext.Provider
       value={{
-        selectedUnitMoveRange,
+        selectedUnitMoveRange: moveRangeState.moveRange,
         selectedUnitAttackRange,
         // disengage confirm
         showDisengageConfirm,
