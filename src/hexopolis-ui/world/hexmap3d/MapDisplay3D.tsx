@@ -14,7 +14,11 @@ import { GameUnit3D } from './GameUnit3D'
 import { Billboard, Text } from '@react-three/drei'
 import { cubeToPixel } from 'game/hex-utils'
 
-export function MapDisplay3D() {
+export function MapDisplay3D({
+  cameraControlsRef,
+}: {
+  cameraControlsRef: React.MutableRefObject<CameraControls>
+}) {
   const { boardHexes } = useBgioG()
   const hexArray = Object.values(boardHexes)
   return (

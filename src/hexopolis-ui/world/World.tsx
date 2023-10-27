@@ -19,6 +19,7 @@ import { useRef } from 'react'
 export const World = () => {
   const { isDraftPhase } = useBgioCtx()
   const { setSelectedUnitID } = useUIContext()
+  const cameraControlsRef = useRef(undefined!)
   return (
     <div
       id="canvas-container"
@@ -50,7 +51,7 @@ export const World = () => {
         <directionalLight position={[0, 0, 0]} intensity={0.65} />
         <directionalLight position={[0, 0, -50]} intensity={0.65} />
         <Stats />
-        <MapDisplay3D />
+        <MapDisplay3D cameraControlsRef={cameraControlsRef} />
         {/* <Grid infiniteGrid /> */}
         <PerspectiveCamera makeDefault position={[30, 30, 50]} fov={30} />
         <CameraControls
