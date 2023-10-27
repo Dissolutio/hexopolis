@@ -304,10 +304,10 @@ export const coreHeroscapeCards: ICoreHeroscapeCard[] = [
         name: 'Grenade Special Attack',
         desc: 'Range 5. Lob 12. Attack 2. Use this power once per game. Start the game with a grenade marker on this card. Remove the marker to throw grenades. One at a time do the following with each Airborne Elite: Choose a figure to attack. No clear line of sight is needed. Any figures adjacent to the chosen figure are also affected by the Grenade Special Attack. Roll 2 attack dice once for all affected figures. Each figure rolls defense dice separately.',
       },
-      {
-        name: 'The Drop',
-        desc: 'Airborne Elite do not start the game on the battlefield. At the start of each round, before you place Order Markers, roll the 20-sided die. If you roll a 13 or higher you may place all 4 Airborne Elite figures on any empty spaces. You cannot place them adjacent to each other or other figures or on glyphs.',
-      },
+      // {
+      //   name: 'The Drop',
+      //   desc: 'Airborne Elite do not start the game on the battlefield. At the start of each round, before you place Order Markers, roll the 20-sided die. If you roll a 13 or higher you may place all 4 Airborne Elite figures on any empty spaces. You cannot place them adjacent to each other or other figures or on glyphs.',
+      // },
     ],
   },
   {
