@@ -15,6 +15,7 @@ import { DraftCounter } from 'hexopolis-ui/hexmap/DraftCounter'
 import { useBgioCtx } from 'bgio-contexts'
 import { useUIContext } from 'hexopolis-ui/contexts'
 import { useRef } from 'react'
+import { EffectProphet } from './hexmap3d/EffectProphet'
 
 export const World = () => {
   const { isDraftPhase } = useBgioCtx()
@@ -39,6 +40,7 @@ export const World = () => {
           fade
           speed={1}
         />
+        <EffectProphet cameraControlsRef={cameraControlsRef} />
         <ambientLight intensity={1} />
         {/* 4 in rectangle over top, shop-light style */}
         <directionalLight position={[50, 50, 50]} intensity={0.65} />
@@ -54,10 +56,13 @@ export const World = () => {
         <MapDisplay3D cameraControlsRef={cameraControlsRef} />
         {/* <Grid infiniteGrid /> */}
         <PerspectiveCamera makeDefault position={[30, 30, 50]} fov={30} />
+        <axesHelper scale={[100, 100, 100]} />
         <CameraControls
           ref={cameraControlsRef}
-          minDistance={0.1}
+          // minDistance={0.1}
           makeDefault
+          smoothTime={1}
+          // dollySpeed={0.5}
           // enabled
           // verticalDragToForward={verticalDragToForward}
           // dollyToCursor={dollyToCursor}
