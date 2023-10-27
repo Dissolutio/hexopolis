@@ -5,6 +5,7 @@ import {
   Stars,
   Stats,
   PerspectiveCamera,
+  CameraControls,
 } from '@react-three/drei'
 
 import { MapDisplay3D } from './hexmap3d/MapDisplay3D'
@@ -13,6 +14,7 @@ import { RoundCounter } from 'hexopolis-ui/hexmap/RoundCounter'
 import { DraftCounter } from 'hexopolis-ui/hexmap/DraftCounter'
 import { useBgioCtx } from 'bgio-contexts'
 import { useUIContext } from 'hexopolis-ui/contexts'
+import { useRef } from 'react'
 
 export const World = () => {
   const { isDraftPhase } = useBgioCtx()
@@ -51,12 +53,14 @@ export const World = () => {
         <MapDisplay3D />
         {/* <Grid infiniteGrid /> */}
         <PerspectiveCamera makeDefault position={[30, 30, 50]} fov={30} />
-        <OrbitControls
-          enableDamping
-          dampingFactor={0.1}
-          rotateSpeed={0.7}
-          zoomSpeed={0.5}
-          //  onChange?: (e?: OrbitControlsChangeEvent) => void; // use this to save camera position!
+        <CameraControls
+          ref={cameraControlsRef}
+          minDistance={0.1}
+          makeDefault
+          // enabled
+          // verticalDragToForward={verticalDragToForward}
+          // dollyToCursor={dollyToCursor}
+          // infinityDolly={infinityDolly}
         />
       </Canvas>
       <Notifications />
