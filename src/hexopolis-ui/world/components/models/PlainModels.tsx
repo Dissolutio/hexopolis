@@ -168,7 +168,7 @@ export function MarroWarriors3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   )
 }
 export function MarroWarriors4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
-  const { nodes } = useGLTF('/marro_warriors_3_plain.glb') as GLTFResult
+  const { nodes } = useGLTF('/marro_warriors_4_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
