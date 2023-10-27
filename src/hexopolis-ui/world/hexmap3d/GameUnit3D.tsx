@@ -65,10 +65,12 @@ export const GameUnit3D = ({
   const directionToTail = tailHex
     ? getDirectionOfNeighbor(boardHex, tailHex)
     : undefined
-  const rotationToTail = ((directionToTail ?? 0) * Math.PI) / 3
+  const rotationToTail = ((directionToTail ?? 0) * Math.PI) / 3 + Math.PI
   const playerAdjustedRotationForSingleHexFigures =
     (gameUnit.rotation * Math.PI) / 3
-  const rotationY = playerAdjustedRotationForSingleHexFigures + rotationToTail
+  const rotationY = gameUnit.is2Hex
+    ? rotationToTail
+    : playerAdjustedRotationForSingleHexFigures
 
   return (
     <group
