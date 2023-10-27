@@ -30,7 +30,7 @@ export const World = () => {
         position: 'relative',
       }}
     >
-      <Canvas onPointerMissed={() => setSelectedUnitID('')}>
+      <Canvas>
         <Stars
           radius={100}
           depth={50}
