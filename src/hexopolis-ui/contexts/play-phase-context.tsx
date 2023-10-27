@@ -49,6 +49,10 @@ export type TargetsInRange = {
 }
 
 const PlayContext = createContext<PlayContextValue | undefined>(undefined)
+const initialMoveRangeState = {
+  unitID: '',
+  moveRange: generateBlankMoveRange(),
+}
 
 type PlayContextValue = {
   // state
