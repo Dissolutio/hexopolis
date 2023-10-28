@@ -62,7 +62,7 @@ export function Airborn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Airborn_Elite_1?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -79,7 +79,7 @@ export function Airborn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Airborn_Elite_2?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -95,7 +95,7 @@ export function Airborn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Airborn_Elite_3?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -111,7 +111,7 @@ export function Airborn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Airborn_Elite_4?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -129,7 +129,7 @@ export function MarroWarriors1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Marro_Warriors_1?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -145,7 +145,7 @@ export function MarroWarriors2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Marro_Warriors_2?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -161,7 +161,7 @@ export function MarroWarriors3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Marro_Warriors_3?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -177,7 +177,7 @@ export function MarroWarriors4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Marro_Warriors_4?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -194,7 +194,7 @@ export function Tarn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Tarn_Viking_Warriors_1?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -210,7 +210,7 @@ export function Tarn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Tarn_Viking_Warriors_2?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -226,7 +226,7 @@ export function Tarn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Tarn_Viking_Warriors_3?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -242,7 +242,7 @@ export function Tarn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Tarn_Viking_Warriors_4?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -260,7 +260,7 @@ export function Izumi1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Izumi_Samurai_1?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -276,7 +276,7 @@ export function Izumi2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Izumi_Samurai_2?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -292,7 +292,7 @@ export function Izumi3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Izumi_Samurai_3?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -305,7 +305,7 @@ export function GrimnakPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Grimnak?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -318,7 +318,7 @@ export function Raelin1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Raelin1?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -331,7 +331,7 @@ export function NeGokSaPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Negoksa?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -344,7 +344,7 @@ export function D9000PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.D9000?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -363,7 +363,7 @@ export function Zettian1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Zettian_Guards_2?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -381,7 +381,7 @@ export function Zettian2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Zettian_Guards_1?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -397,7 +397,7 @@ export function Krav1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Krav_Maga_Agent_1?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -409,7 +409,7 @@ export function Krav2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Krav_Maga_2?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -421,7 +421,7 @@ export function Krav3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Krav_Maga_3?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -437,7 +437,7 @@ export function FinnPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Finn_the_Viking_Champion_Scanned?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -453,7 +453,7 @@ export function ThorgrimPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         receiveShadow
         geometry={nodes?.Thorgrim_the_Viking_Champion_Scanned?.geometry}
       >
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -465,7 +465,7 @@ export function AgentCarrPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.AgentCarr?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -477,7 +477,7 @@ export function SyvarrisPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Syvarris?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -489,7 +489,7 @@ export function MimringPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Mimring?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>
@@ -501,7 +501,7 @@ export function SgtDrakePlainModel({ gameUnit }: { gameUnit: GameUnit }) {
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Sgt_Drake_1?.geometry}>
-        <meshPhongMaterial color={playerColor} />
+        <meshLambertMaterial color={playerColor} />
         <OutlineHighlight gameUnit={gameUnit} />
       </mesh>
     </>

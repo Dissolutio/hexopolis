@@ -41,7 +41,7 @@ export const World = () => {
           speed={1}
         />
         <EffectProphet cameraControlsRef={cameraControlsRef} />
-        <ambientLight intensity={1} />
+        {/* <ambientLight intensity={1} /> */}
         {/* 4 in rectangle over top, shop-light style */}
         <directionalLight position={[50, 50, 50]} intensity={0.65} />
         <directionalLight position={[50, 50, -50]} intensity={0.65} />
