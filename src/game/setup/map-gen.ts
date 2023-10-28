@@ -18,6 +18,7 @@ import { moveRange1HexFlyMap } from './maps/moveRange1HexFlyMap'
 import { moveRange2HexFlyEngagedMap } from './maps/moveRange2HexFlyingEngagedMap'
 import { moveRange2HexFlyMap } from './maps/moveRange2HexFlyMap'
 import { moveRange1HexFlyEngagedMap } from './maps/moveRange1HexFlyingEngagedMap'
+import { cirdanGardenMap } from './maps/cirdanGarden'
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -55,6 +56,36 @@ export function makeForsakenWatersMap(
   return {
     boardHexes: forsakenWaters.boardHexes as unknown as BoardHexes,
     hexMap: forsakenWaters.hexMap,
+    startZones: getStartZonesFromBoardHexes(boardHexes),
+  }
+}
+export function makeCirdanGardenMap(
+  withPrePlacedUnits?: boolean,
+  gameUnitsToPrePlace?: GameUnits
+): GameMap {
+  const boardHexes = cirdanGardenMap.boardHexes as unknown as BoardHexes
+  if (!boardHexes) {
+    throw new Error('cirdanGardenMap.boardHexes is not defined')
+  }
+  for (const hex in boardHexes) {
+    if (Object.prototype.hasOwnProperty.call(boardHexes, hex)) {
+      const element = boardHexes[hex]
+      if (element.terrain === 'void') {
+        delete boardHexes[hex]
+      }
+    }
+  }
+  const startZones = getStartZonesFromBoardHexes(boardHexes)
+  if (withPrePlacedUnits) {
+    transformBoardHexesWithPrePlacedUnits(
+      boardHexes,
+      startZones,
+      gameUnitsToPrePlace ?? {}
+    )
+  }
+  return {
+    boardHexes: cirdanGardenMap.boardHexes as unknown as BoardHexes,
+    hexMap: cirdanGardenMap.hexMap,
     startZones: getStartZonesFromBoardHexes(boardHexes),
   }
 }

@@ -11,10 +11,12 @@ import {
   makeMoveRange2HexFlyingEngagedMap,
   makeMoveRange1HexFlyMap,
   makeMoveRange2HexFlyMap,
+  makeCirdanGardenMap,
 } from './map-gen'
 import {
   startingArmiesFor1HexFlyingEngagedMap,
   startingArmiesFor2HexFlyingEngagedMap,
+  startingArmiesFor3Player,
   startingArmiesForDefaultScenario,
   startingArmiesForForsakenWaters2Player,
   startingArmiesForGiantsTable2Player,
@@ -171,6 +173,43 @@ export function makeForsakenWaters2PlayerScenario(
     'unitID'
   )
   const map = makeForsakenWatersMap(withPrePlacedUnits, gameUnitsToPrePlace)
+  return {
+    ...generatePlayerAndReadyAndOMStates({
+      numPlayers,
+      isDevOverrideState: withPrePlacedUnits,
+      startingArmies: startingArmiesForForsakenWaters2Player,
+    }),
+    maxArmyValue: 300,
+    maxRounds: 12,
+    gameArmyCards: withPrePlacedUnits ? armyCards : [],
+    gameUnits: withPrePlacedUnits ? gameUnits : {},
+    hexMap: map.hexMap,
+    boardHexes: map.boardHexes,
+    startZones: map.startZones,
+  }
+}
+export function makeCirdanGarden3PlayerScenario(
+  numPlayers: number,
+  withPrePlacedUnits?: boolean
+): GameState {
+  const armyCards: GameArmyCard[] = withPrePlacedUnits
+    ? startingArmiesToGameCards(numPlayers, startingArmiesFor3Player)
+    : []
+  const gameUnits: GameUnits = withPrePlacedUnits
+    ? transformGameArmyCardsToGameUnits(armyCards)
+    : {}
+  const armyCardIDsWithTheDrop = armyCards
+    .filter((card) => {
+      return selectIfGameArmyCardHasAbility('The Drop', card)
+    })
+    .map((ac) => ac.gameCardID)
+  const gameUnitsToPrePlace = keyBy(
+    Object.values(gameUnits).filter(
+      (u) => !armyCardIDsWithTheDrop.includes(u.gameCardID)
+    ),
+    'unitID'
+  )
+  const map = makeCirdanGardenMap(withPrePlacedUnits, gameUnitsToPrePlace)
   return {
     ...generatePlayerAndReadyAndOMStates({
       numPlayers,
@@ -505,6 +544,7 @@ export function makeMoveRange2HexWalkScenario(
 export const scenarioNames = {
   clashingFrontsAtTableOfTheGiants2: 'clashingFrontsAtTableOfTheGiants2',
   forsakenWaters2: 'forsakenWaters2',
+  cirdanGardenWithoutTrees: 'cirdanGardenWithoutTrees',
   clashingFrontsAtTableOfTheGiants4: 'clashingFrontsAtTableOfTheGiants4',
   theBigHexagon2: 'theBigHexagon2',
   theBigHexagon3: 'theBigHexagon3',
@@ -523,6 +563,12 @@ export const scenarioNames = {
 }
 
 export const hexoscapeScenarios = {
+  [scenarioNames.cirdanGardenWithoutTrees]: {
+    numPlayers: 3,
+    description: `A balanced 3 way map, that will be way cooler when there is trees in the game.`,
+    armyPoints: 300,
+    maxRounds: 12,
+  },
   [scenarioNames.clashingFrontsAtTableOfTheGiants2]: {
     numPlayers: 2,
     description: `The Table of the Giants has long been a meeting place-but this one was unexpected. Two enemy Valkerie Gernerals' armies have been marching in this direction all winter, unknowingly on a major collision course. In the end, which side will be left to march on to their destination?`,

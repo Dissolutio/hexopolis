@@ -22,6 +22,7 @@ export const hexTerrainColor: StringKeyedObj = {
   grass: '#60840d',
   water: '#3794fd',
   rock: '#475776',
+  road: '#868686',
   sand: '#ab8e10',
 }
 export const MapHex3D = ({

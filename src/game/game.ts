@@ -44,11 +44,15 @@ export const Hexoscape: Game<GameState> = {
     const computeScenarioName = () => {
       // scenario-name can be passed from multiplayer lobby, otherwise we determine here which scenario-name to pass
       if (isLocalOrDemoGame) {
+        if (ctx.ctx.numPlayers === 3) {
+          return scenarioNames.cirdanGardenWithoutTrees
+        }
         if (ctx.ctx.numPlayers === 2) {
           if (process.env.NODE_ENV === 'development') {
             // DEV: change this to change 2 player local game
             // return scenarioNames.clashingFrontsAtTableOfTheGiants2
             return scenarioNames.forsakenWaters2
+            // return scenarioNames.cirdanGardenWithoutTrees
             // return scenarioNames.theBigHexagon2
             // return scenarioNames.makeMoveRange1HexWalkScenario
             // return scenarioNames.makeMoveRange2HexWalkScenario
