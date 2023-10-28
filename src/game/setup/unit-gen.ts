@@ -79,6 +79,43 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
     syvarrisID,
   ],
 }
+export const startingArmiesFor3Player: StartingArmies = {
+  // original starting armies (prod) below:
+  // '0': [negoksaID, thorgrimID, zettianID, deathwalker9000ID],
+  // '1': [izumiID, syvarrisID, airbornID, carrID],
+
+  // for devving 3d below:
+  '0': [
+    finnID,
+    grimnakID,
+    izumiID,
+    kravMagaID,
+    mimringID,
+    deathwalker9000ID,
+    drake1ID,
+    airbornID,
+  ],
+  '1': [
+    negoksaID,
+    thorgrimID,
+    zettianID,
+    tarnID,
+    raelinOneID,
+    marroID,
+    carrID,
+    syvarrisID,
+  ],
+  '2': [
+    finnID,
+    grimnakID,
+    izumiID,
+    kravMagaID,
+    mimringID,
+    deathwalker9000ID,
+    drake1ID,
+    airbornID,
+  ],
+}
 export const startingArmiesForMoveRange1HexWalkMap: StartingArmies = {
   '0': [drake1ID],
   '1': [testDummyID],

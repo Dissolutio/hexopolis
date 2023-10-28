@@ -38,6 +38,9 @@ export function CreateMatchForm() {
         <option value={scenarioNames.clashingFrontsAtTableOfTheGiants2}>
           2 players: Clashing Fronts at The Table of the Giants
         </option>
+        <option value={scenarioNames.cirdanGardenWithoutTrees}>
+          3 players: Cirdan Garden
+        </option>
         {/* <option value={scenarioNames.theBigHexagon2}>
           2 players: The Big Hexagon
         </option>

@@ -2,12 +2,17 @@ import { Outlines } from '@react-three/drei'
 import { Color } from 'three'
 import React from 'react'
 import { GameUnit } from 'game/types'
-import { useBgioCtx } from 'bgio-contexts'
 import { useUIContext } from 'hexopolis-ui/contexts'
+import { playerColors } from 'hexopolis-ui/theme'
 
-export const OutlineHighlight = ({ gameUnit }: { gameUnit: GameUnit }) => {
+export const OutlineHighlight = ({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) => {
   const { unitID } = gameUnit
-  const { isPlacementPhase, isRoundOfPlayPhase } = useBgioCtx()
   const { selectedUnitID } = useUIContext()
 
   const isSelectedUnitHex =
@@ -15,6 +20,9 @@ export const OutlineHighlight = ({ gameUnit }: { gameUnit: GameUnit }) => {
   const getHighlightColor = () => {
     if (isSelectedUnitHex) {
       return 'white'
+    }
+    if (isHovered) {
+      return playerColors[gameUnit.playerID]
     }
     return ''
   }

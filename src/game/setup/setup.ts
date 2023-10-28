@@ -1,4 +1,5 @@
 import {
+  makeCirdanGarden3PlayerScenario,
   makeDefaultScenario,
   makeForsakenWaters2PlayerScenario,
   makeGiantsTable2PlayerScenario,
@@ -33,6 +34,9 @@ export const gameSetupInitialGameState = ({
   }
   if (scenarioName === scenarioNames.forsakenWaters2) {
     return makeForsakenWaters2PlayerScenario(numPlayers, withPrePlacedUnits)
+  }
+  if (scenarioName === scenarioNames.cirdanGardenWithoutTrees) {
+    return makeCirdanGarden3PlayerScenario(numPlayers, withPrePlacedUnits)
   }
   if (scenarioName === scenarioNames.makeMoveRange1HexWalkScenario) {
     return makeMoveRange1HexWalkScenario(numPlayers, withPrePlacedUnits)
