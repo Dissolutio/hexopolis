@@ -171,6 +171,7 @@ export function MultiplayerLobbyProvider({
     }
     try {
       const numPlayers = hexoscapeScenarios[scenarioName].numPlayers
+      // TODO: share game: make it so you pick a name, it checks if theres one already, then makes a game, and you share the link to that id with ppl
       const { matchID } = await createMatch(`${selectedGame}`, {
         // TODO: Match creation options
         setupData: {
