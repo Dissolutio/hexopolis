@@ -51,7 +51,13 @@ type GLTFResult = GLTF & {
   }
 }
 
-export function Airborn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Airborn1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/airborn_1_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -63,13 +69,19 @@ export function Airborn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Airborn_Elite_1?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
 
-export function Airborn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Airborn2PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/airborn_2_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -80,12 +92,18 @@ export function Airborn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Airborn_Elite_2?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Airborn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Airborn3PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/airborn_3_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -96,12 +114,18 @@ export function Airborn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Airborn_Elite_3?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Airborn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Airborn4PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/airborn_4_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -112,13 +136,19 @@ export function Airborn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Airborn_Elite_4?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
 
-export function MarroWarriors1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function MarroWarriors1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/marro_warriors_1_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -130,12 +160,18 @@ export function MarroWarriors1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Marro_Warriors_1?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function MarroWarriors2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function MarroWarriors2PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/marro_warriors_2_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -146,12 +182,18 @@ export function MarroWarriors2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Marro_Warriors_2?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function MarroWarriors3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function MarroWarriors3PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/marro_warriors_3_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -162,12 +204,18 @@ export function MarroWarriors3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Marro_Warriors_3?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function MarroWarriors4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function MarroWarriors4PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/marro_warriors_4_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -178,12 +226,18 @@ export function MarroWarriors4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Marro_Warriors_4?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Tarn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Tarn1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/tarn_1_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -195,12 +249,18 @@ export function Tarn1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Tarn_Viking_Warriors_1?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Tarn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Tarn2PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/tarn_2_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -211,12 +271,18 @@ export function Tarn2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Tarn_Viking_Warriors_2?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Tarn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Tarn3PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/tarn_3_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -227,12 +293,18 @@ export function Tarn3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Tarn_Viking_Warriors_3?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Tarn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Tarn4PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/tarn_4_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -243,13 +315,19 @@ export function Tarn4PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Tarn_Viking_Warriors_4?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
 
-export function Izumi1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Izumi1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/izumi_1_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -261,12 +339,18 @@ export function Izumi1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Izumi_Samurai_1?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Izumi2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Izumi2PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/izumi_2_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -277,12 +361,18 @@ export function Izumi2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Izumi_Samurai_2?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Izumi3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Izumi3PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/izumi_3_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -293,12 +383,18 @@ export function Izumi3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Izumi_Samurai_3?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function GrimnakPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function GrimnakPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/grimnak_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -306,12 +402,18 @@ export function GrimnakPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Grimnak?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Raelin1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Raelin1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/raelin1_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -319,12 +421,18 @@ export function Raelin1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Raelin1?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function NeGokSaPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function NeGokSaPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/negoksa_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -332,12 +440,18 @@ export function NeGokSaPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Negoksa?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function D9000PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function D9000PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/d9000_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -345,13 +459,19 @@ export function D9000PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
     <>
       <mesh castShadow receiveShadow geometry={nodes?.D9000?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
 
-export function Zettian1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Zettian1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/zettian_1_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
 
@@ -364,13 +484,19 @@ export function Zettian1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Zettian_Guards_2?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
 
-export function Zettian2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Zettian2PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/zettian_2_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -382,12 +508,18 @@ export function Zettian2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Zettian_Guards_1?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Krav1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Krav1PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/krav_1_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -398,36 +530,54 @@ export function Krav1PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Krav_Maga_Agent_1?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Krav2PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Krav2PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/krav_2_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Krav_Maga_2?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function Krav3PlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function Krav3PlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/krav_3_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Krav_Maga_3?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function FinnPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function FinnPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/finn_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -438,12 +588,18 @@ export function FinnPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Finn_the_Viking_Champion_Scanned?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function ThorgrimPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function ThorgrimPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/thorgrim_low_poly_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
@@ -454,55 +610,79 @@ export function ThorgrimPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes?.Thorgrim_the_Viking_Champion_Scanned?.geometry}
       >
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function AgentCarrPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function AgentCarrPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/agent_carr_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.AgentCarr?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function SyvarrisPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function SyvarrisPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/syvarris_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Syvarris?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function MimringPlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function MimringPlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/mimring_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Mimring?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
 }
-export function SgtDrakePlainModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function SgtDrakePlainModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes } = useGLTF('/sgt_drake_plain.glb') as GLTFResult
   const playerColor = new THREE.Color(playerColors[gameUnit.playerID])
   return (
     <>
       <mesh castShadow receiveShadow geometry={nodes?.Sgt_Drake_1?.geometry}>
         <meshLambertMaterial color={playerColor} />
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )

@@ -3,7 +3,13 @@ import React from 'react'
 import { OutlineHighlight } from '../OutlineHighlight'
 import { GameUnit } from 'game/types'
 
-export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
+export function SgtDrakeModel({
+  gameUnit,
+  isHovered,
+}: {
+  gameUnit: GameUnit
+  isHovered: boolean
+}) {
   const { nodes, materials } = useGLTF('/sgt_drake_low_poly_colored.glb') as any
   return (
     <>
@@ -13,7 +19,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_1.geometry}
         material={materials.SandyWhiteSkin}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -21,7 +27,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_2.geometry}
         material={materials.ArmyDkGreen}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -29,7 +35,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_3.geometry}
         material={materials.ArmyLtGreen}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -37,7 +43,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_4.geometry}
         material={materials.ArmyLtBrown}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -45,7 +51,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_5.geometry}
         material={materials.BrightRed}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -53,7 +59,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_6.geometry}
         material={materials.Black}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -61,7 +67,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_7.geometry}
         material={materials.Gold}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -69,7 +75,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_8.geometry}
         material={materials.WoodBrown}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -77,7 +83,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_9.geometry}
         material={materials.Gunmetal}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
       <mesh
         castShadow
@@ -85,7 +91,7 @@ export function SgtDrakeModel({ gameUnit }: { gameUnit: GameUnit }) {
         geometry={nodes.Sgt_Drake_Alexander_Scanned_10.geometry}
         material={materials.Blade}
       >
-        <OutlineHighlight gameUnit={gameUnit} />
+        <OutlineHighlight gameUnit={gameUnit} isHovered={isHovered} />
       </mesh>
     </>
   )
