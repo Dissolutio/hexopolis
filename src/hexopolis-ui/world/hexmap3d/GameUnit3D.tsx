@@ -52,6 +52,10 @@ import { AirbornElite3 } from '../components/models/unique-squad/airborn-elite/A
 import { AirbornElite4 } from '../components/models/unique-squad/airborn-elite/AirbornElite4'
 import { RaelinRotvModel } from '../components/models/unique-hero/RaelinRotvModel'
 import { MimringModel } from '../components/models/unique-hero/Mimring'
+import { Krav1Model } from '../components/models/unique-squad/krav-maga-agents/Krav1Model'
+import { Krav2Model } from '../components/models/unique-squad/krav-maga-agents/Krav2Model'
+import { Krav3Model } from '../components/models/unique-squad/krav-maga-agents/Krav3Model'
+import { ThorgrimModel } from '../components/models/unique-hero/ThorgrimModel'
 
 export const GameUnit3D = ({
   gameUnit,
@@ -150,12 +154,15 @@ export const UnitModelByID = ({
       return <SyvarrisModel gameUnit={gameUnit} isHovered={isHovered} />
     case 'hs1005':
       if (gameUnit.modelIndex === 0)
-        return <Krav1PlainModel gameUnit={gameUnit} isHovered={isHovered} />
+        // return <Krav1PlainModel gameUnit={gameUnit} isHovered={isHovered} />
+        return <Krav1Model gameUnit={gameUnit} isHovered={isHovered} />
       if (gameUnit.modelIndex === 1)
-        return <Krav2PlainModel gameUnit={gameUnit} isHovered={isHovered} />
+        // return <Krav2PlainModel gameUnit={gameUnit} isHovered={isHovered} />
+        return <Krav2Model gameUnit={gameUnit} isHovered={isHovered} />
       if (gameUnit.modelIndex === 2)
-        return <Krav3PlainModel gameUnit={gameUnit} isHovered={isHovered} />
-      return <Krav1PlainModel gameUnit={gameUnit} isHovered={isHovered} />
+        // return <Krav3PlainModel gameUnit={gameUnit} isHovered={isHovered} />
+        return <Krav3Model gameUnit={gameUnit} isHovered={isHovered} />
+      return <Krav1Model gameUnit={gameUnit} isHovered={isHovered} />
     case 'hs1006':
       if (gameUnit.modelIndex === 0)
         return <Tarn1PlainModel gameUnit={gameUnit} isHovered={isHovered} />
@@ -195,7 +202,8 @@ export const UnitModelByID = ({
     case 'hs1010':
       return <FinnPlainModel gameUnit={gameUnit} isHovered={isHovered} />
     case 'hs1011':
-      return <ThorgrimPlainModel gameUnit={gameUnit} isHovered={isHovered} />
+      // return <ThorgrimPlainModel gameUnit={gameUnit} isHovered={isHovered} />
+      return <ThorgrimModel gameUnit={gameUnit} isHovered={isHovered} />
     case 'hs1012':
       // return <Raelin1PlainModel gameUnit={gameUnit} isHovered={isHovered} />
       return <RaelinRotvModel gameUnit={gameUnit} isHovered={isHovered} />
