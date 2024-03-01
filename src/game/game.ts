@@ -31,7 +31,7 @@ const isDevOverrideState =
   process.env.NODE_ENV === 'production'
     ? false
     : // toggle this one to test the game with pre-placed units
-      true
+      false
 
 export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
