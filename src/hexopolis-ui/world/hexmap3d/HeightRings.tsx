@@ -150,9 +150,6 @@ const HeightRing = ({
   const isMyStartZoneHex = Boolean(startZones?.[playerID]?.includes(boardHexID))
   const unitID = boardHexes?.[boardHexID]?.occupyingUnitID ?? ''
   const unitOnHex = gameUnits[unitID]
-
-  // HEX IS OCCUPIED? SHOW PLAYER COLOR
-
   const occupyingPlacementUnitId =
     editingBoardHexes?.[boardHexID]?.occupyingUnitID ?? ''
   const isTailPlaceable = tailPlaceables?.includes(boardHexID)
