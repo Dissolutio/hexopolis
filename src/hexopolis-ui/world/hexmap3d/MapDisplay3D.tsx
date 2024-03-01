@@ -13,6 +13,7 @@ import { ThreeEvent } from '@react-three/fiber'
 import { GameUnit3D } from './GameUnit3D'
 import { Billboard, CameraControls, Text } from '@react-three/drei'
 import { cubeToPixel, getBoardHex3DCoords } from 'game/hex-utils'
+import { Bloom, EffectComposer } from '@react-three/postprocessing'
 
 export function MapDisplay3D({
   cameraControlsRef,
@@ -26,6 +27,9 @@ export function MapDisplay3D({
       {hexArray.map((bh) => {
         return <Hex3D key={`${bh.id}-${bh.altitude}`} boardHexID={bh.id} />
       })}
+      <EffectComposer>
+        <Bloom intensity={0.5} luminanceThreshold={0} />
+      </EffectComposer>
     </>
   )
 }
