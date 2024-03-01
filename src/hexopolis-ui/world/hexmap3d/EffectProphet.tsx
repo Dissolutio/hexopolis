@@ -45,7 +45,7 @@ const EffectStartOfTurn = ({
         ? getBoardHex3DCoords(hexForRandomEnemyUnit)
         : undefined
       if (pos && posLookAt) {
-        // so, we pick a the first enemy unit, to look in their direction
+        // so, we pick the first enemy unit, to look in their direction
         // then, we kick the camera back on the X & Z axes, and kick the look-at similarly towards the target
         // the result is we are looking from a spot a little behind and above our unit, at a spot a little in front of and below our unit, towards the enemy
         const cameraOutKick = 10
