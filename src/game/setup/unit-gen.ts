@@ -66,7 +66,7 @@ export const startingArmiesForForsakenWaters2Player: StartingArmies = {
     mimringID,
     deathwalker9000ID,
     drake1ID,
-    airbornID,
+    // airbornID,
   ],
   '1': [
     negoksaID,
