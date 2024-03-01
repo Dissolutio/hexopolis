@@ -58,6 +58,7 @@ export const World = () => {
         <PerspectiveCamera makeDefault position={[30, 30, 50]} fov={65} />
         {/* <axesHelper scale={[100, 100, 100]} /> */}
         <CameraControls
+          maxPolarAngle={Math.PI / 2}
           ref={cameraControlsRef}
           // minDistance={0.1}
           makeDefault
