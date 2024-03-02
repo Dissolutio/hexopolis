@@ -27,7 +27,7 @@ export const MultiplayerLobby = () => {
   const joinedMatch = lobbyMatches?.[selectedGame]?.find(
     (m) => m.matchID === joinedMatchID
   )
-  // NAME REQUIRED FROM USER FIRST
+  // First, user must choose a name, this name is not sent to server yet, it is only kept in session storage
   if (!isAuthenticated) {
     return (
       <>
@@ -42,27 +42,24 @@ export const MultiplayerLobby = () => {
         <summary>{`Account: ${storedCredentials.playerName}`}</summary>
         <Login />
       </details>
-      <hr></hr>
-      {/* DISABLED GAME SWITCHING SECTION BELOW, change the false && */}
       {/* Either we errored, or we connected to server and received games list */}
-      {/* (lobbyGamesError ? (
-          <p style={{ color: 'red' }}>
-            {`Error -- Could not retrieve games from server : ${lobbyGamesError}`}
-            <button onClick={updateLobbyGames}>
-              Retry Connecting to Server
-            </button>
-          </p>
-        ) : (
-          <>
-            <details>
-              <summary>{`Switch games (current: ${selectedGame})`}</summary>
-              <GameSelect />
-            </details>
-          </>
-        )) */}
-
+      <hr></hr>
+      {lobbyGamesError ? (
+        <>
+          <p
+            style={{ color: 'red' }}
+          >{`Sorry, could not connect to server `}</p>
+          <button onClick={updateLobbyGames}>Retry Connecting to Server</button>
+        </>
+      ) : (
+        <>
+          <details>
+            <summary>{`Switch games (current: ${selectedGame})`}</summary>
+            <GameSelect />
+          </details>
+        </>
+      )}
       {/* <hr></hr> */}
-
       {/* If no games/connection, don't show anything below */}
       {selectedGame && (
         <>
