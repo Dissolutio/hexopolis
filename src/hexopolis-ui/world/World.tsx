@@ -15,7 +15,6 @@ import { DraftCounter } from 'hexopolis-ui/hexmap/DraftCounter'
 import { useBgioCtx } from 'bgio-contexts'
 import { useUIContext } from 'hexopolis-ui/contexts'
 import { useRef } from 'react'
-import { EffectProphet } from './hexmap3d/EffectProphet'
 
 export const World = () => {
   const { isDraftPhase } = useBgioCtx()
@@ -40,7 +39,6 @@ export const World = () => {
           fade
           speed={1}
         />
-        <EffectProphet cameraControlsRef={cameraControlsRef} />
         {/* <ambientLight intensity={1} /> */}
         {/* 4 in rectangle over top, shop-light style */}
         <directionalLight position={[50, 50, 50]} intensity={0.65} />
