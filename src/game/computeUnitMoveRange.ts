@@ -291,104 +291,76 @@ function computeMovesForStartHex({
       gameUnits,
       armyCards,
     })
-    const getIsVisitedAlready = () => {
-      // if previous entry had more move points left, then it wins
-      if (preVisitedEntry?.movePointsLeft > movePointsToBeChecked) {
-        return true
-      }
-      // if we had same move points left as our starting move points, tie breaker is less-disengaged-units
-      if (preVisitedEntry?.movePointsLeft === movePointsToBeChecked) {
-        return (
-          preVisitedEntry?.disengagedUnitIDs?.length <=
-          fromHexDisengagedUnitIDs.length
-        )
-      }
-      // ?? if we had same move points left as our ending move points, tie breaker is whichever had cheapest from cost
-      if (preVisitedEntry?.movePointsLeft === movePointsLeft) {
-        return preVisitedEntry?.fromCost >= fromCost
-      }
-      return false
-    }
-    const isVisitedAlready = getIsVisitedAlready()
-
-    // BEGIN isVisitedAlready else block
-    if (isVisitedAlready) {
-      // TODO: Handle this
-    } else {
-      const totalDisengagedIDsSoFar = uniq([
-        ...(fromHexDisengagedUnitIDs ?? []),
-        ...disengagedUnitIDs,
-      ])
-      const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
-        unit,
-        startHexID,
-        startTailHexID: startTailHex?.id,
-        neighborHexID: toHexID,
-        boardHexes,
-        gameUnits,
-        armyCards,
-      })
-      const neighborHexEngagements = selectEngagementsForHex({
-        hexID: toHexID,
-        boardHexes,
-        gameUnits,
-        armyCards,
-        override: {
-          overrideUnitID: unit.unitID,
-          overrideTailHexID: fromTailHex?.id,
-        },
-      })
-      const isCausingEngagement =
-        latestEngagedUnitIDs.length > 0 ||
-        // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
-        neighborHexEngagements.some((id) => !initialEngagements.includes(id))
-      // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
-      const isCausingDisengagementIfFlying =
-        isUnitInitiallyEngaged && !hasStealth
-      const isCausingDisengagementIfWalking = hasDisengage
-        ? false
-        : totalDisengagedIDsSoFar.length > 0
+    const totalDisengagedIDsSoFar = uniq([
+      ...(fromHexDisengagedUnitIDs ?? []),
+      ...disengagedUnitIDs,
+    ])
+    const latestEngagedUnitIDs = selectMoveEngagedUnitIDs({
+      unit,
+      startHexID,
+      startTailHexID: startTailHex?.id,
+      neighborHexID: toHexID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+    })
+    const neighborHexEngagements = selectEngagementsForHex({
+      hexID: toHexID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+      override: {
+        overrideUnitID: unit.unitID,
+        overrideTailHexID: fromTailHex?.id,
+      },
+    })
+    const isCausingEngagement =
+      latestEngagedUnitIDs.length > 0 ||
+      // the idea is if you engaged new units IDs from your start spot, you are causing an engagement, even if you didn't engage any new units IDs from your neighbor spot
+      neighborHexEngagements.some((id) => !initialEngagements.includes(id))
+    // as soon as you start flying, you take disengagements from all engaged figures, unless you have stealth flying
+    const isCausingDisengagementIfFlying =
+      isUnitInitiallyEngaged && !hasStealth
+    const isCausingDisengagementIfWalking = hasDisengage
+      ? false
+      : totalDisengagedIDsSoFar.length > 0
       const isCausingDisengagement = isFlying
-        ? isCausingDisengagementIfFlying
-        : isCausingDisengagementIfWalking
-      const endHexUnitPlayerID = endHexUnit?.playerID
-      const isMovePointsLeftAfterMove = isFlying
-        ? movePointsToBeChecked - 1 > 0
-        : movePointsLeft > 0
-      const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
-      const isTooCostly = movePointsLeft < 0
-      // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
-      const isEndHexEnemyOccupied =
-        !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
-      const isEndHexUnitEngaged =
-        selectEngagementsForHex({
-          hexID: toHexID,
-          boardHexes,
-          gameUnits,
-          armyCards,
-        }).length > 0
-      const isTooTallOfClimb = !selectIsClimbable(
-        unit,
-        armyCards,
-        fromHex,
-        toHex,
-        // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
-        isGrappleGun ? 26 : undefined
+      ? isCausingDisengagementIfFlying
+      : isCausingDisengagementIfWalking
+    const endHexUnitPlayerID = endHexUnit?.playerID
+    const isMovePointsLeftAfterMove = isFlying
+      ? movePointsToBeChecked - 1 > 0
+      : movePointsLeft > 0
+    const isEndHexUnoccupied = !Boolean(unitIDOnToHex)
+    const isTooCostly = movePointsLeft < 0
+    // TODO: teams :: isEndHexEnemyOccupied :: a unit that is not yours is not necessarily an enemy
+    const isEndHexEnemyOccupied =
+    !isEndHexUnoccupied && endHexUnitPlayerID !== playerID
+    const isEndHexUnitEngaged =
+    selectEngagementsForHex({
+      hexID: toHexID,
+      boardHexes,
+      gameUnits,
+      armyCards,
+    }).length > 0
+    const isTooTallOfClimb = !selectIsClimbable(
+      unit,
+      armyCards,
+      fromHex,
+      toHex,
+      // overrideDelta: grapple gun allows you to go up 25 levels higher than where you are
+      isGrappleGun ? 26 : undefined
       )
       const newFallDamage =
-        prevFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
+      prevFallDamage + selectIsFallDamage(unit, armyCards, fromHex, toHex)
       const isFallDamage = newFallDamage > 0
       const isUnpassable = isFlying
-        ? isTooCostly
-        : isTooCostly ||
-          // ghost walk can move through enemy occupied hexes, or hexes with engaged units
-          (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
-          (hasGhostWalk ? false : isEndHexUnitEngaged) ||
-          isTooTallOfClimb
-      // BREAK IF UNPASSABLE
-      if (isUnpassable) {
-        // break
-      }
+      ? isTooCostly
+      : isTooCostly ||
+      // ghost walk can move through enemy occupied hexes, or hexes with engaged units
+      (hasGhostWalk ? false : isEndHexEnemyOccupied) ||
+      (hasGhostWalk ? false : isEndHexUnitEngaged) ||
+      isTooTallOfClimb
       const can2HexUnitStopHere =
         isEndHexUnoccupied &&
         !isFromOccupied &&
@@ -405,7 +377,7 @@ function computeMovesForStartHex({
         disengagedUnitIDs: totalDisengagedIDsSoFar,
         engagedUnitIDs: latestEngagedUnitIDs,
       }
-
+  
       // NEIGHBORS prepare the neighbors to be added to to-be-checked
       const nextNeighbors = selectHexNeighbors(toHexID, boardHexes)
       // .filter(
@@ -429,6 +401,38 @@ function computeMovesForStartHex({
               : !isEndHexEnemyOccupied && !isEndHexUnitEngaged
           }),
       ]
+      const getIsVisitedAlready = () => {
+      // if previous entry was safe and current is dangerous or engaging 
+      // if (preVisitedEntry?.isSafe && (isCausingEngagement || isCausingDisengagement )) {
+      //   return true
+      // }
+      if (preVisitedEntry?.movePointsLeft > movePointsToBeChecked) {
+        return true
+      }
+      // if we had same move points left as our starting move points, tie breaker is less-disengaged-units
+      if (preVisitedEntry?.movePointsLeft === movePointsToBeChecked) {
+        return (
+          preVisitedEntry?.disengagedUnitIDs?.length <=
+          fromHexDisengagedUnitIDs.length
+        )
+      }
+      // ?? if we had same move points left as our ending move points, tie breaker is whichever had cheapest from cost
+      if (preVisitedEntry?.movePointsLeft === movePointsLeft) {
+        return preVisitedEntry?.fromCost >= fromCost
+      }
+      return false
+    }
+    const isVisitedAlready = getIsVisitedAlready()
+
+    // BEGIN isVisitedAlready else block
+    if (isVisitedAlready) {
+      // TODO: Handle this
+      console.log("🚀 ~ isVisitedAlready-- previsited:", preVisitedEntry )
+    } else {
+      // BREAK IF UNPASSABLE
+      if (isUnpassable) {
+        // break
+      }
       // 2. passable: we can get here, maybe stop, maybe pass thru
       // order matters for if/else-if here, dangerous-hexes should return before engagement-hexes, and safe-hexes last
       if (isDangerousHex) {
