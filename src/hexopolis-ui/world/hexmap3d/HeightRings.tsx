@@ -156,15 +156,14 @@ const HeightRing = ({
   const activeEnemyUnitIDs = (revealedGameCardUnits ?? []).map((u) => {
     return u.unitID
   })
-  const isOpponentsActiveUnitHex = () => {
-    return activeEnemyUnitIDs?.includes(unitID)
-  }
+  const isActiveUnitHex = revealedGameCardUnitIDs.includes(unitID)
+  const isOpponentsActiveUnitHex = activeEnemyUnitIDs?.includes(unitID)
 
-  const playerColorStyle = {
+  const getUnitStyle = (playerID: string) => ({
     color: new Color(playerColors[playerID]),
-    opacity: 1,
-    lineWidth: 5,
-  }
+    opacity: 0.1,
+    lineWidth: 1,
+  })
   const whiteStyle = { color: new Color('white'), opacity: 1, lineWidth: 5 }
   const grayStyle = { color: new Color('gray'), opacity: 1, lineWidth: 5 }
   const greenStyle = { color: new Color('#bad954'), opacity: 1, lineWidth: 5 }
@@ -262,7 +261,7 @@ const HeightRing = ({
     // round of play: highlight my units that have full move points
     // const isNoActiveUnitSelected =
     //   !revealedGameCardUnitIDs.includes(selectedUnitID)
-    const isActiveUnitHex = revealedGameCardUnitIDs.includes(unitID)
+
     if (
       isRoundOfPlayPhase &&
       isMovementStage &&
@@ -296,7 +295,7 @@ const HeightRing = ({
       }
     }
     // round of play: not my move, highlight enemy units that are going
-    if (isRoundOfPlayPhase && !isMyTurn && isOpponentsActiveUnitHex()) {
+    if (isRoundOfPlayPhase && !isMyTurn && isOpponentsActiveUnitHex) {
       return redStyle
     }
     // round of play: my attack, highlight targetable enemy units
@@ -358,7 +357,7 @@ const HeightRing = ({
     //  ROP: water-clone
     if (isWaterCloneStage) {
       if (clonerHexIDs?.includes(boardHexID)) {
-        return playerColorStyle
+        return getUnitStyle(playerID)
       }
       if (clonePlaceableHexIDs?.includes(boardHexID)) {
         return greenStyle
@@ -417,8 +416,11 @@ const HeightRing = ({
         return greenStyle
       }
     }
-    // NONE OF ABOVE, THEN:
-    // top rings, if not modified, are gray to highlight the edge between hexes
+    // If none of the above, at least highlight units with their player-color:
+    if (unitOnHex) {
+      return getUnitStyle(unitOnHex.playerID)
+    }
+    // FINALLY: top rings, if not modified, are gray to highlight the edge between hexes
     return { color: new Color('#b4b4b4'), opacity: 1, lineWidth: 1 }
   }
 
