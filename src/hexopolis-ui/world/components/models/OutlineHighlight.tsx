@@ -29,7 +29,7 @@ export const OutlineHighlight = ({
   const highlightColor = getHighlightColor()
   return highlightColor ? (
     <Outlines
-      thickness={0.05}
+      thickness={0.1}
       color={new Color(highlightColor)}
       screenspace={false}
       opacity={1}
