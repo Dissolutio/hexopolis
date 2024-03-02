@@ -1,4 +1,3 @@
-import { motion, AnimatePresence } from 'framer-motion'
 import { SyntheticEvent } from 'react'
 
 import {
@@ -20,8 +19,6 @@ import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-co
 import { MapHexGlyph } from './MapHexGlyph'
 import { HexGridCoordinate } from './HexGridCoordinate'
 import { useLayoutContext } from './HexgridLayout'
-import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
-import { UnitIcon } from 'hexopolis-ui/unit-icons'
 
 export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const { playerID } = useBgioClientInfo()
@@ -238,26 +235,6 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
       />
       {/* Glyph display */}
       <MapHexGlyph hex={hex} />
-      {/* Unit icon */}
-      <AnimatePresence initial={false}>
-        {gameUnit && isShowableUnit && (
-          <motion.g
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {(isUnitTail && (
-              <UnitTail hex={hex} iconPlayerID={gameUnit.playerID} />
-            )) || (
-              <UnitIcon
-                hexSize={hexSize}
-                armyCardID={gameUnit.armyCardID}
-                iconPlayerID={gameUnit.playerID}
-              />
-            )}
-          </motion.g>
-        )}
-      </AnimatePresence>
 
       {/* Unit life text */}
       {gameUnitCard && isUnitAHeroOrMultiLife && !hex.isUnitTail && (
