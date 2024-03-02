@@ -44,7 +44,7 @@ import {
 import { ThreeEvent } from '@react-three/fiber'
 import { generateHexID } from 'game/constants'
 
-export type TargetsInRange = {
+type TargetsInRange = {
   [gameUnitID: string]: string[] // hexIDs
 }
 
