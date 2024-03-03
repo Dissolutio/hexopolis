@@ -392,10 +392,11 @@ export const selectIsInRangeOfAttack = ({
     // thorian speed means cannot be targeted by a normal ranged attack
     'Thorian Speed',
     defenderGameCard
-  )
+    )
+    const isUnableToShootBecauseOfThorianSpeed = (!isSpecialAttack && isThorianSpeedDefender)
   const isAttackerRequiredToBeEngagedToDefender =
     isAttackerRangeOneWhichRequiresEngagement ||
-    (!isSpecialAttack && isThorianSpeedDefender)
+    isUnableToShootBecauseOfThorianSpeed
   const isInRange = isAttackerRequiredToBeEngagedToDefender
     ? isInMeleeRange
     : isInRangedRange

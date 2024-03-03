@@ -11,16 +11,14 @@ export const GameLog = (props: Props) => {
   // const { type, playerID } = gameLogMessage
   return (
     <StyledDiv>
-      {gameLogMsgArray.map((msg) => msg && <GameLogMsg gameLogMessage={msg} />)}
+      {gameLogMsgArray.map(
+        (msg) => msg && <GameLogMsg key={msg.id} gameLogMessage={msg} />
+      )}
     </StyledDiv>
   )
 }
 
 const StyledDiv = styled.div`
-  position: absolute;
-  bottom: 12px;
-  left: Min(10%, 600px);
-  /* width: 300px; */
   font-size: 0.8rem;
   @media screen and (max-width: 1100px) {
     font-size: 0.7rem;
