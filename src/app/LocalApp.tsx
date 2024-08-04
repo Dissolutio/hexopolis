@@ -101,6 +101,11 @@ const Local6PlayerClient = Client({
   numPlayers: 6,
 })
 export const LocalDemoClients = ({ numPlayers }: { numPlayers: number }) => {
+  /* 
+    We tell Board component that this is a local game with X number of players.
+    That way the header of each players' controls can link to the next cardinal player's controls
+    (so you can quickly switch between the controllers as a developer)
+  */
   const matchID = `${specialMatchIdToTellHeaderNavThisMatchIsLocal}:${numPlayers}`
   if (numPlayers === 2)
     return (
