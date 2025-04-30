@@ -74,10 +74,10 @@ export function useLayoutContext() {
 
 export type LayoutProps = {
   children:
-    | React.ReactElement
-    | React.ReactElement[]
-    | JSX.Element
-    | JSX.Element[]
+  | React.ReactElement
+  | React.ReactElement[]
+  | JSX.Element
+  | JSX.Element[]
   flat?: boolean
   origin?: any
   /* defines scale */

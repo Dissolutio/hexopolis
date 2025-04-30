@@ -16,4 +16,4 @@ const deploymentServerAddr = `${protocol}//${hostname}${port ? `:${port}` : ``}`
 const localServerAddr = `http://localhost:8000`
 export const SERVER = isDeploymentEnv ? deploymentServerAddr : localServerAddr
 
-export const HEXGRID_SPACING = 1.05
+export const HEXGRID_SPACING = 1

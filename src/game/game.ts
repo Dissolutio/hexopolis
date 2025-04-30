@@ -31,8 +31,8 @@ const isDevOverrideState =
   process.env.NODE_ENV === 'production'
     ? false
     : // toggle this one to test the game with pre-placed units
-      // true
-      false
+    // true
+    false
 
 export const Hexoscape: Game<GameState> = {
   name: 'Hexoscape',
@@ -47,14 +47,14 @@ export const Hexoscape: Game<GameState> = {
         if (ctx.ctx.numPlayers === 2) {
           if (process.env.NODE_ENV === 'development') {
             // DEV: change this to change 2 player local game
-            // return scenarioNames.clashingFrontsAtTableOfTheGiants2
+            return scenarioNames.clashingFrontsAtTableOfTheGiants2
             // return scenarioNames.makeMoveRange1HexWalkScenario
             // return scenarioNames.makeMoveRange2HexWalkScenario
             // return scenarioNames.makeMoveRangePassThruScenario
             // return scenarioNames.makeMoveRange1HexFlyEngagedScenario
             // return scenarioNames.makeMoveRange1HexFlyEngagedStealthScenario
             // return scenarioNames.makeMoveRange1HexFlyScenario
-            return scenarioNames.makeMoveRange2HexFlyScenario
+            // return scenarioNames.makeMoveRange2HexFlyScenario
             // return scenarioNames.makeMoveRange2HexFlyEngagedScenario
           } else {
             // the online 2 player demo scenario:
