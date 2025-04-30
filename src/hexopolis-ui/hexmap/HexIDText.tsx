@@ -1,7 +1,7 @@
-import { selectGameCardByID } from 'game/selectors'
 import { GameArmyCard, GameUnit, Point } from 'game/types'
 import React from 'react'
 import { HexText } from './HexText'
+import { SVG_HEX_APOTHEM, SVG_HEX_RADIUS } from 'app/constants'
 
 type Props = {
   hexSize: number
@@ -15,7 +15,8 @@ export const HexIDText = ({ hexSize, text, textLine2 }: Props) => {
       <HexText
         hexSize={hexSize}
         className="maphex_altitude-text"
-        y={hexSize * 0.6}
+        y={hexSize * 0.6 + SVG_HEX_RADIUS}
+        x={SVG_HEX_APOTHEM}
       >
         {text.toString()}
       </HexText>
@@ -23,34 +24,12 @@ export const HexIDText = ({ hexSize, text, textLine2 }: Props) => {
         <HexText
           hexSize={hexSize}
           className="maphex_altitude-text"
-          y={hexSize * 0.8}
+          y={hexSize * 0.8 + SVG_HEX_RADIUS}
+          x={SVG_HEX_APOTHEM}
         >
           {textLine2.toString()}
         </HexText>
       )}
-    </>
-  )
-}
-export const HexGlyph = ({
-  hexSize,
-  position,
-}: {
-  hexSize: number
-  position: Point
-}) => {
-  return (
-    <>
-      <HexText
-        hexSize={hexSize}
-        y={position.y}
-        x={position.x}
-        style={{
-          fill: 'var(--life-red)',
-          fontWeight: '900',
-        }}
-      >
-        GLYPHY
-      </HexText>
     </>
   )
 }

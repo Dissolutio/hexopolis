@@ -5,6 +5,7 @@ import {
   LayoutDimension,
   Point,
 } from './types'
+import { HEXGRID_SPACING, LAYOUT_POINTY, SVG_HEX_APOTHEM, SVG_HEX_RADIUS } from 'app/constants'
 
 const DIRECTIONS: HexCoordinates[] = [
   { q: 1, r: -1, s: 0 }, // NE +q -r
@@ -114,17 +115,17 @@ export const hexUtilsRound = (hex: HexCoordinates): HexCoordinates => {
  * hexagon center.
  */
 export const hexUtilsHexToPixel = (
-  hex: HexCoordinates,
-  layout: LayoutDimension
+  hex: HexCoordinates
 ): { x: number; y: number } => {
-  const s = layout.spacing
-  const M = layout.orientation
-  let x = (M.f0 * hex.q + M.f1 * hex.r) * layout.size.x
-  let y = (M.f2 * hex.q + M.f3 * hex.r) * layout.size.y
+  const s = HEXGRID_SPACING
+  // const M = layout.orientation
+  const M = LAYOUT_POINTY
+  let x = (M.f0 * hex.q + M.f1 * hex.r) * SVG_HEX_RADIUS
+  let y = (M.f2 * hex.q + M.f3 * hex.r) * SVG_HEX_RADIUS
   // Apply spacing
   x = x * s
   y = y * s
-  return { x: x + layout.origin.x, y: y + layout.origin.y }
+  return { x: x + SVG_HEX_APOTHEM, y: y + SVG_HEX_RADIUS }
 }
 
 /** Return the q,r,s coordinate of the hexagon given pixel point x and y.

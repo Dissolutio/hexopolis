@@ -19,9 +19,10 @@ import { HexIDText, UnitLifeText } from './HexIDText'
 import { useSpecialAttackContext } from 'hexopolis-ui/contexts/special-attack-context'
 import { MapHexGlyph } from './MapHexGlyph'
 import { HexGridCoordinate } from './HexGridCoordinate'
-import { useLayoutContext } from './HexgridLayout'
+import { getHexagonSvgPolygonPoints } from './getHexagonSvgPolygonPoints'
 import { UnitTail } from 'hexopolis-ui/unit-icons/UnitTail'
 import { UnitIcon } from 'hexopolis-ui/unit-icons'
+import { SVG_HEX_RADIUS } from 'app/constants'
 
 export const MapHex = ({ hex }: { hex: BoardHex }) => {
   const { playerID } = useBgioClientInfo()
@@ -126,7 +127,7 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
           isGrenadeSAStage &&
           sourceHex.occupyingUnitID !== selectedUnitID &&
           gameUnits[sourceHex.occupyingUnitID]?.gameCardID ===
-            currentTurnGameCardID
+          currentTurnGameCardID
         ) {
           selectSpecialAttack('')
         }
@@ -205,8 +206,8 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     isTheDropStage
       ? hex.occupyingUnitID || editingBoardHexUnitID
       : isPlacementPhase
-      ? editingBoardHexUnitID
-      : hex.occupyingUnitID
+        ? editingBoardHexUnitID
+        : hex.occupyingUnitID
   const gameUnit = gameUnits?.[unitIdToShowOnHex]
   // we only show players their own units during placement phase
   const gameUnitCard = selectGameCardByID(gameArmyCards, gameUnit?.gameCardID)
@@ -222,8 +223,8 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
     gameUnitCard?.type.includes('hero') || (gameUnitCard?.life ?? 0) > 1
 
   const unitLifePosition: Point = { x: hexSize * -0.6, y: 0 }
-
-  const { points } = useLayoutContext()
+  const cornerCoords = getHexagonSvgPolygonPoints()
+  const points = cornerCoords.map((point) => `${point.x},${point.y}`).join(' ')
   return (
     <HexGridCoordinate hex={hex} onClick={onClick}>
       <polygon
@@ -232,12 +233,12 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
       />
       {/* Hex text */}
       <HexIDText
-        hexSize={hexSize}
+        hexSize={SVG_HEX_RADIUS}
         text={`${hex.id}`}
         textLine2={`${hex.altitude}`}
-        // only show unit name on head-hex
-        // text={`${hex.altitude}`}
-        // textLine2={!hex.isUnitTail ? `${unitName}` : ''}
+      // only show unit name on head-hex
+      // text={`${hex.altitude}`}
+      // textLine2={!hex.isUnitTail ? `${unitName}` : ''}
       />
       {/* Glyph display */}
       <MapHexGlyph hex={hex} />
@@ -252,12 +253,12 @@ export const MapHex = ({ hex }: { hex: BoardHex }) => {
             {(isUnitTail && (
               <UnitTail hex={hex} iconPlayerID={gameUnit.playerID} />
             )) || (
-              <UnitIcon
-                hexSize={hexSize}
-                armyCardID={gameUnit.armyCardID}
-                iconPlayerID={gameUnit.playerID}
-              />
-            )}
+                <UnitIcon
+                  hexSize={hexSize}
+                  armyCardID={gameUnit.armyCardID}
+                  iconPlayerID={gameUnit.playerID}
+                />
+              )}
           </motion.g>
         )}
       </AnimatePresence>

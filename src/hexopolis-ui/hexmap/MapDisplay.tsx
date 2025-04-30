@@ -1,10 +1,8 @@
-import { HEXGRID_SPACING } from 'app/constants'
 import { useBgioClientInfo, useBgioCtx, useBgioG } from 'bgio-contexts'
 import { useMapContext } from 'hexopolis-ui/contexts'
 import { Notifications } from 'hexopolis-ui/notifications/Notifications'
 import React, { useEffect } from 'react'
 import { DraftCounter } from './DraftCounter'
-import { HexgridLayout } from './HexgridLayout'
 import { MapHex } from './MapHex'
 import { MapHexStyles } from './MapHexStyles'
 import { TurnCounter } from './TurnCounter'
@@ -17,7 +15,7 @@ type Props = {
 export const MapDisplay = ({ mapWrapperRef }: Props) => {
   const {
     boardHexes,
-    hexMap: { hexSize, flat, mapId, mapSize },
+    hexMap: { hexSize, mapId, mapSize },
   } = useBgioG()
   const { playerID } = useBgioClientInfo()
   const { isDraftPhase } = useBgioCtx()
@@ -81,26 +79,20 @@ export const MapDisplay = ({ mapWrapperRef }: Props) => {
       <Notifications />
       <TurnCounter />
       {isDraftPhase && <DraftCounter />}
-      <HexgridLayout
-        size={{ x: hexSize, y: hexSize }}
-        flat={flat}
-        spacing={HEXGRID_SPACING}
+      <svg
+        width={`${mapState.width}%`}
+        height={`${mapState.height}%`}
+        viewBox={viewBox}
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <svg
-          width={`${mapState.width}%`}
-          height={`${mapState.height}%`}
-          viewBox={viewBox}
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g className="hexgrid-layout">
-            {/* This displays the base hexagons and the hex-text (unit name, altitude, hex.id) */}
-            {Object.values(boardHexes).map((hex) => (
-              <MapHex key={hex.id} hex={hex} />
-            ))}
-          </g>
-        </svg>
-      </HexgridLayout>
+        <g className="hexgrid-layout">
+          {/* This displays the base hexagons and the hex-text (unit name, altitude, hex.id) */}
+          {Object.values(boardHexes).map((hex) => (
+            <MapHex key={hex.id} hex={hex} />
+          ))}
+        </g>
+      </svg>
     </MapHexStyles>
   )
 }
