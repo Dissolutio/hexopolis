@@ -21,70 +21,70 @@ const MultiplayerGameClient = Client({
 })
 
 export const App = () => {
-  if (isLocalApp) {
-    return <LocalApp />
-  } else {
-    return (
-      <AuthProvider>
-        <BgioLobbyApiProvider serverAddress={SERVER}>
-          <MultiplayerLobbyProvider>
-            <Helmet>
-              <title>Hexoscape</title>
-            </Helmet>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <MultiplayerNav />
-                    <MultiplayerLobby />
-                  </>
-                }
-              />
-              <Route
-                path="/play"
-                element={
-                  <>
-                    <PlayPage />
-                  </>
-                }
-              />
-              <Route
-                path="/demo"
-                element={
-                  <>
-                    <MultiplayerNav />
-                    <DemoLocalGameLinks />
-                  </>
-                }
-              />
-              {/* Copied from Local App, because Routes can't handle a non-Route child */}
-              <Route
-                path="/local2"
-                element={<LocalDemoClients numPlayers={2} />}
-              />
-              <Route
-                path="/local3"
-                element={<LocalDemoClients numPlayers={3} />}
-              />
-              <Route
-                path="/local4"
-                element={<LocalDemoClients numPlayers={4} />}
-              />
-              <Route
-                path="/local5"
-                element={<LocalDemoClients numPlayers={5} />}
-              />
-              <Route
-                path="/local6"
-                element={<LocalDemoClients numPlayers={6} />}
-              />
-            </Routes>
-          </MultiplayerLobbyProvider>
-        </BgioLobbyApiProvider>
-      </AuthProvider>
-    )
-  }
+  // if (isLocalApp) {
+  return <LocalApp />
+  // } else {
+  //   return (
+  //     <AuthProvider>
+  //       <BgioLobbyApiProvider serverAddress={SERVER}>
+  //         <MultiplayerLobbyProvider>
+  //           <Helmet>
+  //             <title>Hexoscape</title>
+  //           </Helmet>
+  //           <Routes>
+  //             <Route
+  //               path="/"
+  //               element={
+  //                 <>
+  //                   <MultiplayerNav />
+  //                   <MultiplayerLobby />
+  //                 </>
+  //               }
+  //             />
+  //             <Route
+  //               path="/play"
+  //               element={
+  //                 <>
+  //                   <PlayPage />
+  //                 </>
+  //               }
+  //             />
+  //             <Route
+  //               path="/demo"
+  //               element={
+  //                 <>
+  //                   <MultiplayerNav />
+  //                   <DemoLocalGameLinks />
+  //                 </>
+  //               }
+  //             />
+  //             {/* Copied from Local App, because Routes can't handle a non-Route child */}
+  //             <Route
+  //               path="/local2"
+  //               element={<LocalDemoClients numPlayers={2} />}
+  //             />
+  //             <Route
+  //               path="/local3"
+  //               element={<LocalDemoClients numPlayers={3} />}
+  //             />
+  //             <Route
+  //               path="/local4"
+  //               element={<LocalDemoClients numPlayers={4} />}
+  //             />
+  //             <Route
+  //               path="/local5"
+  //               element={<LocalDemoClients numPlayers={5} />}
+  //             />
+  //             <Route
+  //               path="/local6"
+  //               element={<LocalDemoClients numPlayers={6} />}
+  //             />
+  //           </Routes>
+  //         </MultiplayerLobbyProvider>
+  //       </BgioLobbyApiProvider>
+  //     </AuthProvider>
+  //   )
+  // }
 }
 
 const PlayPage = () => {
