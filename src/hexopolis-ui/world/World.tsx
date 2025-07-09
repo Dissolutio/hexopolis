@@ -50,7 +50,7 @@ export const World = () => {
         <directionalLight position={[-50, 0, -50]} intensity={0.65} />
         <directionalLight position={[0, 0, 0]} intensity={0.65} />
         <directionalLight position={[0, 0, -50]} intensity={0.65} />
-        <Stats />
+        {process.env.NODE_ENV === 'development' && <Stats />}
         <MapDisplay3D cameraControlsRef={cameraControlsRef} />
         {/* <Grid infiniteGrid /> */}
         <PerspectiveCamera makeDefault position={[30, 30, 50]} fov={65} />
@@ -61,11 +61,11 @@ export const World = () => {
           // minDistance={0.1}
           makeDefault
           smoothTime={1}
-          // dollySpeed={0.5}
-          // enabled
-          // verticalDragToForward={verticalDragToForward}
-          // dollyToCursor={dollyToCursor}
-          // infinityDolly={infinityDolly}
+        // dollySpeed={0.5}
+        // enabled
+        // verticalDragToForward={verticalDragToForward}
+        // dollyToCursor={dollyToCursor}
+        // infinityDolly={infinityDolly}
         />
       </Canvas>
       <Notifications />
